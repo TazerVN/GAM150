@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GAM150", "GAM150.vcxproj", "{14BC9A7B-4414-4486-A6A8-203E7714356D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14BC9A7B-4414-4486-A6A8-203E7714356D}.Debug|x64.ActiveCfg = Debug|x64
+		{14BC9A7B-4414-4486-A6A8-203E7714356D}.Debug|x64.Build.0 = Debug|x64
+		{14BC9A7B-4414-4486-A6A8-203E7714356D}.Release|x64.ActiveCfg = Release|x64
+		{14BC9A7B-4414-4486-A6A8-203E7714356D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {207E7B1D-BCED-42A0-BABA-CE1E994B8CED}
+	EndGlobalSection
+EndGlobal
