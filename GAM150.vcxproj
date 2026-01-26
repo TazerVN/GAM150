@@ -16,6 +16,7 @@
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Mesh_factory.cpp" />
+    <ClCompile Include="source\renderSystem.cpp" />
     <ClCompile Include="source\Shape2D.cpp" />
     <ClCompile Include="source\Text.cpp" />
     <ClCompile Include="source\util.cpp" />
@@ -26,6 +27,7 @@
     <ClInclude Include="source\global.h" />
     <ClInclude Include="source\Grid.h" />
     <ClInclude Include="source\Mesh_factory.h" />
+    <ClInclude Include="source\renderSystem.h" />
     <ClInclude Include="source\Shape2D.h" />
     <ClInclude Include="source\Text.h" />
     <ClInclude Include="source\util.h" />

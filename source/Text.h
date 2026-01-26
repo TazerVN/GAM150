@@ -26,7 +26,7 @@ class Text_Manager {
 		}
 		// find a free slot from the system
 		int Find_Free_Slot() const{
-			for(int i = 0; i < MAX_TEXT; ++i)
+			for(int i = 0; i < MAX_TEXT; ++i);
 		}
 	private:
 		s8 id[MAX_TEXT];
