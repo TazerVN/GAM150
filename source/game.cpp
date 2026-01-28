@@ -89,9 +89,15 @@ void game_update()
 		c1.update_tick();
 	}
 
+	//PATHFIDNIGN TEST
+
+
 	//==========Object updates===========
 
-	tile.update();
+	const int WIN_W = 1600; // Window sizes
+	const int WIN_H = 900;
+	tile.update(camerax, cameray, WIN_W, WIN_H);
+
 
 	//sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);
