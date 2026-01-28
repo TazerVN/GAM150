@@ -96,7 +96,7 @@ namespace Shape2D
 		AEMtx33Concat(&this->transform, &translate, &scale);
 	}
 
-	void Rectangle::render()
+	/*void Rectangle::render()
 	{
 		if (this->mode == COLOR) 
 		{
@@ -108,7 +108,7 @@ namespace Shape2D
 		AEGfxSetTransform(this->transform.m);
 		if (this->m_mode == MESH_CENTER) AEGfxMeshDraw(rectMesh_center, AE_GFX_MDM_TRIANGLES);
 		else if (this->m_mode == MESH_CORNER) AEGfxMeshDraw(rectMesh_corner, AE_GFX_MDM_TRIANGLES);
-	}
+	}*/
 
 
 	//================(Circle)=======================
@@ -127,9 +127,9 @@ namespace Shape2D
 		AEMtx33Scale(&scale, this->scale, this->scale);
 		AEMtx33Concat(&this->transform, &translate, &scale);
 	}
-	void Circle::render()
+	/*void Circle::render()
 	{
 		AEGfxSetTransform(this->transform.m);
 		AEGfxMeshDraw(cirMesh, AE_GFX_MDM_TRIANGLES);
-	}
+	}*/
 }

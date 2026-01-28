@@ -206,7 +206,7 @@ namespace Grid
 
 
 
-	void Grid::render()
+	/*void Grid::render()
 	{
 		if (this->mode == TEXTURE)
 		{
@@ -230,7 +230,7 @@ namespace Grid
 				cells[i][j].render();
 			}
 		}
-	}
+	}*/
 
 }
 
@@ -248,13 +248,13 @@ void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])
 	}
 }
 
-void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])
-{
-	for (int i = 0; i < MAX_I; ++i)
-	{
-		for (int j = 0; j < MAX_J; ++j)
-		{
-			cells[i][j].render();
-		}
-	}
-}
+//void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])
+//{
+//	for (int i = 0; i < MAX_I; ++i)
+//	{
+//		for (int j = 0; j < MAX_J; ++j)
+//		{
+//			cells[i][j].render();
+//		}
+//	}
+//}

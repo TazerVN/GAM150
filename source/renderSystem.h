@@ -1,38 +1,38 @@
-#pragma once
+#include "Mesh_factory.h"
+#include <vector>
+#include "ecs.h"
 
 #ifndef RS
 #define RS
 
-#include "Mesh_factory.h"
-#include <vector>
 
 
 namespace RenderSystem
 {
+	class TextureComponent : public ECSystem::Component{
+		AEGfxTexture* texture = nullptr;
+	};
 
-	class RenderObject
+
+	class RenderComponent : public ECSystem::Component
 	{
 		public:
-		AEGfxTexture* texture = nullptr;
-		RENDER_MODE mode = COLOR;
-		MESH_MODE m_mode = MESH_CENTER;
-		virtual void render() = 0;
+		RenderComponent(int z);
 		int z = 0;
 	};
 
 	class RenderManager
 	{
 		private:
-		std::vector<RenderObject*> buffer;
+		std::vector<RenderComponent*> buffer;
 
 		public:
-		void RM_add(RenderObject* object, MESH_MODE m_mode, int z = 0);
-		void RM_add(RenderObject* object, MESH_MODE m_mode, AEGfxTexture* pTex, int z = 0);
-		RenderObject* RM_get(int index);
-		void RM_render();
+		void RM_render(ECSystem::ECS& ecs);
 
 	};
 };
+
+
 
 
 #endif // !RS

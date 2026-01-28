@@ -1,43 +1,50 @@
 #include "renderSystem.h"
 #include "vector"
+#include "ecs.h"
 
 namespace RenderSystem
 {
-	void bubbleSort(std::vector<RenderObject*> &array, int size);
-	void RenderManager::RM_render()
+	RenderComponent::RenderComponent(int z)
 	{
-		bubbleSort(this->buffer, int(this->buffer.size()));
+		this->z = z;
+	}
+
+	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
+	void bubbleSort(std::vector<RenderComponent*>& array, int size);
+
+	void RenderManager::RM_render(ECSystem::ECS& ecs)
+	{
+
+		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
+
+		ECSystem::ComponentPool* render_com = ecs.ECS_get_pool(ECSystem::COMPONENT_RENDERABLE);
+		ECSystem::ComponentPool* transform_com = ecs.ECS_get_pool(ECSystem::COMPONENT_TRANSFORM);
+		ECSystem::ComponentPool* mesh_com = ecs.ECS_get_pool(ECSystem::COMPONENT_MESH);
+
+		for (int i = 0; i < MAX_ENTITY; i++)
+		{
+			if (render_com->has[i] == false) continue;
+			if (transform_com->has[i] == false) continue;
+			if (mesh_com->has[i] == true)
+			{
+				ECSystem::TransformComponent* tc = static_cast<ECSystem::TransformComponent*>(transform_com->data[i]);
+				RenderSystem::RenderComponent* rc = static_cast<RenderSystem::RenderComponent*>(render_com->data[i]);
+				MeshComponent* mc = static_cast<MeshComponent*>(mesh_com->data[i]);
+				render_mesh(mc->MeshGet(), tc->pos, tc->size, &tc->transform);
+			}
+		}
+
+
+		/*bubbleSort(this->buffer, int(this->buffer.size()));
 		while (!this->buffer.empty())
 		{
-			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-			this->buffer.front()->render();
+
+
 			this->buffer.erase(this->buffer.begin());
-		}
+		}*/
 	}
 
-	void RenderManager::RM_add(RenderObject* object, MESH_MODE m_mode, int z)
-	{
-		object->mode = COLOR;
-		object->m_mode = m_mode;
-		object->z = z;
-		this->buffer.push_back(object);
-	}
-
-	void RenderManager::RM_add(RenderObject* object, MESH_MODE m_mode, AEGfxTexture* pTex, int z)
-	{
-		object->mode = TEXTURE;
-		object->m_mode = m_mode;
-		object->texture = pTex;
-		object->z = z;
-		this->buffer.push_back(object);
-	}
-
-	RenderObject* RenderManager::RM_get(int index)
-	{
-		return this->buffer[index];
-	}
-
-	void bubbleSort(std::vector<RenderObject*> &array, int size)
+	void bubbleSort(std::vector<RenderComponent*>& array, int size)
 	{
 
 		for (int step = 0; step < (size - 1); ++step)
@@ -51,7 +58,7 @@ namespace RenderSystem
 				if (array[i]->z > array[i + 1]->z)
 				{
 
-					RenderObject* temp = array[i];
+					RenderComponent* temp = array[i];
 					array[i] = array[i + 1];
 					array[i + 1] = temp;
 
@@ -62,6 +69,22 @@ namespace RenderSystem
 			if (swapped == 0)
 				break;
 		}
+	}
+
+
+
+	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform)
+	{
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(size.x * 80/size.x * 100, 0.f, 0.f, 1.f);
+		AEMtx33 translate;
+		AEMtx33Trans(&translate, pos.x, pos.y);
+		AEMtx33 scale;
+		AEMtx33Scale(&scale, size.x, size.y);
+		AEMtx33Concat(transform, &translate, &scale);
+
+		AEGfxSetTransform(transform->m);
+		AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 }

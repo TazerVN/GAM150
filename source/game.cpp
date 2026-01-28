@@ -2,31 +2,36 @@
 #include "AEEngine.h"
 #include "GameState.h"
 #include "Mesh_factory.h"
-#include "Shape2D.h"
-#include "Grid.h"
 #include "renderSystem.h"
+#include "ecs.h"
+#include "gameObject.h"
 
-float camerax = 800.f;
-float cameray = -450.f;
+float camerax = 0.0f;
+float cameray = 0.0f;
 
-MESH_MODE cur_mode;
-Shape2D::Circle c1(0.f, 0.f, 5.0f);
-Shape2D::Rectangle r1(0.0f, 0.0f, 100.f, 100.f);
-Grid::Grid tile;
 s8 pFont; char pText[40];
 AEGfxTexture* pTex;
 f32 w, h;
+
 RenderSystem::RenderManager RM;
+ECSystem::ECS ecs{};
+MeshFactory mf{};
+
 
 void game_init()
 {
 //==========(Init)======================
-	Shape2D::mesh_initialize();
 
-	cur_mode = MESH_CENTER;
+
+	mf.MeshFactoryInit();
+	ECSystem::Entity Player = *GameObject::gameobject_create(ecs, mf, 0, 0, 100, 100, 0);
+	ECSystem::Entity Player2 = *GameObject::gameobject_create(ecs, mf, 100, 100, 50, 50, 0);
+
+
+
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("Assets/liberation-mono.ttf", (int)72.f);
-	pTex = AEGfxTextureLoad("Assets/floor.png");
+	pTex = AEGfxTextureLoad("Assets/floor_01.png");
 	// Text to print
 
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
@@ -35,18 +40,12 @@ void game_update()
 {
 	AESysFrameStart();
 	//==============(Logic Update)==============
+
+
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
-	if (AEInputCheckTriggered(AEVK_F1))
-	{
-		(cur_mode == MESH_CENTER) ? cur_mode = MESH_CORNER : cur_mode = MESH_CENTER;
-	}
 
-	AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
 
-	RM.RM_add(&r1, MESH_CENTER,1);
-	RM.RM_add(&c1, MESH_CENTER,1);
-	RM.RM_add(&tile, MESH_CORNER, pTex, 0);
 
 	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 
@@ -78,39 +77,31 @@ void game_update()
 		if (dir.x != 0)
 		{
 			camerax += dir.x * spd * dt;
-			c1.pos.x = camerax;
 		}
 		if (dir.y != 0)
 		{
 			cameray += dir.y * spd * dt;
-			c1.pos.y = cameray;
 		}
 		AEGfxSetCamPosition(camerax, cameray);
-		c1.update_tick();
 	}
 
-	//PATHFIDNIGN TEST
-
-
 	//==========Object updates===========
-
-	const int WIN_W = 1600; // Window sizes
-	const int WIN_H = 900;
-	tile.update(camerax, cameray, WIN_W, WIN_H);
 
 
 	//sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);
 
 	//========(Render)====================
-	
 
-	RM.RM_render();
+
+	RM.RM_render(ecs);
 	AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
 }
 void game_exit()
 {
 // free the system
-	Shape2D::mesh_free();
+	mf.MeshFree();
+	AEGfxTextureUnload(pTex);
+	AEGfxDestroyFont(pFont);
 }

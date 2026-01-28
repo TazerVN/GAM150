@@ -16,7 +16,7 @@
 
 namespace Grid
 {
-	class Grid : public RenderSystem::RenderObject
+	class Grid
 	{
 		public:
 		Shape2D::Rectangle cells[MAX_I][MAX_J];
@@ -24,7 +24,7 @@ namespace Grid
 		f32 cells_alpha[MAX_I][MAX_J];
 		Grid();		//default constructor
 		void update(float camX, float camY, int winW, int winH); //so grid takes parameters of the world
-		void render() override;
+		//void render() override;
 
 		// A* click state
 		bool hasStart = false;

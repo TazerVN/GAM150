@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ecs.cpp" />
     <ClCompile Include="source\game.cpp" />
+    <ClCompile Include="source\gameObject.cpp" />
     <ClCompile Include="source\GameState.cpp" />
     <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
@@ -23,7 +25,9 @@
     <ClCompile Include="source\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ecs.h" />
     <ClInclude Include="source\game.h" />
+    <ClInclude Include="source\gameObject.h" />
     <ClInclude Include="source\GameState.h" />
     <ClInclude Include="source\global.h" />
     <ClInclude Include="source\Grid.h" />

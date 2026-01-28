@@ -20,7 +20,7 @@ namespace Shape2D
 	void mesh_initialize();
 	void mesh_free();
 
-	class Shape2D : public RenderSystem::RenderObject
+	class Shape2D
 	{
 		public:
 		enum ShapeType { circle, rectangle };
@@ -30,7 +30,7 @@ namespace Shape2D
 		void Transform(Shape2D* shape, AEMtx33 transform_matrix);
 		Shape2D(f32 x, f32 y);	//constructor
 
-		void render() override = 0;
+		//void render() override = 0;
 	};
 
 	class Rectangle : public Shape2D
@@ -41,7 +41,7 @@ namespace Shape2D
 		Rectangle();
 		Rectangle(f32 x, f32 y, f32 w, f32 h);	//constructor
 		void update_tick();
-		void render() override;
+		//void render() override;
 	};
 
 	class Circle : public Shape2D
@@ -50,7 +50,7 @@ namespace Shape2D
 		f32 diameter, radius, scale;
 		Circle(f32 x, f32 y, f32 radius);	//constructor
 		void update_tick();
-		void render() override;
+		//void render() override;
 	};
 }
 #endif // !SHAPE2D

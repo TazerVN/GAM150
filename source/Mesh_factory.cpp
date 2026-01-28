@@ -1,7 +1,41 @@
 #include "Mesh_factory.h"
+#include "AEEngine.h"
 
 
-AEGfxVertexList* createMesh_triangular_rectangle(MESH_MODE mode)
+MeshFactory::MeshFactory(){
+}
+AEGfxVertexList* MeshFactory::MeshGet(MESH_TYPE type){
+	return mesh_arr[type];
+}
+void MeshFactory::MeshFree(){
+	for(AEGfxVertexList* mesh : this->mesh_arr){
+		mesh_factory_free(mesh);
+	}
+	this->mesh_arr.clear();
+}
+
+void MeshFactory::MeshFactoryInit(){
+	this->mesh_arr.push_back(createMesh_triangular_rectangle(MESH_CENTER));
+	this->mesh_arr.push_back(createMesh_triangular_rectangle(MESH_CORNER));
+	this->mesh_arr.push_back(createMesh_triangular_circle());
+	this->mesh_arr.push_back(createMesh_line());
+}
+
+MeshComponent::MeshComponent(MeshFactory& factory, MESH_TYPE type, RENDER_MODE y)
+{
+	this->r_mode = y;
+	this->type = type;
+	this->mesh = factory.MeshGet(type);
+}
+
+
+AEGfxVertexList* MeshComponent::MeshGet()
+{
+	return this->mesh;
+}
+
+
+AEGfxVertexList* createMesh_triangular_rectangle(MESH_POS mode)
 {
 	AEGfxVertexList* targetMesh;
 	AEGfxMeshStart();
@@ -84,4 +118,5 @@ void mesh_factory_free(AEGfxVertexList* free_target)
 {
 	if (free_target != nullptr) AEGfxMeshFree(free_target);
 }
+
 
