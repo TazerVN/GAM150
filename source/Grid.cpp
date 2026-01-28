@@ -4,6 +4,9 @@
 
 float offset = 1.0f;
 
+
+
+
 namespace Grid
 {
 	// helper: pick nearest cell by distance to its center

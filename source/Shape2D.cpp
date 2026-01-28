@@ -101,7 +101,7 @@ namespace Shape2D
 		if (this->mode == COLOR) 
 		{
 			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-			Color::Color_Fill_Hex(0x000000, 1.0f);
+			Color	Color_Fill_Hex(0x000000, 1.0f);
 		}
 
 

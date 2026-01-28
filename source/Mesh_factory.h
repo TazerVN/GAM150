@@ -7,7 +7,7 @@
 
 
 typedef enum { MESH_CENTER = 0, MESH_CORNER = 1 } MESH_POS;
-typedef enum { TEXTURE = 1, COLOR = 0 } RENDER_MODE;
+typedef enum { COLOR = 0, TEXTURE = 1} RENDER_MODE;
 typedef enum { MESH_RECTANGLE_CENTER = 0, MESH_RECTANGLE_CORNER ,MESH_CIRCLE, MESH_LINE } MESH_TYPE;
 
 class MeshFactory{

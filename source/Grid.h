@@ -2,8 +2,10 @@
 #include "AEEngine.h"
 #include "Shape2D.h"
 #include "renderSystem.h"
+#include "ecs.h"
 
 #include <vector>
+#include <array>
 #include <cstdint>
 #include "Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 
@@ -14,8 +16,22 @@
 #define MAX_I 16
 #define MAX_J 9
 
+
 namespace Grid
 {
+	class GridComponent : ECSystem::Component
+	{
+		public:
+		s8 max_i = MAX_I;
+		s8 max_j = MAX_J;
+		f32 cell_width = CELL_WIDTH;
+		f32 cell_height = CELL_HEIGHT;
+ 		
+		std::array<std::array<s8, MAX_I>, MAX_J> cells_color;
+		std::array<std::array<f32, MAX_I>, MAX_J> cells_alpha;
+		GridComponent() = default;
+	};
+
 	class Grid
 	{
 		public:
@@ -38,7 +54,7 @@ namespace Grid
 		bool blocked[MAX_I][MAX_J]{};
 		uint8_t walkable[MAX_I * MAX_J]{};
 
-	private:
+		private:
 		bool PickCellNearest(float worldX, float worldY, int& outI, int& outJ) const;
 
 		void RebuildWalkable();

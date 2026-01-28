@@ -24,16 +24,15 @@ void game_init()
 
 
 	mf.MeshFactoryInit();
-	ECSystem::Entity Player = *GameObject::gameobject_create(ecs, mf, 0, 0, 100, 100, 0);
-	ECSystem::Entity Player2 = *GameObject::gameobject_create(ecs, mf, 100, 100, 50, 50, 0);
-
-
 
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("Assets/liberation-mono.ttf", (int)72.f);
-	pTex = AEGfxTextureLoad("Assets/floor_01.png");
-	// Text to print
+	pTex = AEGfxTextureLoad("Assets/floor_02.png");
 
+	ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, pTex);
+	ECSystem::Entity Player = *GameObject::gameobject_create(ecs, mf, 0, 0, 100, 100, 0, pTex);
+
+	// Text to print
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
 }
 void game_update()

@@ -20,13 +20,15 @@ namespace ECSystem
 		Entity() = default;
 	};
 
-
+	//ID FOR EACH OF THE COMPONENT
 	typedef enum
 	{
 		COMPONENT_TRANSFORM = 0,
 		COMPONENT_VELOCITY = 1,
 		COMPONENT_RENDERABLE = 2,
 		COMPONENT_MESH = 3,
+		COMPONENT_TEXTURE = 4,
+		COMPONENT_GRID = 5,
 	} ComponentType;
 
 

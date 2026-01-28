@@ -10,7 +10,9 @@
 namespace RenderSystem
 {
 	class TextureComponent : public ECSystem::Component{
+		public:
 		AEGfxTexture* texture = nullptr;
+		TextureComponent(AEGfxTexture* pTex);
 	};
 
 
