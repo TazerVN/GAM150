@@ -2,29 +2,30 @@
 #include "vector"
 #include "ecs.h"
 #include "Grid.h"
+#include "transformSystem.h"
 
 
 
 namespace RenderSystem
 {
-	RenderComponent::RenderComponent(int z)
+	/*RenderComponent::RenderComponent(int z)
 	{
 		this->z = z;
-	}
+	}*/
 
 	TextureComponent::TextureComponent(AEGfxTexture* pTex){
 		this->texture = pTex;
 	}
+
 	void render_grid(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform, Grid::GridComponent& gc);
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
-	void bubbleSort(std::vector<RenderComponent*>& array, int size);
+	//void bubbleSort(std::vector<RenderComponent*>& array, int size);
 
-	void RenderManager::RM_render(ECSystem::ECS& ecs)
+	void RenderSystem::RM_render(ECSystem::ECS& ecs)
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
 
-		ECSystem::ComponentPool* render_com = ecs.ECS_get_pool(ECSystem::COMPONENT_RENDERABLE);
 		ECSystem::ComponentPool* transform_com = ecs.ECS_get_pool(ECSystem::COMPONENT_TRANSFORM);
 		ECSystem::ComponentPool* mesh_com = ecs.ECS_get_pool(ECSystem::COMPONENT_MESH);
 		ECSystem::ComponentPool* texture_com = ecs.ECS_get_pool(ECSystem::COMPONENT_TEXTURE);
@@ -32,12 +33,11 @@ namespace RenderSystem
 
 		for (int i = 0; i < MAX_ENTITY; i++)
 		{
-			if (render_com->has[i] == false || transform_com->has[i] == false) continue;
+			if (transform_com->has[i] == false) continue;
 			if (mesh_com->has[i] == true)
 			{
-				ECSystem::TransformComponent* tc = static_cast<ECSystem::TransformComponent*>(transform_com->data[i]);
-				RenderSystem::RenderComponent* rc = static_cast<RenderSystem::RenderComponent*>(render_com->data[i]);
-				RenderSystem::TextureComponent* tec = static_cast<RenderSystem::TextureComponent*>(texture_com->data[i]);
+				TransformSystem::TransformComponent* tc = static_cast<TransformSystem::TransformComponent*>(transform_com->data[i]);
+				TextureComponent* tec = static_cast<TextureComponent*>(texture_com->data[i]);
 				MeshComponent* mc = static_cast<MeshComponent*>(mesh_com->data[i]);
 
 				if (grid_com->has[i] == true)
@@ -90,7 +90,7 @@ namespace RenderSystem
 
 
 
-	void bubbleSort(std::vector<RenderComponent*>& array, int size)
+	/*void bubbleSort(std::vector<RenderComponent*>& array, int size)
 	{
 
 		for (int step = 0; step < (size - 1); ++step)
@@ -115,7 +115,7 @@ namespace RenderSystem
 			if (swapped == 0)
 				break;
 		}
-	}
+	}*/
 
 
 

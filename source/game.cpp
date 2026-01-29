@@ -5,32 +5,41 @@
 #include "renderSystem.h"
 #include "ecs.h"
 #include "gameObject.h"
+#include "cardInteraction.h"
+#include "transformSystem.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
 
 s8 pFont; char pText[40];
-AEGfxTexture* pTex;
+AEGfxTexture* floortext;
+AEGfxTexture* cardtext;
 f32 w, h;
 
-RenderSystem::RenderManager RM;
+RenderSystem::RenderSystem RM;
+TransformSystem::TransformSystem TS;
 ECSystem::ECS ecs{};
 MeshFactory mf{};
+CardInteraction::CardHand card{};
 
 
 void game_init()
 {
 //==========(Init)======================
 
+	f32 w_width = AEGfxGetWindowWidth();
+	f32 w_height = AEGfxGetWindowHeight();
 
 	mf.MeshFactoryInit();
 
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("Assets/liberation-mono.ttf", (int)72.f);
-	pTex = AEGfxTextureLoad("Assets/floor_02.png");
+	floortext = AEGfxTextureLoad("Assets/floor_02.png");
+	cardtext = AEGfxTextureLoad("Assets/cardSample.png");
 
-	ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, pTex);
-	ECSystem::Entity Player = *GameObject::gameobject_create(ecs, mf, 0, 0, 100, 100, 0, pTex);
+	ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
+	card = CardInteraction::CardHand(ecs, mf, -3* w_width/8, -w_height/2, w_width/4, 264, cardtext);
+
 
 	// Text to print
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
@@ -81,6 +90,7 @@ void game_update()
 		{
 			cameray += dir.y * spd * dt;
 		}
+		card.update_pos(ecs, TS, camerax, cameray);
 		AEGfxSetCamPosition(camerax, cameray);
 	}
 
@@ -88,9 +98,10 @@ void game_update()
 
 
 	//sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
-	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);
+	//int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);
 
 	//========(Render)====================
+
 
 
 	RM.RM_render(ecs);
@@ -100,6 +111,7 @@ void game_update()
 void game_exit()
 {
 	mf.MeshFree();
-	AEGfxTextureUnload(pTex);
+	AEGfxTextureUnload(floortext);
+	AEGfxTextureUnload(cardtext);
 	AEGfxDestroyFont(pFont);
 }

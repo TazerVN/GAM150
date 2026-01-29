@@ -16,17 +16,17 @@ namespace RenderSystem
 	};
 
 
-	class RenderComponent : public ECSystem::Component
+	/*class RenderComponent : public ECSystem::Component
 	{
 		public:
 		RenderComponent(int z);
 		int z = 0;
-	};
+	};*/
 
-	class RenderManager
+	class RenderSystem
 	{
 		private:
-		std::vector<RenderComponent*> buffer;
+		//std::vector<RenderComponent*> buffer;
 
 		public:
 		void RM_render(ECSystem::ECS& ecs);

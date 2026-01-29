@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\cardInteraction.cpp" />
     <ClCompile Include="source\ecs.cpp" />
     <ClCompile Include="source\game.cpp" />
     <ClCompile Include="source\gameObject.cpp" />
@@ -22,10 +23,12 @@
     <ClCompile Include="source\renderSystem.cpp" />
     <ClCompile Include="source\Shape2D.cpp" />
     <ClCompile Include="source\Text.cpp" />
+    <ClCompile Include="source\transformSystem.cpp" />
     <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="source\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\cardInteraction.h" />
     <ClInclude Include="source\ecs.h" />
     <ClInclude Include="source\game.h" />
     <ClInclude Include="source\gameObject.h" />
@@ -37,6 +40,7 @@
     <ClInclude Include="source\renderSystem.h" />
     <ClInclude Include="source\Shape2D.h" />
     <ClInclude Include="source\Text.h" />
+    <ClInclude Include="source\transformSystem.h" />
     <ClInclude Include="source\UI.h" />
     <ClInclude Include="source\util.h" />
   </ItemGroup>

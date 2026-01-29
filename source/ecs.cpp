@@ -5,17 +5,7 @@
 
 namespace ECSystem
 {
-
-	TransformComponent::TransformComponent(f32 x, f32 y, f32 sx, f32 sy, f32 rot)
-	{
-		this->pos.x = x;
-		this->pos.y = y;
-		this->size.x = sx;
-		this->size.y = sy;
-		this->rotation = rot;
-		AEMtx33Identity(&this->transform);
-	}
-
+	
 
 	ECS::ECS()
 	{
@@ -41,7 +31,7 @@ namespace ECSystem
 		}
 	}
 
-	Entity ECS::ECS::Entity_new()
+	Entity ECS::ECS::Entity_new(s8 z)
 	{
 		static u32 next_id = 0;
 		u32 id;
@@ -55,10 +45,9 @@ namespace ECSystem
 		}
 		else
 		{
-			return { MAX_ENTITY };  // Invalid
-		}
-		Entity p{id};
-		return p;
+			return { MAX_ENTITY, z };  // Invalid
+		};
+		return {id, z};
 	}
 
 	void ECS::ECS::Entity_free(Entity e)
