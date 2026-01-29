@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\card.cpp" />
     <ClCompile Include="source\cardInteraction.cpp" />
+    <ClCompile Include="source\Components.cpp" />
     <ClCompile Include="source\ecs.cpp" />
     <ClCompile Include="source\game.cpp" />
     <ClCompile Include="source\gameObject.cpp" />
@@ -22,13 +24,16 @@
     <ClCompile Include="source\Pathfinding.cpp" />
     <ClCompile Include="source\renderSystem.cpp" />
     <ClCompile Include="source\Shape2D.cpp" />
+    <ClCompile Include="source\Systems.cpp" />
     <ClCompile Include="source\Text.cpp" />
     <ClCompile Include="source\transformSystem.cpp" />
     <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="source\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\card.h" />
     <ClInclude Include="source\cardInteraction.h" />
+    <ClInclude Include="source\Components.h" />
     <ClInclude Include="source\ecs.h" />
     <ClInclude Include="source\game.h" />
     <ClInclude Include="source\gameObject.h" />
@@ -39,6 +44,7 @@
     <ClInclude Include="source\Pathfinding.h" />
     <ClInclude Include="source\renderSystem.h" />
     <ClInclude Include="source\Shape2D.h" />
+    <ClInclude Include="source\Systems.h" />
     <ClInclude Include="source\Text.h" />
     <ClInclude Include="source\transformSystem.h" />
     <ClInclude Include="source\UI.h" />
