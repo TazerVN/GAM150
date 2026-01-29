@@ -73,6 +73,7 @@ namespace ECSystem
 
 		public:
 		ECS();
+		~ECS();
 		Entity Entity_new();
 		void Entity_free(Entity e);
 		void ECS_add_component(const Entity& entity, ComponentType type, void* data, size_t size);

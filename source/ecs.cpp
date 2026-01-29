@@ -30,6 +30,17 @@ namespace ECSystem
 		}
 	}
 
+	ECS::~ECS(){
+		for (ComponentPool pool : this->list)
+		{
+			pool.count = 0;
+			for (int i = 0; i < MAX_ENTITY; i++)
+			{
+				if(pool.has[i] == true) free(pool.data[i]); 
+			}
+		}
+	}
+
 	Entity ECS::ECS::Entity_new()
 	{
 		static u32 next_id = 0;

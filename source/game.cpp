@@ -99,7 +99,6 @@ void game_update()
 }
 void game_exit()
 {
-// free the system
 	mf.MeshFree();
 	AEGfxTextureUnload(pTex);
 	AEGfxDestroyFont(pFont);

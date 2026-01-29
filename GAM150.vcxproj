@@ -22,6 +22,7 @@
     <ClCompile Include="source\renderSystem.cpp" />
     <ClCompile Include="source\Shape2D.cpp" />
     <ClCompile Include="source\Text.cpp" />
+    <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="source\util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +37,7 @@
     <ClInclude Include="source\renderSystem.h" />
     <ClInclude Include="source\Shape2D.h" />
     <ClInclude Include="source\Text.h" />
+    <ClInclude Include="source\UI.h" />
     <ClInclude Include="source\util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
