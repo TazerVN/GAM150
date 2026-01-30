@@ -11,11 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\ECS\card.cpp" />
     <ClCompile Include="source\cards\cardInteraction.cpp" />
     <ClCompile Include="source\ECS\Components.cpp" />
-    <ClCompile Include="source\ECS\ecs.cpp" />
-    <ClCompile Include="source\level\game.cpp" />
+    <ClCompile Include="source\ECS\ECSystem.cpp" />
+    <ClCompile Include="source\level\level1.cpp" />
     <ClCompile Include="source\ECS\gameObject.cpp" />
     <ClCompile Include="source\level\GameState.cpp" />
     <ClCompile Include="source\rendering\Grid.cpp" />
@@ -28,14 +27,14 @@
     <ClCompile Include="source\system\transformSystem.cpp" />
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="source\util\util.cpp" />
-    <ClCompile Include="source\level\World.cpp" />
+    <ClCompile Include="source\ECS\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
     <ClInclude Include="source\cards\cardInteraction.h" />
     <ClInclude Include="source\ECS\Components.h" />
-    <ClInclude Include="source\ECS\ecs.h" />
-    <ClInclude Include="source\level\game.h" />
+    <ClInclude Include="source\ECS\ECSystem.h" />
+    <ClInclude Include="source\level\level1.h" />
     <ClInclude Include="source\ECS\gameObject.h" />
     <ClInclude Include="source\level\GameState.h" />
     <ClInclude Include="source\global.h" />
@@ -48,7 +47,7 @@
     <ClInclude Include="source\system\transformSystem.h" />
     <ClInclude Include="source\UI\UI.h" />
     <ClInclude Include="source\util\util.h" />
-    <ClInclude Include="source\level\World.h" />
+    <ClInclude Include="source\ECS\Scene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

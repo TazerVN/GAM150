@@ -15,120 +15,111 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Mesh_factory.cpp">
+    <ClCompile Include="source\cards\cardInteraction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Shape2D.cpp">
+    <ClCompile Include="source\ECS\Components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\util.cpp">
+    <ClCompile Include="source\level\level1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\game.cpp">
+    <ClCompile Include="source\ECS\gameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\GameState.cpp">
+    <ClCompile Include="source\level\GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Text.cpp">
+    <ClCompile Include="source\rendering\Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderSystem.cpp">
+    <ClCompile Include="source\rendering\Mesh_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Pathfinding.cpp">
+    <ClCompile Include="source\util\Pathfinding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ecs.cpp">
+    <ClCompile Include="source\rendering\renderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\gameObject.cpp">
+    <ClCompile Include="source\cards\Systems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\UI.cpp">
+    <ClCompile Include="source\UI\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\cardInteraction.cpp">
+    <ClCompile Include="source\system\transformSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\transformSystem.cpp">
+    <ClCompile Include="source\UI\UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components.cpp">
+    <ClCompile Include="source\util\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Systems.cpp">
+    <ClCompile Include="source\ECS\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\World.cpp">
+    <ClCompile Include="source\ECS\ECSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\Grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Mesh_factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Shape2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Text.h">
+    <ClInclude Include="source\ECS\card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderSystem.h">
+    <ClInclude Include="source\cards\cardInteraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Pathfinding.h">
+    <ClInclude Include="source\ECS\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\ecs.h">
+    <ClInclude Include="source\level\level1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\gameObject.h">
+    <ClInclude Include="source\ECS\gameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\UI.h">
+    <ClInclude Include="source\level\GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\cardInteraction.h">
+    <ClInclude Include="source\rendering\Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\transformSystem.h">
+    <ClInclude Include="source\rendering\Mesh_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Components.h">
+    <ClInclude Include="source\util\Pathfinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Systems.h">
+    <ClInclude Include="source\rendering\renderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\card.h">
+    <ClInclude Include="source\cards\Systems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\World.h">
+    <ClInclude Include="source\UI\Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\system\transformSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECS\ECSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

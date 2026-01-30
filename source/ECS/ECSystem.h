@@ -153,6 +153,15 @@ namespace ECS
 			entitySignatures[e].reset(typeID);
 		}
 
+		template<typename T>
+		ComponentStorage<T>* getComponentStorage()
+		{
+
+			auto n = componentStorage.find(getComponentTypeID<T>());
+			if (n == componentStorage.end()) return nullptr;
+			return static_cast<ComponentStorage<T>*>(n->second.get());
+		}
+
 	};
 };
 

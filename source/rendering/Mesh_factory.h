@@ -1,7 +1,6 @@
 #pragma once
 #ifndef MESH_FACTORY_HEADER
 #define MESH_FACTORY_HEADER
-#include "../ECS/ecs.h"
 #include "AEEngine.h"
 #include "vector"
 
@@ -20,16 +19,6 @@ class MeshFactory{
 	void MeshFree();
 };
 
-class MeshComponent : public ECSystem::Component
-{
-	private:
-	AEGfxVertexList* mesh = nullptr;
-	public:
-	RENDER_MODE r_mode;
-	MESH_TYPE type;
-	MeshComponent(MeshFactory& factory, MESH_TYPE type, RENDER_MODE r);
-	AEGfxVertexList* MeshGet();
-};
 
 
 AEGfxVertexList* createMesh_triangular_circle();

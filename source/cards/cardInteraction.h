@@ -1,25 +1,31 @@
+
+#ifndef CARD_H
+#define CARD_H
 #include "../ECS/gameObject.h"
-#include "../ECS/ecs.h"
+#include "../ECS/ECSystem.h"
 #include "../system/transformSystem.h"
 #include "AEEngine.h"
 #include "array"
 
-#define MAX_CARDS 7
+
+
+#define MAX_CARDS_HAND 7
 
 namespace CardInteraction
 {
-	class CardHand : ECSystem::Entity
+	class CardHand
 	{
 		public:
-		std::array<ECSystem::Entity, MAX_CARDS> arr{};
-		CardHand(ECSystem::ECS& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
+		std::array<Entity, MAX_CARDS_HAND> arr{};
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
 		CardHand() = default;
-		void update_pos(ECSystem::ECS& ecs, TransformSystem::TransformSystem& tf, f32 x, f32 y);
-		
+		void update_pos(ECS::Registry& ecs, TransformSystem::TransformSystem& tf, f32 x, f32 y);
+
 	};
 
 
-	ECSystem::Entity selectableCard_create(ECSystem::ECS& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
-	ECSystem::Entity selectableCard_create(ECSystem::ECS& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z,  AEGfxTexture* pTex);
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex);
 
 }
+#endif

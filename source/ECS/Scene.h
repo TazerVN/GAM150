@@ -1,9 +1,9 @@
 #pragma once
-#include "../ECS/card.h"
+#include "../ECS/ECSystem.h"
 #include "../cards/Systems.h"
 #include "AEEngine.h"
 
-class World
+class Scene
 {
 private:
 	ECS::Registry ecs;

@@ -1,7 +1,7 @@
 #pragma once
 #include "AEEngine.h"
 #include "renderSystem.h"
-#include "../ECS/ecs.h"
+#include "../ECS/ECSystem.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 
 #include <vector>
@@ -18,18 +18,6 @@
 
 namespace Grid
 {
-	class GridComponent : ECSystem::Component
-	{
-		public:
-		s8 max_i = MAX_I;
-		s8 max_j = MAX_J;
-		f32 cell_width = CELL_WIDTH;
-		f32 cell_height = CELL_HEIGHT;
- 		
-		std::array<std::array<s8, MAX_I>, MAX_J> cells_color;
-		std::array<std::array<f32, MAX_I>, MAX_J> cells_alpha;
-		GridComponent() = default;
-	};
 
 	class Grid
 	{

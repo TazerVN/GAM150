@@ -1,66 +1,70 @@
 #include "../cards/cardInteraction.h"
-#include "../ECS/ecs.h"
+#include "../ECS/ECSystem.h"
 #include "../system/transformSystem.h"
+#include "../ECS/Components.h"
 
 namespace CardInteraction
 {
 
-	CardHand::CardHand(ECSystem::ECS& ecs, MeshFactory& mf,  f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
 	{
-		ECSystem::Entity ne = ecs.Entity_new(0);
-		this->id = ne.id;
-		this->z = ne.z;
+		Entity hand_id = ecs.createEntity();
+		Components::Transform trans{ {x,y},{width, height},0.0f };
 
-		TransformSystem::TransformComponent p_transform(x, y, width, height, 0);
-		ecs.ECS_add_component(*this, ECSystem::COMPONENT_TRANSFORM, &p_transform, sizeof(p_transform));
-		for(s8 i = 0; i < this->arr.size(); i++){
-			f32 card_x = x + float(i)/arr.size() * width*2;
-			f32 card_y = y ;
-			ECSystem::Entity e = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 0, pTex);
-			this->arr[i] = e;
+		ecs.addComponent(hand_id, trans);
+
+		Components::Transform p_transform{ x, y, width, height, 0 };
+		for (s8 i = 0; i < this->arr.size(); i++)
+		{
+			Entity id = ecs.createEntity();
+
+			f32 card_x = x + f32(i) / arr.size() * width * 2;
+			f32 card_y = y;
+			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 0, pTex);;
 		}
 	}
 
-	void CardHand::update_pos(ECSystem::ECS& ecs, TransformSystem::TransformSystem& tf,f32 x, f32 y)
+	void CardHand::update_pos(ECS::Registry& ecs, TransformSystem::TransformSystem& tf, f32 x, f32 y)
 	{
 
-		tf.update_pos(ecs, *this, x, y);
+		/*tf.update_pos(ecs, *this, x, y);
 		f32 width = tf.get_size(ecs, *this).x;
 		for (s8 i = 0; i < this->arr.size(); i++)
 		{
 			f32 card_x = x + float(i) / arr.size() * width * 2;
 			f32 card_y = y;
 			tf.update_pos(ecs, this->arr[i], card_x, y);
-		}
+		}*/
 	}
 
-	ECSystem::Entity selectableCard_create(ECSystem::ECS& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 	{
-		ECSystem::Entity p = ecs.Entity_new(z);
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::Transform trans{ {x,y},{width, height},0.0f };
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
 
-		TransformSystem::TransformComponent p_transform(x, y, width, height, 0);
-		MeshComponent p_mesh(mf, MESH_RECTANGLE_CENTER, TEXTURE);
-		//RenderSystem::RenderComponent p_rc(0);
-
-		ecs.ECS_add_component(p, ECSystem::COMPONENT_TRANSFORM, &p_transform, sizeof(p_transform));
-		ecs.ECS_add_component(p, ECSystem::COMPONENT_MESH, &p_mesh, sizeof(p_mesh));
-
-		return p;
+		return id;
 	}
 
-	ECSystem::Entity selectableCard_create(ECSystem::ECS& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex)
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex)
 	{
-		ECSystem::Entity p = ecs.Entity_new(z);
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::Transform trans{ {x,y},{width, height},0.0f };
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Texture texture{pTex};
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, texture);
 
-		TransformSystem::TransformComponent p_transform(x, y, width, height, 0);
-		MeshComponent p_mesh(mf, MESH_RECTANGLE_CENTER, TEXTURE);
-		RenderSystem::TextureComponent p_texture(pTex);
-
-		ecs.ECS_add_component(p, ECSystem::COMPONENT_TRANSFORM, &p_transform, sizeof(p_transform));
-		ecs.ECS_add_component(p, ECSystem::COMPONENT_MESH, &p_mesh, sizeof(p_mesh));
-		ecs.ECS_add_component(p, ECSystem::COMPONENT_TEXTURE, &p_texture, sizeof(p_texture));
-
-		return p;
+		return id;
 	}
 
 }

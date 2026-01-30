@@ -21,19 +21,6 @@ void MeshFactory::MeshFactoryInit(){
 	this->mesh_arr.push_back(createMesh_line());
 }
 
-MeshComponent::MeshComponent(MeshFactory& factory, MESH_TYPE type, RENDER_MODE y)
-{
-	this->r_mode = y;
-	this->type = type;
-	this->mesh = factory.MeshGet(type);
-}
-
-
-AEGfxVertexList* MeshComponent::MeshGet()
-{
-	return this->mesh;
-}
-
 
 AEGfxVertexList* createMesh_triangular_rectangle(MESH_POS mode)
 {
