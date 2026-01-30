@@ -1,6 +1,6 @@
 #include "Mesh_factory.h"
 #include <vector>
-#include "ecs.h"
+#include "../ECS/ecs.h"
 
 #ifndef RS
 #define RS

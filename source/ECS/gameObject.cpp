@@ -1,5 +1,5 @@
 #include "gameObject.h"
-#include "transformSystem.h"
+#include "../system/transformSystem.h"
 
 namespace GameObject
 {

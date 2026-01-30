@@ -1,8 +1,8 @@
 #pragma once
 #ifndef MESH_FACTORY_HEADER
 #define MESH_FACTORY_HEADER
+#include "../ECS/ecs.h"
 #include "AEEngine.h"
-#include "ecs.h"
 #include "vector"
 
 

@@ -1,12 +1,12 @@
 #include "game.h"
 #include "AEEngine.h"
-#include "GameState.h"
-#include "Mesh_factory.h"
-#include "renderSystem.h"
-#include "ecs.h"
-#include "gameObject.h"
-#include "cardInteraction.h"
-#include "transformSystem.h"
+#include "../level/GameState.h"
+#include "../rendering/Mesh_factory.h"
+#include "../rendering/renderSystem.h"
+#include "../ECS/ecs.h"
+#include "../ECS/gameObject.h"
+#include "../cards/cardInteraction.h"
+#include "../system/transformSystem.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;

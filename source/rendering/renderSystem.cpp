@@ -1,8 +1,8 @@
 #include "renderSystem.h"
 #include "vector"
-#include "ecs.h"
+#include "../ECS/ecs.h"
+#include "../system/transformSystem.h"
 #include "Grid.h"
-#include "transformSystem.h"
 
 
 

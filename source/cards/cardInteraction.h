@@ -1,8 +1,8 @@
-#include "gameObject.h"
+#include "../ECS/gameObject.h"
+#include "../ECS/ecs.h"
+#include "../system/transformSystem.h"
 #include "AEEngine.h"
-#include "ecs.h"
 #include "array"
-#include "transformSystem.h"
 
 #define MAX_CARDS 7
 

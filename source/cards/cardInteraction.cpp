@@ -1,6 +1,6 @@
-#include "cardInteraction.h"
-#include "ecs.h"
-#include "transformSystem.h"
+#include "../cards/cardInteraction.h"
+#include "../ECS/ecs.h"
+#include "../system/transformSystem.h"
 
 namespace CardInteraction
 {

@@ -11,46 +11,44 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\card.cpp" />
-    <ClCompile Include="source\cardInteraction.cpp" />
-    <ClCompile Include="source\Components.cpp" />
-    <ClCompile Include="source\ecs.cpp" />
-    <ClCompile Include="source\game.cpp" />
-    <ClCompile Include="source\gameObject.cpp" />
-    <ClCompile Include="source\GameState.cpp" />
-    <ClCompile Include="source\Grid.cpp" />
+    <ClCompile Include="source\ECS\card.cpp" />
+    <ClCompile Include="source\cards\cardInteraction.cpp" />
+    <ClCompile Include="source\ECS\Components.cpp" />
+    <ClCompile Include="source\ECS\ecs.cpp" />
+    <ClCompile Include="source\level\game.cpp" />
+    <ClCompile Include="source\ECS\gameObject.cpp" />
+    <ClCompile Include="source\level\GameState.cpp" />
+    <ClCompile Include="source\rendering\Grid.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\Mesh_factory.cpp" />
-    <ClCompile Include="source\Pathfinding.cpp" />
-    <ClCompile Include="source\renderSystem.cpp" />
-    <ClCompile Include="source\Shape2D.cpp" />
-    <ClCompile Include="source\Systems.cpp" />
-    <ClCompile Include="source\Text.cpp" />
-    <ClCompile Include="source\transformSystem.cpp" />
-    <ClCompile Include="source\UI.cpp" />
-    <ClCompile Include="source\util.cpp" />
-    <ClCompile Include="source\World.cpp" />
+    <ClCompile Include="source\rendering\Mesh_factory.cpp" />
+    <ClCompile Include="source\util\Pathfinding.cpp" />
+    <ClCompile Include="source\rendering\renderSystem.cpp" />
+    <ClCompile Include="source\cards\Systems.cpp" />
+    <ClCompile Include="source\UI\Text.cpp" />
+    <ClCompile Include="source\system\transformSystem.cpp" />
+    <ClCompile Include="source\UI\UI.cpp" />
+    <ClCompile Include="source\util\util.cpp" />
+    <ClCompile Include="source\level\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\card.h" />
-    <ClInclude Include="source\cardInteraction.h" />
-    <ClInclude Include="source\Components.h" />
-    <ClInclude Include="source\ecs.h" />
-    <ClInclude Include="source\game.h" />
-    <ClInclude Include="source\gameObject.h" />
-    <ClInclude Include="source\GameState.h" />
+    <ClInclude Include="source\ECS\card.h" />
+    <ClInclude Include="source\cards\cardInteraction.h" />
+    <ClInclude Include="source\ECS\Components.h" />
+    <ClInclude Include="source\ECS\ecs.h" />
+    <ClInclude Include="source\level\game.h" />
+    <ClInclude Include="source\ECS\gameObject.h" />
+    <ClInclude Include="source\level\GameState.h" />
     <ClInclude Include="source\global.h" />
-    <ClInclude Include="source\Grid.h" />
-    <ClInclude Include="source\Mesh_factory.h" />
-    <ClInclude Include="source\Pathfinding.h" />
-    <ClInclude Include="source\renderSystem.h" />
-    <ClInclude Include="source\Shape2D.h" />
-    <ClInclude Include="source\Systems.h" />
-    <ClInclude Include="source\Text.h" />
-    <ClInclude Include="source\transformSystem.h" />
-    <ClInclude Include="source\UI.h" />
-    <ClInclude Include="source\util.h" />
-    <ClInclude Include="source\World.h" />
+    <ClInclude Include="source\rendering\Grid.h" />
+    <ClInclude Include="source\rendering\Mesh_factory.h" />
+    <ClInclude Include="source\util\Pathfinding.h" />
+    <ClInclude Include="source\rendering\renderSystem.h" />
+    <ClInclude Include="source\cards\Systems.h" />
+    <ClInclude Include="source\UI\Text.h" />
+    <ClInclude Include="source\system\transformSystem.h" />
+    <ClInclude Include="source\UI\UI.h" />
+    <ClInclude Include="source\util\util.h" />
+    <ClInclude Include="source\level\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

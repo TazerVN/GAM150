@@ -1,13 +1,12 @@
 #pragma once
 #include "AEEngine.h"
-#include "Shape2D.h"
 #include "renderSystem.h"
-#include "ecs.h"
+#include "../ECS/ecs.h"
+#include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 
 #include <vector>
 #include <array>
 #include <cstdint>
-#include "Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 
 
 #define CELL_WIDTH 128
@@ -35,7 +34,7 @@ namespace Grid
 	class Grid
 	{
 		public:
-		Shape2D::Rectangle cells[MAX_I][MAX_J];
+		//Shape2D::Rectangle cells[MAX_I][MAX_J];
 		int cells_color[MAX_I][MAX_J];
 		f32 cells_alpha[MAX_I][MAX_J];
 		Grid();		//default constructor
@@ -48,7 +47,7 @@ namespace Grid
 		int start_i = -1, start_j = -1;
 		int goal_i = -1, goal_j = -1;
 
-		std::vector<Cell> path;
+		//std::vector<Cell> path;
 
 		// Optional walls (leave all false for now)
 		bool blocked[MAX_I][MAX_J]{};
@@ -65,5 +64,5 @@ namespace Grid
 	};
 }
 
-void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);
-void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);
+//void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);
+//void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);

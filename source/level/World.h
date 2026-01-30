@@ -1,6 +1,6 @@
 #pragma once
-#include "card.h"
-#include "Systems.h"
+#include "../ECS/card.h"
+#include "../cards/Systems.h"
 #include "AEEngine.h"
 
 class World

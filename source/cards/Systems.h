@@ -1,6 +1,6 @@
 #pragma once
-#include "card.h"
-#include "Components.h"
+#include "../ECS/card.h"
+#include "../ECS/Components.h"
 
 namespace System {
 	void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);

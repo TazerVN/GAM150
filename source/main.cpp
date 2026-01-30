@@ -3,8 +3,8 @@
 
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
-#include "GameState.h"
-#include "game.h"
+#include "level/GameState.h"
+#include "level/game.h"
 // ---------------------------------------------------------------------------
 
 // main
