@@ -29,6 +29,7 @@
     <ClCompile Include="source\transformSystem.cpp" />
     <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="source\util.cpp" />
+    <ClCompile Include="source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\card.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="source\transformSystem.h" />
     <ClInclude Include="source\UI.h" />
     <ClInclude Include="source\util.h" />
+    <ClInclude Include="source\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
