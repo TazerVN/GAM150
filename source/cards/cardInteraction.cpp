@@ -73,6 +73,6 @@ namespace CardInteraction
 	}
 
 	void fun(){
-		std::cout << "FUN!";
+		std::cout << "FUN!" << std::endl;
 	}
 }
