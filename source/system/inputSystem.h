@@ -1,0 +1,25 @@
+
+#ifndef InputSystem_H
+#define InputSystem_H
+
+#include "AEEngine.h"
+#include "../ECS/ECSystem.h"
+#include "../util/util.h"
+
+namespace InputSystem
+{
+
+
+	class InputManager
+	{
+		public:
+		s32 mousex, mousey;
+		InputManager();
+		void update(ECS::Registry& ecs);
+	};
+
+
+
+#endif // !InputSystem_H
+
+}

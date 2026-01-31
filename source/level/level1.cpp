@@ -5,6 +5,7 @@
 #include "../ECS/gameObject.h"
 #include "../ECS/Scene.h"
 #include "../cards/cardInteraction.h"
+#include "../system/inputSystem.h"
 #include "../system/transformSystem.h"
 #include "../level/GameState.h"
 
@@ -20,6 +21,8 @@ Scene level1;
 
 RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
+InputSystem::InputManager IM;
+
 MeshFactory mf{};
 CardInteraction::CardHand card{};
 
@@ -38,7 +41,7 @@ void game_init()
 	cardtext = AEGfxTextureLoad("../../Assets/cardSample.png");
 
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
-	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/2, 264, cardtext);
+	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, cardtext);
 
 
 	// Text to print
@@ -76,6 +79,8 @@ void game_update()
 	{
 		dy = -1;
 	}
+
+
 	//if direction is pressed
 	if (dx != 0 || dy != 0)
 	{
@@ -93,6 +98,8 @@ void game_update()
 		//card.update_pos(ecs, TS, camerax, cameray);
 		AEGfxSetCamPosition(camerax, cameray);
 	}
+
+	IM.update(level1.getECS());
 
 	//==========Object updates===========
 

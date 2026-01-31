@@ -2,9 +2,11 @@
 #include "../ECS/ECSystem.h"
 #include "../system/transformSystem.h"
 #include "../ECS/Components.h"
+#include "AEEngine.h"
 
 namespace CardInteraction
 {
+	void fun();//forward declaration for testing
 
 	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
 	{
@@ -16,7 +18,6 @@ namespace CardInteraction
 		Components::Transform p_transform{ x, y, width, height, 0 };
 		for (s8 i = 0; i < this->arr.size(); i++)
 		{
-			Entity id = ecs.createEntity();
 
 			f32 card_x = x + f32(i) / arr.size() * width * 2;
 			f32 card_y = y;
@@ -41,12 +42,14 @@ namespace CardInteraction
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y},{width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Input input{VK_RBUTTON, true, fun};
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
+		ecs.addComponent(id, input);
 
 		return id;
 	}
@@ -55,16 +58,21 @@ namespace CardInteraction
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y},{width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{pTex};
+		Components::Input input{AEVK_LBUTTON, true, fun };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
+		ecs.addComponent(id, input);
 
 		return id;
 	}
 
+	void fun(){
+		std::cout << "FUN!";
+	}
 }

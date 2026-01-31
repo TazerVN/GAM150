@@ -46,12 +46,12 @@ namespace RenderSystem
 				AEGfxSetTransparency(1.0f);
 				AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 				AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-				render_mesh(mesh->mesh, transform->pos, transform->size, &transform->mtx);
+				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 			}
 			else
 			{
 				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-				render_mesh(mesh->mesh, transform->pos, transform->size, &transform->mtx);
+				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 			}
 
 		}

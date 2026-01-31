@@ -14,6 +14,7 @@
     <ClCompile Include="source\cards\cardInteraction.cpp" />
     <ClCompile Include="source\ECS\Components.cpp" />
     <ClCompile Include="source\ECS\ECSystem.cpp" />
+    <ClCompile Include="source\system\inputSystem.cpp" />
     <ClCompile Include="source\level\level1.cpp" />
     <ClCompile Include="source\ECS\gameObject.cpp" />
     <ClCompile Include="source\level\GameState.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="source\cards\cardInteraction.h" />
     <ClInclude Include="source\ECS\Components.h" />
     <ClInclude Include="source\ECS\ECSystem.h" />
+    <ClInclude Include="source\system\inputSystem.h" />
     <ClInclude Include="source\level\level1.h" />
     <ClInclude Include="source\ECS\gameObject.h" />
     <ClInclude Include="source\level\GameState.h" />

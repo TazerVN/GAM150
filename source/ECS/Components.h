@@ -24,8 +24,11 @@ namespace Components
 		BLUDGEONING,
 		FIRE
 	};
+
+
 	struct Transform {
 		AEVec2 pos{ 0.f,0.f };
+		AEVec2 pos_onscreen{ 0.f,0.f };
 		AEVec2 size{0,0};
 		AEMtx33 mtx{};
 		float rotation{ 0.f };
@@ -52,6 +55,15 @@ namespace Components
 		f32 a;
 	};
 
+	struct Input{
+		public:
+		u8 type; //for AE internal input system check
+		bool hover;
+		void (*fp)();
+	};
+
+
+	//===========================CARDS=========================================
 	struct Attack {
 		f32 damage;
 		DamageType type;
@@ -66,7 +78,6 @@ namespace Components
 	{
 		std::array<size_t, MAX_HAND> card_storage = {};
 	};
-
 	
 
 }
