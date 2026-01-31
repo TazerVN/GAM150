@@ -25,11 +25,8 @@ RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
 TextureFactory::TextureFactory TF;
-<<<<<<< HEAD
 TBS::TurnBasedSystem TBSys;
-=======
 Grid::Grid2D grid2D;
->>>>>>> 6befec327674ac03239d7b5461178c71ffffe264
 
 MeshFactory mf{};
 CardInteraction::CardHand card{};
