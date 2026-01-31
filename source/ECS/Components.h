@@ -97,7 +97,13 @@ namespace Components
 	//===================Turn Based======================================
 	struct TurnBasedStats
 	{
-		f32 spd;
+		bool yielded = false;		// true = no more actions and granted turns until round ends
+
+		int  maxPoints = 0;			// per-round cap (set when entity created)
+		int  points = 0;			// current round points (reset at round start)
+
+		bool needsRedraw = false;	// set true at round start; card system consumes it later
 	};
+
 }
 #endif

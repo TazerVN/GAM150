@@ -9,6 +9,7 @@
 #include "../system/inputSystem.h"
 #include "../system/transformSystem.h"
 #include "../level/GameState.h"
+#include "../system/TurnBasedSystem.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
@@ -24,9 +25,27 @@ RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
 TextureFactory::TextureFactory TF;
+TBS::TurnBasedSystem TBSys;
 
 MeshFactory mf{};
 CardInteraction::CardHand card{};
+
+//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
+static Entity FindEntityByName(ECS::Registry& ecs, const char* name)
+{
+	ECS::ComponentStorage<Components::Name>* names = ecs.getComponentStorage<Components::Name>();
+	ECS::ComponentTypeID nID = ECS::getComponentTypeID<Components::Name>();
+
+	for (int i = 0; i < names->getCount(); ++i)
+	{
+		if (!ecs.getBitMask()[i].test(nID)) continue;
+		auto* nm = ecs.getComponent<Components::Name>(i);
+		if (nm && nm->value == name)
+			return (Entity)i;
+	}
+
+	return (Entity)NULL_INDEX;
+}
 
 
 void game_init()
@@ -43,6 +62,21 @@ void game_init()
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
 
 	level1.init(mf);
+
+	////START OF TURNBASED CODE
+	//auto& ecs = level1.getECS();
+
+	//// Change these strings to whatever you named them in scene init
+	//Entity player = FindEntityByName(ecs, "Player");
+	//Entity enemy = FindEntityByName(ecs, "Enemy");
+
+	//// Add if found
+	//TBSys.add_participant(ecs, player);
+	//TBSys.add_participant(ecs, enemy);
+	//TBSys.start(ecs);
+
+	////END
+
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
 
@@ -51,6 +85,7 @@ void game_init()
 	// Text to print
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
 }
+
 void game_update()
 {
 	AESysFrameStart();
@@ -102,6 +137,68 @@ void game_update()
 	level1.update();
 
 	IM.update(level1.getECS());
+
+	// ================= CONSOLE LOG of TBS =================
+	auto& ecs = level1.getECS();
+
+	if (!TBSys.active())
+	{
+		Entity player = FindEntityByName(ecs, "Player1");
+		Entity enemy = FindEntityByName(ecs, "Enemy1");
+
+		if (player != Entity{} && enemy != Entity{})
+		{
+			TBSys.add_participant(ecs, player);
+			TBSys.add_participant(ecs, enemy);
+
+			std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
+		}
+	}
+	
+	// ================= TURN-BASED HOTKEYS (TEMP) =================
+	static int once = 0;
+	if (once++ == 0)
+	{
+		std::cout << "[DBG] Hotkey section reached\n";
+		std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
+	}
+
+	// Check for TBS status
+	if (AEInputCheckTriggered(AEVK_O))
+	{
+		std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
+			<< " round=" << TBSys.round() << "\n";
+		TBSys.debug_print(ecs);
+	}
+
+	if (TBSys.active())
+	{
+
+		static int once = 0;
+		if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
+
+
+		// y = yield (no more turns this round)
+		if (AEInputCheckTriggered(AEVK_Y))
+		{
+			std::cout << "[hotkey] y = yield\n";
+			TBSys.yield_current();
+			TBSys.next(ecs);
+		}
+		// u = attack (consume turn)
+		else if (AEInputCheckTriggered(AEVK_U))
+		{
+			std::cout << "[hotkey] u = attack\n";
+			TBSys.next(ecs);
+		}
+		// i = move (consume turn)
+		else if (AEInputCheckTriggered(AEVK_I))
+		{
+			std::cout << "[hotkey] i = move\n";
+			TBSys.next(ecs);
+		}
+	}
+	// ============================================================
 
 	//==========Object updates===========
 
