@@ -25,6 +25,14 @@ namespace Components
 		FIRE
 	};
 
+	struct color
+	{
+		f32 r;
+		f32 g;
+		f32 b;
+		f32 a;
+	};
+
 
 	struct Transform {
 		AEVec2 pos{ 0.f,0.f };
@@ -49,17 +57,16 @@ namespace Components
 
 	struct Color
 	{
-		f32 r;
-		f32 g;
-		f32 b;
-		f32 a;
+		color c_color;
+		color p_color;
 	};
 
 	struct Input{
 		public:
 		u8 type; //for AE internal input system check
 		bool hover;
-		void (*fp)();
+		void (*fptype)();
+		void (*fphover)();
 	};
 
 

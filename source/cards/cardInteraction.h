@@ -9,7 +9,7 @@
 
 
 
-#define MAX_CARDS_HAND 7
+#define MAX_CARDS_HAND 10
 
 namespace CardInteraction
 {

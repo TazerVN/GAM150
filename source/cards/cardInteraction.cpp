@@ -21,7 +21,7 @@ namespace CardInteraction
 
 			f32 card_x = x + f32(i) / arr.size() * width * 2;
 			f32 card_y = y;
-			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 0, pTex);;
+			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, s8(i), pTex);;
 		}
 	}
 
@@ -43,9 +43,9 @@ namespace CardInteraction
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, 1 };
-		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input input{VK_RBUTTON, true, fun};
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
+		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f}};
+		Components::Input input{VK_RBUTTON, true, fun, fun};
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
@@ -59,10 +59,10 @@ namespace CardInteraction
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
-		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z};
+		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{pTex};
-		Components::Input input{AEVK_LBUTTON, true, fun };
+		Components::Input input{AEVK_LBUTTON, true, fun, fun };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);

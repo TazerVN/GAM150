@@ -5,6 +5,7 @@
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
 #include "../util/util.h"
+#include <vector>
 
 namespace InputSystem
 {

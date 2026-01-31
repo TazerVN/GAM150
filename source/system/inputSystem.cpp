@@ -19,6 +19,7 @@ namespace InputSystem
 
 			Components::Input* in = ecs.getComponent<Components::Input>(i);
 			Components::Transform* t = ecs.getComponent<Components::Transform>(i);
+			Components::Color* c = ecs.getComponent<Components::Color>(i);
 
 
 			if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size.x, t->size.y, f32(this->mousex), f32(this->mousey)))
@@ -28,14 +29,22 @@ namespace InputSystem
 					AEVec2Set(&t->pos_onscreen, f32(this->mousex),f32(this->mousey));
 					std::cout << "yay" ;
 				}
+				else if(AEInputCheckReleased(in->type)){
+					in->fptype();
+				}
 				else if (in->hover == true)
 				{
 					t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
+					c->p_color.a = 0.5f;
+					c->p_color.b = 0.5f;
+					in->fphover();
 				}
 			}
 			else
 			{
 				t->pos_onscreen = t->pos;
+				c->p_color.a = c->c_color.a;
+				c->p_color.b = c->c_color.b;
 			}
 
 

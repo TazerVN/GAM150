@@ -5,37 +5,64 @@
 #include "../system/transformSystem.h"
 #include "Grid.h"
 
-
+constexpr int BUFFER_CAPACITY = 1000;
 
 namespace RenderSystem
 {
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
-	//void bubbleSort(std::vector<RenderComponent*>& array, int size);
+	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer);
+
+	RenderSystem::RenderSystem(){
+		this->e_buffer.clear();
+		this->z_buffer.clear();
+		this->e_buffer.reserve(BUFFER_CAPACITY);
+		this->z_buffer.reserve(BUFFER_CAPACITY);
+	}
+
+
+
+	void RenderSystem::RenderSystem_init(ECS::Registry& ecs)
+	{
+
+		ECS::ComponentStorage<Components::Mesh>* mesh_com = ecs.getComponentStorage<Components::Mesh>();
+		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
+
+		for (int i = 0; i < mesh_com->getCount(); i++)
+		{
+
+			
+			if (!ecs.getBitMask()[i].test(meshID)) continue;
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(i);
+
+			this->e_buffer.push_back(i);
+			this->z_buffer.push_back(mesh->z);
+		}
+
+		bubbleSort(this->e_buffer, this->z_buffer);
+	}
 
 	void RenderSystem::RM_render(ECS::Registry& ecs)
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
-
-		ECS::ComponentStorage<Components::Transform>* transform_com = ecs.getComponentStorage<Components::Transform>();
 		ECS::ComponentStorage<Components::Mesh>* mesh_com = ecs.getComponentStorage<Components::Mesh>();
-		ECS::ComponentStorage<Components::Texture>* texture_com = ecs.getComponentStorage<Components::Texture>();
 
-
-
-		for (int i = 0; i < mesh_com->getCount(); i++)
+		for (int i = 0; i < this->e_buffer.size(); i++)
 		{
+
+			int current_e = this->e_buffer[i];
 
 			ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
 			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
 
-			if (!ecs.getBitMask()[i].test(meshID)) continue;
-			if (!ecs.getBitMask()[i].test(transID)) continue;
+			if (!ecs.getBitMask()[current_e].test(meshID)) continue;
+			if (!ecs.getBitMask()[current_e].test(transID)) continue;
 
 
-			Components::Transform* transform = ecs.getComponent<Components::Transform>(i);
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(i);
-			Components::Texture* texture = ecs.getComponent<Components::Texture>(i);
+			Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
+			Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
+			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
 
 
 			if (mesh->r_mode == TEXTURE)
@@ -45,12 +72,14 @@ namespace RenderSystem
 				AEGfxTextureSet(texture->texture, 0, 0);
 				AEGfxSetTransparency(1.0f);
 				AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-				AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
 				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 			}
 			else
 			{
 				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+				AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+				AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
 				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 			}
 
@@ -59,32 +88,37 @@ namespace RenderSystem
 
 
 
-/*void bubbleSort(std::vector<RenderComponent*>& array, int size)
-{
-
-	for (int step = 0; step < (size - 1); ++step)
+	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer)
 	{
 
-		int swapped = 0;
-
-		for (int i = 0; i < (size - step - 1); ++i)
+		for (int step = 0; step < (array.size() - 1); ++step)
 		{
 
-			if (array[i]->z > array[i + 1]->z)
+			int swapped = 0;
+
+			for (int i = 0; i < (array.size() - step - 1); ++i)
 			{
 
-				RenderComponent* temp = array[i];
-				array[i] = array[i + 1];
-				array[i + 1] = temp;
+				if (z_buffer[i] > z_buffer[i + 1])
+				{
 
-				swapped = 1;
+					Entity temp = array[i];
+					array[i] = array[i + 1];
+					array[i + 1] = temp;
+
+					s8 temp2 = z_buffer[i];
+					z_buffer[i] = z_buffer[i + 1];
+					z_buffer[i + 1] = temp2;
+
+
+					swapped = 1;
+				}
 			}
-		}
 
-		if (swapped == 0)
-			break;
+			if (swapped == 0)
+				break;
+		}
 	}
-}*/
 
 
 

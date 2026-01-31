@@ -2,6 +2,7 @@
 #include "AEEngine.h"
 #include "../rendering/Mesh_factory.h"
 #include "../rendering/renderSystem.h"
+#include "../rendering/TextureFactory.h"
 #include "../ECS/gameObject.h"
 #include "../ECS/Scene.h"
 #include "../cards/cardInteraction.h"
@@ -22,6 +23,7 @@ Scene level1;
 RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
+TextureFactory::TextureFactory TF;
 
 MeshFactory mf{};
 CardInteraction::CardHand card{};
@@ -31,18 +33,19 @@ void game_init()
 {
 //==========(Init)======================
 
-	f32 w_width = AEGfxGetWindowWidth();
-	f32 w_height = AEGfxGetWindowHeight();
+	s32 w_width = AEGfxGetWindowWidth();
+	s32 w_height = AEGfxGetWindowHeight();
 
 	mf.MeshFactoryInit();
+	TF.addTexture(AEGfxTextureLoad("../../Assets/cardSample.png"));
 
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
-	cardtext = AEGfxTextureLoad("../../Assets/cardSample.png");
 
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
-	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, cardtext);
+	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
 
+	RM.RenderSystem_init(level1.getECS());
 
 	// Text to print
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
@@ -118,6 +121,5 @@ void game_update()
 void game_exit()
 {
 	mf.MeshFree();
-	AEGfxTextureUnload(cardtext);
 	AEGfxDestroyFont(pFont);
 }
