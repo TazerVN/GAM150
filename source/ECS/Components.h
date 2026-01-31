@@ -81,11 +81,23 @@ namespace Components
 	struct HP {
 		f32 value;
 	};
-	struct Card_Storage
+	class Card_Storage
 	{
+	private:
+		size_t next_index = 0;
+	public:
+		size_t get_nextIndex()
+		{
+			if (next_index < card_storage.size()) return next_index++;
+			else return -1;
+		}
 		std::array<size_t, MAX_HAND> card_storage = {};
 	};
 	
-
+	//===================Turn Based======================================
+	struct TurnBasedStats
+	{
+		f32 spd;
+	};
 }
 #endif

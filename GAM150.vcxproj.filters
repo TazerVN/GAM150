@@ -70,6 +70,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\rendering\TextureFactory.cpp">
+    <ClCompile Include="source\system\TurnBasedSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,6 +133,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\rendering\TextureFactory.h">
+    <ClInclude Include="source\system\TurnBasedSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

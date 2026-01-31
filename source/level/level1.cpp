@@ -42,6 +42,7 @@ void game_init()
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
 
+	level1.init(mf);
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
 
@@ -55,52 +56,48 @@ void game_update()
 	AESysFrameStart();
 	//==============(Logic Update)==============
 
-
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
+	//f32 dt = (f32)AEFrameRateControllerGetFrameTime();
+
+	//int dx = 0, dy = 0;
+	//f32 spd = 250.0f;
+
+	//if (AEInputCheckCurr(AEVK_D))
+	//{
+	//	dx = 1;
+	//}
+	//if (AEInputCheckCurr(AEVK_A))
+	//{
+	//	dx = -1;
+	//}
+	//if (AEInputCheckCurr(AEVK_W))
+	//{
+	//	dy = 1;
+	//}
+	//if (AEInputCheckCurr(AEVK_S))
+	//{
+	//	dy = -1;
+	//}
 
 
-
-	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
-
-	int dx = 0, dy = 0;
-	f32 spd = 250.0f;
-
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		dx = 1;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		dx = -1;
-	}
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		dy = 1;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		dy = -1;
-	}
-
-
-	//if direction is pressed
-	if (dx != 0 || dy != 0)
-	{
-		AEVec2 dir;
-		AEVec2Set(&dir, (f32)dx, (f32)dy);
-		AEVec2Normalize(&dir, &dir);
-		if (dir.x != 0)
-		{
-			camerax += dir.x * spd * dt;
-		}
-		if (dir.y != 0)
-		{
-			cameray += dir.y * spd * dt;
-		}
-		//card.update_pos(ecs, TS, camerax, cameray);
-		AEGfxSetCamPosition(camerax, cameray);
-	}
+	////if direction is pressed
+	//if (dx != 0 || dy != 0)
+	//{
+	//	AEVec2 dir;
+	//	AEVec2Set(&dir, (f32)dx, (f32)dy);
+	//	AEVec2Normalize(&dir, &dir);
+	//	if (dir.x != 0)
+	//	{
+	//		camerax += dir.x * spd * dt;
+	//	}
+	//	if (dir.y != 0)
+	//	{
+	//		cameray += dir.y * spd * dt;
+	//	}
+	//	//card.update_pos(ecs, TS, camerax, cameray);
+	//	AEGfxSetCamPosition(camerax, cameray);
+	//}
 
 	IM.update(level1.getECS());
 
