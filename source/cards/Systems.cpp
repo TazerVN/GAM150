@@ -1,4 +1,5 @@
 #include "../ECS/ECSystem.h"
+#include "../rendering/Mesh_factory.h"
 #include "AEEngine.h"
 
 #include "Systems.h"
@@ -26,16 +27,23 @@ namespace System {
 
 	}
 
-	Entity create_player(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 hp)
+	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name , f32 hp)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Name nm{ name };
-		Components::Transform trans{ {x,y},0.0f };
+		Components::Transform trans{ pos,pos,size,0.f };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-		ecs.addComponent(id, HP);
+
+		Components::Mesh mesh{ mf.MeshGet(MESH_CIRCLE), COLOR, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ 1.0f, 1.0f, 0.0f ,1.0f };
+
 		ecs.addComponent(id, nm);
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, HP);
 		ecs.addComponent(id, card_storage);
 
 		return id;
@@ -62,10 +70,11 @@ namespace System {
 		//if user dont have card storage return
 		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
 
+		//std::array<Entity, MAX_HAND>& user_storage = ecs.getComponent<Components::Card_Storage>(user)->card_storage;
 		//get reference to the user's card_storae
-		std::array<Entity, MAX_HAND>& user_storage = ecs.getComponent<Components::Card_Storage>(user)->card_storage;
-		
-		user_storage[0] = cardID;
+		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
+		size_t index = user_cards->get_nextIndex();
+		user_cards->card_storage[index] = cardID;
 	}
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 

@@ -11,7 +11,7 @@ private:
 	Entity playerID{NULL_INDEX};
 	Entity enemyID{NULL_INDEX};
 public:
-	void init();
+	void init(MeshFactory& mf);
 	Entity& getPlayerID();
 	Entity& getEnemyID();
 	ECS::Registry& getECS();
