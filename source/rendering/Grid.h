@@ -1,7 +1,8 @@
 #pragma once
 #include "AEEngine.h"
-#include "renderSystem.h"
 #include "../ECS/ECSystem.h"
+#include "../rendering/Mesh_factory.h"
+#include "../rendering/TextureFactory.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 
 #include <vector>
@@ -12,12 +13,23 @@
 #define CELL_WIDTH 128
 #define CELL_HEIGHT 128
 
-#define MAX_I 16
-#define MAX_J 16
+#define MAX_I 5
+#define MAX_J 5
 
 
 namespace Grid
 {
+	class Grid2D 
+	{
+	private:
+		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
+		//=============Data for A* Star====================
+		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
+
+		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s8 z);
+	public:
+		void init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex);
+	};
 
 	class Grid
 	{
@@ -42,14 +54,15 @@ namespace Grid
 		uint8_t walkable[MAX_I * MAX_J]{};
 
 		private:
-		bool PickCellNearest(float worldX, float worldY, int& outI, int& outJ) const;
-
+		//zejin this is ur old A star code
+		/*bool PickCellNearest(float worldX, float worldY, int& outI, int& outJ) const;
 		void RebuildWalkable();
 		void ComputePath();
 		void ResetColors();
 		void PaintStartGoalPath();
-		void ToggleBlocked(int i, int j);
+		void ToggleBlocked(int i, int j);*/
 	};
+
 }
 
 //void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);

@@ -1,3 +1,4 @@
+#pragma once
 #include "AEEngine.h"
 #include "vector"
 

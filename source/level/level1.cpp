@@ -25,7 +25,11 @@ RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
 TextureFactory::TextureFactory TF;
+<<<<<<< HEAD
 TBS::TurnBasedSystem TBSys;
+=======
+Grid::Grid2D grid2D;
+>>>>>>> 6befec327674ac03239d7b5461178c71ffffe264
 
 MeshFactory mf{};
 CardInteraction::CardHand card{};
@@ -57,6 +61,7 @@ void game_init()
 
 	mf.MeshFactoryInit();
 	TF.addTexture(AEGfxTextureLoad("../../Assets/cardSample.png"));
+	TF.addTexture(AEGfxTextureLoad("../../Assets/floor_01.png"));
 
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
@@ -80,6 +85,8 @@ void game_init()
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
 
+	grid2D.init(level1.getECS(),mf,TF.getTexture(1));
+
 	RM.RenderSystem_init(level1.getECS());
 
 	// Text to print
@@ -93,46 +100,46 @@ void game_update()
 
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
-	//f32 dt = (f32)AEFrameRateControllerGetFrameTime();
+	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 
-	//int dx = 0, dy = 0;
-	//f32 spd = 250.0f;
+	int dx = 0, dy = 0;
+	f32 spd = 250.0f;
 
-	//if (AEInputCheckCurr(AEVK_D))
-	//{
-	//	dx = 1;
-	//}
-	//if (AEInputCheckCurr(AEVK_A))
-	//{
-	//	dx = -1;
-	//}
-	//if (AEInputCheckCurr(AEVK_W))
-	//{
-	//	dy = 1;
-	//}
-	//if (AEInputCheckCurr(AEVK_S))
-	//{
-	//	dy = -1;
-	//}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		dx = 1;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		dx = -1;
+	}
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		dy = 1;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		dy = -1;
+	}
 
 
-	////if direction is pressed
-	//if (dx != 0 || dy != 0)
-	//{
-	//	AEVec2 dir;
-	//	AEVec2Set(&dir, (f32)dx, (f32)dy);
-	//	AEVec2Normalize(&dir, &dir);
-	//	if (dir.x != 0)
-	//	{
-	//		camerax += dir.x * spd * dt;
-	//	}
-	//	if (dir.y != 0)
-	//	{
-	//		cameray += dir.y * spd * dt;
-	//	}
-	//	//card.update_pos(ecs, TS, camerax, cameray);
-	//	AEGfxSetCamPosition(camerax, cameray);
-	//}
+	//if direction is pressed
+	if (dx != 0 || dy != 0)
+	{
+		AEVec2 dir;
+		AEVec2Set(&dir, (f32)dx, (f32)dy);
+		AEVec2Normalize(&dir, &dir);
+		if (dir.x != 0)
+		{
+			camerax += dir.x * spd * dt;
+		}
+		if (dir.y != 0)
+		{
+			cameray += dir.y * spd * dt;
+		}
+		//card.update_pos(ecs, TS, camerax, cameray);
+		AEGfxSetCamPosition(camerax, cameray);
+	}
 
 	level1.update();
 
