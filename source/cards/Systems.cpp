@@ -38,6 +38,7 @@ namespace System {
 		Components::TurnBasedStats tbs;
 		//=====================Render==========================
 		Components::Transform trans{ pos,pos,size,0.f };
+		//twan help me add more mesh
 		Components::Mesh mesh{ mf.MeshGet(MESH_CIRCLE), COLOR, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 0.0f ,1.0f };
 
@@ -75,7 +76,7 @@ namespace System {
 		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
 
 		//std::array<Entity, MAX_HAND>& user_storage = ecs.getComponent<Components::Card_Storage>(user)->card_storage;
-		//get reference to the user's card_storae
+		//get reference to the user's card_storage
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		size_t index = user_cards->get_nextIndex();
 		user_cards->card_storage[index] = cardID;
@@ -83,8 +84,8 @@ namespace System {
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING));
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE));
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING));	//0
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE));			//1
 	};
 	Entity& CardSystem::get_card(int index) 
 	{

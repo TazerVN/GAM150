@@ -99,6 +99,8 @@ void game_update()
 	//	AEGfxSetCamPosition(camerax, cameray);
 	//}
 
+	level1.update();
+
 	IM.update(level1.getECS());
 
 	//==========Object updates===========
@@ -118,5 +120,6 @@ void game_update()
 void game_exit()
 {
 	mf.MeshFree();
+	AEGfxTextureUnload(cardtext);
 	AEGfxDestroyFont(pFont);
 }
