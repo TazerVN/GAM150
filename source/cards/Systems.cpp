@@ -31,20 +31,24 @@ namespace System {
 	{
 		Entity id = ecs.createEntity();
 		//default player values
+		//=====================Stats==========================
 		Components::Name nm{ name };
-		Components::Transform trans{ pos,pos,size,0.f };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-
+		Components::TurnBasedStats tbs;
+		//=====================Render==========================
+		Components::Transform trans{ pos,pos,size,0.f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_CIRCLE), COLOR, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 0.0f ,1.0f };
 
 		ecs.addComponent(id, nm);
+		ecs.addComponent(id, HP);
+		ecs.addComponent(id, card_storage);
+		ecs.addComponent(id, tbs);
+
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
-		ecs.addComponent(id, HP);
-		ecs.addComponent(id, card_storage);
 
 		return id;
 	}

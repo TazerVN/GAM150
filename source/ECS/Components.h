@@ -87,6 +87,10 @@ namespace Components
 		std::array<size_t, MAX_HAND> card_storage = {};
 	};
 	
-
+	//===================Turn Based======================================
+	struct TurnBasedStats
+	{
+		f32 spd;
+	};
 }
 #endif
