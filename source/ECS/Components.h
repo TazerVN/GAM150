@@ -7,8 +7,10 @@
 #include "AEEngine.h"
 #include <array>
 #include <string>
+#include <functional>
 
 #include "../rendering/Mesh_factory.h"
+
 
 #define MAX_CARDS 1000
 #define MAX_COMPONENT 20
@@ -34,12 +36,17 @@ namespace Components
 		f32 a;
 	};
 
+	struct GridCell{
+		s32 x,y;
+	};
+
 
 	struct Transform
 	{
 		AEVec2 pos{ 0.f,0.f };
 		AEVec2 pos_onscreen{ 0.f,0.f };
 		AEVec2 size{ 0,0 };
+		AEVec2 size_col{ 0,0 };
 		AEMtx33 mtx{};
 		float rotation{ 0.f };
 	};
@@ -67,7 +74,7 @@ namespace Components
 	{
 		u8 type; //for AE internal input system check
 		bool hover;
-		void (*fptype)();
+		std::function<void()> onclick;
 		void (*fphover)();
 	};
 

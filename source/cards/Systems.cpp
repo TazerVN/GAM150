@@ -27,7 +27,7 @@ namespace System {
 
 	}
 
-	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name , f32 hp)
+	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name , f32 hp, AEGfxTexture* pTex)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -37,9 +37,10 @@ namespace System {
 		Components::HP HP{ hp };
 		Components::TurnBasedStats tbs;
 		//=====================Render==========================
-		Components::Transform trans{ pos,pos,size,0.f };
+		Components::Texture texture{pTex};
+		Components::Transform trans{ pos,pos,size, size,0.f };
 		//twan help me add more mesh
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, 1 };
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ { 1.0f, 1.0f, 1.0f ,1.0f }, { 1.0f, 1.0f, 1.0f ,1.0f } };
 
 		ecs.addComponent(id, nm);
@@ -50,6 +51,7 @@ namespace System {
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
+		ecs.addComponent(id, texture);
 
 		return id;
 	}
@@ -59,7 +61,6 @@ namespace System {
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Name nm{ name };
-		Components::Transform trans{ {x,y},{x,y},{10,10}, 0.0f };
 		Components::Card_Storage card_storage;
 		Components::Attack attack{ atk, dtype};
 		ecs.addComponent(id, attack);

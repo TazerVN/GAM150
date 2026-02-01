@@ -19,16 +19,23 @@
 
 namespace Grid
 {
-	class Grid2D 
+	class Grid2D
 	{
-	private:
+		private:
+			//=============Render====================
+		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
 		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
+		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
+		std::array<std::array<bool, MAX_J>, MAX_I> activate;
 
-		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s8 z);
-	public:
-		void init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex);
+		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
+		public:
+		void init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex, f32 ox, f32 oy);
+		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
+		void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
+		void update(ECS::Registry& ecs);
 	};
 
 	class Grid

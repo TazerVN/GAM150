@@ -9,6 +9,7 @@ namespace TextureFactory
 		private:
 		std::vector<AEGfxTexture*> data;
 		public:
+		void textureInit();
 		TextureFactory();
 		~TextureFactory();
 		AEGfxTexture* getTexture(s8 id);

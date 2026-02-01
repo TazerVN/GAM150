@@ -2,6 +2,7 @@
 #include "../ECS/ECSystem.h"
 #include "../cards/Systems.h"
 #include "../system/TurnBasedSystem.h"
+#include "../rendering/TextureFactory.h"
 #include "AEEngine.h"
 
 class Scene
@@ -14,7 +15,7 @@ private:
 	TBS::TurnBasedSystem tbs;
 
 public:
-	void init(MeshFactory& mf);
+	void init(MeshFactory& mf, TextureFactory::TextureFactory& tf);
 	void update();
 	Entity& getPlayerID();
 	Entity& getEnemyID();

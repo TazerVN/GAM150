@@ -1,12 +1,12 @@
 #include "Scene.h"
 
-void Scene::init(MeshFactory& mf)
+void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 {
 	card_system.init_cards(ecs);
-	playerID = System::create_player(ecs, mf, { 0.f,0.f }, { 10.0f,10.0f }, "Player1", 100.f);
+	playerID = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
 	//add cards to the player
 	System::add_card_player(ecs, playerID, card_system.get_card(0));
-	enemyID = System::create_player(ecs, mf, { 100.f,0.f }, { 20.0f,20.0f }, "Enemy1", 100.f);
+	enemyID = System::create_player(ecs, mf, { 100.f,0.f }, { 192.0f,192.0f }, "Enemy1", 100.f, tf.getTexture(3));
 }
 
 void Scene::update()

@@ -57,8 +57,7 @@ void game_init()
 	s32 w_height = AEGfxGetWindowHeight();
 
 	mf.MeshFactoryInit();
-	TF.addTexture(AEGfxTextureLoad("../../Assets/cardSample.png"));
-	TF.addTexture(AEGfxTextureLoad("../../Assets/floor_01.png"));
+	TF.textureInit();
 
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
@@ -79,9 +78,11 @@ void game_init()
 	////END
 
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
-	scene.init(mf);	
+	scene.init(mf, TF);	
 	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
-	grid2D.init(scene.getECS(),mf,TF.getTexture(1));
+	grid2D.init(scene.getECS(),mf,TF.getTexture(1), 0, w_height/3);
+	grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
+	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);
 
 
 	RM.RenderSystem_init(scene.getECS());
@@ -128,11 +129,11 @@ void game_update()
 		AEVec2Normalize(&dir, &dir);
 		if (dir.x != 0)
 		{
-			camerax += dir.x * spd * dt;
+			//camerax += dir.x * spd * dt;
 		}
 		if (dir.y != 0)
 		{
-			cameray += dir.y * spd * dt;
+			//cameray += dir.y * spd * dt;
 		}
 
 		AEGfxSetCamPosition(camerax, cameray);
@@ -213,7 +214,7 @@ void game_update()
 	//========(Render)====================
 
 
-
+	grid2D.update(scene.getECS());
 	RM.RM_render(scene.getECS());
 	AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();

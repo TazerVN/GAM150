@@ -7,11 +7,12 @@
 namespace CardInteraction
 {
 	void fun();//forward declaration for testing
+	void fu(Entity e);//forward declaration for testing
 
 	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
 	{
 		Entity hand_id = ecs.createEntity();
-		Components::Transform trans{ {x,y},{x,y},{width, height},0.0f };
+		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 
 		ecs.addComponent(hand_id, trans);
 
@@ -41,7 +42,7 @@ namespace CardInteraction
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f}};
 		Components::Input input{AEVK_RBUTTON, true, fun, fun};
@@ -57,7 +58,7 @@ namespace CardInteraction
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3*width/4, height},0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z};
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{pTex};
@@ -72,6 +73,9 @@ namespace CardInteraction
 	}
 
 	void fun(){
-		std::cout << "FUN!" << std::endl;
+	}
+
+	void fu(Entity e)
+	{
 	}
 }

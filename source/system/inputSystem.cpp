@@ -22,15 +22,15 @@ namespace InputSystem
 			Components::Color* c = ecs.getComponent<Components::Color>(i);
 
 
-			if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size.x, t->size.y, f32(this->mousex), f32(this->mousey)))
+			if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey)))
 			{
 				if (AEInputCheckCurr(in->type))
 				{
-					AEVec2Set(&t->pos_onscreen, f32(this->mousex),f32(this->mousey));
-					std::cout << "yay";
+					//AEVec2Set(&t->pos_onscreen, f32(this->mousex),f32(this->mousey));
+					//std::cout << "yay";
 				}
 				else if(AEInputCheckReleased(in->type)){
-					in->fptype();
+					in->onclick();
 				}
 				else if (in->hover == true)
 				{

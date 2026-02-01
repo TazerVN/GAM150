@@ -227,43 +227,126 @@ namespace Grid
 			}
 		}
 	}*/
-	void function(){
+	void func(Entity E)
+	{
+
 	}
 
-	Entity Grid2D::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s8 z)
+	void function()
+	{
+	}
+
+
+
+	Entity Grid2D::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
 
-		Components::Transform trans{ pos, pos, size, 0.0f };
+		Components::Transform trans{ pos, pos, size, {size.x / 2, size.y / 2}, 0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
-		Components::Input input{ AEVK_LBUTTON, true, function,function};
+		Components::Input input{ AEVK_LBUTTON, true, function,function };
+		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, input);
+		ecs.addComponent(id, gc);
 
 		return id;
 	}
-	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex)
+	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
-		f32 og_x = 0;
-		f32 og_y = AEGfxGetWindowHeight()/4;
+		this->offset.x = ox;
+		this->offset.y = oy;
 		s8 zbuffer = 0;
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
 			{
-				f32 x = og_x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
-				f32 y = og_y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
+				f32 x = this->offset.x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
+				f32 y = this->offset.y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
 
 
 				//twan you might want to look at this for grid transform i'll put 0.f for size
-				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, 0);
+				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
+				this->pos[i][j] = -1;
+			}
+		}
+	}
+
+	void Grid2D::placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	{
+		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
+		this->pos[x][y] = e;
+
+		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		if (!ecs.getBitMask()[e].test(transID)) return;
+
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
+		transform->pos.y = transform->size.y / 2 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
+		transform->pos_onscreen = transform->pos;
+
+
+		Entity current_cell = this->cells[x][y];
+		ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		if (!ecs.getBitMask()[current_cell].test(colorID)) return;
+
+		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
+		color->p_color.g = 0.5f;
+		color->p_color.r = 0.5f;
+	}
+
+	void Grid2D::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	{
+		bool isHere = false;
+		for (int i = 0; i < MAX_I; ++i)
+		{
+			for (int j = 0; j < MAX_J; ++j)
+			{
+				if(this->pos[i][j] == e){
+					this->pos[i][j] = -1;
+					isHere = true;
+				}
+			}
+		}
+
+		if(isHere == false) return;
+
+		this->pos[x][y] = e;
+	}
+
+	void Grid2D::update(ECS::Registry& ecs)
+	{
+
+		for (int i = 0; i < MAX_I; ++i)
+		{
+			for (int j = 0; j < MAX_J; ++j)
+			{
+				if (this->pos[i][j] = -1) continue;
+				Entity e = this->pos[i][j];
+
+				ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+				if (!ecs.getBitMask()[e].test(transID)) return;
+
+				Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+				transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
+				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
+				transform->pos_onscreen = transform->pos;
+
+
+				Entity current_cell = this->cells[i][j];
+				ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
+
+				Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
+				color->p_color.g = 0.5f;
+				color->p_color.r = 0.5f;
 			}
 		}
 	}
