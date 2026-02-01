@@ -18,7 +18,8 @@ constexpr size_t MAX_HAND = 6;
 
 namespace Components
 {
-	enum DamageType {
+	enum DamageType
+	{
 		SLASHING,
 		PIERCING,
 		BLUDGEONING,
@@ -34,10 +35,11 @@ namespace Components
 	};
 
 
-	struct Transform {
+	struct Transform
+	{
 		AEVec2 pos{ 0.f,0.f };
 		AEVec2 pos_onscreen{ 0.f,0.f };
-		AEVec2 size{0,0};
+		AEVec2 size{ 0,0 };
 		AEMtx33 mtx{};
 		float rotation{ 0.f };
 	};
@@ -61,8 +63,8 @@ namespace Components
 		color p_color;
 	};
 
-	struct Input{
-		public:
+	struct Input
+	{
 		u8 type; //for AE internal input system check
 		bool hover;
 		void (*fptype)();
@@ -71,21 +73,24 @@ namespace Components
 
 
 	//===========================CARDS=========================================
-	struct Attack {
+	struct Attack
+	{
 		f32 damage;
 		DamageType type;
 	};
-	struct Name {
+	struct Name
+	{
 		std::string value;
 	};
-	struct HP {
+	struct HP
+	{
 		f32 value;
 	};
 	class Card_Storage
 	{
-	private:
+		private:
 		size_t next_index = 0;
-	public:
+		public:
 		size_t get_nextIndex()
 		{
 			if (next_index < card_storage.size()) return next_index++;
@@ -93,7 +98,7 @@ namespace Components
 		}
 		std::array<size_t, MAX_HAND> card_storage = {};
 	};
-	
+
 	//===================Turn Based======================================
 	struct TurnBasedStats
 	{

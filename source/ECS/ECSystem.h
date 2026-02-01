@@ -91,6 +91,10 @@ namespace ECS
 			return entitySignatures;
 		}
 
+		size_t sizeEntity(){
+			return nextEntity;
+		}
+
 		Entity createEntity()
 		{
 			Entity e = nextEntity++;

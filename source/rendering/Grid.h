@@ -13,8 +13,8 @@
 #define CELL_WIDTH 128
 #define CELL_HEIGHT 128
 
-#define MAX_I 5
-#define MAX_J 5
+#define MAX_I 10
+#define MAX_J 10
 
 
 namespace Grid

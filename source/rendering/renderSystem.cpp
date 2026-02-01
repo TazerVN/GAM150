@@ -5,7 +5,7 @@
 #include "../system/transformSystem.h"
 #include "Grid.h"
 
-constexpr int BUFFER_CAPACITY = 1000;
+constexpr int BUFFER_CAPACITY = 100;
 
 namespace RenderSystem
 {
@@ -27,7 +27,7 @@ namespace RenderSystem
 		ECS::ComponentStorage<Components::Mesh>* mesh_com = ecs.getComponentStorage<Components::Mesh>();
 		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
 
-		for (int i = 0; i < mesh_com->getCount(); i++)
+		for (int i = 0; i < ecs.sizeEntity(); i++)
 		{
 
 			
@@ -45,12 +45,13 @@ namespace RenderSystem
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
-		ECS::ComponentStorage<Components::Mesh>* mesh_com = ecs.getComponentStorage<Components::Mesh>();
 
 		for (int i = 0; i < this->e_buffer.size(); i++)
 		{
 
 			int current_e = this->e_buffer[i];
+			//int current_e = i;
+			
 
 			ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
 			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();

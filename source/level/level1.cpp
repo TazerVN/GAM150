@@ -19,16 +19,16 @@ AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 f32 w, h;
 
-Scene level1;
+MeshFactory mf{};
+Scene scene;
 
-RenderSystem::RenderSystem RM;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
 TextureFactory::TextureFactory TF;
 TBS::TurnBasedSystem TBSys;
 Grid::Grid2D grid2D;
+RenderSystem::RenderSystem RM;
 
-MeshFactory mf{};
 CardInteraction::CardHand card{};
 
 //TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
@@ -63,7 +63,6 @@ void game_init()
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
 
-	level1.init(mf);
 
 	////START OF TURNBASED CODE
 	//auto& ecs = level1.getECS();
@@ -80,11 +79,12 @@ void game_init()
 	////END
 
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
-	card = CardInteraction::CardHand(level1.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
+	scene.init(mf);	
+	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
+	grid2D.init(scene.getECS(),mf,TF.getTexture(1));
 
-	grid2D.init(level1.getECS(),mf,TF.getTexture(1));
 
-	RM.RenderSystem_init(level1.getECS());
+	RM.RenderSystem_init(scene.getECS());
 
 	// Text to print
 	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
@@ -134,16 +134,16 @@ void game_update()
 		{
 			cameray += dir.y * spd * dt;
 		}
-		//card.update_pos(ecs, TS, camerax, cameray);
+
 		AEGfxSetCamPosition(camerax, cameray);
 	}
 
-	level1.update();
+	scene.update();
 
-	IM.update(level1.getECS());
+	IM.update(scene.getECS());
 
 	// ================= CONSOLE LOG of TBS =================
-	auto& ecs = level1.getECS();
+	auto& ecs = scene.getECS();
 
 	if (!TBSys.active())
 	{
@@ -202,7 +202,7 @@ void game_update()
 			TBSys.next(ecs);
 		}
 	}
-	// ============================================================
+	 //============================================================
 
 	//==========Object updates===========
 
@@ -214,13 +214,12 @@ void game_update()
 
 
 
-	RM.RM_render(level1.getECS());
+	RM.RM_render(scene.getECS());
 	AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
 }
 void game_exit()
 {
 	mf.MeshFree();
-	AEGfxTextureUnload(cardtext);
 	AEGfxDestroyFont(pFont);
 }

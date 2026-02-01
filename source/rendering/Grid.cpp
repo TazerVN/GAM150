@@ -227,6 +227,9 @@ namespace Grid
 			}
 		}
 	}*/
+	void function(){
+	}
+
 	Entity Grid2D::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s8 z)
 	{
 		Entity id = ecs.createEntity();
@@ -235,31 +238,37 @@ namespace Grid
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
+		Components::Input input{ AEVK_LBUTTON, true, function,function};
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
+		ecs.addComponent(id, input);
 
 		return id;
 	}
 	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex)
 	{
 		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
+		f32 og_x = 0;
+		f32 og_y = AEGfxGetWindowHeight()/4;
 		s8 zbuffer = 0;
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
 			{
-				f32 x = i * ((float)CELL_WIDTH /*+ offset*//*if offset is required*/);
-				f32 y = j * ((float)CELL_HEIGHT /*+ offset*//*if offset is required*/);
+				f32 x = og_x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
+				f32 y = og_y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
+
 
 				//twan you might want to look at this for grid transform i'll put 0.f for size
-				cells[i][j] = create_cells(ecs, mf, { x,y }, { 100.f,100.f }, 0.f, pTex, zbuffer++);
+				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, 0);
 			}
 		}
 	}
 }
+
 
 
 //void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])

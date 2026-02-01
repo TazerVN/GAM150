@@ -1,11 +1,11 @@
-
-#ifndef CARD_H
-#define CARD_H
 #include "../ECS/gameObject.h"
 #include "../ECS/ECSystem.h"
 #include "../system/transformSystem.h"
 #include "AEEngine.h"
 #include "array"
+
+#ifndef CARD_H
+#define CARD_H
 
 
 

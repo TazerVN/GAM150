@@ -1,6 +1,6 @@
 #include "../cards/cardInteraction.h"
-#include "../ECS/ECSystem.h"
 #include "../system/transformSystem.h"
+#include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "AEEngine.h"
 
@@ -11,17 +11,16 @@ namespace CardInteraction
 	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
 	{
 		Entity hand_id = ecs.createEntity();
-		Components::Transform trans{ {x,y},{width, height},0.0f };
+		Components::Transform trans{ {x,y},{x,y},{width, height},0.0f };
 
 		ecs.addComponent(hand_id, trans);
 
-		Components::Transform p_transform{ x, y, width, height, 0 };
-		for (s8 i = 0; i < this->arr.size(); i++)
+		for (s8 i = 0; i < MAX_CARDS_HAND; i++)
 		{
 
 			f32 card_x = x + f32(i) / arr.size() * width * 2;
 			f32 card_y = y;
-			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, s8(i), pTex);;
+			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
 		}
 	}
 
@@ -45,7 +44,7 @@ namespace CardInteraction
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height},0.0f };
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f}};
-		Components::Input input{VK_RBUTTON, true, fun, fun};
+		Components::Input input{AEVK_RBUTTON, true, fun, fun};
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);

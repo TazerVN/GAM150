@@ -4,18 +4,18 @@ namespace InputSystem
 	void InputManager::update(ECS::Registry& ecs)
 	{
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
-		this->mousex -= f32(AEGfxGetWindowWidth()) * 0.5f;
+
+		this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
 		this->mousey = -this->mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
 
-		ECS::ComponentStorage<Components::Input>* i_com = ecs.getComponentStorage<Components::Input>();
-
-		for (int i = 0; i < i_com->getCount(); i++)
+		for (int i = 0; i < ecs.sizeEntity(); i++)
 		{
 
 			ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
 			ECS::ComponentTypeID tID = ECS::getComponentTypeID<Components::Transform>();
-			if (!ecs.getBitMask()[i].test(iID)) continue;
+
 			if (!ecs.getBitMask()[i].test(tID)) continue;
+			if (!ecs.getBitMask()[i].test(iID)) continue;
 
 			Components::Input* in = ecs.getComponent<Components::Input>(i);
 			Components::Transform* t = ecs.getComponent<Components::Transform>(i);
@@ -27,14 +27,14 @@ namespace InputSystem
 				if (AEInputCheckCurr(in->type))
 				{
 					AEVec2Set(&t->pos_onscreen, f32(this->mousex),f32(this->mousey));
-					std::cout << "yay" ;
+					std::cout << "yay";
 				}
 				else if(AEInputCheckReleased(in->type)){
 					in->fptype();
 				}
 				else if (in->hover == true)
 				{
-					t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
+					//t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
 					c->p_color.a = 0.5f;
 					c->p_color.b = 0.5f;
 					in->fphover();

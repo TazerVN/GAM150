@@ -39,8 +39,8 @@ namespace System {
 		//=====================Render==========================
 		Components::Transform trans{ pos,pos,size,0.f };
 		//twan help me add more mesh
-		Components::Mesh mesh{ mf.MeshGet(MESH_CIRCLE), COLOR, MESH_RECTANGLE_CENTER, 1 };
-		Components::Color color{ 1.0f, 1.0f, 0.0f ,1.0f };
+		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ { 1.0f, 1.0f, 1.0f ,1.0f }, { 1.0f, 1.0f, 1.0f ,1.0f } };
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -59,7 +59,7 @@ namespace System {
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Name nm{ name };
-		Components::Transform trans{ {x,y},0.0f };
+		Components::Transform trans{ {x,y},{x,y},{10,10}, 0.0f };
 		Components::Card_Storage card_storage;
 		Components::Attack attack{ atk, dtype};
 		ecs.addComponent(id, attack);
