@@ -14,9 +14,8 @@ namespace TBS
 		size_t cur_round{0};
 
 		// Actors on Borad
-		size_t index{0};
 		std::vector<Entity> participants;
-
+		std::vector<size_t> participant_hand{0};
 		enum class GM : uint8_t { Player = 0, Enemy = 1 };
 
 		// Game Master Turn and Yield States
@@ -36,6 +35,7 @@ namespace TBS
 		void round_start(ECS::Registry& ecs);
 	public:
 		//===========Set Ups============================
+		size_t index{ 0 };
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void start(ECS::Registry& ecs);
 
@@ -44,6 +44,7 @@ namespace TBS
 		void end();
 
 		bool active();
+		std::vector<size_t>& hand();
 		size_t round();
 
 		//============Yield / Turn Control=============
@@ -53,20 +54,7 @@ namespace TBS
 
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
-		void play_card(ECS::Registry& ecs,Entity cardID)
-		{
-			Entity target = NULL_INDEX;
-			if (current_gm == GM::Player)
-				target = participants[(size_t)GM::Enemy];
-			else target = participants[(size_t)GM::Player];
-
-			if (target != NULL_INDEX)
-			{
-				std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(current_gm)])->value <<
-					" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
-				System::Call_AttackSystem(ecs, cardID, target);
-			}
-		}
+		void play_card(ECS::Registry& ecs, Entity cardID);
 		//===============Update=====================
 	};
 }

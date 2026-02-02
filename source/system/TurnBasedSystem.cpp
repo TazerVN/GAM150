@@ -49,6 +49,7 @@ namespace TBS
 			return;
 		}
 		participants.push_back(parti);
+		participant_hand.push_back(0);
 
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	
@@ -181,6 +182,11 @@ namespace TBS
 		return is_active;
 	}
 
+	std::vector<size_t>& TurnBasedSystem::hand()
+	{
+		return participant_hand;
+	}
+
 	size_t TurnBasedSystem::round()
 	{
 		return cur_round;
@@ -192,6 +198,20 @@ namespace TBS
 		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
 
 		return player_storage->card_storage[chIndex];
+	}
+	void TurnBasedSystem::play_card(ECS::Registry& ecs, Entity cardID)
+	{
+		Entity target = NULL_INDEX;
+		if (current_gm == GM::Player)
+			target = participants[(size_t)GM::Enemy];
+		else target = participants[(size_t)GM::Player];
+
+		if (target != NULL_INDEX)
+		{
+			std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(current_gm)])->value <<
+				" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
+			System::Call_AttackSystem(ecs, cardID, target);
+		}
 	}
 
 	//DEBUG PRINT
