@@ -103,7 +103,7 @@ void game_update()
 		leaveGameState();
 	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 
-	int dx = 0, dy = 0;
+	/*int dx = 0, dy = 0;
 	f32 spd = 250.0f;
 
 	if (AEInputCheckCurr(AEVK_D))
@@ -121,94 +121,103 @@ void game_update()
 	if (AEInputCheckCurr(AEVK_S))
 	{
 		dy = -1;
-	}
+	}*/
 
 
 	//if direction is pressed
-	if (dx != 0 || dy != 0)
-	{
-		AEVec2 dir;
-		AEVec2Set(&dir, (f32)dx, (f32)dy);
-		AEVec2Normalize(&dir, &dir);
-		if (dir.x != 0)
-		{
-			//camerax += dir.x * spd * dt;
-		}
-		if (dir.y != 0)
-		{
-			//cameray += dir.y * spd * dt;
-		}
+	//if (dx != 0 || dy != 0)
+	//{
+	//	AEVec2 dir;
+	//	AEVec2Set(&dir, (f32)dx, (f32)dy);
+	//	AEVec2Normalize(&dir, &dir);
+	//	if (dir.x != 0)
+	//	{
+	//		//camerax += dir.x * spd * dt;
+	//	}
+	//	if (dir.y != 0)
+	//	{
+	//		//cameray += dir.y * spd * dt;
+	//	}
 
-		AEGfxSetCamPosition(camerax, cameray);
-	}
+	//	AEGfxSetCamPosition(camerax, cameray);
+	//}
 
 	scene.update();
 
 	IM.update(scene.getECS());
 
 	// ================= CONSOLE LOG of TBS =================
-	//auto& ecs = scene.getECS();
+	auto& ecs = scene.getECS();
 
-	//if (!TBSys.active())
-	//{
-	//	Entity player = FindEntityByName(ecs, "Player1");
-	//	Entity enemy = FindEntityByName(ecs, "Enemy1");
+	if (!TBSys.active())
+	{
+		Entity player = FindEntityByName(ecs, "Player1");
+		Entity enemy = FindEntityByName(ecs, "Enemy1");
 
-	//	if (player != Entity{} && enemy != Entity{})
-	//	{
-	//		TBSys.add_participant(ecs, player);
-	//		TBSys.add_participant(ecs, enemy);
+		if (player != Entity{} && enemy != Entity{})
+		{
+			TBSys.add_participant(ecs, player);
+			TBSys.add_participant(ecs, enemy);
 
-	//		std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
-	//	}
-	//}
-	//
-	//// ================= TURN-BASED HOTKEYS (TEMP) =================
-	//static int once = 0;
-	//if (once++ == 0)
-	//{
-	//	std::cout << "[DBG] Hotkey section reached\n";
-	//	std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
-	//}
+			std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
+		}
+	}
+	
+	 //================= TURN-BASED HOTKEYS (TEMP) =================
+	static int once = 0;
+	if (once++ == 0)
+	{
+		std::cout << "[DBG] Hotkey section reached\n";
+		std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
+	}
 
-	//// Check for TBS status
-	//if (AEInputCheckTriggered(AEVK_O))
-	//{
-	//	std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
-	//		<< " round=" << TBSys.round() << "\n";
-	//	TBSys.debug_print(ecs);
-	//}
+	// Check for TBS status
+	if (AEInputCheckTriggered(AEVK_O))
+	{
+		std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
+			<< " round=" << TBSys.round() << "\n";
+		TBSys.debug_print(ecs);
+	}
 
-	//if (TBSys.active())
-	//{
+	if (TBSys.active())
+	{
 
-	//	static int once = 0;
-	//	if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
+		static int once = 0;
+		if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
 
+		
 
-	//	// y = yield (no more turns this round)
-	//	if (AEInputCheckTriggered(AEVK_Y))
-	//	{
-	//		std::cout << "[hotkey] y = yield\n";
-	//		TBSys.yield_current();
-	//		TBSys.next(ecs);
-	//	}
-	//	// u = attack (consume turn)
-	//	else if (AEInputCheckTriggered(AEVK_U))
-	//	{
-	//		std::cout << "[hotkey] u = attack\n";
-	//		Entity current_ = TBSys.current();
-	//		Entity card = TBSys.draw_card(ecs, current_, 0);
-	//		TBSys.play_card(ecs, card);
-	//		TBSys.next(ecs);
-	//	}
-	//	// i = move (consume turn)
-	//	else if (AEInputCheckTriggered(AEVK_I))
-	//	{
-	//		std::cout << "[hotkey] i = move\n";
-	//		TBSys.next(ecs);
-	//	}
-	//}
+		if (AEInputCheckTriggered(AEVK_1))
+		{
+			TBSys.hand()[TBSys.index] = 0;
+		}
+		if (AEInputCheckTriggered(AEVK_2))
+		{
+			TBSys.hand()[TBSys.index] = 1;
+		}
+		// y = yield (no more turns this round)
+		if (AEInputCheckTriggered(AEVK_Y))
+		{
+			std::cout << "[hotkey] y = yield\n";
+			TBSys.yield_current();
+			TBSys.next(ecs);
+		}
+		// u = attack (consume turn)
+		else if (AEInputCheckTriggered(AEVK_U))
+		{
+			Entity current_entt = TBSys.current();
+			std::cout << "[hotkey] u = attack\n";
+			Entity card = TBSys.draw_card(ecs, current_entt, TBSys.hand()[TBSys.index]);
+			TBSys.play_card(ecs, card);
+			TBSys.next(ecs);
+		}
+		// i = move (consume turn)
+		else if (AEInputCheckTriggered(AEVK_I))
+		{
+			std::cout << "[hotkey] i = move\n";
+			TBSys.next(ecs);
+		}
+	}
 	 //============================================================
 
 	//==========Object updates===========
