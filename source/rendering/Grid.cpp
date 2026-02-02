@@ -239,8 +239,29 @@ namespace Grid
 
 	void Grid2D::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
-		this->activate[x][y] = true;
-		std::cout << "yay";
+		if(this->cur != -1){
+			this->moveEntity(ecs, this->cur, x, y);
+			this->activate[x][y] = false;
+			this->activate[this->cur_x][this->cur_y] = false;
+			this->cur_x = -1;
+			this->cur_y = -1;
+			this->cur = -1;
+		}
+		else if (this->pos[x][y] != -1) {
+			if(this->activate[x][y] == false){
+				this->activate[x][y] = true;
+				this->cur = this->pos[x][y];
+				this->cur_x = x;
+				this->cur_y = y;
+			} 
+
+			else{
+				this->activate[x][y] = false; 
+				this->cur = -1;
+				this->cur_x = -1;
+				this->cur_y = -1;
+			}
+		}
 	}
 
 
@@ -252,7 +273,7 @@ namespace Grid
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
-		Components::Input in{ AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}};
+		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);
 		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);
@@ -269,7 +290,6 @@ namespace Grid
 		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
 		this->offset.x = ox;
 		this->offset.y = oy;
-		s8 zbuffer = 0;
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
@@ -281,6 +301,7 @@ namespace Grid
 				//twan you might want to look at this for grid transform i'll put 0.f for size
 				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
+				this->activate[i][j] = false;
 			}
 		}
 	}
@@ -335,6 +356,7 @@ namespace Grid
 		{
 			for (int j = 0; j < MAX_J; ++j)
 			{
+				//update all cells
 				ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
 				ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
 
@@ -344,12 +366,20 @@ namespace Grid
 				if (this->activate[i][j])
 				{
 					color->p_color.b = 0.5f;
-					color->p_color.a = 0.5f;
-					color->p_color.r = 1.f;
+					color->p_color.r = 0.5f;
+				}
+				else{
+					color->p_color = color->c_color;
+					
 				}
 
 
-				if (this->pos[i][j] = -1) continue;
+
+				//update entity cell
+				if (this->pos[i][j] == -1) 
+				{ 
+					continue;
+				}
 				Entity e = this->pos[i][j];
 
 				if (!ecs.getBitMask()[e].test(transID)) return;
@@ -362,7 +392,7 @@ namespace Grid
 				transform->pos_onscreen = transform->pos;
 
 
-
+				
 				Entity current_cell = this->cells[i][j];
 				colorID = ECS::getComponentTypeID<Components::Color>();
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;

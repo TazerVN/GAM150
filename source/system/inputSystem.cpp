@@ -26,11 +26,11 @@ namespace InputSystem
 			{*/
 				if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey)))
 				{
-					if (AEInputCheckCurr(in->type))
+					if (AEInputCheckTriggered(in->type))
 					{
 						//AEVec2Set(&t->pos_onscreen, f32(this->mousex), f32(this->mousey));
 						this->cur_in = i;
-						in->onclick();
+						if (in->onClick != nullptr) in->onClick();
 						//std::cout << "yay";
 					}
 					else if (AEInputCheckReleased(in->type))
@@ -42,11 +42,12 @@ namespace InputSystem
 						//t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
 						/*c->p_color.a = 0.5f;
 						c->p_color.b = 0.5f;*/
-						//in->fphover();
+						if(in->onHover != nullptr) in->onHover();
 					}
 				}
 				else
 				{
+					if (in->offHover != nullptr) in->offHover();
 					/*this->cur_in = -1;
 					t->pos_onscreen = t->pos;
 					c->p_color.a = c->c_color.a;

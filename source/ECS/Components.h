@@ -70,12 +70,18 @@ namespace Components
 		color p_color;
 	};
 
-	struct Input
+	class Input
 	{
+		public:
 		u8 type; //for AE internal input system check
 		bool hover;
-		std::function<void()> onclick;
-		void (*fphover)();
+		Input(u8 type, bool hover, 
+			  std::function<void()> onClick, 
+			  std::function<void()> onHover, 
+			  std::function<void()> offHover);
+		std::function<void()> onClick;
+		std::function<void()> onHover;
+		std::function<void()> offHover;
 	};
 
 
