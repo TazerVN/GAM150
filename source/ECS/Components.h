@@ -84,6 +84,7 @@ namespace Components
 	{
 		f32 damage;
 		DamageType type;
+		f32 range;
 	};
 	struct Name
 	{
@@ -103,7 +104,7 @@ namespace Components
 			if (next_index < card_storage.size()) return next_index++;
 			else return -1;
 		}
-		std::array<size_t, MAX_HAND> card_storage = {};
+		std::array<size_t, MAX_HAND> card_storage = {NULL_INDEX};
 	};
 
 	//===================Turn Based======================================

@@ -153,10 +153,18 @@ namespace TBS
 		}
 
 		++gm_turn_count;
+		++index;
+		if (index >= participants.size()) index = 0;
 
 		std::cout << "[TBS] Turn " << gm_turn_count
 			<< " | Round " << cur_round
 			<< " | Current GM: " << gm_name(current_gm) << "\n";
+		//print out info every action
+		for (size_t i = 0; i < participants.size(); ++i)
+		{
+			f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
+			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
+		}
 	}
 
 	void TurnBasedSystem::end()

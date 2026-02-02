@@ -3,6 +3,7 @@
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../cards/Systems.h"
+#include "../util/util.h"
 #include "AEEngine.h"
 namespace TBS 
 {
@@ -52,7 +53,20 @@ namespace TBS
 
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
+		void play_card(ECS::Registry& ecs,Entity cardID)
+		{
+			Entity target = NULL_INDEX;
+			if (current_gm == GM::Player)
+				target = participants[(size_t)GM::Enemy];
+			else target = participants[(size_t)GM::Player];
 
+			if (target != NULL_INDEX)
+			{
+				std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(current_gm)])->value <<
+					" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
+				System::Call_AttackSystem(ecs, cardID, target);
+			}
+		}
 		//===============Update=====================
 	};
 }

@@ -56,13 +56,13 @@ namespace System {
 		return id;
 	}
 
-	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 atk,Components::DamageType dtype)
+	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 atk,Components::DamageType dtype,f32 range)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Name nm{ name };
 		Components::Card_Storage card_storage;
-		Components::Attack attack{ atk, dtype};
+		Components::Attack attack{ atk, dtype, range};
 		ecs.addComponent(id, attack);
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, card_storage);
@@ -81,12 +81,13 @@ namespace System {
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		size_t index = user_cards->get_nextIndex();
 		user_cards->card_storage[index] = cardID;
+		int i = 0;
 	}
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING));	//0
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE));			//1
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING,1.f));	//0
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,1.f));			//1
 	};
 	Entity& CardSystem::get_card(int index) 
 	{

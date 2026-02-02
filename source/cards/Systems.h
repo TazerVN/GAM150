@@ -11,7 +11,7 @@ namespace System
 {
 	void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name, f32 hp, AEGfxTexture* pTex);
-	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 atk, Components::DamageType dtype);
+	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 atk, Components::DamageType dtype, f32 range);
 	void add_card_player(ECS::Registry& ecs, Entity user, Entity cardID);
 
 	class CardSystem

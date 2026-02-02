@@ -5,8 +5,11 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	card_system.init_cards(ecs);
 	playerID = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
 	//add cards to the player
-	System::add_card_player(ecs, playerID, card_system.get_card(0));
+	Entity sa = card_system.get_card(0);
+	System::add_card_player(ecs, playerID, sa);	//add sword attack
 	enemyID = System::create_player(ecs, mf, { 100.f,0.f }, { 192.0f,192.0f }, "Enemy1", 100.f, tf.getTexture(3));
+	Entity fa = card_system.get_card(1);
+	System::add_card_player(ecs, enemyID, fa);	//add fire attack
 }
 
 void Scene::update()

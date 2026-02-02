@@ -1,140 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="source\cards\cardInteraction.cpp" />
+    <ClCompile Include="source\ECS\Components.cpp" />
+    <ClCompile Include="source\ECS\ECSystem.cpp" />
+    <ClCompile Include="source\system\inputSystem.cpp" />
+    <ClCompile Include="source\level\level1.cpp" />
+    <ClCompile Include="source\ECS\gameObject.cpp" />
+    <ClCompile Include="source\level\GameState.cpp" />
+    <ClCompile Include="source\rendering\Grid.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\rendering\Mesh_factory.cpp" />
+    <ClCompile Include="source\rendering\TextureFactory.cpp" />
+    <ClCompile Include="source\system\TurnBasedSystem.cpp" />
+    <ClCompile Include="source\util\Pathfinding.cpp" />
+    <ClCompile Include="source\rendering\renderSystem.cpp" />
+    <ClCompile Include="source\cards\Systems.cpp" />
+    <ClCompile Include="source\UI\Text.cpp" />
+    <ClCompile Include="source\system\transformSystem.cpp" />
+    <ClCompile Include="source\UI\UI.cpp" />
+    <ClCompile Include="source\util\util.cpp" />
+    <ClCompile Include="source\ECS\Scene.cpp" />
+    <ClCompile Include="source\system\TargettingSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\cards\cardInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ECS\Components.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\level\level1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ECS\gameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\level\GameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\rendering\Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\rendering\Mesh_factory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\util\Pathfinding.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\rendering\renderSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\cards\Systems.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\UI\Text.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\system\transformSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\UI\UI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\util\util.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ECS\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ECS\ECSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\system\inputSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\rendering\TextureFactory.cpp">
-    <ClCompile Include="source\system\TurnBasedSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="source\global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\cards\cardInteraction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\Components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\level\level1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\gameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\level\GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\rendering\Grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\rendering\Mesh_factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\util\Pathfinding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\rendering\renderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\cards\Systems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\UI\Text.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\system\transformSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\UI\UI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\util\util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ECS\ECSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\system\inputSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\rendering\TextureFactory.h">
-    <ClInclude Include="source\system\TurnBasedSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="source\ECS\card.h" />
+    <ClInclude Include="source\cards\cardInteraction.h" />
+    <ClInclude Include="source\ECS\Components.h" />
+    <ClInclude Include="source\ECS\ECSystem.h" />
+    <ClInclude Include="source\system\inputSystem.h" />
+    <ClInclude Include="source\level\level1.h" />
+    <ClInclude Include="source\ECS\gameObject.h" />
+    <ClInclude Include="source\level\GameState.h" />
+    <ClInclude Include="source\global.h" />
+    <ClInclude Include="source\rendering\Grid.h" />
+    <ClInclude Include="source\rendering\Mesh_factory.h" />
+    <ClInclude Include="source\rendering\TextureFactory.h" />
+    <ClInclude Include="source\system\TurnBasedSystem.h" />
+    <ClInclude Include="source\util\Pathfinding.h" />
+    <ClInclude Include="source\rendering\renderSystem.h" />
+    <ClInclude Include="source\cards\Systems.h" />
+    <ClInclude Include="source\UI\Text.h" />
+    <ClInclude Include="source\system\transformSystem.h" />
+    <ClInclude Include="source\UI\UI.h" />
+    <ClInclude Include="source\util\util.h" />
+    <ClInclude Include="source\ECS\Scene.h" />
+    <ClInclude Include="source\system\TargettingSystem.h" />
   </ItemGroup>
 </Project>

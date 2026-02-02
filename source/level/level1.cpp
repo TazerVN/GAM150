@@ -194,6 +194,9 @@ void game_update()
 		else if (AEInputCheckTriggered(AEVK_U))
 		{
 			std::cout << "[hotkey] u = attack\n";
+			Entity current_ = TBSys.current();
+			Entity card = TBSys.draw_card(ecs, current_, 0);
+			TBSys.play_card(ecs, card);
 			TBSys.next(ecs);
 		}
 		// i = move (consume turn)
