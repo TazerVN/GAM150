@@ -24,6 +24,7 @@ namespace Grid
 		private:
 			//=============Render====================
 		Entity cur;
+		s32 cur_x, cur_y;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
