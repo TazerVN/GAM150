@@ -32,23 +32,6 @@ RenderSystem::RenderSystem RM;
 
 CardInteraction::CardHand card{};
 
-//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
-static Entity FindEntityByName(ECS::Registry& ecs, const char* name)
-{
-	ECS::ComponentStorage<Components::Name>* names = ecs.getComponentStorage<Components::Name>();
-	ECS::ComponentTypeID nID = ECS::getComponentTypeID<Components::Name>();
-
-	for (int i = 0; i < names->getCount(); ++i)
-	{
-		if (!ecs.getBitMask()[i].test(nID)) continue;
-		auto* nm = ecs.getComponent<Components::Name>(i);
-		if (nm && nm->value == name)
-			return (Entity)i;
-	}
-
-	return (Entity)NULL_INDEX;
-}
-
 
 void game_init()
 {
@@ -81,7 +64,7 @@ void game_init()
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	scene.init(mf, TF);	
 	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
-	grid2D.init(scene.getECS(),mf,TF.getTexture(1), 0, w_height/3);
+	grid2D.init(scene.getECS(),mf,&TBSys,TF.getTexture(1), 0, w_height/3);
 	grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);
 	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
@@ -143,82 +126,8 @@ void game_update()
 	//}
 
 	scene.update();
-
+	TBSys.update(scene.getECS());
 	IM.update(scene.getECS());
-
-	// ================= CONSOLE LOG of TBS =================
-	auto& ecs = scene.getECS();
-
-	if (!TBSys.active())
-	{
-		Entity player = FindEntityByName(ecs, "Player1");
-		Entity enemy = FindEntityByName(ecs, "Enemy1");
-
-		if (player != Entity{} && enemy != Entity{})
-		{
-			TBSys.add_participant(ecs, player);
-			TBSys.add_participant(ecs, enemy);
-
-			std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
-		}
-	}
-	
-	 //================= TURN-BASED HOTKEYS (TEMP) =================
-	static int once = 0;
-	if (once++ == 0)
-	{
-		std::cout << "[DBG] Hotkey section reached\n";
-		std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
-	}
-
-	// Check for TBS status
-	if (AEInputCheckTriggered(AEVK_O))
-	{
-		std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
-			<< " round=" << TBSys.round() << "\n";
-		TBSys.debug_print(ecs);
-	}
-
-	if (TBSys.active())
-	{
-
-		static int once = 0;
-		if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
-
-		
-
-		if (AEInputCheckTriggered(AEVK_1))
-		{
-			TBSys.hand()[TBSys.index] = 0;
-		}
-		if (AEInputCheckTriggered(AEVK_2))
-		{
-			TBSys.hand()[TBSys.index] = 1;
-		}
-		// y = yield (no more turns this round)
-		if (AEInputCheckTriggered(AEVK_Y))
-		{
-			std::cout << "[hotkey] y = yield\n";
-			TBSys.yield_current();
-			TBSys.next(ecs);
-		}
-		// u = attack (consume turn)
-		else if (AEInputCheckTriggered(AEVK_U))
-		{
-			Entity current_entt = TBSys.current();
-			std::cout << "[hotkey] u = attack\n";
-			Entity card = TBSys.draw_card(ecs, current_entt, TBSys.hand()[TBSys.index]);
-			TBSys.play_card(ecs, card);
-			TBSys.next(ecs);
-		}
-		// i = move (consume turn)
-		else if (AEInputCheckTriggered(AEVK_I))
-		{
-			std::cout << "[hotkey] i = move\n";
-			TBSys.next(ecs);
-		}
-	}
-	 //============================================================
 
 	//==========Object updates===========
 

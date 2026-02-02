@@ -192,6 +192,7 @@ namespace TBS
 		return cur_round;
 	}
 
+
 	Entity TurnBasedSystem::draw_card(ECS::Registry& ecs, Entity player, size_t chIndex)
 	{
 		ECS::ComponentTypeID cardStorage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
@@ -235,5 +236,92 @@ namespace TBS
 				<< (is_current ? "  <-- current GM" : "")
 				<< "\n";
 		}
+	}
+
+
+	//Turn based system's update loop
+	void TurnBasedSystem::update(ECS::Registry& ecs)
+	{
+		// ================= CONSOLE LOG of TBS =================
+
+		if (!is_active)
+		{
+			Entity player = FindEntityByName(ecs, "Player1");
+			Entity enemy = FindEntityByName(ecs, "Enemy1");
+
+			if (player != Entity{} && enemy != Entity{})
+			{
+				add_participant(ecs, player);
+				add_participant(ecs, enemy);
+
+				std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
+			}
+		}
+
+		//================= TURN-BASED HOTKEYS (TEMP) =================
+		static int once = 0;
+		if (once++ == 0)
+		{
+			std::cout << "[DBG] Hotkey section reached\n";
+			std::cout << "[DBG] TBS active = " << is_active << "\n";
+		}
+
+		// Check for TBS status
+		if (AEInputCheckTriggered(AEVK_O))
+		{
+			std::cout << "[DBG] O pressed. TBS active=" << is_active
+				<< " round=" << cur_round << "\n";
+			debug_print(ecs);
+		}
+
+		if (is_active)
+		{
+
+			static int once = 0;
+			if (once++ == 0)
+			{
+				std::cout << "[dbg] tbs active, hotkey block running" << std::endl;
+				//print out info every action
+				for (size_t i = 0; i < participants.size(); ++i)
+				{
+					f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
+					std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
+				}
+			}
+
+
+			if (AEInputCheckTriggered(AEVK_1))
+			{
+				participant_hand[index] = 0;
+			}
+			if (AEInputCheckTriggered(AEVK_2))
+			{
+				participant_hand[index] = 1;
+			}
+			// y = yield (no more turns this round)
+			if (AEInputCheckTriggered(AEVK_Y))
+			{
+				std::cout << "[hotkey] y = yield\n";
+				yield_current();
+				next(ecs);
+			}
+			// u = attack (consume turn)
+			else if (AEInputCheckTriggered(AEVK_U))
+			{
+				Entity current_entt = current();
+				std::cout << "[hotkey] u = attack\n";
+				Entity card = draw_card(ecs, current_entt, participant_hand[index]);
+				play_card(ecs, card);
+				next(ecs);
+			}
+			//implemented to twan's move entity
+			// i = move (consume turn)
+			/*else if (AEInputCheckTriggered(AEVK_I))
+			{
+				std::cout << "[hotkey] i = move\n";
+				
+			}*/
+		}
+		//============================================================
 	}
 }

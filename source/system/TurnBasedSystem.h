@@ -10,6 +10,7 @@ namespace TBS
 	class TurnBasedSystem
 	{
 	private:
+		size_t index{ 0 };
 		bool is_active{ false };
 		size_t cur_round{0};
 
@@ -35,7 +36,6 @@ namespace TBS
 		void round_start(ECS::Registry& ecs);
 	public:
 		//===========Set Ups============================
-		size_t index{ 0 };
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void start(ECS::Registry& ecs);
 
@@ -46,7 +46,23 @@ namespace TBS
 		bool active();
 		std::vector<size_t>& hand();
 		size_t round();
+		//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
+		//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
+		static Entity FindEntityByName(ECS::Registry& ecs, const char* name)
+		{
+			ECS::ComponentStorage<Components::Name>* names = ecs.getComponentStorage<Components::Name>();
+			ECS::ComponentTypeID nID = ECS::getComponentTypeID<Components::Name>();
 
+			for (int i = 0; i < names->getCount(); ++i)
+			{
+				if (!ecs.getBitMask()[i].test(nID)) continue;
+				auto* nm = ecs.getComponent<Components::Name>(i);
+				if (nm && nm->value == name)
+					return (Entity)i;
+			}
+
+			return (Entity)NULL_INDEX;
+		}
 		//============Yield / Turn Control=============
 		void yield_current();				// current participant yields
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
@@ -55,6 +71,9 @@ namespace TBS
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 		void play_card(ECS::Registry& ecs, Entity cardID);
+
 		//===============Update=====================
+		void update(ECS::Registry& ecs);
+
 	};
 }

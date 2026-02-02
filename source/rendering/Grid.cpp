@@ -239,6 +239,7 @@ namespace Grid
 
 	void Grid2D::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
+		//check if an empty cell is clicked
 		if(this->cur != -1){
 			this->moveEntity(ecs, this->cur, x, y);
 			this->activate[x][y] = false;
@@ -247,7 +248,12 @@ namespace Grid
 			this->cur_y = -1;
 			this->cur = -1;
 		}
+		//check if the grid cell with entity is clicked
 		else if (this->pos[x][y] != -1) {
+
+			//check if the entity is the same as the current turn
+			if (pos[x][y] != tbs->current()) return;	//if the current turn is not the entity then dont allow selection
+
 			if(this->activate[x][y] == false){
 				this->activate[x][y] = true;
 				this->cur = this->pos[x][y];
@@ -273,7 +279,7 @@ namespace Grid
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
-		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);
+		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);	//add input system for grid
 		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);
@@ -285,8 +291,10 @@ namespace Grid
 
 		return id;
 	}
-	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
+		tbs = tbsys;
+
 		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
 		this->offset.x = ox;
 		this->offset.y = oy;
@@ -331,6 +339,9 @@ namespace Grid
 
 	void Grid2D::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
+		//check if there is an entity on the selected tile first
+		if (this->pos[x][y] != -1) return;
+
 		bool isHere = false;
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -347,6 +358,9 @@ namespace Grid
 		if (isHere == false) return;
 
 		this->pos[x][y] = e;
+
+		//whenever entity moves advances turn order
+		tbs->next(ecs);
 	}
 
 	void Grid2D::update(ECS::Registry& ecs)
