@@ -23,6 +23,7 @@ namespace Grid
 	{
 		private:
 			//=============Render====================
+		Entity cur;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
@@ -36,6 +37,7 @@ namespace Grid
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		void update(ECS::Registry& ecs);
+		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 	};
 
 	class Grid

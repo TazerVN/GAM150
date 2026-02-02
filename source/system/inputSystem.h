@@ -14,6 +14,7 @@ namespace InputSystem
 	class InputManager
 	{
 		public:
+		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();
 		void update(ECS::Registry& ecs);

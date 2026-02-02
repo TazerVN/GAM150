@@ -1,5 +1,6 @@
 #include "Grid.h"
-#include <utility>         // for std::move
+#include <utility> // for std::move
+#include "../util/util.h"
 
 float offset = 1.0f;
 
@@ -236,6 +237,11 @@ namespace Grid
 	{
 	}
 
+	void Grid2D::updateCell(ECS::Registry& ecs, s32 x, s32 y)
+	{
+		this->activate[x][y] = true;
+		std::cout << "yay";
+	}
 
 
 	Entity Grid2D::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
@@ -246,15 +252,15 @@ namespace Grid
 		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
-		Components::Input input{ AEVK_LBUTTON, true, function,function };
+		Components::Input in{ AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}};
 		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
-		ecs.addComponent(id, input);
 		ecs.addComponent(id, gc);
+		ecs.addComponent(id, in);
 
 		return id;
 	}
@@ -309,14 +315,15 @@ namespace Grid
 		{
 			for (int j = 0; j < MAX_J; ++j)
 			{
-				if(this->pos[i][j] == e){
+				if (this->pos[i][j] == e)
+				{
 					this->pos[i][j] = -1;
 					isHere = true;
 				}
 			}
 		}
 
-		if(isHere == false) return;
+		if (isHere == false) return;
 
 		this->pos[x][y] = e;
 	}
@@ -328,28 +335,58 @@ namespace Grid
 		{
 			for (int j = 0; j < MAX_J; ++j)
 			{
+				ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+				ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+
+				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
+				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
+
+				if (this->activate[i][j])
+				{
+					color->p_color.b = 0.5f;
+					color->p_color.a = 0.5f;
+					color->p_color.r = 1.f;
+				}
+
+
 				if (this->pos[i][j] = -1) continue;
 				Entity e = this->pos[i][j];
 
-				ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
 				if (!ecs.getBitMask()[e].test(transID)) return;
+				if (!ecs.getBitMask()[e].test(colorID)) return;
 
-				Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+				transform = ecs.getComponent<Components::Transform>(e);
+				color = ecs.getComponent<Components::Color>(e);
 				transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
 				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos_onscreen = transform->pos;
 
 
+
 				Entity current_cell = this->cells[i][j];
-				ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+				colorID = ECS::getComponentTypeID<Components::Color>();
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
-				Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
+				color = ecs.getComponent<Components::Color>(current_cell);
 				color->p_color.g = 0.5f;
 				color->p_color.r = 0.5f;
+
+
+				/*if(AEInputCheckTriggered(AEVK_LBUTTON) && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey))){
+					if(this->pos[i][j] != -1){
+						this->activate[i][j] = true;
+						this->cur = this->pos[i][j];
+					}
+					else if (this->cur != -1){
+						this->pos[i][j] = cur;
+						this->cur = -1;
+					}
+				}*/
+
 			}
 		}
 	}
+
 }
 
 

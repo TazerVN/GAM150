@@ -84,7 +84,7 @@ void game_init()
 	grid2D.init(scene.getECS(),mf,TF.getTexture(1), 0, w_height/3);
 	grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);
-	Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
+	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
 	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 500, 0, 2);
 
 

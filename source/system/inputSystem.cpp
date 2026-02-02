@@ -22,30 +22,37 @@ namespace InputSystem
 			Components::Color* c = ecs.getComponent<Components::Color>(i);
 
 
-			if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey)))
-			{
-				if (AEInputCheckCurr(in->type))
+			/*if (this->cur_in == -1 || this->cur_in == i)
+			{*/
+				if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey)))
 				{
-					//AEVec2Set(&t->pos_onscreen, f32(this->mousex),f32(this->mousey));
-					//std::cout << "yay";
+					if (AEInputCheckCurr(in->type))
+					{
+						//AEVec2Set(&t->pos_onscreen, f32(this->mousex), f32(this->mousey));
+						this->cur_in = i;
+						in->onclick();
+						//std::cout << "yay";
+					}
+					else if (AEInputCheckReleased(in->type))
+					{
+						//in->onclick();
+					}
+					else if (in->hover == true)
+					{
+						//t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
+						/*c->p_color.a = 0.5f;
+						c->p_color.b = 0.5f;*/
+						//in->fphover();
+					}
 				}
-				else if(AEInputCheckReleased(in->type)){
-					in->onclick();
-				}
-				else if (in->hover == true)
+				else
 				{
-					//t->pos_onscreen.y = t->pos.y + t->size.y * 0.1;
-					c->p_color.a = 0.5f;
-					c->p_color.b = 0.5f;
-					in->fphover();
+					/*this->cur_in = -1;
+					t->pos_onscreen = t->pos;
+					c->p_color.a = c->c_color.a;
+					c->p_color.b = c->c_color.b;*/
 				}
-			}
-			else
-			{
-				t->pos_onscreen = t->pos;
-				c->p_color.a = c->c_color.a;
-				c->p_color.b = c->c_color.b;
-			}
+			//}
 
 
 		}
