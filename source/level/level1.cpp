@@ -10,6 +10,7 @@
 #include "../system/transformSystem.h"
 #include "../level/GameState.h"
 #include "../system/TurnBasedSystem.h"
+#include "../UI/UI.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
@@ -83,6 +84,8 @@ void game_init()
 	grid2D.init(scene.getECS(),mf,TF.getTexture(1), 0, w_height/3);
 	grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);
+	Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
+	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 500, 0, 2);
 
 
 	RM.RenderSystem_init(scene.getECS());
@@ -144,68 +147,68 @@ void game_update()
 	IM.update(scene.getECS());
 
 	// ================= CONSOLE LOG of TBS =================
-	auto& ecs = scene.getECS();
+	//auto& ecs = scene.getECS();
 
-	if (!TBSys.active())
-	{
-		Entity player = FindEntityByName(ecs, "Player1");
-		Entity enemy = FindEntityByName(ecs, "Enemy1");
+	//if (!TBSys.active())
+	//{
+	//	Entity player = FindEntityByName(ecs, "Player1");
+	//	Entity enemy = FindEntityByName(ecs, "Enemy1");
 
-		if (player != Entity{} && enemy != Entity{})
-		{
-			TBSys.add_participant(ecs, player);
-			TBSys.add_participant(ecs, enemy);
+	//	if (player != Entity{} && enemy != Entity{})
+	//	{
+	//		TBSys.add_participant(ecs, player);
+	//		TBSys.add_participant(ecs, enemy);
 
-			std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
-		}
-	}
-	
-	// ================= TURN-BASED HOTKEYS (TEMP) =================
-	static int once = 0;
-	if (once++ == 0)
-	{
-		std::cout << "[DBG] Hotkey section reached\n";
-		std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
-	}
+	//		std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
+	//	}
+	//}
+	//
+	//// ================= TURN-BASED HOTKEYS (TEMP) =================
+	//static int once = 0;
+	//if (once++ == 0)
+	//{
+	//	std::cout << "[DBG] Hotkey section reached\n";
+	//	std::cout << "[DBG] TBS active = " << TBSys.active() << "\n";
+	//}
 
-	// Check for TBS status
-	if (AEInputCheckTriggered(AEVK_O))
-	{
-		std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
-			<< " round=" << TBSys.round() << "\n";
-		TBSys.debug_print(ecs);
-	}
+	//// Check for TBS status
+	//if (AEInputCheckTriggered(AEVK_O))
+	//{
+	//	std::cout << "[DBG] O pressed. TBS active=" << TBSys.active()
+	//		<< " round=" << TBSys.round() << "\n";
+	//	TBSys.debug_print(ecs);
+	//}
 
-	if (TBSys.active())
-	{
+	//if (TBSys.active())
+	//{
 
-		static int once = 0;
-		if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
+	//	static int once = 0;
+	//	if (once++ == 0) std::cout << "[dbg] tbs active, hotkey block running\n";
 
 
-		// y = yield (no more turns this round)
-		if (AEInputCheckTriggered(AEVK_Y))
-		{
-			std::cout << "[hotkey] y = yield\n";
-			TBSys.yield_current();
-			TBSys.next(ecs);
-		}
-		// u = attack (consume turn)
-		else if (AEInputCheckTriggered(AEVK_U))
-		{
-			std::cout << "[hotkey] u = attack\n";
-			Entity current_ = TBSys.current();
-			Entity card = TBSys.draw_card(ecs, current_, 0);
-			TBSys.play_card(ecs, card);
-			TBSys.next(ecs);
-		}
-		// i = move (consume turn)
-		else if (AEInputCheckTriggered(AEVK_I))
-		{
-			std::cout << "[hotkey] i = move\n";
-			TBSys.next(ecs);
-		}
-	}
+	//	// y = yield (no more turns this round)
+	//	if (AEInputCheckTriggered(AEVK_Y))
+	//	{
+	//		std::cout << "[hotkey] y = yield\n";
+	//		TBSys.yield_current();
+	//		TBSys.next(ecs);
+	//	}
+	//	// u = attack (consume turn)
+	//	else if (AEInputCheckTriggered(AEVK_U))
+	//	{
+	//		std::cout << "[hotkey] u = attack\n";
+	//		Entity current_ = TBSys.current();
+	//		Entity card = TBSys.draw_card(ecs, current_, 0);
+	//		TBSys.play_card(ecs, card);
+	//		TBSys.next(ecs);
+	//	}
+	//	// i = move (consume turn)
+	//	else if (AEInputCheckTriggered(AEVK_I))
+	//	{
+	//		std::cout << "[hotkey] i = move\n";
+	//		TBSys.next(ecs);
+	//	}
+	//}
 	 //============================================================
 
 	//==========Object updates===========

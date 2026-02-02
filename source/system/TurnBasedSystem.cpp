@@ -93,7 +93,7 @@ namespace TBS
 		cur_round = 1;
 		gm_turn_count = 0; // round_start will set to 1
 
-		round_start(ecs);  // <-- THIS is the “print Round 1 immediately” fix
+		round_start(ecs);  // <-- THIS is the “print Round 1 immediatelyEfix
 
 	}
 	Entity TurnBasedSystem::current()

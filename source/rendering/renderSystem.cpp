@@ -24,7 +24,6 @@ namespace RenderSystem
 	void RenderSystem::RenderSystem_init(ECS::Registry& ecs)
 	{
 
-		ECS::ComponentStorage<Components::Mesh>* mesh_com = ecs.getComponentStorage<Components::Mesh>();
 		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
 
 		for (int i = 0; i < ecs.sizeEntity(); i++)
