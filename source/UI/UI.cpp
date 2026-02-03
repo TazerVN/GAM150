@@ -11,7 +11,7 @@ namespace UI
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ { 0.5f, 1.0f, 0.5f ,1.0f }, { 0.5f, 1.0f, 0.5f ,1.0f } };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);

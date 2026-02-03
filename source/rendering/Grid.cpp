@@ -237,7 +237,7 @@ namespace Grid
 	{
 	}
 
-	void Grid2D::updateCell(ECS::Registry& ecs, s32 x, s32 y)
+	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
 		//check if an empty cell is clicked
 		if(this->cur != -1){
@@ -271,12 +271,12 @@ namespace Grid
 	}
 
 
-	Entity Grid2D::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
+	Entity GameBoard::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
 
 		Components::Transform trans{ pos, pos, size, {size.x / 2, size.y / 2}, 0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
 		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);	//add input system for grid
@@ -291,7 +291,7 @@ namespace Grid
 
 		return id;
 	}
-	void Grid2D::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbs = tbsys;
 
@@ -314,7 +314,7 @@ namespace Grid
 		}
 	}
 
-	void Grid2D::placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 		this->pos[x][y] = e;
@@ -337,7 +337,7 @@ namespace Grid
 		color->p_color.r = 0.5f;
 	}
 
-	void Grid2D::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		//check if there is an entity on the selected tile first
 		if (this->pos[x][y] != -1) return;
@@ -363,7 +363,7 @@ namespace Grid
 		tbs->next(ecs);
 	}
 
-	void Grid2D::update(ECS::Registry& ecs)
+	void GameBoard::update(ECS::Registry& ecs)
 	{
 
 		for (int i = 0; i < MAX_I; ++i)

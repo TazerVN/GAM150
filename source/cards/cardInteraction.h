@@ -9,17 +9,20 @@
 
 
 
-#define MAX_CARDS_HAND 10
+#define MAX_CARDS_HAND 6
 
 namespace CardInteraction
 {
 	class CardHand
 	{
-		public:
+		private:
 		std::array<Entity, MAX_CARDS_HAND> arr{};
+		std::array<bool, MAX_CARDS_HAND> activate{};
+		public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs);
 		CardHand() = default;
-		void update_pos(ECS::Registry& ecs, TransformSystem::TransformSystem& tf, f32 x, f32 y);
+		void update(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs);
 
 	};
 

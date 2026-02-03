@@ -40,6 +40,11 @@ namespace Components
 		s32 x,y;
 	};
 
+	struct Switch
+	{
+		bool s;
+	};
+
 
 	struct Transform
 	{
@@ -58,6 +63,7 @@ namespace Components
 
 	struct Mesh
 	{
+		bool on;
 		AEGfxVertexList* mesh = nullptr;
 		RENDER_MODE r_mode;
 		MESH_TYPE type;
@@ -73,6 +79,7 @@ namespace Components
 	class Input
 	{
 		public:
+		bool on;
 		u8 type; //for AE internal input system check
 		bool hover;
 		Input(u8 type, bool hover, 
@@ -110,6 +117,7 @@ namespace Components
 			if (next_index < card_storage.size()) return next_index++;
 			else return -1;
 		}
+		size_t size(){return this->next_index;}
 		std::array<size_t, MAX_HAND> card_storage = {NULL_INDEX};
 	};
 

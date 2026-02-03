@@ -20,7 +20,7 @@
 
 namespace Grid
 {
-	class Grid2D
+	class GameBoard
 	{
 		private:
 			//=============Render====================

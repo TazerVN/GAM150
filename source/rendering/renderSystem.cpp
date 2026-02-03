@@ -58,9 +58,11 @@ namespace RenderSystem
 			if (!ecs.getBitMask()[current_e].test(meshID)) continue;
 			if (!ecs.getBitMask()[current_e].test(transID)) continue;
 
+			
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
+			if(mesh->on == false) continue;
 
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
 			Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
 			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
 

@@ -40,7 +40,7 @@ namespace System {
 		Components::Texture texture{pTex};
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		//twan help me add more mesh
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ { 1.0f, 1.0f, 1.0f ,1.0f }, { 1.0f, 1.0f, 1.0f ,1.0f } };
 
 		ecs.addComponent(id, nm);
@@ -88,6 +88,7 @@ namespace System {
 	{
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING,1.f));	//0
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,1.f));			//1
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Steven Sword", 100.f, Components::SLASHING,1.f));	//2
 	};
 	Entity& CardSystem::get_card(int index) 
 	{

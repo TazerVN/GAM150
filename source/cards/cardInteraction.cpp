@@ -2,6 +2,7 @@
 #include "../system/transformSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
+#include "../System/TurnBasedSystem.h"
 #include "AEEngine.h"
 
 namespace CardInteraction
@@ -18,24 +19,60 @@ namespace CardInteraction
 
 		for (s8 i = 0; i < MAX_CARDS_HAND; i++)
 		{
-
 			f32 card_x = x + f32(i) / arr.size() * width * 2;
+			f32 card_y = y;
+			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);
+		}
+	}
+
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs)
+	{
+		Entity hand_id = ecs.createEntity();
+		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+
+		ecs.addComponent(hand_id, trans);
+
+
+		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
+
+		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+
+		for (s8 i = 0; i < cs->size(); i++)
+		{
+
+			f32 card_x = x + f32(i) / cs->size() * width * 2;
 			f32 card_y = y;
 			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
 		}
 	}
 
-	void CardHand::update_pos(ECS::Registry& ecs, TransformSystem::TransformSystem& tf, f32 x, f32 y)
+
+
+	void CardHand::update(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs )
 	{
 
-		/*tf.update_pos(ecs, *this, x, y);
-		f32 width = tf.get_size(ecs, *this).x;
+		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
+
+		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+
 		for (s8 i = 0; i < this->arr.size(); i++)
 		{
-			f32 card_x = x + float(i) / arr.size() * width * 2;
-			f32 card_y = y;
-			tf.update_pos(ecs, this->arr[i], card_x, y);
-		}*/
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(this->arr[i]);
+			Components::Input* in = ecs.getComponent<Components::Input>(this->arr[i]);
+			if (i < (cs->size() - 1))
+			{
+				mesh->on = true;
+				in->on = true;
+			}
+			else{
+				mesh->on = false;
+				in->on = false;
+			}
+		}
 	}
 
 
@@ -43,8 +80,10 @@ namespace CardInteraction
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.g = 0.5f;
-		t->pos_onscreen.y = t->pos.y + 50;
+		c->p_color.r = 0.7f;
+		c->p_color.g = 0.7f;
+		c->p_color.b = 0.7f;
+		t->pos_onscreen.y = t->pos.y + 20;
 	}
 
 	void card_offHover(ECS::Registry& ecs, Entity id)
@@ -60,9 +99,11 @@ namespace CardInteraction
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Switch s{ false };
+		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
@@ -76,10 +117,12 @@ namespace CardInteraction
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3*width/4, height},0.0f };
-		Components::Mesh mesh{ mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z};
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z};
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{pTex};
 		Components::Input input( AEVK_LBUTTON, true, fun, [id, &ecs] {card_onHover(ecs, id);}, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Switch s{false};
+		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
