@@ -10,14 +10,13 @@ class Scene
 private:
 	ECS::Registry ecs;
 	System::CardSystem card_system;
-	Entity playerID{NULL_INDEX};
-	Entity enemyID{NULL_INDEX};
-	TBS::TurnBasedSystem tbs;
 
+	size_t next_entity = 0;
+	std::vector<Entity> entities;
 public:
 	void init(MeshFactory& mf, TextureFactory::TextureFactory& tf);
 	void update();
-	Entity& getPlayerID();
-	Entity& getEnemyID();
+	void add_entity(Entity e);
+	std::vector<Entity>& entities_store();
 	ECS::Registry& getECS();
 };

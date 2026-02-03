@@ -2,6 +2,7 @@
 #include <iomanip>
 namespace TBS
 {
+
 	// End round Helper
 	bool TurnBasedSystem::everyone_yielded() const
 	{
@@ -262,13 +263,13 @@ namespace TBS
 
 
 	//Turn based system's update loop
-	void TurnBasedSystem::update(ECS::Registry& ecs)
+	void TurnBasedSystem::update(ECS::Registry& ecs,std::vector<Entity>& entities)
 	{
 		// ================= CONSOLE LOG of TBS =================
 
 		if (!is_active)
 		{
-			Entity player = FindEntityByName(ecs, "Player1");
+			/*Entity player = FindEntityByName(ecs, "Player1");
 			Entity enemy = FindEntityByName(ecs, "Enemy1");
 
 			if (player != Entity{} && enemy != Entity{})
@@ -276,8 +277,14 @@ namespace TBS
 				add_participant(ecs, player);
 				add_participant(ecs, enemy);
 
-				std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
+				
+			}*/
+
+			for (size_t i = 0; i < entities.size(); ++i)
+			{
+				add_participant(ecs, entities[i]);
 			}
+			std::cout << "[TBS] Masters found. Turn system initiated (WOW THIS IS SO COOL ITS LIKE MY OWN JARVIS!!!).\n";
 		}
 
 		//================= TURN-BASED HOTKEYS (TEMP) =================

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "../ECS/ECSystem.h"
+#include "../ECS/Scene.h"
 #include "../ECS/Components.h"
 #include "../cards/Systems.h"
 #include "../util/util.h"
@@ -77,7 +78,7 @@ namespace TBS
 		void play_card(ECS::Registry& ecs,Entity target, Entity cardID);
 
 		//===============Update=====================
-		void update(ECS::Registry& ecs);
+		void update(ECS::Registry& ecs,std::vector<Entity>& entities);
 
 	};
 }

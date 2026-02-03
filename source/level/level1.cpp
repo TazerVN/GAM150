@@ -64,8 +64,17 @@ void game_init()
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	scene.init(mf, TF);	
 	grid2D.init(scene.getECS(),mf,&TBSys,TF.getTexture(1), 0, w_height/3);
-	grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
-	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);
+
+	std::vector<Entity>& vec = scene.entities_store();
+
+	for (size_t i = 0; i < scene.entities_store().size(); ++i)
+	{
+		grid2D.placeEntity(scene.getECS(), scene.entities_store()[i], 5 + i, 5);
+	}
+
+	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
+	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
+
 	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
 	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 500, 0, 2);
 
@@ -84,57 +93,17 @@ void game_update()
 
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
-	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
-
-	/*int dx = 0, dy = 0;
-	f32 spd = 250.0f;
-
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		dx = 1;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		dx = -1;
-	}
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		dy = 1;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		dy = -1;
-	}*/
-
-
-	//if direction is pressed
-	//if (dx != 0 || dy != 0)
-	//{
-	//	AEVec2 dir;
-	//	AEVec2Set(&dir, (f32)dx, (f32)dy);
-	//	AEVec2Normalize(&dir, &dir);
-	//	if (dir.x != 0)
-	//	{
-	//		//camerax += dir.x * spd * dt;
-	//	}
-	//	if (dir.y != 0)
-	//	{
-	//		//cameray += dir.y * spd * dt;
-	//	}
-
-	//	AEGfxSetCamPosition(camerax, cameray);
-	//}
-
+	
 	scene.update();
-	TBSys.update(scene.getECS());
+	TBSys.update(scene.getECS(),scene.entities_store());
 	IM.update(scene.getECS());
 	card.update(scene.getECS(), TBSys);
 
 	//==========Object updates===========
 
 
-	//sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
-	//int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);
+	/*sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
+	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
 
 	//========(Render)====================
 

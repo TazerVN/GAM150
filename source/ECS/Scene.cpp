@@ -3,17 +3,30 @@
 void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 {
 	card_system.init_cards(ecs);
-	playerID = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
-	//add cards to the player
 	Entity sa = card_system.get_card(0);
 	Entity fa = card_system.get_card(1);
 	Entity ss = card_system.get_card(2);
-	System::add_card_player(ecs, playerID, sa);	//add sword attack
-	System::add_card_player(ecs, playerID, fa);	//add sword attack
-	System::add_card_player(ecs, playerID, ss);	//add sword attack
-	enemyID = System::create_player(ecs, mf, { 100.f,0.f }, { 192.0f,192.0f }, "Enemy1", 100.f, tf.getTexture(3));
-	System::add_card_player(ecs, enemyID, fa);	//add fire attack
-	System::add_card_player(ecs, playerID, sa);	//add sword attack
+	//add cards to the player
+	Entity temp; 
+	
+	//Add player
+	temp = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
+	System::add_card_player(ecs, temp, sa);	//add sword attack
+	System::add_card_player(ecs, temp, fa);	//add sword attack
+	System::add_card_player(ecs, temp, ss);	//add silver slash attack
+	add_entity(temp);
+
+	//Add enemy0
+	temp = System::create_player(ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTexture(3));
+	System::add_card_player(ecs, temp, fa);	//add fire attack
+	System::add_card_player(ecs, temp, sa);	//add sword attack
+	add_entity(temp);
+
+	//Add enemy1
+	temp = System::create_player(ecs, mf, { 100.f,300.f }, { 192.0f,192.0f }, "Enemy1", 100.f, tf.getTexture(3));
+	System::add_card_player(ecs, temp, fa);	//add fire attack
+	System::add_card_player(ecs, temp, sa);	//add sword attack
+	add_entity(temp);
 }
 
 void Scene::update()
@@ -36,14 +49,17 @@ void Scene::update()
 	}*/
 }
 
-Entity& Scene::getPlayerID()
+void Scene::add_entity(Entity e)
 {
-	return playerID;
+	next_entity++;
+	entities.push_back(e);
 }
-Entity& Scene::getEnemyID()
+
+std::vector<Entity>& Scene::entities_store()
 {
-	return enemyID;
+	return entities;
 }
+
 ECS::Registry& Scene::getECS()
 {
 	return ecs;
