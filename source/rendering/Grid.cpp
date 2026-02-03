@@ -239,6 +239,26 @@ namespace Grid
 
 	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
+
+		//if the current participant has selected card 
+				//and selected on the empty cell then return
+		if (tbs->is_current_selected_card())
+		{
+			//if the card is selected and the selected pos is entity
+			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
+			{
+				//attack the entity on the tile
+				tbs->play_card(ecs, pos[x][y], tbs->get_selected_card());
+				tbs->next(ecs);
+				return;
+			}
+			else {
+				tbs->set_selected_card(false);
+				std::cout << "Select a valid cell with entity!" << std::endl;
+			}
+			return;
+		}
+
 		//check if an empty cell is clicked
 		if(this->cur != -1){
 			this->moveEntity(ecs, this->cur, x, y);
@@ -252,7 +272,13 @@ namespace Grid
 		else if (this->pos[x][y] != -1) {
 
 			//check if the entity is the same as the current turn
-			if (pos[x][y] != tbs->current()) return;	//if the current turn is not the entity then dont allow selection
+				//if the current turn is not the entity then dont allow selection
+
+			if (!tbs->is_current_selected_card() && pos[x][y] != tbs->current())
+			{
+				std::cout << "Cannot select this entity!" << std::endl;
+				return;
+			}
 
 			if(this->activate[x][y] == false){
 				this->activate[x][y] = true;
@@ -280,6 +306,7 @@ namespace Grid
 		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
 		Components::Texture texture{ pTex };
 		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);	//add input system for grid
+
 		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);

@@ -49,7 +49,8 @@ namespace TBS
 			return;
 		}
 		participants.push_back(parti);
-		participant_hand.push_back(0);
+		participant_hand.push_back(0);	//initialize the card at index 0 as selected by default
+		selected_card.push_back(false);
 
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	
@@ -105,6 +106,21 @@ namespace TBS
 			return Entity{};
 
 		return participants[index];
+	}
+
+	Entity TurnBasedSystem::get_selected_card()
+	{
+		return participant_hand[index];
+	}
+
+	bool TurnBasedSystem::is_current_selected_card()
+	{
+		return selected_card[index];
+	}
+
+	void TurnBasedSystem::set_selected_card(bool bol)
+	{
+		selected_card[index] = bol;
 	}
 
 	void TurnBasedSystem::yield_current()
@@ -174,6 +190,8 @@ namespace TBS
 		cur_round = 0;
 		index = 0;
 		participants.clear();
+		participant_hand.clear();
+		selected_card.clear();
 		std::cout << "[DBG] TBS end() CALLED\n";
 	}
 
@@ -200,17 +218,21 @@ namespace TBS
 
 		return player_storage->card_storage[chIndex];
 	}
-	void TurnBasedSystem::play_card(ECS::Registry& ecs, Entity cardID)
+	void TurnBasedSystem::play_card(ECS::Registry& ecs,Entity target, Entity cardID)
 	{
-		Entity target = NULL_INDEX;
+		//commented old zejin's code
+		/*Entity target = NULL_INDEX;
 		if (current_gm == GM::Player)
 			target = participants[(size_t)GM::Enemy];
-		else target = participants[(size_t)GM::Player];
+		else target = participants[(size_t)GM::Player];*/
 
 		if (target != NULL_INDEX)
 		{
 			std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(current_gm)])->value <<
 				" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
+
+			//later check for type of card and call accordingly
+			//for now it's attack system
 			System::Call_AttackSystem(ecs, cardID, target);
 		}
 	}
@@ -311,8 +333,10 @@ namespace TBS
 				Entity current_entt = current();
 				std::cout << "[hotkey] u = attack\n";
 				Entity card = draw_card(ecs, current_entt, participant_hand[index]);
-				play_card(ecs, card);
-				next(ecs);
+				std::cout << "Select Enemy to use card on" << std::endl;
+				selected_card[index] = true;
+				/*play_card(ecs, card);
+				next(ecs);*/
 			}
 			//implemented to twan's move entity
 			// i = move (consume turn)
