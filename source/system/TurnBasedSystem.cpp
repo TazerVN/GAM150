@@ -335,16 +335,16 @@ namespace TBS
 				next(ecs);
 			}
 			// u = attack (consume turn)
-			else if (AEInputCheckTriggered(AEVK_U))
-			{
-				Entity current_entt = current();
-				std::cout << "[hotkey] u = attack\n";
-				Entity card = draw_card(ecs, current_entt, participant_hand[index]);
-				std::cout << "Select Enemy to use card on" << std::endl;
-				selected_card[index] = true;
-				/*play_card(ecs, card);
-				next(ecs);*/
-			}
+			//else if (AEInputCheckTriggered(AEVK_U))
+			//{
+			//	Entity current_entt = current();
+			//	std::cout << "[hotkey] u = attack\n";
+			//	Entity card = draw_card(ecs, current_entt, participant_hand[index]);
+			//	std::cout << "Select Enemy to use card on" << std::endl;
+			//	selected_card[index] = true;
+			//	/*play_card(ecs, card);
+			//	next(ecs);*/
+			//}
 			//implemented to twan's move entity
 			// i = move (consume turn)
 			/*else if (AEInputCheckTriggered(AEVK_I))

@@ -33,6 +33,8 @@ RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
 
 
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
+
 void game_init()
 {
 //==========(Init)======================
@@ -96,6 +98,21 @@ void game_update()
 	
 	scene.update();
 	TBSys.update(scene.getECS(),scene.entities_store());
+
+
+	if (AEInputCheckTriggered(AEVK_U))
+	{
+		Entity current_entt = TBSys.current();
+		std::cout << "[hotkey] u = attack\n";
+		Entity card = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_card()); //draw_card(ecs, current_entt, participant_hand[index]);
+		std::cout << "Select Enemy to use card on" << std::endl;
+		TBSys.set_selected_card(true);	//selected_card[index] = true;
+		highlight_cells(scene.getECS(), TBSys, grid2D);
+		/*play_card(ecs, card);
+		next(ecs);*/
+	}
+
+
 	IM.update(scene.getECS());
 	card.update(scene.getECS(), TBSys);
 
@@ -117,4 +134,50 @@ void game_exit()
 {
 	mf.MeshFree();
 	AEGfxDestroyFont(pFont);
+}
+
+AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
+{
+	Entity cur_part = tbs.current();
+	std::array<std::array<Entity, MAX_J>, MAX_I>& positions = gb.get_pos();
+
+	AEVec2 temp = { -1.f,-1.f };
+
+	for (int i = 0; i < MAX_I; ++i)
+	{
+		for (int j = 0; j < MAX_J; ++j)
+		{
+			if (positions[i][j] == cur_part)
+			{
+				AEVec2Set(&temp, (f32)i, (f32)j);
+				break;
+			}
+		}
+		if (temp.x != -1.f && temp.y != -1.f) break;
+	}
+
+	return temp;
+}
+
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
+{
+	//=========================Highlight_cells=================================
+	f32& card_range = ecs.getComponent<Components::Attack>(tbs.get_selected_card())->range;
+
+	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
+
+	//iterate over range * 2 
+	for (int ite = 1; ite <= card_range; ++ite)
+	{
+		gb.get_highlighted_cell().push_back({ cur_part_pos.x + ite , cur_part_pos.y });
+		gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y + ite });
+		gb.get_highlighted_cell().push_back({ cur_part_pos.x - ite , cur_part_pos.y });
+		gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y - ite });
+
+		gb.get_attack_activate()[cur_part_pos.x + ite][cur_part_pos.y] = true;
+		gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y + ite] = true;
+		gb.get_attack_activate()[cur_part_pos.x - ite][cur_part_pos.y] = true;
+		gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y - ite] = true;
+	}
+	//=========================================================================
 }

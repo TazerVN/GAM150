@@ -250,10 +250,13 @@ namespace Grid
 				//attack the entity on the tile
 				tbs->play_card(ecs, pos[x][y], tbs->get_selected_card());
 				tbs->next(ecs);
+
+				unhighlight_cells();
 				return;
 			}
 			else {
 				tbs->set_selected_card(false);
+				unhighlight_cells();
 				std::cout << "Select a valid cell with entity!" << std::endl;
 			}
 			return;
@@ -337,6 +340,7 @@ namespace Grid
 				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
 				this->activate[i][j] = false;
+				this->atk_activate[i][j] = false;
 			}
 		}
 	}
@@ -387,7 +391,7 @@ namespace Grid
 		this->pos[x][y] = e;
 
 		//whenever entity moves advances turn order
-		tbs->next(ecs);
+		//tbs->next(ecs);
 	}
 
 	void GameBoard::update(ECS::Registry& ecs)
@@ -404,6 +408,12 @@ namespace Grid
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
+
+				if (!this->atk_activate[i][j])
+				{
+					color->p_color = color->c_color;
+				}
+
 				if (this->activate[i][j])
 				{
 					color->p_color.b = 0.5f;
@@ -414,7 +424,12 @@ namespace Grid
 					
 				}
 
-
+				if (this->atk_activate[i][j])
+				{
+					color->p_color.r = 1.f;
+					color->p_color.g = 0.f;
+					color->p_color.b = 0.f;
+				}
 
 				//update entity cell
 				if (this->pos[i][j] == -1) 
@@ -458,6 +473,32 @@ namespace Grid
 		}
 	}
 
+	std::array<std::array<Entity, MAX_J>, MAX_I>& GameBoard::get_pos()
+	{
+		return pos;
+	}
+
+	std::vector<AEVec2>& GameBoard::get_highlighted_cell()
+	{
+		return highlighted_cells;
+	}
+
+	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_attack_activate()
+	{
+		return atk_activate;
+	}
+
+	void GameBoard::unhighlight_cells()
+	{
+		{
+			//un-highligh cells
+			for (AEVec2 a : highlighted_cells)
+			{
+				atk_activate[a.x][a.y] = false;
+				highlighted_cells.clear();
+			}
+		}
+	}
 }
 
 

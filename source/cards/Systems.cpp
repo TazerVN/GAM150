@@ -87,8 +87,8 @@ namespace System {
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING,1.f));	//0
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,1.f));			//1
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Steven Sword", 100.f, Components::SLASHING,1.f));	//2
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,2.f));			//1
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Steven Sword", 100.f, Components::SLASHING,3.f));	//2
 	};
 	Entity& CardSystem::get_card(int index) 
 	{
