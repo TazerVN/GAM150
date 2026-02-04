@@ -52,8 +52,9 @@ namespace Grid
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
 
 		void unhighlight_cells();
-	};
 
+		Event attack_event;
+	};
 	//class Grid
 	//{
 	//	public:

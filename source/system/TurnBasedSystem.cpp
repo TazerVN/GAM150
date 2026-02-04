@@ -109,7 +109,7 @@ namespace TBS
 		return participants[index];
 	}
 
-	Entity TurnBasedSystem::get_selected_card()
+	Entity TurnBasedSystem::get_selected_cardhand_index()
 	{
 		return participant_hand[index];
 	}
@@ -226,6 +226,7 @@ namespace TBS
 		if (current_gm == GM::Player)
 			target = participants[(size_t)GM::Enemy];
 		else target = participants[(size_t)GM::Player];*/
+		bool target_died = false;
 
 		if (target != NULL_INDEX)
 		{
@@ -234,8 +235,31 @@ namespace TBS
 
 			//later check for type of card and call accordingly
 			//for now it's attack system
-			System::Call_AttackSystem(ecs, cardID, target);
+			target_died = Call_AttackSystem(ecs, cardID, target);
 		}
+
+		if (target_died)
+		{
+			
+		}
+	}
+
+	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)
+	{
+		bool ret = false;
+		//attack component
+		ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
+		//test if card have attack id
+		if (!ecs.getBitMask()[cardID].test(atkID)) return false;
+
+		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+		if (!(ecs.getBitMask()[target].test(hpID))) return false;
+
+		//if the have components then reduce the HP amount
+		ecs.getComponent<Components::HP>(target)->value -= ecs.getComponent<Components::Attack>(cardID)->damage;
+		if (ecs.getComponent<Components::HP>(target)->value < 0.f) ret = true;
+
+		return ret;
 	}
 
 	//DEBUG PRINT

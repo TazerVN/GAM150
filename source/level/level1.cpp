@@ -32,8 +32,11 @@ RenderSystem::RenderSystem RM;
 
 CardInteraction::CardHand card{};
 
-
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
+
+
+static bool triggered = false;
+static Entity attacked_enemy = NULL_INDEX;
 
 void game_init()
 {
@@ -104,7 +107,8 @@ void game_update()
 	{
 		Entity current_entt = TBSys.current();
 		std::cout << "[hotkey] u = attack\n";
-		Entity card = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_card()); //draw_card(ecs, current_entt, participant_hand[index]);
+		Entity card = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_cardhand_index()); //draw_card(ecs, current_entt, participant_hand[index]);
+		std::cout << "Attacking with " << scene.getECS().getComponent<Components::Name>(card)->value << std::endl;
 		std::cout << "Select Enemy to use card on" << std::endl;
 		TBSys.set_selected_card(true);	//selected_card[index] = true;
 		highlight_cells(scene.getECS(), TBSys, grid2D);
@@ -112,6 +116,18 @@ void game_update()
 		next(ecs);*/
 	}
 
+	if (grid2D.attack_event.triggered)
+	{
+		if (grid2D.attack_event.returned_value == NULL_INDEX) return;
+		Entity current_entt = TBSys.current();
+		Entity cardID = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_cardhand_index());
+		TBSys.play_card(scene.getECS(), grid2D.attack_event.returned_value, cardID);
+		TBSys.set_selected_card(false);
+		TBSys.next(scene.getECS());
+
+		grid2D.attack_event.triggered = false;
+		grid2D.attack_event.returned_value = NULL_INDEX;
+	}
 
 	IM.update(scene.getECS());
 	card.update(scene.getECS(), TBSys);
@@ -162,22 +178,36 @@ AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid:
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
 {
 	//=========================Highlight_cells=================================
-	f32& card_range = ecs.getComponent<Components::Attack>(tbs.get_selected_card())->range;
+	Entity card_ID = TBSys.draw_card(scene.getECS(), tbs.current(), tbs.get_selected_cardhand_index());
+	f32& card_range = ecs.getComponent<Components::Attack>(card_ID)->range;
+
+	std::string card_name = ecs.getComponent<Components::Name>(card_ID)->value;
 
 	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
 
 	//iterate over range * 2 
 	for (int ite = 1; ite <= card_range; ++ite)
 	{
-		gb.get_highlighted_cell().push_back({ cur_part_pos.x + ite , cur_part_pos.y });
-		gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y + ite });
-		gb.get_highlighted_cell().push_back({ cur_part_pos.x - ite , cur_part_pos.y });
-		gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y - ite });
-
-		gb.get_attack_activate()[cur_part_pos.x + ite][cur_part_pos.y] = true;
-		gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y + ite] = true;
-		gb.get_attack_activate()[cur_part_pos.x - ite][cur_part_pos.y] = true;
-		gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y - ite] = true;
+		if (cur_part_pos.x + ite < MAX_I) 
+		{
+			gb.get_highlighted_cell().push_back({ cur_part_pos.x + ite , cur_part_pos.y });
+			gb.get_attack_activate()[cur_part_pos.x + ite][cur_part_pos.y] = true;
+		}
+		if (cur_part_pos.y + ite < MAX_J)
+		{
+			gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y + ite });
+			gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y + ite] = true;
+		}
+		if (cur_part_pos.x - ite > -1) 
+		{
+			gb.get_highlighted_cell().push_back({ cur_part_pos.x - ite , cur_part_pos.y });
+			gb.get_attack_activate()[cur_part_pos.x - ite][cur_part_pos.y] = true;
+		}
+		if (cur_part_pos.y - ite > -1) 
+		{ 
+			gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y - ite }); 
+			gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y - ite] = true;
+		}
 	}
 	//=========================================================================
 }

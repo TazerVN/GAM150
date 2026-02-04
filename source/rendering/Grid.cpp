@@ -228,14 +228,6 @@ namespace Grid
 			}
 		}
 	}*/
-	void func(Entity E)
-	{
-
-	}
-
-	void function()
-	{
-	}
 
 	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
@@ -247,9 +239,11 @@ namespace Grid
 			//if the card is selected and the selected pos is entity
 			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
 			{
-				//attack the entity on the tile
-				tbs->play_card(ecs, pos[x][y], tbs->get_selected_card());
-				tbs->next(ecs);
+				/*tbs->play_card(ecs, pos[x][y], cardID);
+				tbs->set_selected_card(false);
+				tbs->next(ecs);*/
+				attack_event.triggered = true;
+				attack_event.returned_value = pos[x][y];
 
 				unhighlight_cells();
 				return;

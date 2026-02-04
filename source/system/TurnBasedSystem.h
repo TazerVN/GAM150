@@ -17,7 +17,7 @@ namespace TBS
 
 		// Actors on Borad
 		std::vector<Entity> participants;
-		std::vector<size_t> participant_hand{0};
+		std::vector<size_t> participant_hand{0};	//hand index not the entity of the card
 		std::vector<bool> selected_card{false};
 		enum class GM : uint8_t { Player = 0, Enemy = 1 };
 
@@ -42,7 +42,7 @@ namespace TBS
 		void start(ECS::Registry& ecs);
 
 		Entity current();
-		Entity get_selected_card();
+		Entity get_selected_cardhand_index();
 		bool is_current_selected_card();
 		void set_selected_card(bool bol);
 		void next(ECS::Registry& ecs);		// advance turn after successful action OR yield
@@ -76,9 +76,10 @@ namespace TBS
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 		void play_card(ECS::Registry& ecs,Entity target, Entity cardID);
-
+		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs,std::vector<Entity>& entities);
+
 
 	};
 }

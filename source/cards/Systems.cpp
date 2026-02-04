@@ -1,31 +1,25 @@
 #include "../ECS/ECSystem.h"
 #include "../rendering/Mesh_factory.h"
 #include "AEEngine.h"
+#include "../util/util.h"
 
 #include "Systems.h"
 
 namespace System {
-	void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)
-	{
-		//attack component
-		ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
-		//test if card have attack id
-		bool yes = ecs.getBitMask()[cardID].test(atkID);
-		if (!yes)
-		{
-			return;
-		}
+	//void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)
+	//{
+	//	//attack component
+	//	ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
+	//	//test if card have attack id
+	//	if (!ecs.getBitMask()[cardID].test(atkID)) return;
 
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
-		if (!(ecs.getBitMask()[target].test(hpID)))
-		{
-			return;
-		}
+	//	ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+	//	if (!(ecs.getBitMask()[target].test(hpID))) return;
 
-		//if the have components then reduce the HP amount
-		ecs.getComponent<Components::HP>(target)->value -= ecs.getComponent<Components::Attack>(cardID)->damage;
-
-	}
+	//	//if the have components then reduce the HP amount
+	//	ecs.getComponent<Components::HP>(target)->value -= ecs.getComponent<Components::Attack>(cardID)->damage;
+	//	
+	//}
 
 	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name , f32 hp, AEGfxTexture* pTex)
 	{
@@ -81,7 +75,6 @@ namespace System {
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		size_t index = user_cards->get_nextIndex();
 		user_cards->card_storage[index] = cardID;
-		int i = 0;
 	}
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
