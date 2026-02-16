@@ -11,6 +11,7 @@
 #include "../level/GameState.h"
 #include "../system/TurnBasedSystem.h"
 #include "../UI/UI.h"
+#include "../util/Event.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
@@ -26,14 +27,16 @@ Scene scene;
 TransformSystem::TransformSystem TS;
 InputSystem::InputManager IM;
 TextureFactory::TextureFactory TF;
-TBS::TurnBasedSystem TBSys;
+//initialized event handler before tbs
+EventPool eventPool;
+TBS::TurnBasedSystem TBSys(eventPool);
 Grid::GameBoard grid2D;
 RenderSystem::RenderSystem RM;
-
 CardInteraction::CardHand card{};
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
 
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
+AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -51,30 +54,15 @@ void game_init()
 	AEGfxSetCamPosition(camerax, cameray);
 	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
 
-
-	////START OF TURNBASED CODE
-	//auto& ecs = level1.getECS();
-
-	//// Change these strings to whatever you named them in scene init
-	//Entity player = FindEntityByName(ecs, "Player");
-	//Entity enemy = FindEntityByName(ecs, "Enemy");
-
-	//// Add if found
-	//TBSys.add_participant(ecs, player);
-	//TBSys.add_participant(ecs, enemy);
-	//TBSys.start(ecs);
-
-	////END
-
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	scene.init(mf, TF);	
-	grid2D.init(scene.getECS(),mf,&TBSys,TF.getTexture(1), 0, w_height/3);
+	grid2D.init(scene.getECS(),mf,&TBSys, eventPool,TF.getTexture(1), 0, w_height/3);
 
 	std::vector<Entity>& vec = scene.entities_store();
 
 	for (size_t i = 0; i < scene.entities_store().size(); ++i)
 	{
-		grid2D.placeEntity(scene.getECS(), scene.entities_store()[i], 5 + i, 5);
+		grid2D.placeEntity(scene.getECS(), scene.entities_store()[i], 5 + i * 3, 5);
 	}
 
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
@@ -102,32 +90,26 @@ void game_update()
 	scene.update();
 	TBSys.update(scene.getECS(),scene.entities_store());
 
-
-	if (AEInputCheckTriggered(AEVK_U))
+	//==================Handle Events===============================
+	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
 	{
-		Entity current_entt = TBSys.current();
-		std::cout << "[hotkey] u = attack\n";
-		Entity card = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_cardhand_index()); //draw_card(ecs, current_entt, participant_hand[index]);
-		std::cout << "Attacking with " << scene.getECS().getComponent<Components::Name>(card)->value << std::endl;
-		std::cout << "Select Enemy to use card on" << std::endl;
-		TBSys.set_selected_card(true);	//selected_card[index] = true;
 		highlight_cells(scene.getECS(), TBSys, grid2D);
-		/*play_card(ecs, card);
-		next(ecs);*/
+		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
-	if (grid2D.attack_event.triggered)
+	if (eventPool.pool[ATTACK_EVENT].triggered)
 	{
-		if (grid2D.attack_event.returned_value == NULL_INDEX) return;
+		if (eventPool.pool[ATTACK_EVENT].returned_value == NULL_INDEX) return;
 		Entity current_entt = TBSys.current();
 		Entity cardID = TBSys.draw_card(scene.getECS(), current_entt, TBSys.get_selected_cardhand_index());
-		TBSys.play_card(scene.getECS(), grid2D.attack_event.returned_value, cardID);
+		TBSys.play_card(scene.getECS(), eventPool.pool[ATTACK_EVENT].returned_value, cardID);
 		TBSys.set_selected_card(false);
 		TBSys.next(scene.getECS());
 
-		grid2D.attack_event.triggered = false;
-		grid2D.attack_event.returned_value = NULL_INDEX;
+		eventPool.pool[ATTACK_EVENT].triggered = false;
+		eventPool.pool[ATTACK_EVENT].returned_value = NULL_INDEX;
 	}
+	//==============================================================
 
 	IM.update(scene.getECS());
 	card.update(scene.getECS(), TBSys);
@@ -150,29 +132,6 @@ void game_exit()
 {
 	mf.MeshFree();
 	AEGfxDestroyFont(pFont);
-}
-
-AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
-{
-	Entity cur_part = tbs.current();
-	std::array<std::array<Entity, MAX_J>, MAX_I>& positions = gb.get_pos();
-
-	AEVec2 temp = { -1.f,-1.f };
-
-	for (int i = 0; i < MAX_I; ++i)
-	{
-		for (int j = 0; j < MAX_J; ++j)
-		{
-			if (positions[i][j] == cur_part)
-			{
-				AEVec2Set(&temp, (f32)i, (f32)j);
-				break;
-			}
-		}
-		if (temp.x != -1.f && temp.y != -1.f) break;
-	}
-
-	return temp;
 }
 
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
@@ -210,4 +169,27 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 		}
 	}
 	//=========================================================================
+}
+
+AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
+{
+	Entity cur_part = tbs.current();
+	std::array<std::array<Entity, MAX_J>, MAX_I>& positions = gb.get_pos();
+
+	AEVec2 temp = { -1.f,-1.f };
+
+	for (int i = 0; i < MAX_I; ++i)
+	{
+		for (int j = 0; j < MAX_J; ++j)
+		{
+			if (positions[i][j] == cur_part)
+			{
+				AEVec2Set(&temp, (f32)i, (f32)j);
+				break;
+			}
+		}
+		if (temp.x != -1.f && temp.y != -1.f) break;
+	}
+
+	return temp;
 }

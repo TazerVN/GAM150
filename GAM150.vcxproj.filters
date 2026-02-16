@@ -22,6 +22,7 @@
     <ClCompile Include="source\util\util.cpp" />
     <ClCompile Include="source\ECS\Scene.cpp" />
     <ClCompile Include="source\system\TargettingSystem.cpp" />
+    <ClCompile Include="source\util\Event.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -46,5 +47,6 @@
     <ClInclude Include="source\util\util.h" />
     <ClInclude Include="source\ECS\Scene.h" />
     <ClInclude Include="source\system\TargettingSystem.h" />
+    <ClInclude Include="source\util\Event.h" />
   </ItemGroup>
 </Project>

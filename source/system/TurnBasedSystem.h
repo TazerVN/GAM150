@@ -4,7 +4,7 @@
 #include "../ECS/Scene.h"
 #include "../ECS/Components.h"
 #include "../cards/Systems.h"
-#include "../util/util.h"
+#include "../util/Event.h"
 #include "AEEngine.h"
 namespace TBS 
 {
@@ -14,6 +14,8 @@ namespace TBS
 		size_t index{ 0 };
 		bool is_active{ false };
 		size_t cur_round{0};
+
+		EventPool* evsptr = nullptr;
 
 		// Actors on Borad
 		std::vector<Entity> participants;
@@ -38,7 +40,9 @@ namespace TBS
 		void round_start(ECS::Registry& ecs);
 	public:
 		//===========Set Ups============================
+		TurnBasedSystem(EventPool& evs);
 		void add_participant(ECS::Registry& ecs,Entity parti);
+		void remove_participant(ECS::Registry& ecs, Entity parti);
 		void start(ECS::Registry& ecs);
 
 		Entity current();
@@ -51,23 +55,23 @@ namespace TBS
 		bool active();
 		std::vector<size_t>& hand();
 		size_t round();
-		//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
-		//TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
-		static Entity FindEntityByName(ECS::Registry& ecs, const char* name)
-		{
-			ECS::ComponentStorage<Components::Name>* names = ecs.getComponentStorage<Components::Name>();
-			ECS::ComponentTypeID nID = ECS::getComponentTypeID<Components::Name>();
+		////TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
+		////TEMPORARY HELPER WILL MOVE AFTER FEW DAYS (jsut to implement and test the turn based FOR NOW)
+		//static Entity FindEntityByName(ECS::Registry& ecs, const char* name)
+		//{
+		//	ECS::ComponentStorage<Components::Name>* names = ecs.getComponentStorage<Components::Name>();
+		//	ECS::ComponentTypeID nID = ECS::getComponentTypeID<Components::Name>();
 
-			for (int i = 0; i < names->getCount(); ++i)
-			{
-				if (!ecs.getBitMask()[i].test(nID)) continue;
-				auto* nm = ecs.getComponent<Components::Name>(i);
-				if (nm && nm->value == name)
-					return (Entity)i;
-			}
+		//	for (int i = 0; i < names->getCount(); ++i)
+		//	{
+		//		if (!ecs.getBitMask()[i].test(nID)) continue;
+		//		auto* nm = ecs.getComponent<Components::Name>(i);
+		//		if (nm && nm->value == name)
+		//			return (Entity)i;
+		//	}
 
-			return (Entity)NULL_INDEX;
-		}
+		//	return (Entity)NULL_INDEX;
+		//}
 		//============Yield / Turn Control=============
 		void yield_current();				// current participant yields
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
@@ -79,7 +83,6 @@ namespace TBS
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs,std::vector<Entity>& entities);
-
 
 	};
 }

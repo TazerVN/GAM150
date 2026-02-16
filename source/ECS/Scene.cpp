@@ -14,6 +14,9 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	System::add_card_player(ecs, temp, ss);	//add silver slash attack
 	System::add_card_player(ecs, temp, fa);	//add sword attack
+
+	playerID = temp;//important must set the playerID !!!!!!!!!!!
+
 	add_entity(temp);
 
 	//Add enemy0
@@ -63,4 +66,9 @@ std::vector<Entity>& Scene::entities_store()
 ECS::Registry& Scene::getECS()
 {
 	return ecs;
+}
+
+Entity& Scene::get_playerID()
+{
+	return playerID;
 }

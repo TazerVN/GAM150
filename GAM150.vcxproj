@@ -24,6 +24,7 @@
     <ClCompile Include="source\rendering\TextureFactory.cpp" />
     <ClCompile Include="source\system\TargettingSystem.cpp" />
     <ClCompile Include="source\system\TurnBasedSystem.cpp" />
+    <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\util\Pathfinding.cpp" />
     <ClCompile Include="source\rendering\renderSystem.cpp" />
     <ClCompile Include="source\cards\Systems.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="source\rendering\TextureFactory.h" />
     <ClInclude Include="source\system\TargettingSystem.h" />
     <ClInclude Include="source\system\TurnBasedSystem.h" />
+    <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\util\Pathfinding.h" />
     <ClInclude Include="source\rendering\renderSystem.h" />
     <ClInclude Include="source\cards\Systems.h" />

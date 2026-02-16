@@ -5,6 +5,7 @@
 #include "../rendering/TextureFactory.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 #include "../system/TurnBasedSystem.h"
+#include "../util/Event.h"
 
 #include <vector>
 #include <array>
@@ -26,6 +27,7 @@ namespace Grid
 			//=============Render====================
 		Entity cur;
 		TBS::TurnBasedSystem* tbs;
+		EventPool* evsptr = nullptr;
 		s32 cur_x, cur_y;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
@@ -40,7 +42,7 @@ namespace Grid
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 		public:
-		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, AEGfxTexture* pTex, f32 ox, f32 oy);
+		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs , AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		//i'm testing some stuff on the below function VVVV 
 		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
@@ -52,9 +54,8 @@ namespace Grid
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
 
 		void unhighlight_cells();
-
-		Event attack_event;
 	};
+	
 	//class Grid
 	//{
 	//	public:

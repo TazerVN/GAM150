@@ -239,11 +239,8 @@ namespace Grid
 			//if the card is selected and the selected pos is entity
 			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
 			{
-				/*tbs->play_card(ecs, pos[x][y], cardID);
-				tbs->set_selected_card(false);
-				tbs->next(ecs);*/
-				attack_event.triggered = true;
-				attack_event.returned_value = pos[x][y];
+				evsptr->pool[ATTACK_EVENT].triggered = true;
+				evsptr->pool[ATTACK_EVENT].returned_value = pos[x][y];
 
 				unhighlight_cells();
 				return;
@@ -315,10 +312,12 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbs = tbsys;
+		evsptr = &evs;
 
+		evsptr->pool.push_back(Event{});
 		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
 		this->offset.x = ox;
 		this->offset.y = oy;
@@ -482,7 +481,7 @@ namespace Grid
 		return atk_activate;
 	}
 
-	void GameBoard::unhighlight_cells()
+	void GameBoard:: unhighlight_cells()
 	{
 		{
 			//un-highligh cells

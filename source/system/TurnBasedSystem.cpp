@@ -1,4 +1,6 @@
 #include "TurnBasedSystem.h"
+#include "../rendering/Grid.h"
+#include "../util/util.h"
 #include <iomanip>
 namespace TBS
 {
@@ -40,6 +42,12 @@ namespace TBS
 			start(ecs);
 	}
 
+	TurnBasedSystem::TurnBasedSystem(EventPool& evs)
+	{
+		evsptr = &evs;
+		evsptr->pool.push_back(Event{});
+	}
+
 	void TurnBasedSystem::add_participant(ECS::Registry& ecs, Entity parti)
 	{
 		ECS::ComponentTypeID tbs_id = ECS::getComponentTypeID<Components::TurnBasedStats>();
@@ -56,6 +64,18 @@ namespace TBS
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	
 		force_start_if_ready(ecs);
+	}
+
+	void TurnBasedSystem::remove_participant(ECS::Registry& ecs, Entity parti)
+	{
+		for (int i = 0; i < participants.size(); ++i)
+		{
+			if (*(participants.begin() + i) == parti)
+			{
+				participants.erase(participants.begin() + i);	//remove the target from turn system
+				ecs.getComponent<Components::Mesh>(parti)->on = false;
+			}
+		}
 	}
 
 	void TurnBasedSystem::start(ECS::Registry& ecs)
@@ -235,12 +255,17 @@ namespace TBS
 
 			//later check for type of card and call accordingly
 			//for now it's attack system
+
+			Entity card_ID = draw_card(ecs, current(), get_selected_cardhand_index());
+			f32& card_range = ecs.getComponent<Components::Attack>(card_ID)->range;
+
+
 			target_died = Call_AttackSystem(ecs, cardID, target);
 		}
 
 		if (target_died)
 		{
-			
+			remove_participant(ecs,target);
 		}
 	}
 
@@ -257,7 +282,7 @@ namespace TBS
 
 		//if the have components then reduce the HP amount
 		ecs.getComponent<Components::HP>(target)->value -= ecs.getComponent<Components::Attack>(cardID)->damage;
-		if (ecs.getComponent<Components::HP>(target)->value < 0.f) ret = true;
+		if (ecs.getComponent<Components::HP>(target)->value <= 0.f) ret = true;
 
 		return ret;
 	}
@@ -290,6 +315,8 @@ namespace TBS
 	void TurnBasedSystem::update(ECS::Registry& ecs,std::vector<Entity>& entities)
 	{
 		// ================= CONSOLE LOG of TBS =================
+
+		
 
 		if (!is_active)
 		{
@@ -351,6 +378,18 @@ namespace TBS
 			{
 				participant_hand[index] = 1;
 			}
+
+			if (AEInputCheckTriggered(AEVK_U))
+			{
+				Entity current_entt = current();
+				std::cout << "[hotkey] u = attack\n";
+				Entity card = draw_card(ecs, current_entt, get_selected_cardhand_index()); //draw_card(ecs, current_entt, participant_hand[index]);
+				std::cout << "Attacking with " << ecs.getComponent<Components::Name>(card)->value << std::endl;
+				std::cout << "Select Enemy to use card on" << std::endl;
+				set_selected_card(true);	//selected_card[index] = true;
+				evsptr->pool[HIGHLIGHT_EVENT].triggered = true;
+			}
+
 			// y = yield (no more turns this round)
 			if (AEInputCheckTriggered(AEVK_Y))
 			{
