@@ -9,7 +9,7 @@
 #include <string>
 #include <functional>
 
-#include "../rendering/Mesh_factory.h"
+#include "../factory/MeshFactory.h"
 
 
 #define MAX_CARDS 1000

@@ -3,7 +3,7 @@
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../system/transformSystem.h"
-#include "Grid.h"
+#include "GridSystem.h"
 
 constexpr int BUFFER_CAPACITY = 100;
 

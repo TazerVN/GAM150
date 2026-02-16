@@ -4,7 +4,7 @@
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
 #include "level/GameState.h"
-#include "level/level1.h"
+#include "level/level.h"
 // ---------------------------------------------------------------------------
 
 // main

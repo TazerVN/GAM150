@@ -3,9 +3,9 @@
 #define GAMEOBJECT_H
 #include "AEEngine.h"
 #include "ECSystem.h"
-#include "../rendering/Mesh_factory.h"
-#include "../rendering/renderSystem.h"
-#include "../rendering/grid.h"
+#include "../factory/MeshFactory.h"
+#include "../system/renderSystem.h"
+#include "../system/GridSystem.h"
 
 
 namespace GameObject

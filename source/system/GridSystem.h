@@ -1,8 +1,8 @@
 #pragma once
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
-#include "../rendering/Mesh_factory.h"
-#include "../rendering/TextureFactory.h"
+#include "../factory/MeshFactory.h"
+#include "../factory/TextureFactory.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 #include "../system/TurnBasedSystem.h"
 #include "../util/Event.h"

@@ -2,9 +2,9 @@
 
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
-#include "../rendering/Mesh_factory.h"
-#include "../rendering/renderSystem.h"
-#include "../rendering/grid.h"
+#include "../factory/MeshFactory.h"
+#include "../system/renderSystem.h"
+#include "../system/GridSystem.h"
 /*
 class UI
 {

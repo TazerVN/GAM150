@@ -1,5 +1,5 @@
 #include "TurnBasedSystem.h"
-#include "../rendering/Grid.h"
+#include "../system/GridSystem.h"
 #include "../util/util.h"
 #include <iomanip>
 namespace TBS

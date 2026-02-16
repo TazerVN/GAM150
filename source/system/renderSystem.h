@@ -2,7 +2,7 @@
 #ifndef RS
 #define RS
 
-#include "Mesh_factory.h"
+#include "../factory/MeshFactory.h"
 #include <vector>
 #include "../ECS/ECSystem.h"
 

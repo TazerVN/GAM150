@@ -2,7 +2,7 @@
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
 #include "../system/TurnBasedSystem.h"
-#include "../rendering/Grid.h"
+#include "../System/GridSystem.h"
 
 bool point2circle_intersect(float pointX, float pointY, float circleX, float circleY, float diameter);
 bool point2rect_intersect(float rx, float ry, float w, float h, float px, float py);

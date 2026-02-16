@@ -1,4 +1,4 @@
-#include "Grid.h"
+#include "GridSystem.h"
 #include <utility> // for std::move
 #include "../util/util.h"
 

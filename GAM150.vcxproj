@@ -11,23 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\cards\cardInteraction.cpp" />
+    <ClCompile Include="source\UI\cardInteraction.cpp" />
     <ClCompile Include="source\ECS\Components.cpp" />
     <ClCompile Include="source\ECS\ECSystem.cpp" />
     <ClCompile Include="source\system\inputSystem.cpp" />
-    <ClCompile Include="source\level\level1.cpp" />
+    <ClCompile Include="source\level\level.cpp" />
     <ClCompile Include="source\ECS\gameObject.cpp" />
     <ClCompile Include="source\level\GameState.cpp" />
-    <ClCompile Include="source\rendering\Grid.cpp" />
+    <ClCompile Include="source\system\GridSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\rendering\Mesh_factory.cpp" />
-    <ClCompile Include="source\rendering\TextureFactory.cpp" />
+    <ClCompile Include="source\factory\MeshFactory.cpp" />
+    <ClCompile Include="source\factory\TextureFactory.cpp" />
     <ClCompile Include="source\system\TargettingSystem.cpp" />
     <ClCompile Include="source\system\TurnBasedSystem.cpp" />
     <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\util\Pathfinding.cpp" />
-    <ClCompile Include="source\rendering\renderSystem.cpp" />
-    <ClCompile Include="source\cards\Systems.cpp" />
+    <ClCompile Include="source\system\renderSystem.cpp" />
+    <ClCompile Include="source\factory\EntityFactory.cpp" />
     <ClCompile Include="source\UI\Text.cpp" />
     <ClCompile Include="source\system\transformSystem.cpp" />
     <ClCompile Include="source\UI\UI.cpp" />
@@ -36,23 +36,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
-    <ClInclude Include="source\cards\cardInteraction.h" />
+    <ClInclude Include="source\UI\cardInteraction.h" />
     <ClInclude Include="source\ECS\Components.h" />
     <ClInclude Include="source\ECS\ECSystem.h" />
     <ClInclude Include="source\system\inputSystem.h" />
-    <ClInclude Include="source\level\level1.h" />
+    <ClInclude Include="source\level\level.h" />
     <ClInclude Include="source\ECS\gameObject.h" />
     <ClInclude Include="source\level\GameState.h" />
     <ClInclude Include="source\global.h" />
-    <ClInclude Include="source\rendering\Grid.h" />
-    <ClInclude Include="source\rendering\Mesh_factory.h" />
-    <ClInclude Include="source\rendering\TextureFactory.h" />
+    <ClInclude Include="source\system\GridSystem.h" />
+    <ClInclude Include="source\factory\MeshFactory.h" />
+    <ClInclude Include="source\factory\TextureFactory.h" />
     <ClInclude Include="source\system\TargettingSystem.h" />
     <ClInclude Include="source\system\TurnBasedSystem.h" />
     <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\util\Pathfinding.h" />
-    <ClInclude Include="source\rendering\renderSystem.h" />
-    <ClInclude Include="source\cards\Systems.h" />
+    <ClInclude Include="source\system\renderSystem.h" />
+    <ClInclude Include="source\factory\EntityFactory.h" />
     <ClInclude Include="source\UI\Text.h" />
     <ClInclude Include="source\system\transformSystem.h" />
     <ClInclude Include="source\UI\UI.h" />

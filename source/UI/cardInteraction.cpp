@@ -1,4 +1,4 @@
-#include "../cards/cardInteraction.h"
+#include "cardInteraction.h"
 #include "../system/transformSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"

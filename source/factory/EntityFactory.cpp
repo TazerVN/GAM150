@@ -1,9 +1,9 @@
 #include "../ECS/ECSystem.h"
-#include "../rendering/Mesh_factory.h"
+#include "../factory/MeshFactory.h"
 #include "AEEngine.h"
 #include "../util/util.h"
 
-#include "Systems.h"
+#include "EntityFactory.h"
 
 namespace System {
 	//void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)

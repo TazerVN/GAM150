@@ -1,8 +1,8 @@
 #pragma once
 #include "../ECS/ECSystem.h"
-#include "../cards/Systems.h"
+#include "../factory/EntityFactory.h"
 #include "../system/TurnBasedSystem.h"
-#include "../rendering/TextureFactory.h"
+#include "../factory/TextureFactory.h"
 #include "AEEngine.h"
 
 class Scene
