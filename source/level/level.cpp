@@ -111,7 +111,7 @@ void game_update()
 	}
 	//==============================================================
 
-	IM.update(scene.getECS());
+	IM.update(scene.getECS(), scene.getGBS());
 	card.update(scene.getECS(), TBSys);
 
 	//==========Object updates===========

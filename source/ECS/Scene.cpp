@@ -62,6 +62,9 @@ std::vector<Entity>& Scene::entities_store()
 {
 	return entities;
 }
+PhaseSystem::GameBoardState& Scene::getGBS(){
+	return gbs;
+}
 
 ECS::Registry& Scene::getECS()
 {

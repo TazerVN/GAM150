@@ -1,8 +1,11 @@
 #include "inputSystem.h"
 namespace InputSystem
 {
-	void InputManager::update(ECS::Registry& ecs)
+	void InputManager::update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs)
 	{
+
+		if(gbs.getPlayerPhase() == PhaseSystem::PlayerPhase::WAITING) return;
+
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
 
 		this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;

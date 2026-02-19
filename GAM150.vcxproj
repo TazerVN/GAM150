@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\system\PhaseSystem.cpp" />
     <ClCompile Include="source\UI\cardInteraction.cpp" />
     <ClCompile Include="source\ECS\Components.cpp" />
     <ClCompile Include="source\ECS\ECSystem.cpp" />
@@ -33,8 +34,10 @@
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="source\util\util.cpp" />
     <ClCompile Include="source\ECS\Scene.cpp" />
+    <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\system\PhaseSystem.h" />
     <ClInclude Include="source\ECS\card.h" />
     <ClInclude Include="source\UI\cardInteraction.h" />
     <ClInclude Include="source\ECS\Components.h" />
@@ -58,6 +61,7 @@
     <ClInclude Include="source\UI\UI.h" />
     <ClInclude Include="source\util\util.h" />
     <ClInclude Include="source\ECS\Scene.h" />
+    <ClInclude Include="source\system\TimerSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

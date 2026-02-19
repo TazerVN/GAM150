@@ -20,6 +20,8 @@ constexpr size_t MAX_HAND = 6;
 
 namespace Components
 {
+	
+
 	enum DamageType
 	{
 		SLASHING,
@@ -28,12 +30,19 @@ namespace Components
 		FIRE
 	};
 
+
 	struct color
 	{
 		f32 r;
 		f32 g;
 		f32 b;
 		f32 a;
+	};
+
+	struct Timer{
+		int seconds;
+		int max_seconds;
+		bool start;
 	};
 
 	struct GridCell{
@@ -76,7 +85,7 @@ namespace Components
 		color p_color;
 	};
 
-	class Input
+	struct Input
 	{
 		public:
 		bool on;
