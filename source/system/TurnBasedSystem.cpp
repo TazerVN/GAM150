@@ -42,9 +42,12 @@ namespace TBS
 			start(ecs);
 	}
 
-	TurnBasedSystem::TurnBasedSystem(EventPool& evs)
+	void TurnBasedSystem::init(EventPool& eventPool)
 	{
-		evsptr = &evs;
+		evsptr = &eventPool;
+		//highlight event
+		evsptr->pool.push_back(Event{});
+		//unhighlight event
 		evsptr->pool.push_back(Event{});
 	}
 

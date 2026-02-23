@@ -14,6 +14,7 @@ namespace ECS
 {
 	using ComponentTypeID = size_t;
 	using ComponentBitMask = std::bitset<MAX_COMPONENT>;
+
 	inline ComponentTypeID getNextComponentTypeID()
 	{
 		static ComponentTypeID lastTypeID = 0;

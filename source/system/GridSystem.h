@@ -52,8 +52,6 @@ namespace Grid
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
-
-		void unhighlight_cells();
 	};
 	
 	//class Grid

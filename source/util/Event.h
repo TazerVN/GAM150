@@ -4,7 +4,8 @@
 enum EVENT_TYPE
 {
 	HIGHLIGHT_EVENT = 0,
-	ATTACK_EVENT = 1,
+	UNHIGHLIGHT_EVENT = 1,
+	ATTACK_EVENT = 2,
 };
 
 struct Event

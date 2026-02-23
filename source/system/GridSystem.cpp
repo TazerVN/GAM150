@@ -242,12 +242,13 @@ namespace Grid
 				evsptr->pool[ATTACK_EVENT].triggered = true;
 				evsptr->pool[ATTACK_EVENT].returned_value = pos[x][y];
 
-				unhighlight_cells();
+				tbs->set_selected_card(false);
+				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 				return;
 			}
 			else {
-				tbs->set_selected_card(false);
-				unhighlight_cells();
+				//tbs->set_selected_card(false);
+				//evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 				std::cout << "Select a valid cell with entity!" << std::endl;
 			}
 			return;
@@ -480,42 +481,4 @@ namespace Grid
 	{
 		return atk_activate;
 	}
-
-	void GameBoard:: unhighlight_cells()
-	{
-		{
-			//un-highligh cells
-			for (AEVec2 a : highlighted_cells)
-			{
-				atk_activate[a.x][a.y] = false;
-				highlighted_cells.clear();
-			}
-		}
-	}
 }
-
-
-
-//void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])
-//{
-//	for (int i = 0; i < MAX_I; ++i)
-//	{
-//		for (int j = 0; j < MAX_J; ++j)
-//		{
-//			float x = i * ((float)CELL_WIDTH + offset);
-//			float y = j * ((float)CELL_HEIGHT + offset);
-//			cells[i][j] = Shape2D::Rectangle(x, y, CELL_WIDTH, CELL_HEIGHT);
-//		}
-//	}
-//}
-
-//void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J])
-//{
-//	for (int i = 0; i < MAX_I; ++i)
-//	{
-//		for (int j = 0; j < MAX_J; ++j)
-//		{
-//			cells[i][j].render();
-//		}
-//	}
-//}
