@@ -25,6 +25,7 @@
     <ClCompile Include="source\factory\EntityFactory.cpp" />
     <ClCompile Include="source\system\TimerSystem.cpp" />
     <ClCompile Include="source\system\PhaseSystem.cpp" />
+    <ClCompile Include="source\UI\cardInformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -52,5 +53,6 @@
     <ClInclude Include="source\factory\EntityFactory.h" />
     <ClInclude Include="source\system\TimerSystem.h" />
     <ClInclude Include="source\system\PhaseSystem.h" />
+    <ClInclude Include="source\UI\cardInformation.h" />
   </ItemGroup>
 </Project>

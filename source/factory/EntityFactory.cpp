@@ -21,7 +21,7 @@ namespace System {
 	//	
 	//}
 
-	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, std::string name , f32 hp, AEGfxTexture* pTex)
+	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -50,7 +50,7 @@ namespace System {
 		return id;
 	}
 
-	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, std::string name, f32 atk,Components::DamageType dtype,f32 range)
+	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, const char* name, f32 atk,Components::DamageType dtype,f32 range)
 	{
 		Entity id = ecs.createEntity();
 		//default player values

@@ -19,9 +19,9 @@ namespace CardInteraction
 
 		for (s8 i = 0; i < MAX_CARDS_HAND; i++)
 		{
-			f32 card_x = x + f32(i) / arr.size() * width * 2;
+			f32 card_x = x + f32(i) / curr_hand_display.size() * width * 2;
 			f32 card_y = y;
-			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);
+			this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace CardInteraction
 
 			f32 card_x = x + f32(i) / cs->size() * width * 2;
 			f32 card_y = y;
-			this->arr[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
+			this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
 		}
 	}
 
@@ -59,10 +59,10 @@ namespace CardInteraction
 
 		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
 
-		for (s8 i = 0; i < this->arr.size(); i++)
+		for (s8 i = 0; i < this->curr_hand_display.size(); i++)
 		{
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(this->arr[i]);
-			Components::Input* in = ecs.getComponent<Components::Input>(this->arr[i]);
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(this->curr_hand_display[i]);
+			Components::Input* in = ecs.getComponent<Components::Input>(this->curr_hand_display[i]);
 			if (i < (cs->size() - 1))
 			{
 				mesh->on = true;
@@ -131,6 +131,7 @@ namespace CardInteraction
 
 		return id;
 	}
+
 
 	
 

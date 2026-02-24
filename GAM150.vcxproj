@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\UI\cardInformation.cpp" />
     <ClCompile Include="source\system\PhaseSystem.cpp" />
     <ClCompile Include="source\UI\cardInteraction.cpp" />
     <ClCompile Include="source\ECS\Components.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\UI\cardInformation.h" />
     <ClInclude Include="source\system\PhaseSystem.h" />
     <ClInclude Include="source\ECS\card.h" />
     <ClInclude Include="source\UI\cardInteraction.h" />

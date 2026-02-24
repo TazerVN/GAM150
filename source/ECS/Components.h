@@ -119,7 +119,7 @@ namespace Components
 	};
 	struct Name
 	{
-		std::string value;
+		const char* value;
 	};
 	struct HP
 	{
