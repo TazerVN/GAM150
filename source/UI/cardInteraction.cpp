@@ -100,7 +100,7 @@ namespace CardInteraction
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
-		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
+		Components::Color color{1.0f, 1.0f, 1.0f ,1.0f};
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
 		Components::Switch s{ false };
 		ecs.addComponent(id, s);
@@ -118,7 +118,7 @@ namespace CardInteraction
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3*width/4, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z};
-		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
+		Components::Color color{1.0f, 1.0f, 1.0f ,1.0f};
 		Components::Texture texture{pTex};
 		Components::Input input( AEVK_LBUTTON, true, fun, [id, &ecs] {card_onHover(ecs, id);}, [id, &ecs] { card_offHover(ecs, id); });
 		Components::Switch s{false};

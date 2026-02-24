@@ -30,13 +30,21 @@ namespace Components
 		FIRE
 	};
 
+	struct Text{
+		const char* text;
+		s8& fontID;
+		s8 z;
+		Text(const char*, s8&, s8);
+	};
 
-	struct color
+
+	struct RGBA
 	{
 		f32 r;
 		f32 g;
 		f32 b;
 		f32 a;
+		RGBA(f32 r, f32 g, f32 b, f32 a);
 	};
 
 	struct Timer{
@@ -81,8 +89,9 @@ namespace Components
 
 	struct Color
 	{
-		color c_color;
-		color p_color;
+		RGBA c_color;
+		RGBA p_color;
+		Color(f32 r, f32 g, f32 b, f32 a);
 	};
 
 	struct Input
