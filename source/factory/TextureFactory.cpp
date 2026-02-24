@@ -3,33 +3,63 @@ namespace TextureFactory
 {
 	TextureFactory::TextureFactory()
 	{
-		data.clear();
+		card.clear();
+		character.clear();
+		floor.clear();
 		this->fontID = -1;
 	}
 	TextureFactory::~TextureFactory()
 	{
-		for(AEGfxTexture* pTex: this->data){
+		for(AEGfxTexture* pTex: this->card){
+			AEGfxTextureUnload(pTex);
+		}
+		for (AEGfxTexture* pTex : this->character)
+		{
+			AEGfxTextureUnload(pTex);
+		}
+		for (AEGfxTexture* pTex : this->floor)
+		{
 			AEGfxTextureUnload(pTex);
 		}
 	}
 
 	void TextureFactory::textureInit(){
-		this->addTexture(AEGfxTextureLoad("../../Assets/cardSample.png"));
-		this->addTexture(AEGfxTextureLoad("../../Assets/floor4.png"));
-		this->addTexture(AEGfxTextureLoad("../../Assets/enemy1.png"));
-		this->addTexture(AEGfxTextureLoad("../../Assets/enemy2.png"));
-		this->fontID = AEGfxCreateFont("../../Assets/cool.ttf", 64.F);
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardSample.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardDisplay.png"));
+
+
+		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
+
+		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy1.png"));
+		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy2.png"));
+		this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
 	}
 
 
-	AEGfxTexture* TextureFactory::getTexture(s8 id)
+	AEGfxTexture* TextureFactory::getTextureCard(s8 id)
 	{
-		return this->data.at(id);
+		return this->card.at(id);
+	}
+	AEGfxTexture* TextureFactory::getTextureFloor(s8 id)
+	{
+		return this->floor.at(id);
+	}
+	AEGfxTexture* TextureFactory::getTextureChar(s8 id)
+	{
+		return this->character.at(id);
 	}
 
-	void TextureFactory::addTexture(AEGfxTexture* pTex)
+	void TextureFactory::addTextureCard(AEGfxTexture* pTex)
 	{
-		this->data.push_back(pTex);
+		this->card.push_back(pTex);
+	}
+	void TextureFactory::addTextureFloor(AEGfxTexture* pTex)
+	{
+		this->floor.push_back(pTex);
+	}
+	void TextureFactory::addTextureChar(AEGfxTexture* pTex)
+	{
+		this->character.push_back(pTex);
 	}
 
 	s8 TextureFactory::getFontID(){

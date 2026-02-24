@@ -13,7 +13,7 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	Entity temp; 
 	
 	//Add player
-	temp = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
+	temp = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	System::add_card_player(ecs, temp, ss);	//add silver slash attack
 	System::add_card_player(ecs, temp, fa);	//add fa attack
@@ -23,13 +23,13 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	add_entity(temp);
 
 	//Add enemy0
-	temp = System::create_player(ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTexture(3));
+	temp = System::create_player(ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
 	System::add_card_player(ecs, temp, fa);	//add fire attack
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
 	TBSys.init(eventPool);
-	BattleGrid.init(ecs, mf, &TBSys, eventPool, tf.getTexture(1), 0, w_height / 3);
+	BattleGrid.init(ecs, mf, &TBSys, eventPool, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -110,7 +110,7 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 	Entity card_ID = tbs.draw_card(ecs, tbs.current(), tbs.get_selected_cardhand_index());
 	f32& card_range = ecs.getComponent<Components::Attack>(card_ID)->range;
 
-	std::string card_name = ecs.getComponent<Components::Name>(card_ID)->value;
+	const char* card_name = ecs.getComponent<Components::Name>(card_ID)->value;
 
 	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
 

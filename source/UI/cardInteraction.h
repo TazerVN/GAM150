@@ -16,7 +16,8 @@ namespace CardInteraction
 	class CardHand
 	{
 		private:
-		std::array<Entity, MAX_CARDS_HAND> arr{};
+		std::array<Entity, MAX_CARDS_HAND> curr_hand_display{};
+		std::array<Entity, MAX_CARDS_HAND> curr_card_id{};
 		std::array<bool, MAX_CARDS_HAND> activate{};
 		public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);

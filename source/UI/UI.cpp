@@ -1,5 +1,6 @@
 #include "../ECS/gameObject.h"
 #include "../ECS/ECSystem.h"
+#include "../ECS/Scene.h"
 #include "../factory/TextureFactory.h"
 #include "../UI/UI.h"
 #include <functional>
@@ -7,9 +8,10 @@
 namespace UI
 {
 
-	void UIManager::init(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf){
-		this->list.push_back(ui_button(ecs, mf, 0.8F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 200, 0.3 * 200, 0, 2, [] { std::cout << "YAY"; }));
-		this->list.push_back(ui_text(ecs, mf, tf ,0.72F, -0.67F, 0.3F, 0, 0, 5, "End Turn"));
+	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf){
+
+		this->list.push_back(ui_button(scene.getECS(), mf, 0.8F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 200, 0.3 * 200, 0, 2, [&scene] { scene.getTBS().next(scene.getECS()); }));
+		this->list.push_back(ui_text(scene.getECS(), mf, tf ,0.72F, -0.67F, 0.3F, 0, 0, 5, "End Turn"));
 	}
 
 	Entity UIManager::ui_hp_bar(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
@@ -58,5 +60,6 @@ namespace UI
 
 		return id;
 	}
+
 
 }
