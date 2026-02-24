@@ -74,7 +74,24 @@ namespace System {
 		//get reference to the user's card_storage
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		size_t index = user_cards->get_nextIndex();
+		if (index == -1) return; 
 		user_cards->card_storage[index] = cardID;
+	}
+
+	void remove_card_player(ECS::Registry& ecs, Entity user, size_t index)
+	{
+		ECS::ComponentTypeID card_storage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
+		//if user dont have card storage return
+		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
+
+		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
+		//if the index is invalid return
+		if (index >= MAX_HAND || index < 0) return;
+
+		//set the value into null index
+		user_cards->card_storage[index] = NULL_INDEX;
+		//reduce the index amount
+		user_cards->index()--;
 	}
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
@@ -82,6 +99,7 @@ namespace System {
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING,1.f));	//0
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,2.f));			//1
 		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Steven Sword", 100.f, Components::SLASHING,3.f));	//2
+		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Gun", 20.f, Components::PIERCING, 4.f));
 	};
 	Entity& CardSystem::get_card(int index) 
 	{

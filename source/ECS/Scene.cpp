@@ -16,7 +16,7 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	temp = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTexture(2));
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	System::add_card_player(ecs, temp, ss);	//add silver slash attack
-	System::add_card_player(ecs, temp, fa);	//add sword attack
+	System::add_card_player(ecs, temp, fa);	//add fa attack
 
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 

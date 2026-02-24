@@ -10,7 +10,7 @@ namespace TBS
 	class TurnBasedSystem
 	{
 	private:
-		size_t index{ 0 };
+		size_t cur_player{ 0 };
 		bool is_active{ false };
 		size_t cur_round{0};
 

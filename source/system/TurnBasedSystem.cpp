@@ -76,7 +76,8 @@ namespace TBS
 			if (*(participants.begin() + i) == parti)
 			{
 				participants.erase(participants.begin() + i);	//remove the target from turn system
-				ecs.getComponent<Components::Mesh>(parti)->on = false;
+				
+				ecs.destroyEntity(parti);
 			}
 		}
 	}
@@ -99,7 +100,7 @@ namespace TBS
 
 		is_active = true;
 		cur_round = 1;
-		index = 0;
+		cur_player = 0;
 
 		std::cout << "Started Combat" << std::endl;
 		std::cout << "[DBG] TBS this ptr = " << this << std::endl; //TEMP
@@ -126,25 +127,25 @@ namespace TBS
 	{
 		// If called unsafely, avoid crashing; return 0-ish
 		// (If your Entity type is not integer-like, tell me and we’ll adjust.)
-		if (!is_active || participants.empty() || index >= participants.size())
+		if (!is_active || participants.empty() || cur_player >= participants.size())
 			return Entity{};
 
-		return participants[index];
+		return participants[cur_player];
 	}
 
 	Entity TurnBasedSystem::get_selected_cardhand_index()
 	{
-		return participant_hand[index];
+		return participant_hand[cur_player];
 	}
 
 	bool TurnBasedSystem::is_current_selected_card()
 	{
-		return selected_card[index];
+		return selected_card[cur_player];
 	}
 
 	void TurnBasedSystem::set_selected_card(bool bol)
 	{
-		selected_card[index] = bol;
+		selected_card[cur_player] = bol;
 	}
 
 	void TurnBasedSystem::yield_current()
@@ -194,8 +195,8 @@ namespace TBS
 		}
 
 		++gm_turn_count;
-		++index;
-		if (index >= participants.size()) index = 0;
+		++cur_player;
+		if (cur_player >= participants.size()) cur_player = 0;
 
 		std::cout << "[TBS] Turn " << gm_turn_count
 			<< " | Round " << cur_round
@@ -212,7 +213,7 @@ namespace TBS
 	{
 		is_active = false;
 		cur_round = 0;
-		index = 0;
+		cur_player = 0;
 		participants.clear();
 		participant_hand.clear();
 		selected_card.clear();
@@ -323,17 +324,6 @@ namespace TBS
 
 		if (!is_active)
 		{
-			/*Entity player = FindEntityByName(ecs, "Player1");
-			Entity enemy = FindEntityByName(ecs, "Enemy1");
-
-			if (player != Entity{} && enemy != Entity{})
-			{
-				add_participant(ecs, player);
-				add_participant(ecs, enemy);
-
-				
-			}*/
-
 			for (size_t i = 0; i < entities.size(); ++i)
 			{
 				add_participant(ecs, entities[i]);
@@ -375,11 +365,27 @@ namespace TBS
 
 			if (AEInputCheckTriggered(AEVK_1))
 			{
-				participant_hand[index] = 0;
+				participant_hand[cur_player] = 0;
 			}
 			if (AEInputCheckTriggered(AEVK_2))
 			{
-				participant_hand[index] = 1;
+				participant_hand[cur_player] = 1;
+			}
+			if (AEInputCheckTriggered(AEVK_3))
+			{
+				participant_hand[cur_player] = 2;
+			}
+			if (AEInputCheckTriggered(AEVK_4))
+			{
+				participant_hand[cur_player] = 3;
+			}
+			if (AEInputCheckTriggered(AEVK_5))
+			{
+				participant_hand[cur_player] = 4;
+			}
+			if (AEInputCheckTriggered(AEVK_6))
+			{
+				participant_hand[cur_player] = 5;
 			}
 
 			if (AEInputCheckTriggered(AEVK_U))

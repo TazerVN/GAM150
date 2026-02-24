@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <memory>
 #include <unordered_map>
+#include <queue>
 #include "Components.h"
 
 using Entity = size_t;
@@ -32,6 +33,7 @@ namespace ECS
 	{
 	public:
 		virtual ~IComponentStorage() = default;
+		virtual void delete_component(Entity e) = 0;
 	};
 
 	template<typename Component>
@@ -61,16 +63,22 @@ namespace ECS
 			}
 			return nullptr;	//no component found!
 		}
-		void delete_component(Entity e)
+		void delete_component(Entity e) override
 		{
 			size_t index = sparse_set[e];
 			if (index == NULL_INDEX) return;	//if no component to delete return
 			//find entity id for back
 			Entity backEntityID = dens2sparse.back();
+
 			std::swap(dense_set[index], dense_set.back());	//swap target index to back
+			std::swap(dense_set[index], dense_set.back());	//swap target index to back
+
 			sparse_set[e] = NULL_INDEX;
-			sparse_set[backEntityID] = index;
-			dens2sparse[index] = backEntityID;
+			if (e != backEntityID)
+			{
+				sparse_set[backEntityID] = index;
+				dens2sparse[index] = backEntityID;
+			}
 			dense_set.pop_back();
 			dens2sparse.pop_back();
 		}
@@ -85,6 +93,7 @@ namespace ECS
 		Entity nextEntity = 0;
 		std::vector<ComponentBitMask> entitySignatures;
 		std::unordered_map<ComponentTypeID, std::unique_ptr<IComponentStorage>> componentStorage;
+		std::queue<Entity> removed_que;
 	public:
 
 		std::vector<ComponentBitMask>& getBitMask()
@@ -98,10 +107,31 @@ namespace ECS
 
 		Entity createEntity()
 		{
+			if (!removed_que.empty())
+			{
+				Entity e = removed_que.front();
+				removed_que.pop();	//pops from the front
+				return e;
+			}
 			Entity e = nextEntity++;
 			entitySignatures.emplace_back();
 			return e;
 		}
+
+		void destroyEntity(Entity e)
+		{
+			//i represent ComponentTypeID
+			for (size_t i = 0; i < entitySignatures[e].size(); ++i)
+			{
+				if (entitySignatures[e].test(i))
+				{
+					removeComponent(e, i);
+				}
+			}
+			entitySignatures[e].reset();
+			removed_que.push(e);
+		}
+
 		template<typename T>
 		void addComponent(Entity e, const T& component)
 		{
@@ -154,6 +184,17 @@ namespace ECS
 			auto* storage =
 				static_cast<ComponentStorage<T>*>(it->second.get());
 
+			storage->delete_component(e);
+			entitySignatures[e].reset(typeID);
+		}
+
+		void removeComponent(Entity e, const ComponentTypeID typeID)
+		{
+			auto it = componentStorage.find(typeID);
+			if (it == componentStorage.end())
+				return;
+
+			auto* storage = it->second.get();
 			storage->delete_component(e);
 			entitySignatures[e].reset(typeID);
 		}

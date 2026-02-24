@@ -247,8 +247,8 @@ namespace Grid
 				return;
 			}
 			else {
-				//tbs->set_selected_card(false);
-				//evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+				tbs->set_selected_card(false);
+				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 				std::cout << "Select a valid cell with entity!" << std::endl;
 			}
 			return;

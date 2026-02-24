@@ -126,7 +126,10 @@ namespace Components
 			if (next_index < card_storage.size()) return next_index++;
 			else return -1;
 		}
-		size_t size(){return this->next_index;}
+		
+		size_t& index() { return next_index; }
+		size_t size() const {return this->next_index;}
+
 		std::array<size_t, MAX_HAND> card_storage = {NULL_INDEX};
 	};
 
