@@ -298,7 +298,7 @@ namespace Grid
 
 		Components::Transform trans{ pos, pos, size, {size.x / 2, size.y / 2}, 0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
-		Components::Color color{ {1.0f, 1.0f, 1.0f ,1.0f},{1.0f, 1.0f, 1.0f ,1.0f} };
+		Components::Color color{1.0f, 1.0f, 1.0f ,1.0f};
 		Components::Texture texture{ pTex };
 		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);	//add input system for grid
 

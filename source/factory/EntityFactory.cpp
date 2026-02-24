@@ -35,7 +35,7 @@ namespace System {
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
-		Components::Color color{ { 1.0f, 1.0f, 1.0f ,1.0f }, { 1.0f, 1.0f, 1.0f ,1.0f } };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);

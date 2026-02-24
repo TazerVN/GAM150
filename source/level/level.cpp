@@ -17,12 +17,12 @@ float cameray = 0.0f;
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
-f32 w, h;
 
 MeshFactory mf{};
 Scene scene;
 
 InputSystem::InputManager IM;
+UI::UIManager UIM;
 TextureFactory::TextureFactory TF;
 //initialized event handler before tbs
 RenderSystem::RenderSystem RM;
@@ -39,27 +39,22 @@ void game_init()
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
-	mf.MeshFactoryInit();
 	TF.textureInit();
+	mf.MeshFactoryInit();
 
 	AEGfxSetCamPosition(camerax, cameray);
-	pFont = AEGfxCreateFont("../../Assets/liberation-mono.ttf", (int)72.f);
 
 	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
 	scene.init(mf, TF);	
+	UIM.init(scene.getECS(), mf, TF);
 
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
-
-	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 200, 0, 0);
-	//Entity hp_bar = UI::hp_bar(scene.getECS(), mf, 0, 0, 1000, 500, 0, 2);
 
 	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTexture(0));
 
 	RM.RenderSystem_init(scene.getECS());
 
-	// Text to print
-	AEGfxGetPrintSize(pFont, pText, 1.f, &w, &h);
 }
 
 void game_update()
@@ -83,7 +78,7 @@ void game_update()
 	//========(Render)====================
 	scene.getBattleGrid().update(scene.getECS());
 	RM.RM_render(scene.getECS());
-	AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
+	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
 }
 void game_exit()

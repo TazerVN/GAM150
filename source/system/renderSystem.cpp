@@ -7,12 +7,15 @@
 
 constexpr int BUFFER_CAPACITY = 100;
 
+
+
 namespace RenderSystem
 {
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
 	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer);
 
-	RenderSystem::RenderSystem(){
+	RenderSystem::RenderSystem()
+	{
 		this->e_buffer.clear();
 		this->z_buffer.clear();
 		this->e_buffer.reserve(BUFFER_CAPACITY);
@@ -25,16 +28,25 @@ namespace RenderSystem
 	{
 
 		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
+		ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
 
 		for (int i = 0; i < ecs.sizeEntity(); i++)
 		{
 
-			
-			if (!ecs.getBitMask()[i].test(meshID)) continue;
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(i);
 
-			this->e_buffer.push_back(i);
-			this->z_buffer.push_back(mesh->z);
+			if (ecs.getBitMask()[i].test(meshID))
+			{
+				Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(i);
+
+				this->e_buffer.push_back(i);
+				this->z_buffer.push_back(mesh->z);
+			}
+			else if (ecs.getBitMask()[i].test(textID)){
+				Components::Text* text = ecs.getComponent<Components::Text>(i);
+
+				this->e_buffer.push_back(i);
+				this->z_buffer.push_back(text->z);
+			}
 		}
 
 		bubbleSort(this->e_buffer, this->z_buffer);
@@ -50,40 +62,56 @@ namespace RenderSystem
 
 			int current_e = this->e_buffer[i];
 			//int current_e = i;
-			
+
 
 			ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
 			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+			ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
+			ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
 
-			if (!ecs.getBitMask()[current_e].test(meshID)) continue;
 			if (!ecs.getBitMask()[current_e].test(transID)) continue;
-
-			
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
-			if(mesh->on == false) continue;
+			if (!ecs.getBitMask()[current_e].test(colorID)) continue;
 
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
-			Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
 			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
 
 
-			if (mesh->r_mode == TEXTURE)
+
+
+			if (ecs.getBitMask()[current_e].test(meshID))
 			{
-				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-				AEGfxTextureSet(texture->texture, 0, 0);
-				AEGfxSetTransparency(1.0f);
-				AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-				AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
-				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+				Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
+				if (mesh->on == false) continue;
+
+
+
+				if (mesh->r_mode == TEXTURE)
+				{
+					Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
+					AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+					AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+					AEGfxTextureSet(texture->texture, 0, 0);
+					AEGfxSetTransparency(1.0f);
+					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+					AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+				}
+				else
+				{
+					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+					AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+				}
 			}
-			else
+			else if (ecs.getBitMask()[current_e].test(textID))
 			{
-				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-				AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-				AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
-				render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+				Components::Text* text = ecs.getComponent<Components::Text>(current_e);
+
+				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
 			}
+
+
 
 		}
 	}

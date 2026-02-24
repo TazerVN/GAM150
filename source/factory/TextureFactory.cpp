@@ -4,6 +4,7 @@ namespace TextureFactory
 	TextureFactory::TextureFactory()
 	{
 		data.clear();
+		this->fontID = -1;
 	}
 	TextureFactory::~TextureFactory()
 	{
@@ -17,6 +18,7 @@ namespace TextureFactory
 		this->addTexture(AEGfxTextureLoad("../../Assets/floor4.png"));
 		this->addTexture(AEGfxTextureLoad("../../Assets/enemy1.png"));
 		this->addTexture(AEGfxTextureLoad("../../Assets/enemy2.png"));
+		this->fontID = AEGfxCreateFont("../../Assets/cool.ttf", 64.F);
 	}
 
 
@@ -30,4 +32,7 @@ namespace TextureFactory
 		this->data.push_back(pTex);
 	}
 
+	s8& TextureFactory::getFontID(){
+		return this->fontID;
+	}
 }
