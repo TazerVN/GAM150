@@ -38,11 +38,11 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	}
 
 	//remove all the groups with empty vector
-	ecs.remove_empty_groups();
 }
 
 void Scene::update()
 {
+
 	TBSys.update(ecs, entities);
 
 	//==================Handle Events===============================

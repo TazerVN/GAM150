@@ -76,7 +76,6 @@ namespace TBS
 			if (*(participants.begin() + i) == parti)
 			{
 				participants.erase(participants.begin() + i);	//remove the target from turn system
-				
 				ecs.destroyEntity(parti);
 			}
 		}
