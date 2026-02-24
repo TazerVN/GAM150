@@ -67,7 +67,7 @@ void game_update()
 	
 	scene.update();
 	IM.update(scene.getECS(), scene.getGBS());
-	card.update(scene.getECS(), scene.getTBS());
+	card.update_logic(scene.getECS(), scene.getTBS(), mf, TF);
 
 	//==========Object updates===========
 

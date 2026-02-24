@@ -11,6 +11,8 @@ namespace InputSystem
 		this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
 		this->mousey = -this->mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
 
+
+
 		for (int i = 0; i < ecs.sizeEntity(); i++)
 		{
 
