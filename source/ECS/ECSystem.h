@@ -88,13 +88,41 @@ namespace ECS
 		std::vector<size_t>dens2sparse;	//reference for dense_set to sparse
 	};
 
+	//===============================Registry============================================
 	class Registry {
 	private:
 		Entity nextEntity = 0;
 		std::vector<ComponentBitMask> entitySignatures;
 		std::unordered_map<ComponentTypeID, std::unique_ptr<IComponentStorage>> componentStorage;
 		std::queue<Entity> removed_que;
-		std::unordered_map < ComponentTypeID, std::vector<Entity> > entityGroups;
+		std::unordered_map < ComponentBitMask, std::vector<Entity> > entityGroups;
+
+		void add_to_group(Entity e)
+		{
+			ComponentBitMask bitmask = entitySignatures[e];
+			entityGroups[bitmask].push_back(e);
+		}
+
+		void remove_from_group(Entity e)
+		{
+			//remove them from the group
+			ComponentBitMask bitmask = entitySignatures[e];
+			auto it = entityGroups.find(bitmask);
+			if (it == entityGroups.end()) return;
+			std::vector<Entity>& entG = it->second;
+
+			//swap the desired entity with last and pop
+			for (Entity& ent : entG)
+			{
+				if (ent == e)
+				{
+					std::swap(ent, entG.back());
+					entG.pop_back();
+					break;
+				}
+			}
+		}
+
 	public:
 
 		std::vector<ComponentBitMask>& getBitMask()
@@ -108,14 +136,17 @@ namespace ECS
 
 		Entity createEntity()
 		{
+			Entity e;
 			if (!removed_que.empty())
 			{
-				Entity e = removed_que.front();
+				e = removed_que.front();
 				removed_que.pop();	//pops from the front
-				return e;
 			}
-			Entity e = nextEntity++;
-			entitySignatures.emplace_back();
+			else
+			{
+				e = nextEntity++;
+				entitySignatures.emplace_back();
+			}
 			return e;
 		}
 
@@ -131,6 +162,7 @@ namespace ECS
 			}
 			entitySignatures[e].reset();
 			removed_que.push(e);
+			remove_from_group(e);
 		}
 
 		template<typename T>
@@ -144,14 +176,20 @@ namespace ECS
 
 			if (!baseStorage)
 			{
-				std::cout << "No Base storage is there created one!\n";
 				baseStorage = std::make_unique<ComponentStorage<T>>();
+				std::cout << "No Base storage is there created one!\n";
 			}
 			else std::cout << "Base storage is found \n";
 			//get storage
 			ComponentStorage<T>* storage = static_cast<ComponentStorage<T>*>(baseStorage.get());
 			storage->add_component(e, component);
+
+			//remove from old group
+			remove_from_group(e);
+
+			//set the new signature and add to respective group
 			entitySignatures[e].set(typeID);
+			add_to_group(e);
 		}
 		//get code
 		template<typename T>
@@ -209,6 +247,22 @@ namespace ECS
 			return static_cast<ComponentStorage<T>*>(n->second.get());
 		}
 
+		std::unordered_map<ComponentBitMask,std::vector<Entity>> const& groups()
+		{
+			return entityGroups;
+		}
+
+		void remove_empty_groups()
+		{
+			for (auto it = entityGroups.begin(); it != entityGroups.end();)
+			{
+				if (it->second.empty())
+				{
+					it = entityGroups.erase(it);
+				}
+				else it++;
+			}
+		}
 	};
 };
 

@@ -55,11 +55,9 @@ namespace System {
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Name nm{ name };
-		Components::Card_Storage card_storage;
 		Components::Attack attack{ atk, dtype, range};
 		ecs.addComponent(id, attack);
 		ecs.addComponent(id, nm);
-		ecs.addComponent(id, card_storage);
 
 		return id;
 	}

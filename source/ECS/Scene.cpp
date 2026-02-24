@@ -36,6 +36,9 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 		BattleGrid.placeEntity(ecs, entities[i], 5 + i * 3, 5);
 	}
+
+	//remove all the groups with empty vector
+	ecs.remove_empty_groups();
 }
 
 void Scene::update()
