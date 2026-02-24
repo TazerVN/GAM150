@@ -49,23 +49,23 @@ void Scene::update()
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
+
+	if (eventPool.pool[PLAY_CARD_EVENT].triggered)
+	{
+		if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
+		Entity current_entt = TBSys.current();
+		Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
+		TBSys.play_card(ecs, eventPool.pool[PLAY_CARD_EVENT].returned_value, cardID);
+
+		eventPool.pool[PLAY_CARD_EVENT].triggered = false;
+		eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
+		TBSys.next(ecs);
+	}
+
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{
 		unhighlight_cells(BattleGrid);
 		eventPool.pool[UNHIGHLIGHT_EVENT].triggered = false;
-	}
-
-	if (eventPool.pool[ATTACK_EVENT].triggered)
-	{
-		if (eventPool.pool[ATTACK_EVENT].returned_value == NULL_INDEX) return;
-		Entity current_entt = TBSys.current();
-		Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
-		TBSys.play_card(ecs, eventPool.pool[ATTACK_EVENT].returned_value, cardID);
-		TBSys.set_selected_card(false);
-		TBSys.next(ecs);
-
-		eventPool.pool[ATTACK_EVENT].triggered = false;
-		eventPool.pool[ATTACK_EVENT].returned_value = NULL_INDEX;
 	}
 	//==============================================================
 }
@@ -147,7 +147,7 @@ void unhighlight_cells(Grid::GameBoard& gb)
 		//un-highligh cells
 		for (AEVec2 a : gb.get_highlighted_cell())
 		{
-			gb.get_attack_activate()[a.x][a.y] = false;
+			gb.get_attack_activate()[int(a.x)][int(a.y)] = false;
 			gb.get_highlighted_cell().clear();
 		}
 	}

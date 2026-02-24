@@ -239,11 +239,11 @@ namespace Grid
 			//if the card is selected and the selected pos is entity
 			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
 			{
-				evsptr->pool[ATTACK_EVENT].triggered = true;
-				evsptr->pool[ATTACK_EVENT].returned_value = pos[x][y];
+				evsptr->pool[PLAY_CARD_EVENT].triggered = true;
+				evsptr->pool[PLAY_CARD_EVENT].returned_value = pos[x][y];
+				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 
 				tbs->set_selected_card(false);
-				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 				return;
 			}
 			else {

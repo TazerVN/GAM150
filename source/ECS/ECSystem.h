@@ -94,6 +94,7 @@ namespace ECS
 		std::vector<ComponentBitMask> entitySignatures;
 		std::unordered_map<ComponentTypeID, std::unique_ptr<IComponentStorage>> componentStorage;
 		std::queue<Entity> removed_que;
+		std::unordered_map < ComponentTypeID, std::vector<Entity> > entityGroups;
 	public:
 
 		std::vector<ComponentBitMask>& getBitMask()

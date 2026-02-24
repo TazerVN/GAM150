@@ -163,10 +163,9 @@ namespace TBS
 		gm_yielded[gi] = true;
 
 		std::cout << "[TBS] " << gm_name(current_gm) << " GM yielded.\n";
+
 	}
-
-
-	void TurnBasedSystem::next(ECS::Registry& ecs)
+	void TurnBasedSystem::next(ECS::Registry & ecs)
 	{
 		if (!is_active) return;
 
@@ -245,11 +244,6 @@ namespace TBS
 	}
 	void TurnBasedSystem::play_card(ECS::Registry& ecs,Entity target, Entity cardID)
 	{
-		//commented old zejin's code
-		/*Entity target = NULL_INDEX;
-		if (current_gm == GM::Player)
-			target = participants[(size_t)GM::Enemy];
-		else target = participants[(size_t)GM::Player];*/
 		bool target_died = false;
 
 		if (target != NULL_INDEX)
