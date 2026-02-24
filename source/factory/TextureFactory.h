@@ -15,7 +15,7 @@ namespace TextureFactory
 		TextureFactory();
 		~TextureFactory();
 		AEGfxTexture* getTexture(s8 id);
-		s8& getFontID();
+		s8 getFontID();
 		void addTexture(AEGfxTexture* pTex);
 		
 	};

@@ -15,7 +15,7 @@ namespace UI
 		std::vector<Entity> list;
 		public:
 		UIManager() = default;
-		void init(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
+		void init(ECS::Registry& ecs, MeshFactory& mf,  TextureFactory::TextureFactory& tf);
 		Entity ui_hp_bar(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 		Entity ui_button(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func);
 		Entity ui_text(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, const char* text);

@@ -32,7 +32,7 @@ namespace TextureFactory
 		this->data.push_back(pTex);
 	}
 
-	s8& TextureFactory::getFontID(){
+	s8 TextureFactory::getFontID(){
 		return this->fontID;
 	}
 }
