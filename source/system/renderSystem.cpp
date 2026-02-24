@@ -28,24 +28,38 @@ namespace RenderSystem
 	{
 
 		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
+		ECS::ComponentTypeID textureID = ECS::getComponentTypeID<Components::Texture>();
 		ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
 
-		for (int i = 0; i < ecs.sizeEntity(); i++)
+		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		//create bitsets
+		ECS::ComponentBitMask objMask;
+		objMask.set(transID); objMask.set(meshID); objMask.set(colorID);
+
+		ECS::ComponentBitMask textMask;
+		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
+
+		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 		{
-
-
-			if (ecs.getBitMask()[i].test(meshID))
+			if ((it->first & objMask) == objMask)
 			{
-				Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(i);
-
-				this->e_buffer.push_back(i);
-				this->z_buffer.push_back(mesh->z);
+				for (Entity ent : it->second)
+				{
+					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
+					this->e_buffer.push_back(ent);
+					this->z_buffer.push_back(mesh->z);
+				}
 			}
-			else if (ecs.getBitMask()[i].test(textID)){
-				Components::Text* text = ecs.getComponent<Components::Text>(i);
+			else if ((it->first & textMask) == textMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Text* text = ecs.getComponent<Components::Text>(ent);
 
-				this->e_buffer.push_back(i);
-				this->z_buffer.push_back(text->z);
+					this->e_buffer.push_back(ent);
+					this->z_buffer.push_back(text->z);
+				}
 			}
 		}
 
@@ -56,6 +70,106 @@ namespace RenderSystem
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
+
+		//twan's old code
+		
+		//for (int i = 0; i < this->e_buffer.size(); i++)
+		//{
+		//
+		//	int current_e = this->e_buffer[i];
+		//	//int current_e = i;
+		//
+		//
+		//	ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
+		//	ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		//	ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
+		//	ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		//
+		//	if (!ecs.getBitMask()[current_e].test(transID)) continue;
+		//	if (!ecs.getBitMask()[current_e].test(colorID)) continue;
+		//
+		//	Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
+		//	Components::Color* color = ecs.getComponent<Components::Color>(current_e);
+		//
+		//
+		//
+		//
+		//	if (ecs.getBitMask()[current_e].test(meshID))
+		//	{
+		//		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
+		//		if (mesh->on == false) continue;
+		//
+		//
+		//
+		//		if (mesh->r_mode == TEXTURE)
+		//		{
+		//			Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
+		//			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		//			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		//			AEGfxTextureSet(texture->texture, 0, 0);
+		//			AEGfxSetTransparency(1.0f);
+		//			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+		//			AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+		//			render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+		//		}
+		//		else
+		//		{
+		//			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		//			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+		//			AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+		//			render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+		//		}
+		//	}
+		//	else if (ecs.getBitMask()[current_e].test(textID))
+		//	{
+		//		Components::Text* text = ecs.getComponent<Components::Text>(current_e);
+		//
+		//		AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+		//	}
+		//
+		//
+		//}
+
+		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
+		ECS::ComponentTypeID textureID = ECS::getComponentTypeID<Components::Texture>();
+		ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
+
+		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		//create bitsets
+		ECS::ComponentBitMask objMask;
+		objMask.set(transID); objMask.set(meshID);
+
+		ECS::ComponentBitMask textMask;
+		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
+
+		this->e_buffer.clear();
+		this->z_buffer.clear();
+
+		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+		{
+			if ((it->first & objMask) == objMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
+					this->e_buffer.push_back(ent);
+					this->z_buffer.push_back(mesh->z);
+				}
+			}
+			
+			else if ((it->first & textMask) == textMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Text* text = ecs.getComponent<Components::Text>(ent);
+					this->e_buffer.push_back(ent);
+					this->z_buffer.push_back(text->z);
+				}
+			}
+		}
+		int l = 0;
+		bubbleSort(this->e_buffer, this->z_buffer);
 
 		for (int i = 0; i < this->e_buffer.size(); i++)
 		{
@@ -74,9 +188,6 @@ namespace RenderSystem
 
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
 			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
-
-
-
 
 			if (ecs.getBitMask()[current_e].test(meshID))
 			{
@@ -110,7 +221,6 @@ namespace RenderSystem
 
 				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
 			}
-
 
 		}
 	}

@@ -247,7 +247,7 @@ namespace ECS
 			return static_cast<ComponentStorage<T>*>(n->second.get());
 		}
 
-		std::unordered_map<ComponentBitMask,std::vector<Entity>> const& groups()
+		std::unordered_map<ComponentBitMask,std::vector<Entity>>const& groups()
 		{
 			return entityGroups;
 		}

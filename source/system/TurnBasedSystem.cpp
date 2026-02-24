@@ -49,6 +49,8 @@ namespace TBS
 		evsptr->pool.push_back(Event{});
 		//unhighlight event
 		evsptr->pool.push_back(Event{});
+		//Entity Die event
+		evsptr->pool.push_back(Event{});
 	}
 
 	void TurnBasedSystem::add_participant(ECS::Registry& ecs, Entity parti)
@@ -262,7 +264,9 @@ namespace TBS
 
 		if (target_died)
 		{
-			remove_participant(ecs,target);
+			/*evsptr->pool[ENTITY_DIE_EVENT].triggered = true;
+			evsptr->pool[ENTITY_DIE_EVENT].returned_value = target;*/
+			remove_participant(ecs, target);
 		}
 	}
 

@@ -46,6 +46,14 @@ void Scene::update()
 	TBSys.update(ecs, entities);
 
 	//==================Handle Events===============================
+	//if (eventPool.pool[ENTITY_DIE_EVENT].triggered)
+	//{
+	//	Entity target = eventPool.pool[ENTITY_DIE_EVENT].returned_value;
+	//	//BattleGrid.get_pos()[][];
+	//	TBSys.remove_participant(ecs, target);
+	//}
+
+
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
 	{
 		highlight_cells(ecs, TBSys, BattleGrid);
@@ -65,11 +73,13 @@ void Scene::update()
 		TBSys.next(ecs);
 	}
 
+
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{
 		unhighlight_cells(BattleGrid);
 		eventPool.pool[UNHIGHLIGHT_EVENT].triggered = false;
 	}
+
 	//==============================================================
 }
 
