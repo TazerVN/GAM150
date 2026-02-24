@@ -55,6 +55,7 @@ void game_init()
 
 	RM.RenderSystem_init(scene.getECS());
 
+	scene.getECS().remove_empty_groups();
 }
 
 void game_update()
