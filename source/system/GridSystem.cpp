@@ -324,9 +324,9 @@ namespace Grid
 
 		this->offset.x = ox;
 		this->offset.y = oy;
-		for (int i = 0; i < MAX_I; ++i)
+		for (int i = MAX_I - 1; i >= 0; --i)
 		{
-			for (int j = 0; j < MAX_J; ++j)
+			for (int j = MAX_J - 1; j >= 0; --j)
 			{
 				f32 x = this->offset.x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
 				f32 y = this->offset.y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/

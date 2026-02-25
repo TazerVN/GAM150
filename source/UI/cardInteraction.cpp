@@ -111,7 +111,7 @@ namespace CardInteraction
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
-		Components::Switch s{ false };
+		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -130,7 +130,7 @@ namespace CardInteraction
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
-		Components::Switch s{ false };
+		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);

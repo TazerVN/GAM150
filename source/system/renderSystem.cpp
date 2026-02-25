@@ -1,5 +1,6 @@
 #include "renderSystem.h"
-#include "vector"
+#include <vector>
+#include <utility>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../system/transformSystem.h"
@@ -38,7 +39,7 @@ namespace RenderSystem
 		ECS::ComponentBitMask textMask;
 		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
 
-		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+		/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 		{
 			if ((it->first & objMask) == objMask)
 			{
@@ -61,20 +62,42 @@ namespace RenderSystem
 			}
 		}
 
-		bubbleSort(this->e_buffer, this->z_buffer);
+		bubbleSort(this->e_buffer, this->z_buffer);*/
+
+		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+		{
+			if ((it->first & objMask) == objMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
+					bst.insert(mesh->z, ent);
+				}
+			}
+			else if ((it->first & textMask) == textMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Text* text = ecs.getComponent<Components::Text>(ent);
+					bst.insert(text->z, ent);
+				}
+			}
+		}
+
 	}
 
 	void RenderSystem::RM_render(ECS::Registry& ecs)
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
-
+		std::vector<std::pair<s8, Entity>> buffer;
+		this->bst.inOrder(buffer);
 		//twan's old code
 
-		for (int i = 0; i < this->e_buffer.size(); i++)
+		for (int i = 0; i < buffer.size(); i++)
 		{
 
-			int current_e = this->e_buffer[i];
+			Entity current_e = buffer[i].second;
 			//int current_e = i;
 
 
