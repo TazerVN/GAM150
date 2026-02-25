@@ -8,34 +8,25 @@ namespace TBS
 	// End round Helper
 	bool TurnBasedSystem::everyone_yielded() const
 	{
-		return gm_yielded[0] && gm_yielded[1];
+		for (bool b : yielded)
+		{
+			if (!b) return false;
+		}
+		return true;
 	}
 
 	// round start helper forcing it to start yadda yadda
 	void TurnBasedSystem::round_start(ECS::Registry& ecs)
 	{
-		gm_yielded[0] = false;
-		gm_yielded[1] = false;
-
-		gm_turn_count = 1;
-
-		// If someone yielded first last round, they start this round
-		if (first_yield_set)
-			current_gm = first_yielder;
-
-		first_yield_set = false;
-
-		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
-		std::cout << "[TBS] GM status:\n";
-		std::cout << "  - Player yielded=" << gm_yielded[0] << (current_gm == GM::Player ? "  <-- current" : "") << "\n";
-		std::cout << "  - Enemy  yielded=" << gm_yielded[1] << (current_gm == GM::Enemy ? "  <-- current" : "") << "\n";
-
-		std::cout << "[TBS] Turn " << gm_turn_count << " | Round " << cur_round
-			<< " | Current GM: " << gm_name(current_gm) << "\n";
 
 		debug_print(ecs);
 	}
+	void TurnBasedSystem::round_end()
+	{
+		++cur_round;
 
+		firstYield = -1;
+	}
 	void TurnBasedSystem::force_start_if_ready(ECS::Registry& ecs)
 	{
 		if (!is_active && participants.size() >= 2)
@@ -63,6 +54,7 @@ namespace TBS
 		participants.push_back(parti);
 		participant_hand.push_back(0);	//initialize the card at index 0 as selected by default
 		selected_card.push_back(false);
+		yielded.push_back(false);
 
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	
@@ -102,7 +94,6 @@ namespace TBS
 		cur_player = 0;
 
 		std::cout << "Started Combat" << std::endl;
-		std::cout << "[DBG] TBS this ptr = " << this << std::endl; //TEMP
 		std::cout << std::left << std::setw(30) << "Participants" <<  ':' << "Entity ID"<< std::endl;
 
 		for (size_t i = 0; i < participants.size(); ++i)
@@ -111,17 +102,12 @@ namespace TBS
 				<< participants[i] << ')' << std::endl;
 		}
 
-		//Addition
-		current_gm = GM::Player;   // or whoever should start by default
-		first_yield_set = false;   // no first yielder yet
-		gm_yielded[0] = gm_yielded[1] = false;
-
 		cur_round = 1;
-		gm_turn_count = 0; // round_start will set to 1
 
 		round_start(ecs);  // <-- THIS is the “print Round 1 immediatelyEfix
-
 	}
+
+	//current index of participant
 	Entity TurnBasedSystem::current()
 	{
 		// If called unsafely, avoid crashing; return 0-ish
@@ -150,18 +136,10 @@ namespace TBS
 	void TurnBasedSystem::yield_current()
 	{
 		if (!is_active) return;
+		if (firstYield == -1) firstYield = current();
+		yielded[cur_player] = true;
 
-		const int gi = gm_index(current_gm);
-
-		if (!first_yield_set)
-		{
-			first_yield_set = true;
-			first_yielder = current_gm; // first GM to yield gets first next round
-		}
-
-		gm_yielded[gi] = true;
-
-		std::cout << "[TBS] " << gm_name(current_gm) << " GM yielded.\n";
+		std::cout << "Entity " << current() << " yielded.\n";
 
 	}
 	void TurnBasedSystem::next(ECS::Registry & ecs)
@@ -170,41 +148,28 @@ namespace TBS
 
 		if (everyone_yielded())
 		{
-			++cur_round;
+			round_end();
 			round_start(ecs);
 			return;
 		}
 
-		// swap GM
-		current_gm = (current_gm == GM::Player) ? GM::Enemy : GM::Player;
+		//// If the next GM already yielded, and the other GM also yielded -> round end
+		//if (gm_yielded[gm_index(current_gm)])
+		//{
+		//	if (everyone_yielded())
+		//	{
+		//		++cur_round;
+		//		round_start(ecs);
+		//		return;
+		//	}
 
-		// If the next GM already yielded, and the other GM also yielded -> round end
-		if (gm_yielded[gm_index(current_gm)])
-		{
-			if (everyone_yielded())
-			{
-				++cur_round;
-				round_start(ecs);
-				return;
-			}
-
-			// Otherwise bounce back to the non-yielded GM
-			current_gm = (current_gm == GM::Player) ? GM::Enemy : GM::Player;
-		}
-
-		++gm_turn_count;
+		//	// Otherwise bounce back to the non-yielded GM
+		//	current_gm = (current_gm == GM::Player) ? GM::Enemy : GM::Player;
+		//}
 		++cur_player;
 		if (cur_player >= participants.size()) cur_player = 0;
 
-		std::cout << "[TBS] Turn " << gm_turn_count
-			<< " | Round " << cur_round
-			<< " | Current GM: " << gm_name(current_gm) << "\n";
-		//print out info every action
-		for (size_t i = 0; i < participants.size(); ++i)
-		{
-			f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
-			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
-		}
+		debug_print(ecs);
 	}
 
 	void TurnBasedSystem::end()
@@ -247,7 +212,7 @@ namespace TBS
 
 		if (target != NULL_INDEX)
 		{
-			std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(current_gm)])->value <<
+			std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value <<
 				" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
 
 			//later check for type of card and call accordingly
@@ -283,23 +248,18 @@ namespace TBS
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{
-		std::cout << "[TBS] GM yields: Player=" << gm_yielded[0]
-			<< " Enemy=" << gm_yielded[1] << "\n";
-
-		std::cout << "[TBS] Participants (" << participants.size() << "):\n";
+		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
+		std::cout << "[TBS] Yield status:\n";
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
-			auto* nm = ecs.getComponent<Components::Name>(participants[i]);
+			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << " : " << "Yielded? : " << yielded[i] << " | " << std::endl;
+		}
 
-			// Mark which participant corresponds to the current GM
-			bool is_current =
-				(current_gm == GM::Player && i == 0) ||
-				(current_gm == GM::Enemy && i == 1);
-
-			std::cout << "  - " << (nm ? nm->value : "<no name>")
-				<< " (ID=" << participants[i] << ")"
-				<< (is_current ? "  <-- current GM" : "")
-				<< "\n";
+		//print out info every action
+		for (size_t i = 0; i < participants.size(); ++i)
+		{
+			f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
+			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
 		}
 	}
 
@@ -333,7 +293,6 @@ namespace TBS
 		{
 			std::cout << "[DBG] O pressed. TBS active=" << is_active
 				<< " round=" << cur_round << "\n";
-			debug_print(ecs);
 		}
 
 		if (is_active)
@@ -343,14 +302,7 @@ namespace TBS
 			if (once++ == 0)
 			{
 				std::cout << "[dbg] tbs active, hotkey block running" << std::endl;
-				//print out info every action
-				for (size_t i = 0; i < participants.size(); ++i)
-				{
-					f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
-					std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
-				}
 			}
-
 
 			if (AEInputCheckTriggered(AEVK_1))
 			{

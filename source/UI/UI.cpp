@@ -8,9 +8,15 @@
 namespace UI
 {
 
-	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf){
+	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf) {
 
-		this->list.push_back(ui_button(scene.getECS(), mf, 0.8F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 200, 0.3 * 200, 0, 2, [&scene] { scene.getTBS().next(scene.getECS()); }));
+		this->list.push_back(ui_button(scene.getECS(), mf, 0.8F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 200, 0.3 * 200, 0, 2, 
+			// the lambda function
+			[&scene] 
+			{ 
+				scene.getTBS().next(scene.getECS()); 
+			}
+		));
 		this->list.push_back(ui_text(scene.getECS(), mf, tf ,0.72F, -0.67F, 0.3F, 0, 0, 5, "End Turn"));
 	}
 

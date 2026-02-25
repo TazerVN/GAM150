@@ -18,25 +18,15 @@ namespace TBS
 
 		// Actors on Borad
 		std::vector<Entity> participants;
-		std::vector<size_t> participant_hand{0};	//hand index not the entity of the card
-		std::vector<bool> selected_card{false};
+		std::vector<size_t> participant_hand;	//hand index not the entity of the card
+		std::vector<bool> selected_card;
+		std::vector<bool> yielded;
 		enum class GM : uint8_t { Player = 0, Enemy = 1 };
-
-		// Game Master Turn and Yield States
-		GM current_gm{ GM::Player };
-		bool gm_yielded[2]{ false, false };
-
-		// First GM to yield gets first turn next round
-		bool first_yield_set{ false };
-		GM first_yielder{ GM::Player };
-		size_t gm_turn_count{ 0 };
-
-		// Helpers
-		static constexpr int gm_index(GM gm) { return (gm == GM::Player) ? 0 : 1; }
-		static const char* gm_name(GM gm) { return (gm == GM::Player) ? "Player" : "Enemy"; }
 
 		bool everyone_yielded() const;
 		void round_start(ECS::Registry& ecs);
+		void round_end();
+		Entity firstYield = -1;
 	public:
 		//===========Set Ups============================
 		void init(EventPool& eventPool);

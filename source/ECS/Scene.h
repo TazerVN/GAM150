@@ -14,7 +14,6 @@ class Scene
 private:
 	ECS::Registry ecs;
 	PhaseSystem::GameBoardState gbs;
-
 	System::CardSystem card_system;
 	Entity playerID{ NULL_INDEX };
 	size_t next_entity = 0;
