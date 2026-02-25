@@ -102,6 +102,10 @@ class BinaryTree
 	{
 		this->inOrder(root, result);
 	}
+	void destroy(){
+		this->destroy(root);
+		this->root = nullptr;
+	}
 
 };
 

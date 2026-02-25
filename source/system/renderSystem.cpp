@@ -90,6 +90,10 @@ namespace RenderSystem
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
+
+
+		this->bst.destroy();
+		RenderSystem_init(ecs);
 		std::vector<std::pair<s8, Entity>> buffer;
 		this->bst.inOrder(buffer);
 		//twan's old code
