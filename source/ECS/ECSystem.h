@@ -71,7 +71,7 @@ namespace ECS
 			Entity backEntityID = dens2sparse.back();
 
 			std::swap(dense_set[index], dense_set.back());	//swap target index to back
-			std::swap(dense_set[index], dense_set.back());	//swap target index to back
+			std::swap(dens2sparse[index], dens2sparse.back());	//swap target index to back
 
 			sparse_set[e] = NULL_INDEX;
 			if (e != backEntityID)

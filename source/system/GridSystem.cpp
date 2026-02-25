@@ -331,8 +331,6 @@ namespace Grid
 				f32 x = this->offset.x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
 				f32 y = this->offset.y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
 
-
-				//twan you might want to look at this for grid transform i'll put 0.f for size
 				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
 				this->activate[i][j] = false;
@@ -344,6 +342,7 @@ namespace Grid
 	void GameBoard::placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
+
 		this->pos[x][y] = e;
 
 		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();

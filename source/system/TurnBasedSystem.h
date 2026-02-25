@@ -20,13 +20,10 @@ namespace TBS
 		std::vector<Entity> participants;
 		std::vector<size_t> participant_hand;	//hand index not the entity of the card
 		std::vector<bool> selected_card;
-		std::vector<bool> yielded;
 		enum class GM : uint8_t { Player = 0, Enemy = 1 };
 
-		bool everyone_yielded() const;
 		void round_start(ECS::Registry& ecs);
 		void round_end();
-		Entity firstYield = -1;
 	public:
 		//===========Set Ups============================
 		void init(EventPool& eventPool);
@@ -45,9 +42,9 @@ namespace TBS
 		std::vector<size_t>& hand();
 		size_t round();
 		//============Yield / Turn Control=============
-		void yield_current();				// current participant yields
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
 		void debug_print(ECS::Registry& ecs) const;
+		void show_HP(ECS::Registry& ecs) const;
 
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);

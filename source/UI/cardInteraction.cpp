@@ -29,7 +29,6 @@ namespace CardInteraction
 	{
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-
 		ecs.addComponent(this->id, trans);
 
 

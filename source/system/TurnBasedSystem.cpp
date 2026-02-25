@@ -4,28 +4,15 @@
 #include <iomanip>
 namespace TBS
 {
-
-	// End round Helper
-	bool TurnBasedSystem::everyone_yielded() const
-	{
-		for (bool b : yielded)
-		{
-			if (!b) return false;
-		}
-		return true;
-	}
-
 	// round start helper forcing it to start yadda yadda
 	void TurnBasedSystem::round_start(ECS::Registry& ecs)
 	{
-
+		cur_player = 0;
 		debug_print(ecs);
 	}
 	void TurnBasedSystem::round_end()
 	{
 		++cur_round;
-
-		firstYield = -1;
 	}
 	void TurnBasedSystem::force_start_if_ready(ECS::Registry& ecs)
 	{
@@ -54,7 +41,6 @@ namespace TBS
 		participants.push_back(parti);
 		participant_hand.push_back(0);	//initialize the card at index 0 as selected by default
 		selected_card.push_back(false);
-		yielded.push_back(false);
 
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	
@@ -132,42 +118,17 @@ namespace TBS
 	{
 		selected_card[cur_player] = bol;
 	}
-
-	void TurnBasedSystem::yield_current()
-	{
-		if (!is_active) return;
-		if (firstYield == -1) firstYield = current();
-		yielded[cur_player] = true;
-
-		std::cout << "Entity " << current() << " yielded.\n";
-
-	}
 	void TurnBasedSystem::next(ECS::Registry & ecs)
 	{
 		if (!is_active) return;
 
-		if (everyone_yielded())
+		++cur_player;
+		if (cur_player >= participants.size())
 		{
 			round_end();
 			round_start(ecs);
 			return;
 		}
-
-		//// If the next GM already yielded, and the other GM also yielded -> round end
-		//if (gm_yielded[gm_index(current_gm)])
-		//{
-		//	if (everyone_yielded())
-		//	{
-		//		++cur_round;
-		//		round_start(ecs);
-		//		return;
-		//	}
-
-		//	// Otherwise bounce back to the non-yielded GM
-		//	current_gm = (current_gm == GM::Player) ? GM::Enemy : GM::Player;
-		//}
-		++cur_player;
-		if (cur_player >= participants.size()) cur_player = 0;
 
 		debug_print(ecs);
 	}
@@ -224,6 +185,7 @@ namespace TBS
 
 			target_died = Call_AttackSystem(ecs, cardID, target);
 		}
+		show_HP(ecs);
 		return target_died;
 	}
 
@@ -249,21 +211,21 @@ namespace TBS
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{
 		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
-		std::cout << "[TBS] Yield status:\n";
-		for (size_t i = 0; i < participants.size(); ++i)
-		{
-			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << " : " << "Yielded? : " << yielded[i] << " | " << std::endl;
-		}
-
+		char const* nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
+		std::cout << nm << " Turn" << std::endl;
 		//print out info every action
+		show_HP(ecs);
+	}
+
+	void TurnBasedSystem::show_HP(ECS::Registry& ecs) const
+	{
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
 			f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
-			std::cout << ecs.getComponent<Components::Name>(participants[i])->value << "'s HP : " << HP << " | " << std::endl;
+			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 		}
 	}
-
-
 	//Turn based system's update loop
 	void TurnBasedSystem::update(ECS::Registry& ecs,std::vector<Entity>& entities)
 	{
@@ -338,14 +300,6 @@ namespace TBS
 				std::cout << "Select Enemy to use card on" << std::endl;
 				set_selected_card(true);	//selected_card[index] = true;
 				evsptr->pool[HIGHLIGHT_EVENT].triggered = true;
-			}
-
-			// y = yield (no more turns this round)
-			if (AEInputCheckTriggered(AEVK_Y))
-			{
-				std::cout << "[hotkey] y = yield\n";
-				yield_current();
-				next(ecs);
 			}
 			// u = attack (consume turn)
 			//else if (AEInputCheckTriggered(AEVK_U))
