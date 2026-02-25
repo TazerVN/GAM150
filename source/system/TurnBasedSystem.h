@@ -61,7 +61,7 @@ namespace TBS
 
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
-		void play_card(ECS::Registry& ecs,Entity target, Entity cardID);
+		bool play_card(ECS::Registry& ecs,Entity target, Entity cardID);
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs,std::vector<Entity>& entities);

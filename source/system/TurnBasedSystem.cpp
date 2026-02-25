@@ -49,8 +49,6 @@ namespace TBS
 		evsptr->pool.push_back(Event{});
 		//unhighlight event
 		evsptr->pool.push_back(Event{});
-		//Entity Die event
-		evsptr->pool.push_back(Event{});
 	}
 
 	void TurnBasedSystem::add_participant(ECS::Registry& ecs, Entity parti)
@@ -243,7 +241,7 @@ namespace TBS
 
 		return player_storage->card_storage[chIndex];
 	}
-	void TurnBasedSystem::play_card(ECS::Registry& ecs,Entity target, Entity cardID)
+	bool TurnBasedSystem::play_card(ECS::Registry& ecs,Entity target, Entity cardID)
 	{
 		bool target_died = false;
 
@@ -261,13 +259,7 @@ namespace TBS
 
 			target_died = Call_AttackSystem(ecs, cardID, target);
 		}
-
-		if (target_died)
-		{
-			/*evsptr->pool[ENTITY_DIE_EVENT].triggered = true;
-			evsptr->pool[ENTITY_DIE_EVENT].returned_value = target;*/
-			remove_participant(ecs, target);
-		}
+		return target_died;
 	}
 
 	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)

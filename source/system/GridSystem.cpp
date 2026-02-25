@@ -240,6 +240,8 @@ namespace Grid
 			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
 			{
 				evsptr->pool[PLAY_CARD_EVENT].triggered = true;
+				evsptr->pool[PLAY_CARD_EVENT].x = x;
+				evsptr->pool[PLAY_CARD_EVENT].y = y;
 				evsptr->pool[PLAY_CARD_EVENT].returned_value = pos[x][y];
 				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 
@@ -319,7 +321,7 @@ namespace Grid
 		evsptr = &evs;
 
 		evsptr->pool.push_back(Event{});
-		//twan need supervision for this tho not sure if this is what u wanted. initial value of z buffer
+
 		this->offset.x = ox;
 		this->offset.y = oy;
 		for (int i = 0; i < MAX_I; ++i)

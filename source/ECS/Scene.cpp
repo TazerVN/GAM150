@@ -64,10 +64,22 @@ void Scene::update()
 	if (eventPool.pool[PLAY_CARD_EVENT].triggered)
 	{
 		if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
+
+		//determine target 
+		Entity target = eventPool.pool[PLAY_CARD_EVENT].returned_value;
 		Entity current_entt = TBSys.current();
 		Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
-		TBSys.play_card(ecs, eventPool.pool[PLAY_CARD_EVENT].returned_value, cardID);
+		bool died = TBSys.play_card(ecs, target, cardID);
+		if (died)
+		{
+			int x = eventPool.pool[PLAY_CARD_EVENT].x;
+			int y = eventPool.pool[PLAY_CARD_EVENT].y;
 
+			if (x != -1 && y != -1)
+			BattleGrid.get_pos()[x][y] = -1;
+
+			TBSys.remove_participant(ecs, target);
+		}
 		eventPool.pool[PLAY_CARD_EVENT].triggered = false;
 		eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
 		TBSys.next(ecs);

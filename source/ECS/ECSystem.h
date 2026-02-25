@@ -152,6 +152,8 @@ namespace ECS
 
 		void destroyEntity(Entity e)
 		{
+			// must remove first before removing component
+			remove_from_group(e);
 			//i represent ComponentTypeID
 			for (size_t i = 0; i < entitySignatures[e].size(); ++i)
 			{
@@ -160,9 +162,7 @@ namespace ECS
 					removeComponent(e, i);
 				}
 			}
-			entitySignatures[e].reset();
 			removed_que.push(e);
-			remove_from_group(e);
 		}
 
 		template<typename T>

@@ -5,13 +5,13 @@ enum EVENT_TYPE
 {
 	HIGHLIGHT_EVENT = 0,
 	UNHIGHLIGHT_EVENT = 1,
-	ENTITY_DIE_EVENT = 2,
-	PLAY_CARD_EVENT = 3,
+	PLAY_CARD_EVENT = 2,
 };
 
 struct Event
 {
 	bool triggered = false;
+	int x{ -1 }; int y{-1};
 	Entity returned_value = NULL_INDEX;
 };
 
