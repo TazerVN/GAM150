@@ -1,14 +1,15 @@
 #pragma once
 
 namespace PhaseSystem{
-	enum class GBPhase{
-		START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, RESOLUTION, ENEMY_PHASE
+	enum class GBPhase
+	{
+		START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, RESOLUTION, ENEMY_PHASE, COUNT
 	};
 
-	enum class PlayerPhase{
-		PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, WAITING
+	enum class PlayerPhase
+	{
+		PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, WAITING, COUNT
 	};
-
 
 	class GameBoardState
 	{
@@ -27,6 +28,15 @@ namespace PhaseSystem{
 		void nextGBPhase();
 		void nextPlayerPhase();
 	};
+
+	GBPhase& operator++(GBPhase& gbp);
+	GBPhase operator++(GBPhase& gbp, int);
+	GBPhase& operator--(GBPhase& gbp);
+	GBPhase operator--(GBPhase& gbp, int);
+	PlayerPhase& operator++(PlayerPhase& pp);
+	PlayerPhase operator++(PlayerPhase& pp, int);
+	PlayerPhase& operator--(PlayerPhase& pp);
+	PlayerPhase operator--(PlayerPhase& pp, int);
 }
 
 

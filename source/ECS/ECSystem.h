@@ -179,7 +179,8 @@ namespace ECS
 				baseStorage = std::make_unique<ComponentStorage<T>>();
 				std::cout << "No Base storage is there created one!\n";
 			}
-			else std::cout << "Base storage is found \n";
+			//else std::cout << "Base storage is found \n";
+			
 			//get storage
 			ComponentStorage<T>* storage = static_cast<ComponentStorage<T>*>(baseStorage.get());
 			storage->add_component(e, component);
