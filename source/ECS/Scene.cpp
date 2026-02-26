@@ -34,7 +34,7 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
-	TBSys.init(eventPool);
+	TBSys.init(eventPool, gbs, card_system);
 	BattleGrid.init(ecs, mf, &TBSys, eventPool, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities
@@ -44,29 +44,18 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 		s32 y = s32(AERandFloat() * f32(MAX_J));
 		BattleGrid.placeEntity(ecs, entities[i], x, y);
 	}
-
-	//remove all the groups with empty vector
 }
 
 void Scene::update()
 {
 	TBSys.update(ecs, entities);
-
 	//==================Handle Events===============================
-	//if (eventPool.pool[ENTITY_DIE_EVENT].triggered)
-	//{
-	//	Entity target = eventPool.pool[ENTITY_DIE_EVENT].returned_value;
-	//	//BattleGrid.get_pos()[][];
-	//	TBSys.remove_participant(ecs, target);
-	//}
-
 
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
 	{
 		highlight_cells(ecs, TBSys, BattleGrid);
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
-
 
 	if (eventPool.pool[PLAY_CARD_EVENT].triggered)
 	{
@@ -88,10 +77,7 @@ void Scene::update()
 		}
 		eventPool.pool[PLAY_CARD_EVENT].triggered = false;
 		eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
-		
-		//TBSys.next(ecs);
 	}
-
 
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{

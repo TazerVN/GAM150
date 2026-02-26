@@ -1,11 +1,15 @@
 #include "PhaseSystem.h"
+#include <iostream>
 
 namespace PhaseSystem
 {
+	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "RESOLUTION", "ENEMY_PHASE" };
+	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "CARD_SELECT", "GRID_SELECT", "WAITING" };
+
 	GBPhase& operator++(GBPhase& gbp)
 	{
 		GBPhase firstPhase = static_cast<GBPhase>(0);
-		GBPhase lastPhase = static_cast<GBPhase>(static_cast<int>(GBPhase::COUNT) - 1);
+		GBPhase lastPhase = static_cast<GBPhase>(static_cast<int>(GBPhase::UNIN) - 1);
 		gbp = (gbp == lastPhase) ? firstPhase : static_cast<GBPhase>(static_cast<int>(gbp) + 1);
 		return gbp;
 	}
@@ -20,7 +24,7 @@ namespace PhaseSystem
 	GBPhase& operator--(GBPhase& gbp)
 	{
 		GBPhase firstPhase = static_cast<GBPhase>(0);
-		GBPhase lastPhase = static_cast<GBPhase>(static_cast<int>(GBPhase::COUNT) - 1);
+		GBPhase lastPhase = static_cast<GBPhase>(static_cast<int>(GBPhase::UNIN) - 1);
 		gbp = (gbp == firstPhase) ? lastPhase : static_cast<GBPhase>(static_cast<int>(gbp) - 1);
 		return gbp;
 	}
@@ -35,7 +39,7 @@ namespace PhaseSystem
 	PlayerPhase& operator++(PlayerPhase& pp)
 	{
 		PlayerPhase firstPhase = static_cast<PlayerPhase>(0);
-		PlayerPhase lastPhase = static_cast<PlayerPhase>(static_cast<int>(PlayerPhase::COUNT) - 1);
+		PlayerPhase lastPhase = static_cast<PlayerPhase>(static_cast<int>(PlayerPhase::UNIN) - 1);
 		pp = (pp == lastPhase) ? firstPhase : static_cast<PlayerPhase>(static_cast<int>(pp) + 1);
 		return pp;
 	}
@@ -50,7 +54,7 @@ namespace PhaseSystem
 	PlayerPhase& operator--(PlayerPhase& pp)
 	{
 		PlayerPhase firstPhase = static_cast<PlayerPhase>(0);
-		PlayerPhase lastPhase = static_cast<PlayerPhase>(static_cast<int>(PlayerPhase::COUNT) - 1);
+		PlayerPhase lastPhase = static_cast<PlayerPhase>(static_cast<int>(PlayerPhase::UNIN) - 1);
 		pp = (pp == firstPhase) ? lastPhase : static_cast<PlayerPhase>(static_cast<int>(pp) - 1);
 		return pp;
 	}
@@ -72,36 +76,38 @@ namespace PhaseSystem
 	PlayerPhase GameBoardState::getPlayerPhase() const {
 		return this->player_curr;
 	}
-	void GameBoardState::updateGBPhase(GBPhase gbp) {
+	void GameBoardState::set_GBPhase(GBPhase gbp) {
 		this->gb_curr = gbp;
 	}
-	void GameBoardState::updatePlayerPhase(PlayerPhase pp) {
+	void GameBoardState::set_PlayerPhase(PlayerPhase pp) {
 		this->player_curr = pp;
 	}
 
 	void GameBoardState::nextGBPhase(){
-		/*GBPhase lastPhase = static_cast<GBPhase>(static_cast<int>(GBPhase::COUNT) - 1);
-		if(this->gb_curr == lastPhase){
-			this->gb_curr = GBPhase::START_PHASE;
-		}
-		else{
-			int temp = static_cast<long int>(gb_curr); 
-			++temp;
-			this->gb_curr = static_cast<GBPhase>(temp);
-		}*/
 		this->gb_curr++;
+		debug_print();
 	}
 	void GameBoardState::nextPlayerPhase(){
-		/*if (this->player_curr == PlayerPhase::CARD_SELECT || this->player_curr == PlayerPhase::GRID_SELECT)
-		{
-			this->player_curr = PlayerPhase::WAITING;
-		}
-		else
-		{
-			int temp = static_cast<long int>(player_curr);
-			++temp;
-			this->player_curr = static_cast<PlayerPhase>(temp);
-		}*/
 		this->player_curr++;
+		debug_print();
+	}
+
+	void GameBoardState::resetGPhase()
+	{
+		GBPhase firstPhase = static_cast<GBPhase>(0);
+		this->gb_curr = firstPhase;
+	}
+	void GameBoardState::resetPlayerPhase()
+	{
+		PlayerPhase firstPhase = static_cast<PlayerPhase>(0);
+		this->player_curr = firstPhase;
+	}
+
+	void GameBoardState::debug_print()
+	{
+		std::cout << "\n==================Gameboard State==================" << std::endl;
+		std::cout << "GB Phase     : " << GBPhaseNames[static_cast<size_t>(gb_curr)] << std::endl;
+		std::cout << "Player Phase : " << PlayerPhaseNames[static_cast<size_t>(player_curr)] << std::endl;
+		std::cout << "===================================================" << std::endl;
 	}
 }

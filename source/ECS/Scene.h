@@ -1,11 +1,12 @@
 #pragma once
+#include "../global.h"
 #include "../ECS/ECSystem.h"
 #include "../factory/EntityFactory.h"
 #include "../factory/TextureFactory.h"
-#include "../system/TurnBasedSystem.h"
 #include "../system/PhaseSystem.h"
 #include "../util/Event.h"
 #include "../system/GridSystem.h"
+#include "../system/TurnBasedSystem.h"
 
 #include "AEEngine.h"
 
@@ -13,15 +14,13 @@ class Scene
 {
 private:
 	ECS::Registry ecs;
-	PhaseSystem::GameBoardState gbs;
-	System::CardSystem card_system;
-	Entity playerID{ NULL_INDEX };
+	
 	size_t next_entity = 0;
 	std::vector<Entity> entities;
 
+	System::CardSystem card_system;
+	PhaseSystem::GameBoardState gbs;
 	EventPool eventPool;
-	//TBS::TurnBasedSystem TBSys(eventPool);
-	/*TurnBasedSystem TBSys;*/
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
 

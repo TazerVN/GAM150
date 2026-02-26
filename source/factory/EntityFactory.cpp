@@ -72,7 +72,11 @@ namespace System {
 		//get reference to the user's card_storage
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		size_t index = user_cards->get_nextIndex();
-		if (index == -1) return; 
+		if (index == -1)
+		{
+			std::cout << "Player's hand is full cannot add the card!!" << std::endl;
+			return;
+		}
 		user_cards->card_storage[index] = cardID;
 	}
 
@@ -102,5 +106,9 @@ namespace System {
 	Entity& CardSystem::get_card(int index) 
 	{
 		return cards[index];
+	}
+	size_t CardSystem::size() const
+	{
+		return cards.size();
 	}
 }

@@ -1,6 +1,7 @@
 #include "TurnBasedSystem.h"
 #include "../system/GridSystem.h"
 #include "../util/util.h"
+#include "../global.h"
 #include <iomanip>
 namespace TBS
 {
@@ -8,7 +9,8 @@ namespace TBS
 	void TurnBasedSystem::round_start(ECS::Registry& ecs)
 	{
 		cur_player = 0;
-		debug_print(ecs);
+
+		debug_print(ecs);	//this is for turn base
 	}
 	void TurnBasedSystem::round_end()
 	{
@@ -20,13 +22,18 @@ namespace TBS
 			start(ecs);
 	}
 
-	void TurnBasedSystem::init(EventPool& eventPool)
+	void TurnBasedSystem::init(EventPool& eventPool, PhaseSystem::GameBoardState& gbp, System::CardSystem& cs)
 	{
 		evsptr = &eventPool;
 		//highlight event
 		evsptr->pool.push_back(Event{});
 		//unhighlight event
 		evsptr->pool.push_back(Event{});
+		//GBPhase next event
+		evsptr->pool.push_back(Event{});
+
+		gbptr = &gbp;
+		cardSysptr = &cs;
 	}
 
 	void TurnBasedSystem::add_participant(ECS::Registry& ecs, Entity parti)
@@ -130,6 +137,11 @@ namespace TBS
 			return;
 		}
 
+		if (current() == playerID)
+		{
+			gbptr->resetPlayerPhase();
+		}
+
 		debug_print(ecs);
 	}
 
@@ -210,6 +222,7 @@ namespace TBS
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{
+		gbptr->debug_print();
 		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
 		char const* nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
 		std::cout << nm << " Turn" << std::endl;
@@ -226,12 +239,37 @@ namespace TBS
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 		}
 	}
+
+	void TurnBasedSystem::add_card(ECS::Registry& ecs)
+	{
+		//temporary code random card from the card pool
+		int index = int(AERandFloat() * cardSysptr->size());
+
+		Entity card = cardSysptr->get_card(index);
+
+		System::add_card_player(ecs, playerID, card);	//add a random card
+
+		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+
+		//disolay player hands
+		std::cout << "\n==============Player Hand==============" << std::endl;
+		size_t sz = playerStorage->card_storage.size();
+		for (size_t i = 0; i < sz; ++i)
+		{
+			Components::Name* name = ecs.getComponent<Components::Name>(playerStorage->card_storage[i]);
+			std::cout << name;
+			if (i < sz - 1) { std::cout << '|'; }
+		}
+		std::cout << "\n=======================================" << std::endl;
+	}
+
+
+	//=================================Update===========================================
+
 	//Turn based system's update loop
-	void TurnBasedSystem::update(ECS::Registry& ecs,std::vector<Entity>& entities)
+	void TurnBasedSystem::update(ECS::Registry& ecs, std::vector<Entity>& entities)
 	{
 		// ================= CONSOLE LOG of TBS =================
-
-		
 
 		if (!is_active)
 		{
@@ -301,24 +339,35 @@ namespace TBS
 				set_selected_card(true);	//selected_card[index] = true;
 				evsptr->pool[HIGHLIGHT_EVENT].triggered = true;
 			}
-			// u = attack (consume turn)
-			//else if (AEInputCheckTriggered(AEVK_U))
-			//{
-			//	Entity current_entt = current();
-			//	std::cout << "[hotkey] u = attack\n";
-			//	Entity card = draw_card(ecs, current_entt, participant_hand[index]);
-			//	std::cout << "Select Enemy to use card on" << std::endl;
-			//	selected_card[index] = true;
-			//	/*play_card(ecs, card);
-			//	next(ecs);*/
-			//}
-			//implemented to twan's move entity
-			// i = move (consume turn)
-			/*else if (AEInputCheckTriggered(AEVK_I))
+
+			//check for gameboard phase and react accordingly
+			switch (gbptr->getGBPhase())
 			{
-				std::cout << "[hotkey] i = move\n";
-				
-			}*/
+				case PhaseSystem::GBPhase::START_PHASE:
+				{
+					break;
+				}
+				case PhaseSystem::GBPhase::STANDBY_PHASE:
+				{
+					break;
+				}
+				case PhaseSystem::GBPhase::DRAW_PHASE:
+				{
+					break;
+				}
+				case PhaseSystem::GBPhase::MAIN_PHASE:
+				{
+					break;
+				}
+				case PhaseSystem::GBPhase::RESOLUTION:
+				{
+					break;
+				}
+				case PhaseSystem::GBPhase::ENEMY_PHASE:
+				{
+					break;
+				}
+			}
 		}
 		//============================================================
 	}

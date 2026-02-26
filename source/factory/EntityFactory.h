@@ -17,11 +17,13 @@ namespace System
 
 	class CardSystem
 	{
-		private:
+	private:
 		std::vector<Entity> cards;
-		public:
+
+	public:
 		void init_cards(ECS::Registry& ecs);
 		Entity& get_card(int index);
+		size_t size() const;
 	};
 }
 #endif // !SYSTEM_H

@@ -4,6 +4,7 @@
 #include "../ECS/Components.h"
 #include "../factory/EntityFactory.h"
 #include "../util/Event.h"
+#include "../system/PhaseSystem.h"
 #include "AEEngine.h"
 namespace TBS 
 {
@@ -15,6 +16,8 @@ namespace TBS
 		size_t cur_round{0};
 
 		EventPool* evsptr = nullptr;
+		PhaseSystem::GameBoardState* gbptr = nullptr;
+		System::CardSystem* cardSysptr = nullptr;
 
 		// Actors on Borad
 		std::vector<Entity> participants;
@@ -26,7 +29,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(EventPool& eventPool);
+		void init(EventPool& eventPool, PhaseSystem::GameBoardState& gbp, System::CardSystem& cs);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 		void start(ECS::Registry& ecs);
@@ -45,6 +48,7 @@ namespace TBS
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
 		void debug_print(ECS::Registry& ecs) const;
 		void show_HP(ECS::Registry& ecs) const;
+		void add_card(ECS::Registry& ecs);
 
 		//============Combat=======================
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
