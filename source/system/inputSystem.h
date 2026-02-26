@@ -4,9 +4,11 @@
 
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
-#include "../system/PhaseSystem.h"
 #include "../util/util.h"
 #include <vector>
+
+//forward declarion
+namespace PhaseSystem { class GameBoardState; }
 
 namespace InputSystem
 {

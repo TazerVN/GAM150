@@ -1,6 +1,8 @@
 #include "GridSystem.h"
 #include <utility> // for std::move
 #include "../util/util.h"
+#include "../system/TurnBasedSystem.h"
+#include "../system/PhaseSystem.h"
 
 float offset = 1.0f;
 
@@ -231,21 +233,26 @@ namespace Grid
 
 	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
-
+		//if (is_active)
 		//if the current participant has selected card 
 				//and selected on the empty cell then return
 		if (tbs->is_current_selected_card())
 		{
 			//if the card is selected and the selected pos is entity
 			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
-			{
-				evsptr->pool[PLAY_CARD_EVENT].triggered = true;
-				evsptr->pool[PLAY_CARD_EVENT].x = x;
-				evsptr->pool[PLAY_CARD_EVENT].y = y;
-				evsptr->pool[PLAY_CARD_EVENT].returned_value = pos[x][y];
-				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
-
+			{	
+				//determine target 
+				Entity target = pos[x][y];
+				Entity current_entt = tbs->current();
+				Entity cardID = tbs->draw_card(ecs, current_entt, tbs->get_selected_cardhand_index());
+				bool died = tbs->play_card(ecs, target, cardID);
+				if (died)
+				{
+					if (x != -1 && y != -1) pos[x][y] = -1;
+					tbs->remove_participant(ecs, target);
+				}
 				tbs->set_selected_card(false);
+				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 				return;
 			}
 			else {
@@ -257,7 +264,7 @@ namespace Grid
 		}
 
 		//check if an empty cell is clicked
-		if(this->cur != -1){
+		if (this->cur != -1) {
 			this->moveEntity(ecs, this->cur, x, y);
 			this->activate[x][y] = false;
 			this->activate[this->cur_x][this->cur_y] = false;
@@ -277,15 +284,15 @@ namespace Grid
 				return;
 			}
 
-			if(this->activate[x][y] == false){
+			if (this->activate[x][y] == false) {
 				this->activate[x][y] = true;
 				this->cur = this->pos[x][y];
 				this->cur_x = x;
 				this->cur_y = y;
-			} 
+			}
 
-			else{
-				this->activate[x][y] = false; 
+			else {
+				this->activate[x][y] = false;
 				this->cur = -1;
 				this->cur_x = -1;
 				this->cur_y = -1;
@@ -315,12 +322,11 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbs = tbsys;
 		evsptr = &evs;
-
-		evsptr->pool.push_back(Event{});
+		gbsptr = &gb;
 
 		this->offset.x = ox;
 		this->offset.y = oy;
@@ -451,19 +457,6 @@ namespace Grid
 				color = ecs.getComponent<Components::Color>(current_cell);
 				color->p_color.g = 0.5f;
 				color->p_color.r = 0.5f;
-
-
-				/*if(AEInputCheckTriggered(AEVK_LBUTTON) && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey))){
-					if(this->pos[i][j] != -1){
-						this->activate[i][j] = true;
-						this->cur = this->pos[i][j];
-					}
-					else if (this->cur != -1){
-						this->pos[i][j] = cur;
-						this->cur = -1;
-					}
-				}*/
-
 			}
 		}
 	}
@@ -481,5 +474,18 @@ namespace Grid
 	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_attack_activate()
 	{
 		return atk_activate;
+	}
+
+	AEVec2 GameBoard::Get_gridPos(AEVec2 const& worldPos)
+	{
+		float rel_x = worldPos.x - this->offset.x;
+		float rel_y = worldPos.y - this->offset.y;
+
+		int i = (int)(rel_x / (CELL_WIDTH / 2) - rel_y / (CELL_HEIGHT / 4)) / 2;
+		int j = (int)(-rel_x / (CELL_WIDTH / 2) - rel_y / (CELL_HEIGHT / 4)) / 2;
+
+		if (i < 0 || i >= MAX_I || j < 0 || j >= MAX_J) return { -1.f, -1.f };
+
+		return { f32(i), f32(j) };
 	}
 }

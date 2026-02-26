@@ -34,8 +34,8 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	System::add_card_player(ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
-	TBSys.init(eventPool, gbs, card_system);
-	BattleGrid.init(ecs, mf, &TBSys, eventPool, tf.getTextureFloor(0), 0, w_height / 3);
+	TBSys.init(eventPool, BattleGrid, gbs, card_system);
+	BattleGrid.init(ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -57,27 +57,27 @@ void Scene::update()
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
-	if (eventPool.pool[PLAY_CARD_EVENT].triggered)
-	{
-		if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
+	//if (eventPool.pool[PLAY_CARD_EVENT].triggered)
+	//{
+	//	if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
 
-		//determine target 
-		Entity target = eventPool.pool[PLAY_CARD_EVENT].returned_value;
-		Entity current_entt = TBSys.current();
-		Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
-		bool died = TBSys.play_card(ecs, target, cardID);
-		if (died)
-		{
-			int x = eventPool.pool[PLAY_CARD_EVENT].x;
-			int y = eventPool.pool[PLAY_CARD_EVENT].y;
+	//	//determine target 
+	//	Entity target = eventPool.pool[PLAY_CARD_EVENT].returned_value;
+	//	Entity current_entt = TBSys.current();
+	//	Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
+	//	bool died = TBSys.play_card(ecs, target, cardID);
+	//	if (died)
+	//	{
+	//		int x = eventPool.pool[PLAY_CARD_EVENT].x;
+	//		int y = eventPool.pool[PLAY_CARD_EVENT].y;
 
-			if (x != -1 && y != -1)
-			BattleGrid.get_pos()[x][y] = -1;
-			TBSys.remove_participant(ecs, target);
-		}
-		eventPool.pool[PLAY_CARD_EVENT].triggered = false;
-		eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
-	}
+	//		if (x != -1 && y != -1)
+	//			BattleGrid.get_pos()[x][y] = -1;
+	//		TBSys.remove_participant(ecs, target);
+	//	}
+	//	eventPool.pool[PLAY_CARD_EVENT].triggered = false;
+	//	eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
+	//}
 
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{
@@ -105,11 +105,6 @@ PhaseSystem::GameBoardState& Scene::getGBS(){
 ECS::Registry& Scene::getECS()
 {
 	return ecs;
-}
-
-Entity& Scene::get_playerID()
-{
-	return playerID;
 }
 
 TBS::TurnBasedSystem& Scene::getTBS()

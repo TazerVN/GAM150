@@ -7,9 +7,11 @@
 #ifndef CARD_H
 #define CARD_H
 
-
-
 #define MAX_CARDS_HAND 6
+
+//forward declaration for gameboard state
+namespace PhaseSystem { class GameBoardState; }
+namespace TBS { class TurnBasedSystem; }
 
 namespace CardInteraction
 {
@@ -21,9 +23,14 @@ namespace CardInteraction
 		std::vector<bool> activate{};
 		Entity id;
 		bool reset;
+
+		TBS::TurnBasedSystem* tbsptr = nullptr;
+		PhaseSystem::GameBoardState* gbsptr = nullptr;
+
 		public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs);
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs,PhaseSystem::GameBoardState& gbs);
 		CardHand() = default;
 		void update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
 		void update_pos(ECS::Registry& ecs);

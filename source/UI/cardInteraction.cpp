@@ -3,6 +3,7 @@
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../System/TurnBasedSystem.h"
+#include "../system/PhaseSystem.h"
 #include "AEEngine.h"
 
 namespace CardInteraction
@@ -14,7 +15,6 @@ namespace CardInteraction
 	{
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-
 		ecs.addComponent(this->id, trans);
 
 	/*	for (s8 i = 0; i < MAX_CARDS_HAND; i++)
@@ -30,7 +30,7 @@ namespace CardInteraction
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		ecs.addComponent(this->id, trans);
-
+		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 
 		/*ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 
@@ -47,10 +47,24 @@ namespace CardInteraction
 		}*/
 	}
 
-
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs,
+		PhaseSystem::GameBoardState& gbs)
+	{
+		this->id = ecs.createEntity();
+		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+		ecs.addComponent(this->id, trans);
+		tbsptr = &tbs;
+		gbsptr = &gbs;
+	}
 
 	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
+		if (gbsptr == nullptr) return;
+
+		if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE
+			&& !(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE 
+			|| gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT))
+			return;
 
 		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 

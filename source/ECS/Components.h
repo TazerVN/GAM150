@@ -139,7 +139,7 @@ namespace Components
 		size_t& index() { return next_index; }
 		size_t size() const {return this->next_index;}
 
-		std::array<size_t, MAX_HAND> card_storage = {NULL_INDEX};
+		std::array<size_t, MAX_HAND> card_storage{NULL_INDEX};
 	};
 
 	//===================Turn Based======================================

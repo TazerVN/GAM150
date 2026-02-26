@@ -3,8 +3,12 @@
 
 namespace PhaseSystem
 {
-	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "RESOLUTION", "ENEMY_PHASE" };
-	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "CARD_SELECT", "GRID_SELECT", "WAITING" };
+	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "RESOLUTION", "ENEMY_PHASE", "UNIN" };
+	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "CARD_SELECT", "GRID_SELECT", "WAITING", "UNIN" };
+
+	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseTriggered{};
+	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseActive{};
+	std::array<bool, PlayerPhaseCount> GameBoardState::PlayerPhaseTriggered{};
 
 	GBPhase& operator++(GBPhase& gbp)
 	{
@@ -103,6 +107,19 @@ namespace PhaseSystem
 		this->player_curr = firstPhase;
 	}
 
+	std::array<bool, GBPhaseCount>& GameBoardState::GBPTriggered()
+	{
+		return this->GBPhaseTriggered;
+	}
+	std::array<bool, GBPhaseCount>& GameBoardState::GBPActive()
+	{
+		return this->GBPhaseActive;
+	}
+	std::array<bool, PlayerPhaseCount>& GameBoardState::PlayerPTriggered()
+	{
+		return this->PlayerPhaseTriggered;
+	}
+
 	void GameBoardState::debug_print()
 	{
 		std::cout << "\n==================Gameboard State==================" << std::endl;
@@ -110,4 +127,6 @@ namespace PhaseSystem
 		std::cout << "Player Phase : " << PlayerPhaseNames[static_cast<size_t>(player_curr)] << std::endl;
 		std::cout << "===================================================" << std::endl;
 	}
+
+
 }

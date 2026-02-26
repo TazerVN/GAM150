@@ -33,7 +33,6 @@ public:
 	//GETTER
 	ECS::Registry& getECS();
 	PhaseSystem::GameBoardState& getGBS();
-	Entity& get_playerID();
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
 };
@@ -41,3 +40,4 @@ public:
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
 void unhighlight_cells(Grid::GameBoard& gb);
 AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
+AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);

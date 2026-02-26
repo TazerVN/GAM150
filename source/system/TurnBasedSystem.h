@@ -6,6 +6,10 @@
 #include "../util/Event.h"
 #include "../system/PhaseSystem.h"
 #include "AEEngine.h"
+
+//forward declaration so that turnbased system have access to gridsystem
+namespace Grid { class GameBoard; };
+
 namespace TBS 
 {
 	class TurnBasedSystem
@@ -16,7 +20,8 @@ namespace TBS
 		size_t cur_round{0};
 
 		EventPool* evsptr = nullptr;
-		PhaseSystem::GameBoardState* gbptr = nullptr;
+		Grid::GameBoard* gameBoardptr = nullptr;
+		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		System::CardSystem* cardSysptr = nullptr;
 
 		// Actors on Borad
@@ -29,7 +34,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(EventPool& eventPool, PhaseSystem::GameBoardState& gbp, System::CardSystem& cs);
+		void init(EventPool&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 		void start(ECS::Registry& ecs);
@@ -38,7 +43,7 @@ namespace TBS
 		Entity get_selected_cardhand_index();
 		bool is_current_selected_card();
 		void set_selected_card(bool bol);
-		void next(ECS::Registry& ecs);		// advance turn after successful action OR yield
+		void next(ECS::Registry& ecs);	
 		void end();
 
 		bool active();
@@ -48,14 +53,18 @@ namespace TBS
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
 		void debug_print(ECS::Registry& ecs) const;
 		void show_HP(ECS::Registry& ecs) const;
-		void add_card(ECS::Registry& ecs);
+		void show_hand(ECS::Registry& ecs) const;
 
 		//============Combat=======================
+		void add_card(ECS::Registry& ecs);
+		void select_card(size_t index);
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 		bool play_card(ECS::Registry& ecs,Entity target, Entity cardID);
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs,std::vector<Entity>& entities);
 
+		void update_GBPhasetriggered();
+		void update_GBPhaseUpdate(ECS::Registry&);
 	};
 }

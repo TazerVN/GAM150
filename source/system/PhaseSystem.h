@@ -1,16 +1,13 @@
 #pragma once
-
+#include <array>
 namespace PhaseSystem{
-	enum class GBPhase
-	{
-		START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, RESOLUTION, ENEMY_PHASE, UNIN
-	};
-	extern const char* GBPhaseNames[];
+	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, RESOLUTION, ENEMY_PHASE, UNIN};
+	enum class PlayerPhase{PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, WAITING, UNIN};
 
-	enum class PlayerPhase
-	{
-		PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, WAITING, UNIN
-	};
+	constexpr size_t GBPhaseCount = static_cast<size_t>(GBPhase::UNIN);
+	constexpr size_t PlayerPhaseCount = static_cast<size_t>(PlayerPhase::UNIN);
+
+	extern const char* GBPhaseNames[];
 	extern const char* PlayerPhaseNames[];
 
 	class GameBoardState
@@ -18,6 +15,10 @@ namespace PhaseSystem{
 		private:	
 		GBPhase gb_curr;
 		PlayerPhase player_curr;
+
+		static std::array<bool, GBPhaseCount> GBPhaseTriggered;
+		static std::array<bool, GBPhaseCount> GBPhaseActive;
+		static std::array<bool, PlayerPhaseCount> PlayerPhaseTriggered;
 
 		public:
 		GameBoardState();
@@ -32,6 +33,10 @@ namespace PhaseSystem{
 		void resetGPhase();
 		void resetPlayerPhase();
 
+		std::array<bool, GBPhaseCount>& GBPTriggered();
+		std::array<bool, GBPhaseCount>& GBPActive();
+		std::array<bool, PlayerPhaseCount>& PlayerPTriggered();
+
 		void debug_print();
 
 		void update();
@@ -42,6 +47,7 @@ namespace PhaseSystem{
 	GBPhase operator++(GBPhase& gbp, int);
 	GBPhase& operator--(GBPhase& gbp);
 	GBPhase operator--(GBPhase& gbp, int);
+
 	PlayerPhase& operator++(PlayerPhase& pp);
 	PlayerPhase operator++(PlayerPhase& pp, int);
 	PlayerPhase& operator--(PlayerPhase& pp);

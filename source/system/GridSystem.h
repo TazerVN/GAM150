@@ -4,7 +4,6 @@
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
-#include "../system/TurnBasedSystem.h"
 #include "../util/Event.h"
 
 #include <vector>
@@ -18,6 +17,9 @@
 #define MAX_I 10
 #define MAX_J 10
 
+//forward declaring tbs so that linker can use it 
+namespace TBS { class TurnBasedSystem; }
+namespace PhaseSystem { class GameBoardState; }
 
 namespace Grid
 {
@@ -27,7 +29,9 @@ namespace Grid
 			//=============Render====================
 		Entity cur;
 		TBS::TurnBasedSystem* tbs;
+		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool* evsptr = nullptr;
+
 		s32 cur_x, cur_y;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
@@ -41,8 +45,9 @@ namespace Grid
 
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
-		public:
-		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs , AEGfxTexture* pTex, f32 ox, f32 oy);
+	public:
+
+		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		//i'm testing some stuff on the below function VVVV 
 		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
@@ -52,6 +57,8 @@ namespace Grid
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
+
+		AEVec2 Get_gridPos(AEVec2 const& worldPos);
 	};
 	
 	//class Grid
