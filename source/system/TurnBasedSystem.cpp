@@ -353,6 +353,7 @@ namespace TBS
 			case PhaseSystem::GBPhase::START_PHASE:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				gbsptr->nextGBPhase();
 				break;
 			}
 			case PhaseSystem::GBPhase::STANDBY_PHASE:
@@ -392,7 +393,7 @@ namespace TBS
 	}
 
 	void TurnBasedSystem::update_GBPhaseUpdate(ECS::Registry& ecs)
-	{
+	{ 
 		size_t index = static_cast<size_t>(gbsptr->getGBPhase());
 		bool& active = gbsptr->GBPActive()[index];
 

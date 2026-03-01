@@ -236,6 +236,9 @@ namespace Grid
 		//if (is_active)
 		//if the current participant has selected card 
 				//and selected on the empty cell then return
+
+		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::START_PHASE || gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
+
 		if (tbs->is_current_selected_card())
 		{
 			//if the card is selected and the selected pos is entity

@@ -18,6 +18,7 @@ s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 
+ECS::Registry ecs;
 MeshFactory mf{};
 Scene scene;
 
@@ -43,19 +44,16 @@ void game_init()
 	mf.MeshFactoryInit();
 
 	AEGfxSetCamPosition(camerax, cameray);
-
-	//ECSystem::Entity Grid = *GameObject::gameobject_grid_create(ecs, mf, 100, 100, 50, 50, 0, 0 ,floortext);
-	scene.init(mf, TF);	
+	scene.init(ecs, mf, TF);	
 	UIM.init(scene, mf, TF);
 
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
 
-	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTextureCard(0),scene.getTBS(),scene.getGBS() );
+	card = CardInteraction::CardHand(ecs, mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF ,scene.getTBS(),scene.getGBS() );
+	RM.RenderSystem_init(ecs);
 
-	RM.RenderSystem_init(scene.getECS());
-
-	scene.getECS().remove_empty_groups();
+	ecs.remove_empty_groups();
 }
 
 void game_update()
@@ -66,9 +64,9 @@ void game_update()
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
 	
+	IM.update(ecs, scene.getGBS());
+	card.update_logic(ecs, scene.getTBS(), mf, TF);
 	scene.update();
-	IM.update(scene.getECS(), scene.getGBS());
-	card.update_logic(scene.getECS(), scene.getTBS(), mf, TF);
 
 	//==========Object updates===========
 
@@ -77,8 +75,8 @@ void game_update()
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
 
 	//========(Render)====================
-	scene.getBattleGrid().update(scene.getECS());
-	RM.RM_render(scene.getECS());
+	scene.getBattleGrid().update(ecs);
+	RM.RM_render(ecs);
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
 }

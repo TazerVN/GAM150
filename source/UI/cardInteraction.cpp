@@ -11,43 +11,43 @@ namespace CardInteraction
 	void fun();//forward declaration for testing
 	void fu(Entity e);//forward declaration for testing
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
-	{
-		this->id = ecs.createEntity();
-		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-		ecs.addComponent(this->id, trans);
+	//CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
+	//{
+	//	this->id = ecs.createEntity();
+	//	Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+	//	ecs.addComponent(this->id, trans);
 
-	/*	for (s8 i = 0; i < MAX_CARDS_HAND; i++)
-		{
-			f32 card_x = x + f32(i) / curr_hand_display.size() * width * 2;
-			f32 card_y = y;
-			this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);
-		}*/
-	}
+	///*	for (s8 i = 0; i < MAX_CARDS_HAND; i++)
+	//	{
+	//		f32 card_x = x + f32(i) / curr_hand_display.size() * width * 2;
+	//		f32 card_y = y;
+	//		this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);
+	//	}*/
+	//}
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs)
-	{
-		this->id = ecs.createEntity();
-		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-		ecs.addComponent(this->id, trans);
-		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
+	//CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs)
+	//{
+	//	this->id = ecs.createEntity();
+	//	Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+	//	ecs.addComponent(this->id, trans);
+	//	tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 
-		/*ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
+	//	/*ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 
-		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+	//	if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
 
-		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+	//	Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
 
-		for (s8 i = 0; i < cs->size(); i++)
-		{
+	//	for (s8 i = 0; i < cs->size(); i++)
+	//	{
 
-			f32 card_x = x + f32(i) / cs->size() * width * 2;
-			f32 card_y = y;
-			this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
-		}*/
-	}
+	//		f32 card_x = x + f32(i) / cs->size() * width * 2;
+	//		f32 card_y = y;
+	//		this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
+	//	}*/
+	//}
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs,
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TextureFactory::TextureFactory& tf, TBS::TurnBasedSystem& tbs,
 		PhaseSystem::GameBoardState& gbs)
 	{
 		this->id = ecs.createEntity();
@@ -55,16 +55,23 @@ namespace CardInteraction
 		ecs.addComponent(this->id, trans);
 		tbsptr = &tbs;
 		gbsptr = &gbs;
+
+		//init it first
+		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
+		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+
+		if (this->curr_hand_display.size() < cs->card_storage.size())
+		{
+			this->curr_hand_display.push_back(selectableCard_create(ecs, mf, 0, 0, 162, 264, 0, 1, tf.getTextureCard(0)));
+		}
+		this->update_pos(ecs);
 	}
 
 	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 		if (gbsptr == nullptr) return;
-
-		if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE
-			&& !(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE 
-			|| gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT))
-			return;
+		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 
 		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 
