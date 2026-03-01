@@ -1,4 +1,4 @@
 #pragma once
 
-static size_t playerID;
+extern size_t playerID;
 

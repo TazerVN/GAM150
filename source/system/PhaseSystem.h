@@ -2,7 +2,7 @@
 #include <array>
 namespace PhaseSystem{
 	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, RESOLUTION, ENEMY_PHASE, UNIN};
-	enum class PlayerPhase{PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, WAITING, UNIN};
+	enum class PlayerPhase{PLAYER_EXPLORE, CARD_SELECT, GRID_SELECT, UNIN};
 
 	constexpr size_t GBPhaseCount = static_cast<size_t>(GBPhase::UNIN);
 	constexpr size_t PlayerPhaseCount = static_cast<size_t>(PlayerPhase::UNIN);
@@ -30,6 +30,8 @@ namespace PhaseSystem{
 		void set_PlayerPhase(PlayerPhase pp);
 		void nextGBPhase();
 		void nextPlayerPhase();
+		void prevGBPhase();
+		void prevPlayerPhase();
 		void resetGPhase();
 		void resetPlayerPhase();
 

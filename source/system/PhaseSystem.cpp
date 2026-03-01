@@ -96,6 +96,17 @@ namespace PhaseSystem
 		debug_print();
 	}
 
+	void GameBoardState::prevGBPhase()
+	{
+		this->gb_curr--;
+		debug_print();
+	}
+	void GameBoardState::prevPlayerPhase()
+	{
+		this->player_curr--;
+		debug_print();
+	}
+
 	void GameBoardState::resetGPhase()
 	{
 		GBPhase firstPhase = static_cast<GBPhase>(0);

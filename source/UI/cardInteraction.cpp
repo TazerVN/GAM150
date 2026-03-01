@@ -59,6 +59,7 @@ namespace CardInteraction
 		//init it first
 		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+
 		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
 
 		if (this->curr_hand_display.size() < cs->card_storage.size())

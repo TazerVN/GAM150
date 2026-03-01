@@ -26,13 +26,13 @@ namespace Grid
 	class GameBoard
 	{
 		private:
-			//=============Render====================
-		Entity cur;
 		TBS::TurnBasedSystem* tbs;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool* evsptr = nullptr;
-
-		s32 cur_x, cur_y;
+		
+		Entity cur, prev_cur;
+		bool selected_part = false;
+		s32 cur_x, cur_y, prev_x, prev_y;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================

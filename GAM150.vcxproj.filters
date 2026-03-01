@@ -27,6 +27,7 @@
     <ClCompile Include="source\system\PhaseSystem.cpp" />
     <ClCompile Include="source\UI\cardInformation.cpp" />
     <ClCompile Include="source\util\BST.cpp" />
+    <ClCompile Include="source\global.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />

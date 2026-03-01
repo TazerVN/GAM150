@@ -37,7 +37,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
-	TBSys.init(eventPool, BattleGrid, gbs, card_system);
+	TBSys.init(*ecs,eventPool, BattleGrid, gbs, card_system, entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities
@@ -53,7 +53,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 
 void Scene::update()
 {
-	TBSys.update(*ecs, entities);
+	TBSys.update(*ecs);
 	//==================Handle Events===============================
 
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)

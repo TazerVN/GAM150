@@ -239,67 +239,85 @@ namespace Grid
 
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::START_PHASE || gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 
-		if (tbs->is_current_selected_card())
+		switch (gbsptr->getPlayerPhase())
 		{
-			//if the card is selected and the selected pos is entity
-			if (pos[x][y] != -1 && pos[x][y] != tbs->current())
-			{	
-				//determine target 
-				Entity target = pos[x][y];
-				Entity current_entt = tbs->current();
-				Entity cardID = tbs->draw_card(ecs, current_entt, tbs->get_selected_cardhand_index());
-				bool died = tbs->play_card(ecs, target, cardID);
-				if (died)
-				{
-					if (x != -1 && y != -1) pos[x][y] = -1;
-					tbs->remove_participant(ecs, target);
-				}
-				tbs->set_selected_card(false);
-				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
-				return;
-			}
-			else {
-				tbs->set_selected_card(false);
-				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
-				std::cout << "Select a valid cell with entity!" << std::endl;
-			}
-			return;
-		}
-
-		//check if an empty cell is clicked
-		if (this->cur != -1) {
-			this->moveEntity(ecs, this->cur, x, y);
-			this->activate[x][y] = false;
-			this->activate[this->cur_x][this->cur_y] = false;
-			this->cur_x = -1;
-			this->cur_y = -1;
-			this->cur = -1;
-		}
-		//check if the grid cell with entity is clicked
-		else if (this->pos[x][y] != -1) {
-
-			//check if the entity is the same as the current turn
-				//if the current turn is not the entity then dont allow selection
-
-			if (!tbs->is_current_selected_card() && pos[x][y] != tbs->current())
+			case PhaseSystem::PlayerPhase::GRID_SELECT:
 			{
-				std::cout << "Cannot select this entity!" << std::endl;
-				return;
+				if (tbs->is_current_selected_card())
+				{
+					//if the card is selected and the selected pos is entity
+					if (pos[x][y] != -1 && pos[x][y] != tbs->current())
+					{
+						//determine target 
+						Entity target = pos[x][y];
+						Entity current_entt = tbs->current();
+						Entity cardID = tbs->draw_card(ecs, current_entt, tbs->get_selected_cardhand_index());
+						bool died = tbs->play_card(ecs, target, cardID);
+						if (died)
+						{
+							if (x != -1 && y != -1) pos[x][y] = -1;
+							tbs->remove_participant(ecs, target);
+						}
+						tbs->set_selected_card(false);
+						gbsptr->nextPlayerPhase();
+						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+						return;
+					}
+					else {
+						tbs->set_selected_card(false);
+						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+						gbsptr->prevPlayerPhase();
+						std::cout << "Select a valid cell with entity!" << std::endl;
+					}
+				}
+				break;
 			}
+			case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
+			{
+				//check if an empty cell is clicked
+				if (selected_part && this->cur != -1) 
+				{
+					this->moveEntity(ecs, this->cur, x, y);
+					this->activate[this->cur_x][this->cur_y] = false;
+					this->cur_x = -1;
+					this->cur_y = -1;
+					this->cur = -1;
+					selected_part = false;
+				}
 
-			if (this->activate[x][y] == false) {
-				this->activate[x][y] = true;
-				this->cur = this->pos[x][y];
-				this->cur_x = x;
-				this->cur_y = y;
-			}
+				//check if the grid cell with entity is clicked
+				else if (!selected_part && this->pos[x][y] != -1) {
 
-			else {
-				this->activate[x][y] = false;
-				this->cur = -1;
-				this->cur_x = -1;
-				this->cur_y = -1;
+					//check if the entity is the same as the current turn
+						//if the current turn is not the entity then dont allow selection
+
+					if (pos[x][y] != tbs->current())
+					{
+						std::cout << "Cannot select this entity!" << std::endl;
+						return;
+					}
+
+					if (this->activate[x][y] == false) 
+					{
+						this->activate[x][y] = true;
+						this->cur = this->pos[x][y];
+						this->cur_x = x;
+						this->cur_y = y;
+						selected_part = true;
+					}
+
+					else 
+					{
+						this->activate[x][y] = false;
+						this->cur = -1;
+						this->cur_x = -1;
+						this->cur_y = -1;
+					}
+				}
+				break;
 			}
+			default :
+				break;
 		}
 	}
 
@@ -375,8 +393,11 @@ namespace Grid
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		//check if there is an entity on the selected tile first
-		if (this->pos[x][y] != -1) return;
-
+		if (this->pos[x][y] != -1)
+		{
+			std::cout << "Cannot move onto another entity" << std::endl;
+			return;
+		}
 		bool isHere = false;
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -393,13 +414,19 @@ namespace Grid
 		if (isHere == false) return;
 
 		this->pos[x][y] = e;
-
-		//whenever entity moves advances turn order
-		//tbs->next(ecs);
+		gbsptr->nextPlayerPhase();
 	}
 
 	void GameBoard::update(ECS::Registry& ecs)
 	{
+		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
+		{
+			selected_part = false;
+			this->activate[this->cur_x][this->cur_y] = false;
+			this->cur_x = -1;
+			this->cur_y = -1;
+			this->cur = -1;
+		}
 
 		for (int i = 0; i < MAX_I; ++i)
 		{

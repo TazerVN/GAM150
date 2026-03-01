@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\global.cpp" />
     <ClCompile Include="source\util\BST.cpp" />
     <ClCompile Include="source\UI\cardInformation.cpp" />
     <ClCompile Include="source\system\PhaseSystem.cpp" />
