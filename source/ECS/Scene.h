@@ -13,8 +13,8 @@
 class Scene
 {
 private:
-	ECS::Registry ecs;
-	
+	ECS::Registry* ecs;
+
 	size_t next_entity = 0;
 	std::vector<Entity> entities;
 
@@ -25,7 +25,7 @@ private:
 	Grid::GameBoard BattleGrid;
 
 public:
-	void init(MeshFactory& mf, TextureFactory::TextureFactory& tf);
+	void init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf);
 	void update();
 	void add_entity(Entity e);
 	std::vector<Entity>& entities_store();

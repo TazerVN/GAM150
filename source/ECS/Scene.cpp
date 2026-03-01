@@ -1,11 +1,14 @@
 #include "Scene.h"
 
-void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
+void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf)
 {
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
-	card_system.init_cards(ecs);
+	//must init appoint ecs first
+	ecs = &ECS;
+
+	card_system.init_cards(*ecs);
 	Entity sa = card_system.get_card(0);
 	Entity fa = card_system.get_card(1);
 	Entity ss = card_system.get_card(2);
@@ -13,47 +16,49 @@ void Scene::init(MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	Entity temp; 
 	
 	//Add player
-	temp = System::create_player(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
-	System::add_card_player(ecs, temp, sa);	//add sword attack
-	System::add_card_player(ecs, temp, ss);	//add silver slash attack
-	System::add_card_player(ecs, temp, fa);	//add fa attack
+	temp = System::create_player(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
+	System::add_card_player(*ecs, temp, sa);	//add sword attack
+	System::add_card_player(*ecs, temp, ss);	//add silver slash attack
+	System::add_card_player(*ecs, temp, fa);	//add fa attack
 
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 
 	add_entity(temp);
 
 	//Add enemy0
-	temp = System::create_player(ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
-	System::add_card_player(ecs, temp, fa);	//add fire attack
-	System::add_card_player(ecs, temp, sa);	//add sword attack
+	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
+	System::add_card_player(*ecs, temp, fa);	//add fire attack
+	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
 	//Add enemy1
-	temp = System::create_player(ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
-	System::add_card_player(ecs, temp, fa);	//add fire attack
-	System::add_card_player(ecs, temp, sa);	//add sword attack
+	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
+	System::add_card_player(*ecs, temp, fa);	//add fire attack
+	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
 	TBSys.init(eventPool, BattleGrid, gbs, card_system);
-	BattleGrid.init(ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
+	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
 		s32 x = s32(AERandFloat() * f32(MAX_I));
 		s32 y = s32(AERandFloat() * f32(MAX_J));
-		BattleGrid.placeEntity(ecs, entities[i], x, y);
+		BattleGrid.placeEntity(*ecs, entities[i], x, y);
 	}
+
+
 }
 
 void Scene::update()
 {
-	TBSys.update(ecs, entities);
+	TBSys.update(*ecs, entities);
 	//==================Handle Events===============================
 
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
 	{
-		highlight_cells(ecs, TBSys, BattleGrid);
+		highlight_cells(*ecs, TBSys, BattleGrid);
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
@@ -98,13 +103,14 @@ std::vector<Entity>& Scene::entities_store()
 {
 	return entities;
 }
-PhaseSystem::GameBoardState& Scene::getGBS(){
-	return gbs;
-}
 
 ECS::Registry& Scene::getECS()
 {
-	return ecs;
+	return *ecs;
+}
+
+PhaseSystem::GameBoardState& Scene::getGBS(){
+	return gbs;
 }
 
 TBS::TurnBasedSystem& Scene::getTBS()

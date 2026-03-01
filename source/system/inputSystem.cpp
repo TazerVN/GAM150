@@ -5,12 +5,6 @@ namespace InputSystem
 {
 	void InputManager::update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs)
 	{
-		if (!(gbs.getGBPhase() == PhaseSystem::GBPhase::START_PHASE 
-			|| gbs.getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
-		/*if (!(gbs.getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE 
-			|| gbs.getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT
-			|| gbs.getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT)) return;*/
-
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
 
 		this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;

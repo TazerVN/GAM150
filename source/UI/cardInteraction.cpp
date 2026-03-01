@@ -44,11 +44,7 @@ namespace CardInteraction
 	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 		if (gbsptr == nullptr) return;
-
-		if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE
-			&& !(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE 
-			|| gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT))
-			return;
+		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 
 		if(reset == true) 
 		{
@@ -73,7 +69,6 @@ namespace CardInteraction
 			transform->pos.y = cardhand_pos->pos_onscreen.y;
 
 
-			//this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, tf.);
 		}
 	}
 
