@@ -4,12 +4,14 @@
 #include "../ECS/Components.h"
 #include "../System/TurnBasedSystem.h"
 #include "../system/PhaseSystem.h"
+#include <iostream>
 #include "AEEngine.h"
 
 namespace CardInteraction
 {
 	void fun();//forward declaration for testing
 	void fu(Entity e);//forward declaration for testing
+	void selectableCard_delete(ECS::Registry& ecs, Entity entity);
 
 	//CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex)
 	//{
@@ -40,16 +42,33 @@ namespace CardInteraction
 
 	//	for (s8 i = 0; i < cs->size(); i++)
 	//	{
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height)
+	{
+		this->reset = true;
+		this->id = ecs.createEntity();
+		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+		ecs.addComponent(this->id, trans);
+	}
 
 	//		f32 card_x = x + f32(i) / cs->size() * width * 2;
 	//		f32 card_y = y;
 	//		this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, pTex);;
 	//	}*/
 	//}
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs)
+	{
+		this->reset = true;
+		this->id = ecs.createEntity();
+		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
+		ecs.addComponent(this->id, trans);
+		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
+	}
 
 	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TextureFactory::TextureFactory& tf, TBS::TurnBasedSystem& tbs,
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs,
 		PhaseSystem::GameBoardState& gbs)
 	{
+		this->reset = true;
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		ecs.addComponent(this->id, trans);
@@ -81,8 +100,11 @@ namespace CardInteraction
 		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
 
 		if (this->curr_hand_display.size() < cs->card_storage.size())
+		if(reset == true) 
 		{
 			this->curr_hand_display.push_back(selectableCard_create(ecs, mf, 0, 0, 162, 264, 0, 1, tf.getTextureCard(0)));
+			this->generateCards(ecs, tbs, mf, tf);
+			reset = false;
 		}
 		this->update_pos(ecs);
 	}
@@ -97,11 +119,36 @@ namespace CardInteraction
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(this->curr_hand_display[i]);
 			Components::Input* in = ecs.getComponent<Components::Input>(this->curr_hand_display[i]);
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(this->curr_hand_display[i]);
+
 			transform->pos.x = cardhand_pos->pos_onscreen.x + f32(i) / curr_hand_display.size() * cardhand_pos->size.x * 2;
 			transform->pos.y = cardhand_pos->pos_onscreen.y;
 
 
 			//this->curr_hand_display[i] = selectableCard_create(ecs, mf, card_x, card_y, 162, 264, 0, 1, tf.);
+		}
+	}
+
+	void CardHand::generateCards(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
+	{
+		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
+
+		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+
+
+
+		for (size_t i = 0; i < cs->card_storage.size(); i++)
+		{
+			this->curr_card_id.push_back(cs->card_storage.at(i));
+
+			ECS::ComponentTypeID aID = ECS::getComponentTypeID<Components::Name>();
+			if (ecs.getBitMask()[i].test(aID)) {};
+
+			Components::Name* name = ecs.getComponent<Components::Name>(cs->card_storage.at(i));
+
+
+			this->curr_hand_display.push_back(selectableCard_create(ecs, mf, 0, -500, 162, 264, 0, 1, tf.getTextureCard(TextureFactory::C_SLASH), [name] { std::cout << name->value << std::endl; }));
 		}
 	}
 
@@ -125,6 +172,7 @@ namespace CardInteraction
 	}
 
 	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> fp)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -132,6 +180,7 @@ namespace CardInteraction
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
 		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
@@ -143,6 +192,7 @@ namespace CardInteraction
 	}
 
 	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex)
+	Entity selectableCard_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -151,6 +201,7 @@ namespace CardInteraction
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
 		Components::Input input(AEVK_LBUTTON, true, fun, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
 		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
@@ -164,6 +215,7 @@ namespace CardInteraction
 
 	void selectableCard_delete(ECS::Registry& ecs, Entity entity)
 	{
+		
 		ecs.destroyEntity(entity);
 
 	}
