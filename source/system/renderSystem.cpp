@@ -5,6 +5,7 @@
 #include "../ECS/Components.h"
 #include "../system/transformSystem.h"
 #include "GridSystem.h"
+#include <algorithm>
 
 constexpr int BUFFER_CAPACITY = 100;
 
@@ -12,6 +13,12 @@ namespace RenderSystem
 {
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
 	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer);
+
+	bool renderCMP(const std::pair<s8, Entity>& a, const std::pair<s8, Entity>& b)
+	{
+		if(a.first < b.first) return true;
+		return false;
+	}
 
 	RenderSystem::RenderSystem()
 	{
@@ -39,30 +46,6 @@ namespace RenderSystem
 		ECS::ComponentBitMask textMask;
 		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
 
-		/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
-		{
-			if ((it->first & objMask) == objMask)
-			{
-				for (Entity ent : it->second)
-				{
-					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
-					this->e_buffer.push_back(ent);
-					this->z_buffer.push_back(mesh->z);
-				}
-			}
-			else if ((it->first & textMask) == textMask)
-			{
-				for (Entity ent : it->second)
-				{
-					Components::Text* text = ecs.getComponent<Components::Text>(ent);
-
-					this->e_buffer.push_back(ent);
-					this->z_buffer.push_back(text->z);
-				}
-			}
-		}
-
-		bubbleSort(this->e_buffer, this->z_buffer);*/
 
 		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 		{
@@ -71,7 +54,8 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
-					bst.insert(mesh->z, ent);
+					std::pair<s8, Entity> a{mesh->z, ent};
+					buffer.push_back(a);
 				}
 			}
 			else if ((it->first & textMask) == textMask)
@@ -79,7 +63,8 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Text* text = ecs.getComponent<Components::Text>(ent);
-					bst.insert(text->z, ent);
+					std::pair<s8, Entity> a{ text->z, ent };
+					buffer.push_back(a);
 				}
 			}
 		}
@@ -92,16 +77,17 @@ namespace RenderSystem
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
 
 
-		this->bst.destroy();
 		RenderSystem_init(ecs);
-		std::vector<std::pair<s8, Entity>> buffer;
-		this->bst.inOrder(buffer);
 		//twan's old code
 
-		for (int i = 0; i < buffer.size(); i++)
+		buffer.sort(renderCMP);
+
+		while (!this->buffer.empty())
 		{
 
-			Entity current_e = buffer[i].second;
+
+			Entity current_e = this->buffer.front().second;
+			this->buffer.pop_front();
 			//int current_e = i;
 
 
@@ -200,20 +186,4 @@ namespace RenderSystem
 		AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	//void render_grid(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform, Grid::GridComponent& gc)
-	//{
-	//	for (s8 i = 0; i < gc.max_i; ++i)
-	//	{
-	//		for (s8 j = 0; j < gc.max_j; ++j)
-	//		{
-
-	//			AEVec2 display_pos;
-	//			AEVec2 display_size;
-	//			AEVec2Set(&display_pos, pos.x + (i - j) * CELL_WIDTH / 2, pos.y - (i + j) * CELL_HEIGHT / 4);
-	//			render_mesh(mesh, display_pos, size, transform);
-	//			/*cells_color[i][j] = 0xFFFFFF;
-	//			cells_alpha[i][j] = 1.0f;*/
-	//		}
-	//	}
-	//}
 }

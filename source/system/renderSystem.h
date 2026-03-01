@@ -4,6 +4,7 @@
 
 #include "../factory/MeshFactory.h"
 #include <vector>
+#include <utility>
 #include "../ECS/ECSystem.h"
 #include "../util/BST.h"
 
@@ -17,6 +18,8 @@ namespace RenderSystem
 		BinaryTree<s8, Entity> bst;
 		std::vector<Entity> e_buffer{0};
 		std::vector<s8> z_buffer{0};
+
+		std::list<std::pair<s8, Entity>> buffer;
 		public:
 		RenderSystem();
 		void RenderSystem_init(ECS::Registry& ecs);
