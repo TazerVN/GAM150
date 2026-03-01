@@ -17,7 +17,7 @@ namespace CardInteraction
 {
 	class CardHand
 	{
-		private:
+	private:
 		std::vector<Entity> curr_hand_display{};
 		std::vector<Entity> curr_card_id{};
 		std::vector<bool> activate;
@@ -27,10 +27,10 @@ namespace CardInteraction
 		TBS::TurnBasedSystem* tbsptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 
-		public:
+	public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
-		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs,PhaseSystem::GameBoardState& gbs);
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs, PhaseSystem::GameBoardState& gbs);
 
 		CardHand();
 
