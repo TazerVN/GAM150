@@ -1,6 +1,7 @@
 #include "TurnBasedSystem.h"
 #include "../system/GridSystem.h"
 #include "../util/util.h"
+#include "../UI/cardInteraction.h"
 #include "../global.h"
 #include <iomanip>
 namespace TBS
@@ -21,8 +22,8 @@ namespace TBS
 		if (!is_active && participants.size() >= 2) start(ecs);
 	}
 
-	void TurnBasedSystem::init(ECS::Registry& ecs,EventPool& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
-								System::CardSystem& cs,std::vector<Entity>& entities)
+	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp, 
+		System::CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
 	{
 		evsptr = &eventPool;
 		//highlight event
@@ -37,6 +38,7 @@ namespace TBS
 		gbsptr = &gbsp;
 		cardSysptr = &cs;
 		gameBoardptr = &gbp;
+		cardHandptr = &ch;
 
 		if (!is_active)
 		{
@@ -159,7 +161,7 @@ namespace TBS
 			gbsptr->resetPlayerPhase();
 		}
 
-
+		gameBoardptr->reset_selected_player();
 		debug_print(ecs);
 	}
 
@@ -204,6 +206,7 @@ namespace TBS
 		std::cout << "Select Enemy to use card on" << std::endl;
 		set_selected_card(true);	//set current participant's selected card to true
 		evsptr->pool[HIGHLIGHT_EVENT].triggered = true;
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 	}
 
 	//return the cardID inside the hand
@@ -293,7 +296,7 @@ namespace TBS
 		std::cout << "------------------------------" << std::endl;
 	}
 
-	bool TurnBasedSystem::check_input(ECS::Registry& ecs)
+	void TurnBasedSystem::check_input(ECS::Registry& ecs)
 	{
 		const std::array<u8, 6> keys = { AEVK_1 ,AEVK_2,AEVK_3,AEVK_4,AEVK_5,AEVK_6 };
 		for (int i = 0; i < keys.size(); ++i)
@@ -301,15 +304,14 @@ namespace TBS
 			if (AEInputCheckTriggered(keys[i]))
 			{
 				select_hand_index(static_cast<size_t>(keys[i] - AEVK_0 - 1));
+				
 				break;
 			}
 		}
 		if (AEInputCheckTriggered(AEVK_U))
 		{
 			select_card(ecs);
-			return true;
 		}
-		return false;
 	}
 
 	void TurnBasedSystem::add_card(ECS::Registry& ecs)
@@ -418,22 +420,17 @@ namespace TBS
 			}
 			case PhaseSystem::GBPhase::MAIN_PHASE:
 			{
-				if (current() == 4)
+				if (current() == playerID)
 				{
 					switch (gbsptr->getPlayerPhase())
 					{
 					case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
 					{
-						if (check_input(ecs))
-						{
-							gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
-						} //set phase phase (GRID_SELECT)
 						break; //break for PLAYER_EXPLORE
 					}
 					case PhaseSystem::PlayerPhase::CARD_SELECT:
 					{
-						if (check_input(ecs))
-						{gbsptr->nextPlayerPhase();} //next phase (GRID_SELECT)
+						check_input(ecs);
 						break; //break for CARD_SELECT
 					}
 					default:

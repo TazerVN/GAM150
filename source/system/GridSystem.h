@@ -58,6 +58,7 @@ namespace Grid
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
 
+		void reset_selected_player();
 		AEVec2 Get_gridPos(AEVec2 const& worldPos);
 	};
 	

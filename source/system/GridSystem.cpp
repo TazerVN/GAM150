@@ -3,6 +3,7 @@
 #include "../util/util.h"
 #include "../system/TurnBasedSystem.h"
 #include "../system/PhaseSystem.h"
+#include "../global.h"
 
 float offset = 1.0f;
 
@@ -238,7 +239,7 @@ namespace Grid
 				//and selected on the empty cell then return
 
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::START_PHASE || gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
-
+		if (tbs->current() != playerID) return;
 		switch (gbsptr->getPlayerPhase())
 		{
 			case PhaseSystem::PlayerPhase::GRID_SELECT:
@@ -419,15 +420,12 @@ namespace Grid
 
 	void GameBoard::update(ECS::Registry& ecs)
 	{
+		//when movement is selected and right mouse is clicked
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
-			selected_part = false;
-			this->activate[this->cur_x][this->cur_y] = false;
-			this->cur_x = -1;
-			this->cur_y = -1;
-			this->cur = -1;
+			reset_selected_player();
 		}
-
+		
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
@@ -504,6 +502,16 @@ namespace Grid
 	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_attack_activate()
 	{
 		return atk_activate;
+	}
+
+	void GameBoard::reset_selected_player()
+	{
+		if (!selected_part) return;
+		selected_part = false;
+		this->activate[this->cur_x][this->cur_y] = false;
+		this->cur_x = -1;
+		this->cur_y = -1;
+		this->cur = -1;
 	}
 
 	AEVec2 GameBoard::Get_gridPos(AEVec2 const& worldPos)

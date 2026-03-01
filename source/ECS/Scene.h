@@ -25,7 +25,7 @@ private:
 	Grid::GameBoard BattleGrid;
 
 public:
-	void init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf);
+	void init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, CardInteraction::CardHand& ch);
 	void update();
 	void add_entity(Entity e);
 	std::vector<Entity>& entities_store();

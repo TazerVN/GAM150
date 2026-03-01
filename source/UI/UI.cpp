@@ -14,6 +14,7 @@ namespace UI
 			// the lambda function
 			[&scene] 
 			{ 
+				if(scene.getGBS().getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
 				scene.getTBS().next(scene.getECS()); 
 			}
 		));

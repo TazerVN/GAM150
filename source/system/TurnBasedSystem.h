@@ -9,6 +9,7 @@
 
 //forward declaration so that turnbased system have access to gridsystem
 namespace Grid { class GameBoard; };
+namespace CardInteraction { class CardHand; };
 
 namespace TBS 
 {
@@ -23,6 +24,8 @@ namespace TBS
 		Grid::GameBoard* gameBoardptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		System::CardSystem* cardSysptr = nullptr;
+		CardInteraction::CardHand* cardHandptr = nullptr;
+
 
 		// Actors on Borad
 		std::vector<Entity> participants;
@@ -35,7 +38,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(ECS::Registry&, EventPool&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&,std::vector<Entity>&);
+		void init(ECS::Registry&, EventPool&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 
@@ -60,7 +63,7 @@ namespace TBS
 		void show_hand(ECS::Registry& ecs) const;
 
 		//============Combat=======================
-		bool check_input(ECS::Registry&);
+		void check_input(ECS::Registry&);
 		void add_card(ECS::Registry& ecs);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card

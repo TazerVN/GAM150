@@ -44,13 +44,12 @@ void game_init()
 	mf.MeshFactoryInit();
 
 	AEGfxSetCamPosition(camerax, cameray);
-	scene.init(ecs, mf, TF);	
+	scene.init(ecs, mf, TF, card);	
 	UIM.init(scene, mf, TF);
 
+	card = CardInteraction::CardHand(ecs, mf, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getGBS());
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
-
-	card = CardInteraction::CardHand(ecs, mf, -1* w_width/8, -w_height/2, w_width/2, 264 ,scene.getTBS(),scene.getGBS() );
 	RM.RenderSystem_init(ecs);
 
 	ecs.remove_empty_groups();

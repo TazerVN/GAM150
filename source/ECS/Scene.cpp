@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf)
+void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, CardInteraction::CardHand& ch)
 {
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
@@ -37,7 +37,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 
-	TBSys.init(*ecs,eventPool, BattleGrid, gbs, card_system, entities);
+	TBSys.init(*ecs,eventPool, BattleGrid, gbs, card_system, ch ,entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 	
 	//place entitities

@@ -80,16 +80,24 @@ namespace CardInteraction
 		if (gbsptr == nullptr) return;
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 
-
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
 		{
 			if (this->activate[i] == true)
 			{
-				selectableCard_delete(ecs, this->curr_hand_display[i]);
+				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT)	//if not in card_select or player explore
+				{
+					tbsptr->select_hand_index(i);
+					tbsptr->select_card(ecs);
+					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
+				}
+				//deleting the visual card code
+
+				/*selectableCard_delete(ecs, this->curr_hand_display[i]);
 
 				this->curr_hand_display.erase(this->curr_hand_display.begin() + i);
 				this->curr_card_id.erase(this->curr_card_id.begin() + i);
-				this->activate.erase(this->activate.begin() + i);
+				this->activate.erase(this->activate.begin() + i);*/
+				this->activate[i] = false;
 			}
 		}
 
