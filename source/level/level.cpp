@@ -51,7 +51,7 @@ void game_init()
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
 
-	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264, TF.getTextureCard(0),scene.getTBS(),scene.getGBS() );
+	card = CardInteraction::CardHand(scene.getECS(), mf, -3* w_width/8, -w_height/2, w_width/4, 264,scene.getTBS(),scene.getGBS());
 
 	RM.RenderSystem_init(scene.getECS());
 

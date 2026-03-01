@@ -26,6 +26,12 @@ namespace TextureFactory
 	void TextureFactory::textureInit(){
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardSample.png"));
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardDisplay.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash+.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_black_hole.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier+.png"));
+		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_aura_farm.png"));
 
 
 		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
@@ -36,7 +42,7 @@ namespace TextureFactory
 	}
 
 
-	AEGfxTexture* TextureFactory::getTextureCard(s8 id)
+	AEGfxTexture* TextureFactory::getTextureCard(CardTextureID id)
 	{
 		return this->card.at(id);
 	}
