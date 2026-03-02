@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <queue>
 #include "Components.h"
+#include "../global.h"
 
-using Entity = size_t;
 //early declaration
 
 namespace ECS

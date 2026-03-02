@@ -247,27 +247,19 @@ namespace Grid
 				if (tbs->is_current_selected_card())
 				{
 					//if the card is selected and the selected pos is entity
-					if (pos[x][y] != -1 && pos[x][y] != tbs->current())
+					if (pos[x][y] != -1)
 					{
+						tbs->set_targetted_ent(pos[x][y]);
+						tbs->set_targetted_xy(x, y);
 						//determine target 
-						Entity target = pos[x][y];
-						Entity current_entt = tbs->current();
-						Entity cardID = tbs->draw_card(ecs, current_entt, tbs->get_selected_cardhand_index());
-						bool died = tbs->play_card(ecs, target, cardID);
-						if (died)
-						{
-							if (x != -1 && y != -1) pos[x][y] = -1;
-							tbs->remove_participant(ecs, target);
-						}
-						tbs->set_selected_card(false);
-						gbsptr->nextPlayerPhase();
-						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+						gbsptr->nextGBPhase();
+						gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 						return;
 					}
 					else {
 						tbs->set_selected_card(false);
-						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 						gbsptr->prevPlayerPhase();
+						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
 						std::cout << "Select a valid cell with entity!" << std::endl;
 					}
 				}
@@ -416,6 +408,7 @@ namespace Grid
 
 		this->pos[x][y] = e;
 		gbsptr->nextPlayerPhase();
+		gbsptr->debug_print();
 	}
 
 	void GameBoard::update(ECS::Registry& ecs)

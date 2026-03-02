@@ -17,9 +17,9 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	
 	//Add player
 	temp = System::create_player(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
-	System::add_card_player(*ecs, temp, sa);	//add sword attack
-	System::add_card_player(*ecs, temp, ss);	//add silver slash attack
-	System::add_card_player(*ecs, temp, fa);	//add fa attack
+	//System::add_card_player(*ecs, temp, sa);	//add sword attack
+	//System::add_card_player(*ecs, temp, ss);	//add silver slash attack
+	//System::add_card_player(*ecs, temp, fa);	//add fa attack
 
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 
@@ -61,28 +61,6 @@ void Scene::update()
 		highlight_cells(*ecs, TBSys, BattleGrid);
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
-
-	//if (eventPool.pool[PLAY_CARD_EVENT].triggered)
-	//{
-	//	if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
-
-	//	//determine target 
-	//	Entity target = eventPool.pool[PLAY_CARD_EVENT].returned_value;
-	//	Entity current_entt = TBSys.current();
-	//	Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
-	//	bool died = TBSys.play_card(ecs, target, cardID);
-	//	if (died)
-	//	{
-	//		int x = eventPool.pool[PLAY_CARD_EVENT].x;
-	//		int y = eventPool.pool[PLAY_CARD_EVENT].y;
-
-	//		if (x != -1 && y != -1)
-	//			BattleGrid.get_pos()[x][y] = -1;
-	//		TBSys.remove_participant(ecs, target);
-	//	}
-	//	eventPool.pool[PLAY_CARD_EVENT].triggered = false;
-	//	eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
-	//}
 
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{

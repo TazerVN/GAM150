@@ -15,6 +15,8 @@ namespace TBS { class TurnBasedSystem; }
 
 namespace CardInteraction
 {
+	void card_onHover(ECS::Registry& ecs, Entity id);
+	void card_offHover(ECS::Registry& ecs, Entity id);
 	class CardHand
 	{
 	private:
@@ -26,19 +28,21 @@ namespace CardInteraction
 
 		TBS::TurnBasedSystem* tbsptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
+		MeshFactory* mfptr = nullptr;
+		TextureFactory::TextureFactory* tfptr = nullptr;
 
 	public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
-		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs, PhaseSystem::GameBoardState& gbs);
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs, PhaseSystem::GameBoardState& gbs);
 
 		CardHand();
 
-		void generateCards(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
+		void generateCards(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs);
 		void update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
 		void update_pos(ECS::Registry& ecs);
 		void activate_card(Entity e);
-		void remove_card(ECS::Registry&, size_t);
+		void remove_card(ECS::Registry&, int);
 		void reset_hand();
 	};
 

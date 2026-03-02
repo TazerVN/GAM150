@@ -1,4 +1,16 @@
 #include "Components.h"
+#include "../ECS/ECSystem.h"
+#include <iostream>
+
+void Components::Card_Storage::add_card_to_hand(Entity cardID)
+{
+	data_card_hand.push_back(cardID);
+}
+
+void Components::Card_Storage::remove_card_from_hand(int index)
+{
+	data_card_hand.erase(data_card_hand.begin() + index);
+}
 
 
 Components::Input::Input(u8 type, bool hover,
