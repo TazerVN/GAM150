@@ -416,6 +416,10 @@ namespace TBS
 			{
 				std::cout << "Drawing cards" << std::endl;
 
+				// stop spamming & advance to MAIN - Zejin addition
+				active = false;
+				gbsptr->nextGBPhase(); // goes to MAIN_PHASE
+				gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::MAIN_PHASE:
@@ -457,5 +461,39 @@ namespace TBS
 			}
 			}
 		}
+	}
+
+	void TurnBasedSystem::next_enemy_or_player(ECS::Registry& ecs)
+	{
+		if (!is_active || participants.empty()) return;
+
+		// Advance once in turn order
+		next(ecs);
+
+		// If we wrapped back to player, reset player phase for control
+		if (current() == playerID)
+		{
+			gbsptr->resetPlayerPhase();
+		}
+	}
+
+	void TurnBasedSystem::yield_to_player(ECS::Registry& ecs)
+	{
+		if (!is_active || participants.empty()) return;
+
+		// Find player index in participants
+		size_t playerIndex = participants.size();
+		for (size_t i = 0; i < participants.size(); ++i)
+		{
+			if (participants[i] == playerID) { playerIndex = i; break; }
+		}
+		if (playerIndex == participants.size()) return; // player not found
+
+		// Jump control to player without advancing the round / consuming turns.
+		cur_player = playerIndex;
+
+		gbsptr->resetPlayerPhase();
+		gameBoardptr->reset_selected_player();
+		debug_print(ecs);
 	}
 }

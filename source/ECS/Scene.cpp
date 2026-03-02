@@ -25,20 +25,25 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 
 	add_entity(temp);
 
+	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
+
 	//Add enemy0
 	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
 	System::add_card_player(*ecs, temp, fa);	//add fire attack
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
+	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
 	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
 	System::add_card_player(*ecs, temp, fa);	//add fire attack
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
+	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
 	TBSys.init(*ecs,eventPool, BattleGrid, gbs, card_system, ch ,entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
+
 	
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -54,6 +59,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 void Scene::update()
 {
 	TBSys.update(*ecs);
+	enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
 	//==================Handle Events===============================
 
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)

@@ -62,6 +62,9 @@ namespace TBS
 		void show_HP(ECS::Registry& ecs) const;
 		void show_hand(ECS::Registry& ecs) const;
 
+		void next_enemy_or_player(ECS::Registry& ecs);	// For Enemy CPU
+		void yield_to_player(ECS::Registry& ecs);
+
 		//============Combat=======================
 		void check_input(ECS::Registry&);
 		void add_card(ECS::Registry& ecs);

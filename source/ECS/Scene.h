@@ -7,6 +7,7 @@
 #include "../util/Event.h"
 #include "../system/GridSystem.h"
 #include "../system/TurnBasedSystem.h"
+#include "../system/EnemyDirector.h"
 
 #include "AEEngine.h"
 
@@ -23,6 +24,8 @@ private:
 	EventPool eventPool;
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
+
+	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 
 public:
 	void init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, CardInteraction::CardHand& ch);
