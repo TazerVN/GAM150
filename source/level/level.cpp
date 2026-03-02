@@ -8,6 +8,7 @@
 #include "../system/renderSystem.h"
 #include "../system/inputSystem.h"
 #include "../system/transformSystem.h"
+#include "../system/TimerSystem.h"
 #include "../level/GameState.h"
 #include "../UI/UI.h"
 
@@ -28,7 +29,7 @@ TextureFactory::TextureFactory TF;
 //initialized event handler before tbs
 RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
-
+TimerSystem::TimerSystem TS; 
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -64,6 +65,7 @@ void game_update()
 		leaveGameState();
 	
 	IM.update(ecs, scene.getGBS());
+	TS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF);
 	scene.update();
 
