@@ -17,9 +17,9 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	
 	//Add player
 	temp = System::create_player(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
-	System::add_card_player(*ecs, temp, sa);	//add sword attack
-	System::add_card_player(*ecs, temp, ss);	//add silver slash attack
-	System::add_card_player(*ecs, temp, fa);	//add fa attack
+	//System::add_card_player(*ecs, temp, sa);	//add sword attack
+	//System::add_card_player(*ecs, temp, ss);	//add silver slash attack
+	//System::add_card_player(*ecs, temp, fa);	//add fa attack
 
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 
@@ -64,35 +64,15 @@ void Scene::update()
 
 	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
 	{
-		highlight_cells(*ecs, TBSys, BattleGrid);
+		Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
+		f32& card_range = ecs->getComponent<Components::Attack>(card_ID)->range;
+		highlight_cells(*ecs, TBSys, BattleGrid,card_range,highlight_tag::ATTACK_HIGHLIGHT);
 		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
-	//if (eventPool.pool[PLAY_CARD_EVENT].triggered)
-	//{
-	//	if (eventPool.pool[PLAY_CARD_EVENT].returned_value == NULL_INDEX) return;
-
-	//	//determine target 
-	//	Entity target = eventPool.pool[PLAY_CARD_EVENT].returned_value;
-	//	Entity current_entt = TBSys.current();
-	//	Entity cardID = TBSys.draw_card(ecs, current_entt, TBSys.get_selected_cardhand_index());
-	//	bool died = TBSys.play_card(ecs, target, cardID);
-	//	if (died)
-	//	{
-	//		int x = eventPool.pool[PLAY_CARD_EVENT].x;
-	//		int y = eventPool.pool[PLAY_CARD_EVENT].y;
-
-	//		if (x != -1 && y != -1)
-	//			BattleGrid.get_pos()[x][y] = -1;
-	//		TBSys.remove_participant(ecs, target);
-	//	}
-	//	eventPool.pool[PLAY_CARD_EVENT].triggered = false;
-	//	eventPool.pool[PLAY_CARD_EVENT].returned_value = NULL_INDEX;
-	//}
-
 	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
 	{
-		unhighlight_cells(BattleGrid);
+		unhighlight_cells(BattleGrid, highlight_tag::ATTACK_HIGHLIGHT);
 		eventPool.pool[UNHIGHLIGHT_EVENT].triggered = false;
 	}
 
@@ -129,51 +109,63 @@ Grid::GameBoard& Scene::getBattleGrid()
 	return BattleGrid;
 }
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
 	Entity card_ID = tbs.draw_card(ecs, tbs.current(), tbs.get_selected_cardhand_index());
-	f32& card_range = ecs.getComponent<Components::Attack>(card_ID)->range;
-
 	const char* card_name = ecs.getComponent<Components::Name>(card_ID)->value;
 
 	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
 
-	//iterate over range * 2 
-	for (int ite = 1; ite <= card_range; ++ite)
+	for (int i = 0; i <= range; ++i)
 	{
-		if (cur_part_pos.x + ite < MAX_I)
+		for (int j = 0; j <= range; ++j)
 		{
-			gb.get_highlighted_cell().push_back({ cur_part_pos.x + ite , cur_part_pos.y });
-			gb.get_attack_activate()[cur_part_pos.x + ite][cur_part_pos.y] = true;
-		}
-		if (cur_part_pos.y + ite < MAX_J)
-		{
-			gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y + ite });
-			gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y + ite] = true;
-		}
-		if (cur_part_pos.x - ite > -1)
-		{
-			gb.get_highlighted_cell().push_back({ cur_part_pos.x - ite , cur_part_pos.y });
-			gb.get_attack_activate()[cur_part_pos.x - ite][cur_part_pos.y] = true;
-		}
-		if (cur_part_pos.y - ite > -1)
-		{
-			gb.get_highlighted_cell().push_back({ cur_part_pos.x , cur_part_pos.y - ite });
-			gb.get_attack_activate()[cur_part_pos.x][cur_part_pos.y - ite] = true;
+			if (i + j == 0) continue;
+			if (cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J && i + j <= range)
+			{
+				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
+				gb.get_attack_activate()[cur_part_pos.x + i][cur_part_pos.y + j] = true;
+			}
+			if (cur_part_pos.x - i > -1 && cur_part_pos.y - j > -1 && i + j <= range)
+			{
+				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
+				gb.get_attack_activate()[cur_part_pos.x - i][cur_part_pos.y - j] = true;
+			}
+			if (cur_part_pos.x + i < MAX_I && cur_part_pos.y - j > -1 && i + j <= range)
+			{
+				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
+				gb.get_attack_activate()[cur_part_pos.x + i][cur_part_pos.y - j] = true;
+			}
+			if (cur_part_pos.x - i > -1 && cur_part_pos.y + j < MAX_J && i + j <= range)
+			{
+				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
+				gb.get_attack_activate()[cur_part_pos.x - i][cur_part_pos.y + j] = true;
+			}
 		}
 	}
 	//=========================================================================
 }
 
-void unhighlight_cells(Grid::GameBoard& gb)
+void unhighlight_cells(Grid::GameBoard& gb, highlight_tag type)
 {
 	{
-		//un-highligh cells
-		for (AEVec2 a : gb.get_highlighted_cell())
+		switch (type)
 		{
-			gb.get_attack_activate()[int(a.x)][int(a.y)] = false;
-			gb.get_highlighted_cell().clear();
+		case highlight_tag::MOVE_HIGHLIGHT:
+			break;
+		case highlight_tag::ATTACK_HIGHLIGHT: 
+		{
+			//un-highligh cells
+			for (AEVec2 a : gb.get_atk_highlighted_cell())
+			{
+				gb.get_attack_activate()[int(a.x)][int(a.y)] = false;
+				gb.get_atk_highlighted_cell().clear();
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }

@@ -1,11 +1,15 @@
 #pragma once
 #include "../ECS/ECSystem.h"
 
-class TimerSystem
+namespace TimerSystem
 {
-	public:
-	void update();
-	void reset(int s);
 
-};
+	class TimerSystem
+	{
+		public:
+		void update(ECS::Registry&);
+		TimerSystem() = default;
+	};
 
+
+}

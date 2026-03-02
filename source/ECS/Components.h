@@ -5,10 +5,11 @@
 
 
 #include "AEEngine.h"
-#include <array>
+#include <vector>
 #include <string>
 #include <functional>
 
+#include "../global.h"
 #include "../factory/MeshFactory.h"
 
 
@@ -48,9 +49,12 @@ namespace Components
 	};
 
 	struct Timer{
-		int seconds;
-		int max_seconds;
+		f32 seconds;
+		f32 max_seconds;
 		bool start;
+		bool reset;
+		Timer();
+		Timer(f32 max, f32 current = 0, bool start = true, bool reset = false);
 	};
 
 	struct GridCell{
@@ -109,12 +113,24 @@ namespace Components
 		std::function<void()> offHover;
 	};
 
+	struct Particle
+	{
+		AEVec2	velocity;
+		f32		fadeSpeed;
+		bool	alive;
+	};
+
 
 	//===========================CARDS=========================================
 	struct Attack
 	{
 		f32 damage;
 		DamageType type;
+		f32 range;
+	};
+	struct Defense
+	{
+		f32 value;
 		f32 range;
 	};
 	struct Name
@@ -127,30 +143,32 @@ namespace Components
 	};
 	class Card_Storage
 	{
-		private:
-		size_t next_index = 0;
 		public:
-		size_t get_nextIndex()
-		{
-			if (next_index < card_storage.size()) return next_index++;
-			else return -1;
-		}
-		
-		size_t& index() { return next_index; }
-		size_t size() const {return this->next_index;}
+		void add_card_to_hand(Entity cardID);
+		void remove_card_from_hand(int index);
 
-		std::array<size_t, MAX_HAND> card_storage{NULL_INDEX};
+		//std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
+
+		std::vector<size_t>data_card_hand;
+	};
+
+	enum class CardTag
+	{
+		ATTACK = 0,
+		DEFENSE = 1,
+		ITEM = 2,
+		EVENT = 3
 	};
 
 	//===================Turn Based======================================
 	struct TurnBasedStats
 	{
-		bool yielded = false;		// true = no more actions and granted turns until round ends
-
 		int  maxPoints = 0;			// per-round cap (set when entity created)
 		int  points = 0;			// current round points (reset at round start)
 
 		bool needsRedraw = false;	// set true at round start; card system consumes it later
+
+		f32 shields = 0;
 	};
 
 }

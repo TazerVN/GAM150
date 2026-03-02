@@ -8,8 +8,10 @@
 #include "../system/renderSystem.h"
 #include "../system/inputSystem.h"
 #include "../system/transformSystem.h"
+#include "../system/TimerSystem.h"
 #include "../level/GameState.h"
 #include "../UI/UI.h"
+#include "../system/particleSystem.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
@@ -28,7 +30,8 @@ TextureFactory::TextureFactory TF;
 //initialized event handler before tbs
 RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
-
+TimerSystem::TimerSystem TS;
+Particle::ParticleSystem PS;
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -47,12 +50,13 @@ void game_init()
 	scene.init(ecs, mf, TF, card);	
 	UIM.init(scene, mf, TF);
 
-	card = CardInteraction::CardHand(ecs, mf, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getGBS());
+	card = CardInteraction::CardHand(ecs, mf,TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getGBS());
 	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
 	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
 	RM.RenderSystem_init(ecs);
 
 	ecs.remove_empty_groups();
+	PS.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
 }
 
 void game_update()
@@ -64,6 +68,7 @@ void game_update()
 		leaveGameState();
 	
 	IM.update(ecs, scene.getGBS());
+	TS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF);
 	scene.update();
 

@@ -126,6 +126,8 @@ void EnemyDirector::update(ECS::Registry& ecs,
 
         std::cout << "\n[ED] ===== Horde step =====\n";
 
+        // =============== SKIPPING CONDITIONS ==================
+        // find actor id
         std::string actorId;
         if (!getActorIdFromEntity(cur, actorId))
         {
@@ -134,6 +136,7 @@ void EnemyDirector::update(ECS::Registry& ecs,
             continue;
         }
 
+        // find script lines for that actor
         auto sit = scripts_.find(actorId);
         if (sit == scripts_.end() || sit->second.lines.empty())
         {
@@ -141,6 +144,7 @@ void EnemyDirector::update(ECS::Registry& ecs,
             tbs.next(ecs);
             continue;
         }
+        //============= END OF SKIPPING CONDITIONS ===========
 
         ScriptState& ss = sit->second;
 
@@ -152,7 +156,7 @@ void EnemyDirector::update(ECS::Registry& ecs,
         size_t safety = 0;
         const size_t maxSteps = ss.lines.size();
 
-        // Execute commands until STOP (or safety)
+        // Execute commands until STOP
         while (!foundSTOP && safety < maxSteps)
         {
             if (ss.ip >= ss.lines.size()) ss.ip = 0;
@@ -176,13 +180,15 @@ void EnemyDirector::update(ECS::Registry& ecs,
             safety++;
         }
 
+
+        // guard in case the LOOP does not have a STOP, auto stops at last instruction
         if (!foundSTOP)
         {
             std::cout << "[EnemyDirector] WARNING: No STOP found for " << actorId
                 << " within one script loop; forcing end.\n";
         }
 
-        // IMPORTANT: advance to next participant (E0 -> E1 -> Player)
+        // advance to next participant
         tbs.next(ecs);
     }
 
@@ -334,7 +340,7 @@ void EnemyDirector::execMOVE(ECS::Registry& ecs,
         return;
     }
 
-    // MOVE BACK: 1 step away from player (maximize Manhattan distance)
+    // MOVE BACK: 1 step away from player
     if (t[2] == "BACK")
     {
         int bestNx = ax, bestNy = ay;

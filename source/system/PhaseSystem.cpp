@@ -89,22 +89,18 @@ namespace PhaseSystem
 
 	void GameBoardState::nextGBPhase(){
 		this->gb_curr++;
-		debug_print();
 	}
 	void GameBoardState::nextPlayerPhase(){
 		this->player_curr++;
-		debug_print();
 	}
 
 	void GameBoardState::prevGBPhase()
 	{
 		this->gb_curr--;
-		debug_print();
 	}
 	void GameBoardState::prevPlayerPhase()
 	{
 		this->player_curr--;
-		debug_print();
 	}
 
 	void GameBoardState::resetGPhase()
