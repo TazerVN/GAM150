@@ -53,7 +53,7 @@ namespace Components
 		bool start;
 		bool reset;
 		Timer();
-		Timer(f32 max, f32 current, bool start, bool reset);
+		Timer(f32 max, f32 current = 0, bool start = true, bool reset = false);
 	};
 
 	struct GridCell{
@@ -110,6 +110,13 @@ namespace Components
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;
+	};
+
+	struct Particle
+	{
+		AEVec2	velocity;
+		f32		fadeSpeed;
+		bool	alive;
 	};
 
 
