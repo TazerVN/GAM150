@@ -185,41 +185,13 @@ namespace CardInteraction
 		}
 	}
 
-	/*void CardHand::remove_card(ECS::Registry& ecs,int index)
+	void CardHand::remove_card(ECS::Registry& ecs,int index)
 	{
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
 
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
 		this->curr_card_id.erase(this->curr_card_id.begin() + index);
 		this->activate.erase(this->activate.begin() + index);
-	}*/
-
-	void CardHand::remove_card(ECS::Registry& ecs, int index)
-	{
-		if (index < 0) {
-			std::cout << "[CardHand] remove_card: index < 0 (" << index << ")\n";
-			return;
-		}
-
-		size_t i = static_cast<size_t>(index);
-
-		if (i >= curr_hand_display.size() ||
-			i >= curr_card_id.size() ||
-			i >= activate.size())
-		{
-			std::cout << "[CardHand] remove_card: OOR index=" << index
-				<< " display=" << curr_hand_display.size()
-				<< " ids=" << curr_card_id.size()
-				<< " act=" << activate.size() << "\n";
-			return;
-		}
-
-		selectableCard_delete(ecs, curr_hand_display[i]);
-
-		auto it = static_cast<std::ptrdiff_t>(i);
-		curr_hand_display.erase(curr_hand_display.begin() + it);
-		curr_card_id.erase(curr_card_id.begin() + it);
-		activate.erase(activate.begin() + it);
 	}
 
 	void CardHand::reset_hand()
