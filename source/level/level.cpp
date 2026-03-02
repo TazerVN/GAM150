@@ -11,6 +11,7 @@
 #include "../system/TimerSystem.h"
 #include "../level/GameState.h"
 #include "../UI/UI.h"
+#include "../system/particleSystem.h"
 
 float camerax = 0.0f;
 float cameray = 0.0f;
@@ -29,7 +30,8 @@ TextureFactory::TextureFactory TF;
 //initialized event handler before tbs
 RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
-TimerSystem::TimerSystem TS; 
+TimerSystem::TimerSystem TS;
+Particle::ParticleSystem PS;
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -54,6 +56,7 @@ void game_init()
 	RM.RenderSystem_init(ecs);
 
 	ecs.remove_empty_groups();
+	PS.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
 }
 
 void game_update()
