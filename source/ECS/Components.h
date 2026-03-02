@@ -53,7 +53,7 @@ namespace Components
 		bool start;
 		bool reset;
 		Timer();
-		Timer(f32 max, f32 current = 0, bool start = true, bool reset = false);
+		Timer(f32 max, f32 current, bool start, bool reset);
 	};
 
 	struct GridCell{
