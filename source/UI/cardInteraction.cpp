@@ -145,16 +145,16 @@ namespace CardInteraction
 
 
 
-		for (size_t i = 0; i < cs->card_storage.size(); i++)
+		for (size_t i = 0; i < cs->data_card_hand.size(); i++)
 		{
-			this->curr_card_id.push_back(cs->card_storage.at(i));
+			this->curr_card_id.push_back(cs->data_card_hand.at(i));
 			this->activate.push_back(false);
 
 			ECS::ComponentTypeID aID = ECS::getComponentTypeID<Components::Name>();
 			if (ecs.getBitMask()[i].test(aID)) {};
 
-			Components::Name* name = ecs.getComponent<Components::Name>(cs->card_storage.at(i));
-			Components::Attack* a = ecs.getComponent<Components::Attack>(cs->card_storage.at(i));
+			Components::Name* name = ecs.getComponent<Components::Name>(cs->data_card_hand.at(i));
+			Components::Attack* a = ecs.getComponent<Components::Attack>(cs->data_card_hand.at(i));
 
 			AEGfxTexture* texture = nullptr;
 

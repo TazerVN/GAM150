@@ -90,7 +90,7 @@ namespace System {
 			std::cout << "Player's hand is full cannot add the card!!" << std::endl;
 			return;
 		}
-		user_cards->card_storage[index] = cardID;
+		user_cards->data_card_hand[index] = cardID;
 	}
 
 	void remove_card_player(ECS::Registry& ecs, Entity user, size_t index)
@@ -104,7 +104,7 @@ namespace System {
 		if (index >= MAX_HAND || index < 0) return;
 
 		//set the value into null index
-		user_cards->card_storage[index] = NULL_INDEX;
+		user_cards->data_card_hand[index] = NULL_INDEX;
 		//reduce the index amount
 		user_cards->index()--;
 	}

@@ -65,6 +65,7 @@ namespace TBS
 		//============Combat=======================
 		void check_input(ECS::Registry&);
 		void add_card(ECS::Registry& ecs);
+		void remove_card(ECS::Registry& ecs);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
 		void select_card(ECS::Registry& ecs);

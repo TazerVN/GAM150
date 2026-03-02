@@ -137,14 +137,14 @@ namespace Components
 		public:
 		size_t get_nextIndex()
 		{
-			if (next_index < card_storage.size()) return next_index++;
+			if (next_index < data_card_hand.size()) return next_index++;
 			else return -1;
 		}
 		
 		size_t& index() { return next_index; }
 		size_t size() const {return this->next_index;}
 
-		std::array<size_t, MAX_HAND> card_storage{NULL_INDEX};
+		std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
 	};
 
 	enum class CardTag

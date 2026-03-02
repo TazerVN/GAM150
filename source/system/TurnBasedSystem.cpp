@@ -215,7 +215,7 @@ namespace TBS
 		ECS::ComponentTypeID cardStorage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
 		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
 
-		return player_storage->card_storage[chIndex];
+		return player_storage->data_card_hand[chIndex];
 	}
 
 	//returns the status of target being attacked
@@ -253,11 +253,11 @@ namespace TBS
 					std::cout << "Can only be used on yourself" << std::endl;
 					break;
 				}
-				
 			}
 			default:
 				break;
 			}
+
 		}
 		show_HP(ecs);
 		show_hand(ecs);
@@ -316,10 +316,10 @@ namespace TBS
 		//disolay player hands
 		std::cout << "---------Player's Hand---------" << std::endl;
 		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		size_t sz = playerStorage->card_storage.size();
+		size_t sz = playerStorage->data_card_hand.size();
 		for (size_t i = 0; i < sz; ++i)
 		{
-			Entity cardID = playerStorage->card_storage[i];
+			Entity cardID = playerStorage->data_card_hand[i];
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
 			std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
@@ -334,7 +334,6 @@ namespace TBS
 			if (AEInputCheckTriggered(keys[i]))
 			{
 				select_hand_index(static_cast<size_t>(keys[i] - AEVK_0 - 1));
-				
 				break;
 			}
 		}
@@ -356,7 +355,10 @@ namespace TBS
 		show_hand(ecs);
 	}
 
+	void remove_card(ECS::Registry& ecs)
+	{
 
+	}
 	//=================================Update===========================================
 
 	//Turn based system's update loop
@@ -368,7 +370,6 @@ namespace TBS
 		{
 			if (AEInputCheckTriggered(AEVK_RSHIFT))
 			{
-				gbsptr->GBPActive()[static_cast<size_t>(gbsptr->getGBPhase())] = false;
 				gbsptr->nextGBPhase();
 				gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 			}
@@ -382,7 +383,9 @@ namespace TBS
 	void TurnBasedSystem::update_GBPhasetriggered()
 	{
 		//
-		size_t index = static_cast<size_t>(gbsptr->getGBPhase());
+		int index = static_cast<int>(gbsptr->getGBPhase());
+		int prev_index = index - 1;
+		if (prev_index < 0) prev_index = 0;
 		bool& triggered = gbsptr->GBPTriggered()[index];
 
 		//check for gameboard phase and react accordingly
@@ -393,39 +396,49 @@ namespace TBS
 			case PhaseSystem::GBPhase::START_PHASE:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->nextGBPhase();
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
+				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::STANDBY_PHASE:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
+				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::DRAW_PHASE:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::MAIN_PHASE:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
 				break;
 			}
-			case PhaseSystem::GBPhase::RESOLUTION:
+			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 			{
 				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				break;
-			}
-			case PhaseSystem::GBPhase::ENEMY_PHASE:
-			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
+				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			default: 
 			{
-				std::cout << "triggered error";
+				std::cout << "triggered something else";
+				gbsptr->GBPTriggered()[index] = false;
+				gbsptr->GBPActive()[prev_index] = false;
+				gbsptr->GBPActive()[index] = true;
 				break; 
 			}
 			}
@@ -442,10 +455,28 @@ namespace TBS
 		{
 			switch (gbsptr->getGBPhase())
 			{
+			case PhaseSystem::GBPhase::START_PHASE:
+			{
+				std::cout << "Starting" << std::endl;
+				gbsptr->nextGBPhase();
+				index = static_cast<size_t>(gbsptr->getGBPhase());
+				gbsptr->GBPTriggered()[index] = true;
+				break;
+			}
+			case PhaseSystem::GBPhase::STANDBY_PHASE:
+			{
+				std::cout << "Standing By"<< std::endl;
+				gbsptr->nextGBPhase();
+				index = static_cast<size_t>(gbsptr->getGBPhase());
+				gbsptr->GBPTriggered()[index] = true;
+				break;
+			}
 			case PhaseSystem::GBPhase::DRAW_PHASE:
 			{
 				std::cout << "Drawing cards" << std::endl;
-
+				gbsptr->nextGBPhase();
+				index = static_cast<size_t>(gbsptr->getGBPhase());
+				gbsptr->GBPTriggered()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::MAIN_PHASE:
@@ -468,16 +499,6 @@ namespace TBS
 					}
 				}
 				//this is break for the GPhase
-				break;
-			}
-			case PhaseSystem::GBPhase::RESOLUTION:
-			{
-				std::cout << "Updating " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				break;
-			}
-			case PhaseSystem::GBPhase::ENEMY_PHASE:
-			{
-				std::cout << "Updating " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				break;
 			}
 			default:
