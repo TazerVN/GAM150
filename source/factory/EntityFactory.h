@@ -14,7 +14,7 @@ namespace System
 	Entity create_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Components::DamageType dtype, f32 range);
 	Entity create_defense_card(ECS::Registry& ecs, const char* name, f32 val, f32 range);
 	void add_card_player(ECS::Registry& ecs, Entity user, Entity cardID);
-	void remove_card_player(ECS::Registry& ecs, Entity user, size_t index);
+	void remove_card_player(ECS::Registry& ecs, Entity user, int index);
 
 	class CardSystem
 	{

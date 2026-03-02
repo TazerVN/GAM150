@@ -88,15 +88,7 @@ namespace CardInteraction
 				{
 					tbsptr->select_hand_index(i);
 					tbsptr->select_card(ecs);
-					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 				}
-				//deleting the visual card code
-
-				/*selectableCard_delete(ecs, this->curr_hand_display[i]);
-
-				this->curr_hand_display.erase(this->curr_hand_display.begin() + i);
-				this->curr_card_id.erase(this->curr_card_id.begin() + i);
-				this->activate.erase(this->activate.begin() + i);*/
 				this->activate[i] = false;
 			}
 		}
@@ -142,8 +134,6 @@ namespace CardInteraction
 		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
 
 		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
-
-
 
 		for (size_t i = 0; i < cs->data_card_hand.size(); i++)
 		{
@@ -192,7 +182,7 @@ namespace CardInteraction
 		}
 	}
 
-	void CardHand::remove_card(ECS::Registry& ecs,size_t index)
+	void CardHand::remove_card(ECS::Registry& ecs,int index)
 	{
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
 

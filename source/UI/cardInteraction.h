@@ -15,6 +15,8 @@ namespace TBS { class TurnBasedSystem; }
 
 namespace CardInteraction
 {
+	void card_onHover(ECS::Registry& ecs, Entity id);
+	void card_offHover(ECS::Registry& ecs, Entity id);
 	class CardHand
 	{
 	private:
@@ -38,7 +40,7 @@ namespace CardInteraction
 		void update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
 		void update_pos(ECS::Registry& ecs);
 		void activate_card(Entity e);
-		void remove_card(ECS::Registry&, size_t);
+		void remove_card(ECS::Registry&, int);
 		void reset_hand();
 	};
 

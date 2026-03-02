@@ -20,17 +20,19 @@ namespace TBS
 		bool is_active{ false };
 		size_t cur_round{0};
 
+		ECS::Registry* ecsptr = nullptr;
 		EventPool* evsptr = nullptr;
 		Grid::GameBoard* gameBoardptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		System::CardSystem* cardSysptr = nullptr;
 		CardInteraction::CardHand* cardHandptr = nullptr;
-
+		Entity targetted_entity = -1;
+		int targetted_x{-1}, targetted_y{ -1 };
 
 		// Actors on Borad
 		std::vector<Entity> participants;
 		//hand index not the entity of the card
-		std::vector<size_t> participant_hand;	
+		std::vector<int> participant_hand;	
 		//has the current participant selected a card
 		std::vector<bool> selected_card;
 
@@ -43,17 +45,19 @@ namespace TBS
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 
 		//returns ID of the active participant in turn order
-		Entity current();
+		Entity current() const;
 		//return the current index of cardhand the active participant is holding
-		Entity get_selected_cardhand_index();
+		int get_selected_cardhand_index() const;
 		//determine if the active participant has selected a card or not
-		bool is_current_selected_card();
+		bool is_current_selected_card() const;
 		void set_selected_card(bool bol);
+		void set_targetted_ent(Entity ent);
+		void set_targetted_xy(int x , int y);
 		void next(ECS::Registry& ecs);	
 		void end();
 
 		bool active();
-		std::vector<size_t>& hand();
+		std::vector<int>& hand();
 		size_t round();
 		//============Turn Control=============
 		void start(ECS::Registry& ecs);
@@ -65,20 +69,20 @@ namespace TBS
 		//============Combat=======================
 		void check_input(ECS::Registry&);
 		void add_card(ECS::Registry& ecs);
-		void remove_card(ECS::Registry& ecs);
+		void remove_card(ECS::Registry& ecs, Entity user, int index);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
 		void select_card(ECS::Registry& ecs);
 		//draw the card of the player
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 		//function to determine the play card it could be attack it could be defense or support
-		bool play_card(ECS::Registry& ecs,Entity target, Entity cardID);
+		bool play_card(ECS::Registry& ecs, Entity player , Entity target, int index);
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		void Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs);
 
 		void update_GBPhasetriggered();
-		void update_GBPhaseUpdate(ECS::Registry&);
+		void update_GBPhaseUpdate();
 	};
 }
