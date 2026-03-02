@@ -487,14 +487,19 @@ namespace Grid
 		return pos;
 	}
 
-	std::vector<AEVec2>& GameBoard::get_highlighted_cell()
+	std::vector<AEVec2>& GameBoard::get_atk_highlighted_cell()
 	{
-		return highlighted_cells;
+		return highlighted_atk_cells;
 	}
 
 	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_attack_activate()
 	{
 		return atk_activate;
+	}
+
+	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_move_activate()
+	{
+		return move_activate;
 	}
 
 	void GameBoard::reset_selected_player()

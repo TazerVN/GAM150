@@ -40,8 +40,9 @@ namespace Grid
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
 		std::array<std::array<bool, MAX_J>, MAX_I> atk_activate;
+		std::array<std::array<bool, MAX_J>, MAX_I> move_activate;
 
-		std::vector<AEVec2> highlighted_cells;
+		std::vector<AEVec2> highlighted_atk_cells;
 
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
@@ -55,8 +56,9 @@ namespace Grid
 		void update(ECS::Registry& ecs);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
-		std::vector<AEVec2>& get_highlighted_cell();
+		std::vector<AEVec2>& get_atk_highlighted_cell();
 		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
+		std::array<std::array<bool, MAX_J>, MAX_I>& get_move_activate();
 
 		void reset_selected_player();
 		AEVec2 Get_gridPos(AEVec2 const& worldPos);

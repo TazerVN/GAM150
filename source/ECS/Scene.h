@@ -37,7 +37,7 @@ public:
 	Grid::GameBoard& getBattleGrid();
 };
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
-void unhighlight_cells(Grid::GameBoard& gb);
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, int range, highlight_tag type);
+void unhighlight_cells(Grid::GameBoard& gb, highlight_tag type);
 AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
 AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);
