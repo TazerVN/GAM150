@@ -73,6 +73,7 @@ namespace TBS
 		//function to determine the play card it could be attack it could be defense or support
 		bool play_card(ECS::Registry& ecs,Entity target, Entity cardID);
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);
+		void Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs);
 

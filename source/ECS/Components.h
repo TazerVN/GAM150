@@ -117,6 +117,11 @@ namespace Components
 		DamageType type;
 		f32 range;
 	};
+	struct Defense
+	{
+		f32 value;
+		f32 range;
+	};
 	struct Name
 	{
 		const char* value;
@@ -142,15 +147,23 @@ namespace Components
 		std::array<size_t, MAX_HAND> card_storage{NULL_INDEX};
 	};
 
+	enum class CardTag
+	{
+		ATTACK = 0,
+		DEFENSE = 1,
+		ITEM = 2,
+		EVENT = 3
+	};
+
 	//===================Turn Based======================================
 	struct TurnBasedStats
 	{
-		bool yielded = false;		// true = no more actions and granted turns until round ends
-
 		int  maxPoints = 0;			// per-round cap (set when entity created)
 		int  points = 0;			// current round points (reset at round start)
 
 		bool needsRedraw = false;	// set true at round start; card system consumes it later
+
+		f32 shields = 0;
 	};
 
 }

@@ -217,23 +217,47 @@ namespace TBS
 
 		return player_storage->card_storage[chIndex];
 	}
+
+	//returns the status of target being attacked
 	bool TurnBasedSystem::play_card(ECS::Registry& ecs,Entity target, Entity cardID)
 	{
 		bool target_died = false;
 
 		if (target != NULL_INDEX)
 		{
-			std::cout << '\n' << ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value <<
-				" used " << ecs.getComponent<Components::Name>(cardID)->value << " on " << ecs.getComponent<Components::Name>(target)->value << std::endl;
+			std::string name = ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value;
+			std::string targetName = ecs.getComponent<Components::Name>(target)->value;
+			std::string cardName = ecs.getComponent<Components::Name>(cardID)->value;
 
-			//later check for type of card and call accordingly
-			//for now it's attack system
+			std::cout << '\n' << name << " used " << cardName << " on " << targetName << std::endl;
 
-			Entity card_ID = draw_card(ecs, current(), get_selected_cardhand_index());
-			f32& card_range = ecs.getComponent<Components::Attack>(card_ID)->range;
+			f32& card_range = ecs.getComponent<Components::Attack>(cardID)->range;
 
-
-			target_died = Call_AttackSystem(ecs, cardID, target);
+			Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
+			switch (*tag)
+			{
+			case Components::CardTag::ATTACK:
+			{
+				if (target == current())
+				{
+					std::cout << "Cannot hit yourself" << std::endl;
+					break;
+				}
+				target_died = Call_AttackSystem(ecs, cardID, target);
+				break;
+			}
+			case Components::CardTag::DEFENSE:
+			{
+				if (target != current())
+				{
+					std::cout << "Can only be used on yourself" << std::endl;
+					break;
+				}
+				
+			}
+			default:
+				break;
+			}
 		}
 		show_HP(ecs);
 		show_hand(ecs);
@@ -245,10 +269,9 @@ namespace TBS
 		bool ret = false;
 		//attack component
 		ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
+		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
 		//test if card have attack id
 		if (!ecs.getBitMask()[cardID].test(atkID)) return false;
-
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
 		if (!(ecs.getBitMask()[target].test(hpID))) return false;
 
 		//if the have components then reduce the HP amount
@@ -258,6 +281,13 @@ namespace TBS
 		return ret;
 	}
 
+
+	void TurnBasedSystem::Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target)
+	{
+		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+
+		if (!(ecs.getBitMask()[target].test(hpID))) return;
+	}
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{

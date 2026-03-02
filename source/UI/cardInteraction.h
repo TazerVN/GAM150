@@ -38,8 +38,8 @@ namespace CardInteraction
 		void update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf);
 		void update_pos(ECS::Registry& ecs);
 		void activate_card(Entity e);
+		void remove_card(ECS::Registry&, size_t);
 		void reset_hand();
-
 	};
 
 

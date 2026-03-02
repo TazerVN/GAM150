@@ -29,7 +29,7 @@ namespace System {
 		Components::Name nm{ name };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-		Components::TurnBasedStats tbs;
+		Components::TurnBasedStats tbs{5, 0, false, 0.f};
 		//=====================Render==========================
 		Components::Texture texture{pTex};
 		Components::Transform trans{ pos,pos,size, size,0.f };
@@ -50,15 +50,28 @@ namespace System {
 		return id;
 	}
 
-	Entity create_atk_card(ECS::Registry& ecs, f32 x, f32 y, const char* name, f32 atk,Components::DamageType dtype,f32 range)
+	Entity create_atk_card(ECS::Registry& ecs, const char* name, f32 atk,Components::DamageType dtype,f32 range)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
+		Components::CardTag cardTag = Components::CardTag::ATTACK;
 		Components::Name nm{ name };
 		Components::Attack attack{ atk, dtype, range};
-		ecs.addComponent(id, attack);
+		ecs.addComponent(id, cardTag);
 		ecs.addComponent(id, nm);
+		ecs.addComponent(id, attack);
+		return id;
+	}
 
+	Entity create_defense_card(ECS::Registry& ecs, const char* name, f32 val, f32 range)
+	{
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::CardTag cardTag{ Components::CardTag::DEFENSE };
+		Components::Name nm{ name };
+		Components::Defense def {val,range};
+		ecs.addComponent(id, cardTag);
+		ecs.addComponent(id, nm);
 		return id;
 	}
 
@@ -98,10 +111,11 @@ namespace System {
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Sword Attack", 30.f, Components::SLASHING,1.f));	//0
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Fire Sword", 40.f, Components::FIRE,2.f));			//1
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Steven Sword", 100.f, Components::PIERCING,3.f));	//2
-		cards.push_back(create_atk_card(ecs, 0.f, 0.f, "Gun", 20.f, Components::PIERCING, 4.f));
+		cards.push_back(create_atk_card(ecs,"Sword Attack", 30.f, Components::SLASHING,1.f));	//0
+		cards.push_back(create_atk_card(ecs,"Fire Sword", 40.f, Components::FIRE,2.f));			//1
+		cards.push_back(create_atk_card(ecs,"Steven Sword", 100.f, Components::PIERCING,3.f));	//2
+		cards.push_back(create_atk_card(ecs,"Gun", 20.f, Components::PIERCING, 4.f));			//3
+		cards.push_back(create_defense_card(ecs,"Shield", 10.f, 0.f));							//4
 	};
 	Entity& CardSystem::get_card(int index) 
 	{

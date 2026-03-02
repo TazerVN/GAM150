@@ -192,6 +192,15 @@ namespace CardInteraction
 		}
 	}
 
+	void CardHand::remove_card(ECS::Registry& ecs,size_t index)
+	{
+		selectableCard_delete(ecs, this->curr_hand_display[index]);
+
+		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
+		this->curr_card_id.erase(this->curr_card_id.begin() + index);
+		this->activate.erase(this->activate.begin() + index);
+	}
+
 	void CardHand::reset_hand()
 	{
 		this->reset = true;
