@@ -48,9 +48,12 @@ namespace Components
 	};
 
 	struct Timer{
-		int seconds;
-		int max_seconds;
+		f32 seconds;
+		f32 max_seconds;
 		bool start;
+		bool reset;
+		Timer();
+		Timer(f32 max, f32 current = 0, bool start = true, bool reset = false);
 	};
 
 	struct GridCell{
