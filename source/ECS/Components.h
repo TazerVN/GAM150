@@ -5,10 +5,9 @@
 
 
 #include "AEEngine.h"
-#include <array>
+#include <vector>
 #include <string>
 #include <functional>
-#include <queue>
 
 #include "../global.h"
 #include "../factory/MeshFactory.h"
@@ -137,28 +136,13 @@ namespace Components
 	};
 	class Card_Storage
 	{
-		private:
-		int next_index = 0;
 		public:
-		size_t get_nextIndex()
-		{
-			if (!recycle_index.empty()) 
-			{
-				int ret{ recycle_index.front() };
-				recycle_index.pop();
-				return ret;
-			}
-			if (next_index < data_card_hand.size()) return next_index++;
-			else return -1;
-		}
-		
-		int& index() { return next_index; }
-		int size() const {return this->next_index;}
 		void add_card_to_hand(Entity cardID);
 		void remove_card_from_hand(int index);
 
-		std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
-		std::queue<int> recycle_index;
+		//std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
+
+		std::vector<size_t>data_card_hand;
 	};
 
 	enum class CardTag

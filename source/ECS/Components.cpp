@@ -4,19 +4,12 @@
 
 void Components::Card_Storage::add_card_to_hand(Entity cardID)
 {
-	size_t index = get_nextIndex();
-	if (index == -1)
-	{
-		std::cout << "Player's hand is full cannot add the card!!" << std::endl;
-		return;
-	}
-	data_card_hand[index] = cardID;
+	data_card_hand.push_back(cardID);
 }
 
 void Components::Card_Storage::remove_card_from_hand(int index)
 {
-	recycle_index.push(index);
-	data_card_hand[index] = NULL_INDEX;
+	data_card_hand.erase(data_card_hand.begin() + index);
 }
 
 

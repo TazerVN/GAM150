@@ -10,6 +10,8 @@ namespace TBS
 	void TurnBasedSystem::round_start(ECS::Registry& ecs)
 	{
 		cur_player = 0;
+		gbsptr->resetGPhase();
+		gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 		gbsptr->resetPlayerPhase();
 		debug_print(ecs);	//this is for turn base
 	}
@@ -265,7 +267,7 @@ namespace TBS
 					std::cout << "Cannot hit yourself" << std::endl;
 					break;
 				}
-				target_died = Call_AttackSystem(ecs, cardID, target);
+				target_died = Call_AttackSystem(ecs, cardID, player ,target);
 				break;
 			}
 			case Components::CardTag::DEFENSE:
@@ -289,7 +291,7 @@ namespace TBS
 		return target_died;
 	}
 
-	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target)
+	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity player, Entity target)
 	{
 		bool ret = false;
 		//attack component
@@ -518,6 +520,14 @@ namespace TBS
 			case PhaseSystem::GBPhase::DRAW_PHASE:
 			{
 				std::cout << "Drawing cards" << std::endl;
+	
+				//draw until max_hand
+				for (int i = 0; i < MAX_HAND; ++i)
+				{
+					add_card(*ecsptr);
+				}
+				cardHandptr->reset_hand();
+
 				gbsptr->nextGBPhase();
 				index = static_cast<size_t>(gbsptr->getGBPhase());
 				gbsptr->GBPTriggered()[index] = true;

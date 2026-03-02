@@ -61,7 +61,7 @@ namespace CardInteraction
 		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 	}
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs,
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf,f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs,
 		PhaseSystem::GameBoardState& gbs)
 		: CardHand()
 	{
@@ -73,6 +73,8 @@ namespace CardInteraction
 		ecs.addComponent(this->id, trans);
 		tbsptr = &tbs;
 		gbsptr = &gbs;
+		mfptr = &mf;
+		tfptr = &tf;
 	}
 
 	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
@@ -97,7 +99,7 @@ namespace CardInteraction
 		if (this->reset == true)
 		{
 			std::cout << "cardhand address: " << this << std::endl;
-			this->generateCards(ecs, tbs, mf, tf);
+			this->generateCards(ecs, tbs);
 			this->reset = false;
 			std::cout << "Shuffle New Cards" << std::endl;
 
@@ -127,7 +129,7 @@ namespace CardInteraction
 		}
 	}
 
-	void CardHand::generateCards(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
+	void CardHand::generateCards(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs)
 	{
 		ECS::ComponentTypeID cID = ECS::getComponentTypeID<Components::Card_Storage>();
 
@@ -148,26 +150,27 @@ namespace CardInteraction
 
 			AEGfxTexture* texture = nullptr;
 
+
 			switch (a->type)
 			{
 			case (Components::SLASHING):
-				texture = tf.getTextureCard(TextureFactory::C_SLASH);
+				texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
 				break;
 			case (Components::PIERCING):
-				texture = tf.getTextureCard(TextureFactory::C_SLASH2);
+				texture = tfptr->getTextureCard(TextureFactory::C_SLASH2);
 				break;
 			case (Components::FIRE):
-				texture = tf.getTextureCard(TextureFactory::C_BARRIER);
+				texture = tfptr->getTextureCard(TextureFactory::C_BARRIER);
 				break;
 			case (Components::BLUDGEONING):
 			default:
-				texture = tf.getTextureCard(TextureFactory::C_BLACKHOLE);
+				texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
 				break;
 			}
 
 			Entity eid = ecs.createEntity();
 
-			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, mf, 0, -500, 162, 264, 0, 1, texture, [this, eid] { this->activate_card(eid); }));
+			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 1, texture, [this, eid] { this->activate_card(eid); }));
 		}
 	}
 
