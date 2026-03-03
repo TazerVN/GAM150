@@ -271,6 +271,11 @@ namespace Grid
 					//check if it is within movement range 
 					if (!check_within_range(this->cur, x, y)) return;
 
+					if (this->pos[x][y] != -1)
+					{
+						std::cout << "Cannot move onto another entity" << std::endl;
+						return;
+					}
 					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 					this->moveEntity(ecs, this->cur, x, y);
 					this->activate[this->cur_x][this->cur_y] = false;
@@ -399,11 +404,11 @@ namespace Grid
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		//check if there is an entity on the selected tile first
-		if (this->pos[x][y] != -1)
+		/*if (this->pos[x][y] != -1)
 		{
 			std::cout << "Cannot move onto another entity" << std::endl;
 			return;
-		}
+		}*/
 		bool isHere = false;
 		for (int i = 0; i < MAX_I; ++i)
 		{
