@@ -524,4 +524,36 @@ namespace Grid
 
 		return { f32(i), f32(j) };
 	}
+
+	bool GameBoard::findEntityCell(Entity e, s32& outX, s32& outY) const
+	{
+		for (int i = 0; i < MAX_I; ++i)
+			for (int j = 0; j < MAX_J; ++j)
+				if (pos[i][j] == e)
+				{
+					outX = i;
+					outY = j;
+					return true;
+				}
+		return false;
+	}
+
+	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y)
+	{
+		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+			return false;
+
+		if (pos[x][y] != -1)
+			return false;
+
+		s32 ex, ey;
+		if (!findEntityCell(e, ex, ey))
+			return false;
+
+		pos[ex][ey] = -1;
+		pos[x][y] = e;
+
+		return true;
+	}
+
 }

@@ -53,6 +53,11 @@ namespace Grid
 		//i'm testing some stuff on the below function VVVV 
 		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		void moveEntity(ECS::Registry& ecs ,Entity e, s32 x, s32 y);
+
+		// helper functions for CPU - Zejin 
+		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
+		bool moveEntityAI(Entity e, s32 x, s32 y);
+
 		void update(ECS::Registry& ecs);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();

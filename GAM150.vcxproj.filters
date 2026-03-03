@@ -29,6 +29,7 @@
     <ClCompile Include="source\util\BST.cpp" />
     <ClCompile Include="source\global.cpp" />
     <ClCompile Include="source\system\particleSystem.cpp" />
+    <ClCompile Include="source\system\EnemyDirector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -59,5 +60,6 @@
     <ClInclude Include="source\UI\cardInformation.h" />
     <ClInclude Include="source\util\BST.h" />
     <ClInclude Include="source\system\particleSystem.h" />
+    <ClInclude Include="source\system\EnemyDirector.h" />
   </ItemGroup>
 </Project>
