@@ -201,6 +201,23 @@ namespace CardInteraction
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
 		this->curr_card_id.erase(this->curr_card_id.begin() + index);
 		this->activate.erase(this->activate.begin() + index);
+
+
+		/*int j = 0;
+		for(int i = 0; i < this->curr_hand_display.size(); i++)
+		{
+			if(j != index)
+			{
+				this->curr_hand_display[j] = this->curr_hand_display[i];
+				this->curr_card_id[j] = this->curr_card_id[i];
+				this->activate[j] = this->activate[i];
+				++j;
+			}
+			
+		}
+		this->curr_hand_display.pop_back();
+		this->curr_card_id.pop_back();
+		this->activate.pop_back();*/
 	}
 
 	void CardHand::reset_hand()

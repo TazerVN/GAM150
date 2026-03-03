@@ -28,7 +28,7 @@ namespace UI
 		for(Entity e : scene.entities_store())
 		{
 			
-			Entity health = ui_hp_bar(scene, mf, -50, 100, 100, 20, 0, 5);
+			Entity health = ui_hp_bar(scene, mf, -50, 100, 100, 10, 0, 5);
 			std::pair<Entity, Entity> hp{ e, health };
 			this->list.push_back(hp);
 		}
@@ -40,6 +40,8 @@ namespace UI
 
 	void UIManager::update(ECS::Registry& ecs)
 	{
+		this->health_update(ecs);
+
 		for(std::pair<Entity, Entity> p : this->list)
 		{
 
@@ -54,6 +56,7 @@ namespace UI
 
 			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
+			
 		}
 	}
 
@@ -71,9 +74,12 @@ namespace UI
 			if (!ecs.getBitMask()[p.first].test(hpID)) continue;
 			if (!ecs.getBitMask()[p.second].test(hpID)) continue;
 			Components::HP* hp_parent = ecs.getComponent<Components::HP>(p.first);
-			Components::HP* hp_child = ecs.getComponent<Components::HP>(p.second);
-			hp_child->c_value = hp_parent->c_value/hp_parent->max_value * hp_child->max_value;
 
+			Components::HP* hp_child = ecs.getComponent<Components::HP>(p.second);
+			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
+
+			hp_child->c_value = hp_parent->c_value/hp_parent->max_value * hp_child->max_value;
+			transform_child->size.x = hp_child->c_value/hp_child->max_value * transform_child->size_col.x;
 		}
 
 	}
