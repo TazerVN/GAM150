@@ -402,12 +402,6 @@ namespace TBS
 		// Check for TBS status
 		if (is_active)
 		{
-			/*if (AEInputCheckTriggered(AEVK_RSHIFT))
-			{
-				gbsptr->nextGBPhase();
-				gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
-			}*/
-
 			update_GBPhasetriggered();
 			update_GBPhaseUpdate();
 		}
@@ -474,12 +468,30 @@ namespace TBS
 					if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
 					this->remove_participant(*ecsptr, targetted_entity);
 				}
-				this->set_selected_card(false);
-				gbsptr->prevGBPhase();
-				gbsptr->GBPTriggered()[prev_index] = true;
-				gbsptr->nextPlayerPhase();
-				gbsptr->debug_print();
-				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+				
+
+				if (tag != PC_RETURN_TAG::INVALID)
+				{
+					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+					gbsptr->debug_print();
+					this->set_selected_card(false);
+					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+					int i = static_cast<int>(gbsptr->getGBPhase());
+					gbsptr->GBPTriggered()[i] = true;
+
+				}
+				else if(tag == PC_RETURN_TAG::INVALID)
+				{
+					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+					int i = static_cast<int>(gbsptr->getGBPhase());
+					gbsptr->GBPTriggered()[i] = true;
+
+					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+					gbsptr->debug_print();
+					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+				}
+
 				break;
 				//=========================================================
 			}
@@ -545,12 +557,8 @@ namespace TBS
 					{
 					case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
 					{
-						break; //break for PLAYER_EXPLORE
-					}
-					case PhaseSystem::PlayerPhase::CARD_SELECT:
-					{
 						check_input(*ecsptr);
-						break; //break for CARD_SELECT
+						break; //break for PLAYER_EXPLORE
 					}
 					default:
 						break;

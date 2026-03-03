@@ -86,7 +86,7 @@ namespace CardInteraction
 		{
 			if (this->activate[i] == true)
 			{
-				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::CARD_SELECT)	//if not in card_select or player explore
+				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
 				{
 					tbsptr->select_hand_index(i);
 					tbsptr->select_card(ecs);

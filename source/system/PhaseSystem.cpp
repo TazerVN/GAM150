@@ -3,8 +3,8 @@
 
 namespace PhaseSystem
 {
-	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "RESOLUTION", "ENEMY_PHASE", "UNIN" };
-	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "CARD_SELECT", "GRID_SELECT", "WAITING", "UNIN" };
+	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "PLAYER_RESOLUTION", "ENEMY_PHASE", "ENEMY_RESOLUTION", "UNIN" };
+	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "GRID_SELECT", "UNIN" };
 
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseTriggered{};
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseActive{};

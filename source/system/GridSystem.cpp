@@ -250,17 +250,15 @@ namespace Grid
 					//if the card is selected and the selected pos is entity
 					if (pos[x][y] != -1)
 					{
+						//determine target 
 						tbs->set_targetted_ent(pos[x][y]);
 						tbs->set_targetted_xy(x, y);
-						//determine target 
-						gbsptr->nextGBPhase();
+						
+						gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
 						gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 						return;
 					}
 					else {
-						tbs->set_selected_card(false);
-						gbsptr->prevPlayerPhase();
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 						std::cout << "Select a valid cell with entity!" << std::endl;
 					}
 				}
@@ -271,6 +269,8 @@ namespace Grid
 				//check if an empty cell is clicked
 				if (selected_part && this->cur != -1) 
 				{
+					//check if it is within movement range 
+					
 
 					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 					this->moveEntity(ecs, this->cur, x, y);
@@ -420,8 +420,8 @@ namespace Grid
 		if (isHere == false) return;
 
 		this->pos[x][y] = e;
-		gbsptr->nextPlayerPhase();
-		gbsptr->debug_print();
+		/*gbsptr->nextPlayerPhase();
+		gbsptr->debug_print();*/
 	}
 
 	void GameBoard::update(ECS::Registry& ecs)
