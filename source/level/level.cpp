@@ -71,6 +71,8 @@ void game_update()
 	TS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF);
 	scene.update();
+	scene.getBattleGrid().update(ecs);
+	UIM.update(ecs);
 
 	//==========Object updates===========
 
@@ -79,7 +81,6 @@ void game_update()
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
 
 	//========(Render)====================
-	scene.getBattleGrid().update(ecs);
 	RM.RM_render(ecs);
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
