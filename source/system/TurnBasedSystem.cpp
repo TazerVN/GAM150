@@ -301,8 +301,8 @@ namespace TBS
 		if (!(ecs.getBitMask()[target].test(hpID))) return false;
 
 		//if the have components then reduce the HP amount
-		ecs.getComponent<Components::HP>(target)->value -= ecs.getComponent<Components::Attack>(cardID)->damage;
-		if (ecs.getComponent<Components::HP>(target)->value <= 0.f) ret = true;
+		ecs.getComponent<Components::HP>(target)->c_value -= ecs.getComponent<Components::Attack>(cardID)->damage;
+		if (ecs.getComponent<Components::HP>(target)->c_value <= 0.f) ret = true;
 
 		return ret;
 	}
@@ -331,7 +331,7 @@ namespace TBS
 	{
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
-			f32 HP = ecs.getComponent<Components::HP>(participants[i])->value;
+			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 		}

@@ -12,7 +12,6 @@ constexpr int BUFFER_CAPACITY = 100;
 namespace RenderSystem
 {
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
-	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer);
 
 	bool renderCMP(const std::pair<s8, Entity>& a, const std::pair<s8, Entity>& b)
 	{
@@ -135,40 +134,6 @@ namespace RenderSystem
 				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
 			}
 
-		}
-	}
-
-
-
-	void bubbleSort(std::vector<Entity>& array, std::vector<s8>& z_buffer)
-	{
-
-		for (int step = 0; step < (array.size() - 1); ++step)
-		{
-
-			int swapped = 0;
-
-			for (int i = 0; i < (array.size() - step - 1); ++i)
-			{
-
-				if (z_buffer[i] > z_buffer[i + 1])
-				{
-
-					Entity temp = array[i];
-					array[i] = array[i + 1];
-					array[i + 1] = temp;
-
-					s8 temp2 = z_buffer[i];
-					z_buffer[i] = z_buffer[i + 1];
-					z_buffer[i + 1] = temp2;
-
-
-					swapped = 1;
-				}
-			}
-
-			if (swapped == 0)
-				break;
 		}
 	}
 

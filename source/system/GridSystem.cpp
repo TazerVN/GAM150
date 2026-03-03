@@ -232,10 +232,11 @@ namespace Grid
 		}
 	}*/
 
+
 	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
 	{
 		//if (is_active)
-		//if the current participant has selected card 
+		//if the current participant ha	s selected card 
 				//and selected on the empty cell then return
 
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::START_PHASE || gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
@@ -310,6 +311,23 @@ namespace Grid
 		}
 	}
 
+	void cell_onHover(ECS::Registry& ecs, Entity id)
+	{
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+		c->p_color.r = 0.7f;
+		c->p_color.g = 0.7f;
+		c->p_color.b = 0.7f;
+	}
+
+	void cell_offHover(ECS::Registry& ecs, Entity id)
+	{
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+		c->p_color.r = c->c_color.r;
+		c->p_color.g = c->c_color.g;
+		c->p_color.b = c->c_color.b;
+	}
+	
+
 
 	Entity GameBoard::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
@@ -319,8 +337,7 @@ namespace Grid
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{1.0f, 1.0f, 1.0f ,1.0f};
 		Components::Texture texture{ pTex };
-		Components::Input in( AEVK_LBUTTON, true, [x, y, this, &ecs] {this->updateCell(ecs, x, y);}, nullptr, nullptr);	//add input system for grid
-
+		Components::Input in(AEVK_LBUTTON, true, [x, y, this, &ecs] { this->updateCell(ecs, x, y); }, [id, &ecs] { cell_onHover(ecs, id);}, [id, &ecs] { cell_offHover(ecs, id);});	//add input system for grid
 		Components::GridCell gc{ x,y };
 
 		ecs.addComponent(id, trans);
@@ -427,34 +444,34 @@ namespace Grid
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
 
-				if (this->highlight_activate[i][j] == highlight_tag::UNHIGHLIGHTED)
+				/*if (this->highlight_activate[i][j] == highlight_tag::UNHIGHLIGHTED)
 				{
 					color->p_color = color->c_color;
-				}
+				}*/
 
-				if (this->activate[i][j])
+				/*if (this->activate[i][j])
 				{
 					color->p_color.b = 0.5f;
 					color->p_color.r = 0.5f;
 				}
 				else{
 					color->p_color = color->c_color;
-				}
+				}*/
 
 				switch (this->highlight_activate[i][j])
 				{
 				case highlight_tag::ATTACK_HIGHLIGHT:
 				{
-					color->p_color.r = 1.f;
-					color->p_color.g = 0.f;
-					color->p_color.b = 0.f;
+					color->p_color.r = color->p_color.r + 0.5f;
+					color->p_color.g = color->p_color.g - 0.3f;
+					color->p_color.b = color->p_color.b - 0.3f;
 					break;
 				}
 				case highlight_tag::MOVE_HIGHLIGHT :
 				{
-					color->p_color.r = 0.f;
-					color->p_color.g = 0.f;
-					color->p_color.b = 0.7;
+					color->p_color.r = color->p_color.r - 0.2f;
+					color->p_color.g = color->p_color.g - 0.2f;
+					color->p_color.b = color->p_color.b + 0.4f;
 					break;
 				}
 				default:
@@ -484,8 +501,8 @@ namespace Grid
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 				color = ecs.getComponent<Components::Color>(current_cell);
-				color->p_color.g = 0.5f;
-				color->p_color.r = 0.5f;
+				color->p_color.g = color->p_color.g - 0.4f;
+				color->p_color.r = color->p_color.r - 0.4f;
 			}
 		}
 	}
