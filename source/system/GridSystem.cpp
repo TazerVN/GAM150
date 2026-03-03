@@ -313,17 +313,17 @@ namespace Grid
 	void cell_onHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.r = 0.7f;
-		c->p_color.g = 0.7f;
-		c->p_color.b = 0.7f;
+		c->d_color.r = 0.7f;
+		c->d_color.g = 0.7f;
+		c->d_color.b = 0.7f;
 	}
 
 	void cell_offHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.r = c->c_color.r;
-		c->p_color.g = c->c_color.g;
-		c->p_color.b = c->c_color.b;
+		c->d_color.r = c->c_color.r;
+		c->d_color.g = c->c_color.g;
+		c->d_color.b = c->c_color.b;
 	}
 	
 
@@ -392,8 +392,8 @@ namespace Grid
 		if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
-		color->p_color.g = 0.5f;
-		color->p_color.r = 0.5f;
+		color->d_color.g = 0.5f;
+		color->d_color.r = 0.5f;
 	}
 
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
@@ -454,16 +454,16 @@ namespace Grid
 				{
 				case highlight_tag::ATTACK_HIGHLIGHT:
 				{
-					color->p_color.r = color->p_color.r + 0.5f;
-					color->p_color.g = color->p_color.g - 0.3f;
-					color->p_color.b = color->p_color.b - 0.3f;
+					color->d_color.r = color->d_color.r + 0.5f;
+					color->d_color.g = color->d_color.g - 0.3f;
+					color->d_color.b = color->d_color.b - 0.3f;
 					break;
 				}
 				case highlight_tag::MOVE_HIGHLIGHT :
 				{
-					color->p_color.r = color->p_color.r - 0.2f;
-					color->p_color.g = color->p_color.g - 0.2f;
-					color->p_color.b = color->p_color.b + 0.4f;
+					color->d_color.r = color->d_color.r - 0.2f;
+					color->d_color.g = color->d_color.g - 0.2f;
+					color->d_color.b = color->d_color.b + 0.4f;
 					break;
 				}
 				default:
@@ -493,8 +493,8 @@ namespace Grid
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 				color = ecs.getComponent<Components::Color>(current_cell);
-				color->p_color.g = color->p_color.g - 0.4f;
-				color->p_color.r = color->p_color.r - 0.4f;
+				color->d_color.g = color->d_color.g - 0.4f;
+				color->d_color.r = color->d_color.r - 0.4f;
 			}
 		}
 	}

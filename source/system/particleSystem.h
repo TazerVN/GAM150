@@ -42,15 +42,15 @@ namespace Particle
 
 		void update(ECS::Registry& ecs, f32 dt);
 
-		void spawn(ECS::Registry& ecs, MeshFactory& mf);
-
 		Entity create_emitter(ECS::Registry& ecs,
 			f32 x, f32 y,
 			f32 spawnRate,
 			f32 lifetime,
 			f32 r, f32 g, f32 b, f32 a);
 
-		void   spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
+		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
+
+		void spawn(ECS::Registry& ecs, MeshFactory& mf);
 
 	private:
 		std::vector<Entity> Particlebuffer;
