@@ -29,3 +29,5 @@ Components::Color::Color(f32 r, f32 g, f32 b, f32 a) : c_color{ r,g,b,a }, p_col
 
 Components::Timer::Timer() : seconds{ 0 }, max_seconds{ 0 }, start{ false }, reset{ false } {}
 Components::Timer::Timer(f32 max, f32 current, bool start, bool reset) : seconds{ current }, max_seconds{ max }, start{ start }, reset{reset} {}
+
+Components::HP::HP(f32 max) : c_value{max}, max_value{max}{}

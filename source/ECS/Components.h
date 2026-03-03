@@ -139,7 +139,10 @@ namespace Components
 	};
 	struct HP
 	{
-		f32 value;
+		f32 c_value;
+		f32 max_value;
+		HP() = default;
+		HP(f32 value);
 	};
 	class Card_Storage
 	{

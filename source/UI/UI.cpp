@@ -29,9 +29,11 @@ namespace UI
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
 		Components::Color color{ 0.5f, 1.0f, 0.5f ,1.0f };
+		Components::HP hp{100};
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
+		ecs.addComponent(id, hp);
 
 		return id;
 	}
