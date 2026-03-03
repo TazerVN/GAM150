@@ -99,6 +99,16 @@ namespace CardInteraction
 		if (this->reset == true)
 		{
 			std::cout << "cardhand address: " << this << std::endl;
+			
+			//clear the data
+			for (int index = 0; index < curr_hand_display.size(); index++)
+			{
+				selectableCard_delete(ecs, this->curr_hand_display[index]);
+			}
+			curr_hand_display.clear();
+			curr_card_id.clear();
+			activate.clear();
+
 			this->generateCards(ecs, tbs);
 			this->reset = false;
 			std::cout << "Shuffle New Cards" << std::endl;
@@ -188,7 +198,6 @@ namespace CardInteraction
 	void CardHand::remove_card(ECS::Registry& ecs,int index)
 	{
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
-
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
 		this->curr_card_id.erase(this->curr_card_id.begin() + index);
 		this->activate.erase(this->activate.begin() + index);
