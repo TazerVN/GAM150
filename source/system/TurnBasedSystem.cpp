@@ -241,9 +241,9 @@ namespace TBS
 	}
 
 	//returns the status of target being attacked
-	bool TurnBasedSystem::play_card(ECS::Registry& ecs, Entity player,Entity target, int index)
+	PC_RETURN_TAG TurnBasedSystem::play_card(ECS::Registry& ecs, Entity player,Entity target, int index)
 	{
-		bool target_died = false;
+		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
 		if (target != NULL_INDEX)
 		{
@@ -264,9 +264,13 @@ namespace TBS
 				if (target == current())
 				{
 					std::cout << "Cannot hit yourself" << std::endl;
+					return PC_RETURN_TAG::INVALID;
 					break;
 				}
-				target_died = Call_AttackSystem(ecs, cardID, player ,target);
+				if (Call_AttackSystem(ecs, cardID, player, target))
+					ret = PC_RETURN_TAG::DIED;
+				else
+					ret = PC_RETURN_TAG::VALID;
 				break;
 			}
 			case Components::CardTag::DEFENSE:
@@ -274,6 +278,7 @@ namespace TBS
 				if (target != current())
 				{
 					std::cout << "Can only be used on yourself" << std::endl;
+					return PC_RETURN_TAG::INVALID;
 					break;
 				}
 			}
@@ -287,7 +292,7 @@ namespace TBS
 
 		show_HP(ecs);
 		show_hand(ecs);
-		return target_died;
+		return ret;
 	}
 
 	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity player, Entity target)
@@ -397,11 +402,11 @@ namespace TBS
 		// Check for TBS status
 		if (is_active)
 		{
-			if (AEInputCheckTriggered(AEVK_RSHIFT))
+			/*if (AEInputCheckTriggered(AEVK_RSHIFT))
 			{
 				gbsptr->nextGBPhase();
 				gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
-			}
+			}*/
 
 			update_GBPhasetriggered();
 			update_GBPhaseUpdate();
@@ -462,8 +467,8 @@ namespace TBS
 
 				//===================play card==============================
 				
-				bool died = this->play_card(*ecsptr, this->current(),targetted_entity, this->get_selected_cardhand_index());
-				if (died)
+				PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(),targetted_entity, this->get_selected_cardhand_index());
+				if (tag == PC_RETURN_TAG::DIED)
 				{
 					//must reset the position on the grid to be null or there will be bugs
 					if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
