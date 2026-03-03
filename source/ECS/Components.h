@@ -94,7 +94,7 @@ namespace Components
 	struct Color
 	{
 		RGBA c_color;
-		RGBA p_color;
+		RGBA d_color;
 		Color(f32 r, f32 g, f32 b, f32 a);
 	};
 

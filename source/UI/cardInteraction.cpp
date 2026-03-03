@@ -233,9 +233,9 @@ namespace CardInteraction
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.r = 0.7f;
-		c->p_color.g = 0.7f;
-		c->p_color.b = 0.7f;
+		c->d_color.r = 0.7f;
+		c->d_color.g = 0.7f;
+		c->d_color.b = 0.7f;
 		t->pos_onscreen.y = t->pos.y + 20;
 	}
 
@@ -245,7 +245,7 @@ namespace CardInteraction
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color = c->c_color;
+		c->d_color = c->c_color;
 		t->pos_onscreen = t->pos;
 	}
 

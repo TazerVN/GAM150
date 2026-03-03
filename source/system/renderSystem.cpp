@@ -116,14 +116,14 @@ namespace RenderSystem
 					AEGfxTextureSet(texture->texture, 0, 0);
 					AEGfxSetTransparency(1.0f);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-					AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 				}
 				else
 				{
 					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-					AEGfxSetColorToMultiply(color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
 				}
 			}
@@ -131,7 +131,7 @@ namespace RenderSystem
 			{
 				Components::Text* text = ecs.getComponent<Components::Text>(current_e);
 
-				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->p_color.r, color->p_color.g, color->p_color.b, color->p_color.a);
+				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 			}
 
 		}
