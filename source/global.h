@@ -9,3 +9,10 @@ enum class highlight_tag
 	ATTACK_HIGHLIGHT = 1,
 	MOVE_HIGHLIGHT = 2
 };
+
+enum class PC_RETURN_TAG
+{
+	INVALID = -1,
+	VALID = 0,
+	DIED = 1
+};

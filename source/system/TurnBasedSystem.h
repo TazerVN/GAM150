@@ -78,8 +78,10 @@ namespace TBS
 		void select_card(ECS::Registry& ecs);
 		//draw the card of the player
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
+
 		//function to determine the play card it could be attack it could be defense or support
-		bool play_card(ECS::Registry& ecs, Entity player , Entity target, int index);
+
+		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player , Entity target, int index);
 		bool Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity player, Entity target);
 		void Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
