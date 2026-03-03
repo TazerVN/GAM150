@@ -1,6 +1,16 @@
 #pragma once
 #include "util.h"
 
+int math_absolute(int val)
+{
+	return (val < 0) ? -val : val;
+}
+
+int math_max(int const& lhs, int const& rhs)
+{
+	return (lhs > rhs) ? lhs : rhs;
+}
+
 bool point2circle_intersect(float pointX, float pointY, float circleX, float circleY, float diameter) {
 	float radius = diameter * 0.5f;
 	float dx = pointX - circleX;

@@ -9,6 +9,7 @@ void Components::Card_Storage::add_card_to_hand(Entity cardID)
 
 void Components::Card_Storage::remove_card_from_hand(int index)
 {
+	data_discard_pile.push_back(data_card_hand[index]);
 	data_card_hand.erase(data_card_hand.begin() + index);
 }
 

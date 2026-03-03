@@ -13,10 +13,28 @@ namespace TBS
 		gbsptr->resetGPhase();
 		gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 		gbsptr->resetPlayerPhase();
-		debug_print(ecs);	//this is for turn base
+
+		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
+		char const* nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
+		std::cout << nm << " Turn" << std::endl;
 	}
 	void TurnBasedSystem::round_end()
 	{
+		std::vector<Entity>& vec = ecsptr->getComponent<Components::Card_Storage>(playerID)->data_card_hand;
+		size_t sz = vec.size();
+		while (!vec.empty())
+		{
+			System::remove_card_player(*ecsptr, playerID, 0);	//this is to remove data from ecs
+			cardHandptr->remove_card(*ecsptr, 0);		//this is for visual side
+		}
+
+		//show discard pile
+		std::cout << "Discard Pile" << std::endl;
+		for (Entity e : ecsptr->getComponent<Components::Card_Storage>(playerID)->data_discard_pile)
+		{
+			std::cout << e;
+		}
+		std::cout<< std::endl;
 		++cur_round;
 	}
 	void TurnBasedSystem::force_start_if_ready(ECS::Registry& ecs)
@@ -75,9 +93,8 @@ namespace TBS
 			{
 				participants.erase(participants.begin() + i);	//remove the target from turn system
 				participant_hand.erase(participant_hand.begin() + i);
-				std::cout << "Participant size :" << participants.size() << std::endl;
-				std::cout << "Paricipant hand size : " << participant_hand.size() << std::endl;
-				//kill the removed participant
+				/*std::cout << "Participant size :" << participants.size() << std::endl;
+				std::cout << "Paricipant hand size : " << participant_hand.size() << std::endl;*/
 				ecs.destroyEntity(parti);
 			}
 		}
@@ -204,7 +221,6 @@ namespace TBS
 	void TurnBasedSystem::select_hand_index(size_t index)
 	{
 		participant_hand[cur_player] = index;
-		std::cout << "Selected card at index " << index << std::endl;;
 	}
 
 	void TurnBasedSystem::select_card(ECS::Registry& ecs)
@@ -212,7 +228,6 @@ namespace TBS
 		int index = get_selected_cardhand_index();
 
 		Entity current_entt = current();
-		std::cout << "[hotkey] u = attack\n";
 		Entity card = draw_card(ecs, current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
 
 		if (card == NULL_INDEX)
@@ -229,7 +244,7 @@ namespace TBS
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::ATTACK_HIGHLIGHT;
 
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
-		gbsptr->debug_print();
+		//gbsptr->debug_print();
 	}
 
 	//return the cardID inside the hand
@@ -248,12 +263,6 @@ namespace TBS
 		if (target != NULL_INDEX)
 		{
 			Entity cardID = this->draw_card(ecs, player, index);
-			std::string name = ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value;
-			std::string targetName = ecs.getComponent<Components::Name>(target)->value;
-			std::string cardName = ecs.getComponent<Components::Name>(cardID)->value;
-
-			std::cout << '\n' << name << " used " << cardName << " on " << targetName << std::endl;
-
 			f32& card_range = ecs.getComponent<Components::Attack>(cardID)->range;
 
 			Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
@@ -261,11 +270,16 @@ namespace TBS
 			{
 			case Components::CardTag::ATTACK:
 			{
+				if (!gameBoardptr->check_within_range(this->current(), targetted_x, targetted_y))
+				{
+					std::cout << "Cannot hit target outside range" << std::endl;
+					return PC_RETURN_TAG::INVALID;
+				}
+
 				if (target == current())
 				{
 					std::cout << "Cannot hit yourself" << std::endl;
 					return PC_RETURN_TAG::INVALID;
-					break;
 				}
 				if (Call_AttackSystem(ecs, cardID, player, target))
 					ret = PC_RETURN_TAG::DIED;
@@ -285,13 +299,9 @@ namespace TBS
 			default:
 				break;
 			}
-
 		}
-		//remove the card that just played
+		//remove the card that just played inside tbs
 		remove_card(ecs,player,index);
-
-		show_HP(ecs);
-		show_hand(ecs);
 		return ret;
 	}
 
@@ -299,6 +309,13 @@ namespace TBS
 	{
 		bool ret = false;
 		//attack component
+
+		std::string name = ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value;
+		std::string targetName = ecs.getComponent<Components::Name>(target)->value;
+		std::string cardName = ecs.getComponent<Components::Name>(cardID)->value;
+
+		std::cout << '\n' << name << " used " << cardName << " on " << targetName << std::endl << std::endl;
+
 		ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
 		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
 		//test if card have attack id
@@ -322,14 +339,13 @@ namespace TBS
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{
-		//gbsptr->debug_print();
-		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
-		char const* nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
-		std::cout << nm << " Turn" << std::endl;
 		//print out info every action
+		std::cout << "======================Turn based Stats======================" << std::endl;
 		show_HP(ecs);
 		//Entity cur = current();
 		show_hand(ecs);
+		show_stats(ecs);
+		std::cout << "============================================================" << std::endl;
 	}
 
 	void TurnBasedSystem::show_HP(ECS::Registry& ecs) const
@@ -355,6 +371,16 @@ namespace TBS
 			std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
 		std::cout << "------------------------------" << std::endl;
+	}
+
+	void TurnBasedSystem::show_stats(ECS::Registry& ecs) const
+	{
+		std::cout << "---------Player's Stats---------" << std::endl;
+		Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
+		std::cout << "Points : " << stats->points << '/' << stats->maxPoints << std::endl;
+		std::cout << "SPD : " << stats->cur_movSpd << std::endl;
+		std::cout << "Shields : " << stats->shields << std::endl;
+		std::cout << "--------------------------------" << std::endl;
 	}
 
 	void TurnBasedSystem::check_input(ECS::Registry& ecs)
@@ -383,15 +409,12 @@ namespace TBS
 		Entity card = cardSysptr->get_card(index);
 
 		System::add_card_player(ecs, playerID, card);	//add a random card
-
-		show_hand(ecs);
 	}
 
 	void TurnBasedSystem::remove_card(ECS::Registry& ecs,Entity user,int index)
 	{
-		System::remove_card_player(ecs, user, index);
-		cardHandptr->remove_card(ecs,index);
-		show_hand(ecs);
+		System::remove_card_player(ecs, user, index);	//this is to remove data from ecs
+		cardHandptr->remove_card(ecs,index);		//this is for visual side
 	}
 	//=================================Update===========================================
 
@@ -423,15 +446,25 @@ namespace TBS
 			{
 			case PhaseSystem::GBPhase::START_PHASE:
 			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
+
+				//=============rest shit for player in start phase===============
+
+				Components::TurnBasedStats* stats = ecsptr->getComponent<Components::TurnBasedStats>(playerID);
+				stats->cur_movSpd = stats->max_movSpd;
+				stats->points = stats->maxPoints;
+				stats->shields = 0.f;
+
+				//===============================================================
+
 				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::STANDBY_PHASE:
 			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
 				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
@@ -439,7 +472,7 @@ namespace TBS
 			}
 			case PhaseSystem::GBPhase::DRAW_PHASE:
 			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
 				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
@@ -447,15 +480,18 @@ namespace TBS
 			}
 			case PhaseSystem::GBPhase::MAIN_PHASE:
 			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
+
+				debug_print(*ecsptr);
+
 				gbsptr->GBPActive()[prev_index] = false;
 				gbsptr->GBPActive()[index] = true;
 				break;
 			}
 			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 			{
-				std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
 				gbsptr->GBPActive()[prev_index] = false;
 
@@ -465,6 +501,7 @@ namespace TBS
 					play_card_triggered = false;
 
 					PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
+					//remove the card that just played inside tbs
 					if (tag == PC_RETURN_TAG::DIED)
 					{
 						//must reset the position on the grid to be null or there will be bugs
@@ -472,31 +509,31 @@ namespace TBS
 						this->remove_participant(*ecsptr, targetted_entity);
 					}
 
-
 					if (tag != PC_RETURN_TAG::INVALID)
 					{
-						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-						gbsptr->debug_print();
 						this->set_selected_card(false);
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-						gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-						int i = static_cast<int>(gbsptr->getGBPhase());
-						gbsptr->GBPTriggered()[i] = true;
-
-					}
-					else if (tag == PC_RETURN_TAG::INVALID)
-					{
-						gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-						int i = static_cast<int>(gbsptr->getGBPhase());
-						gbsptr->GBPTriggered()[i] = true;
-
-						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+						/*gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 						gbsptr->debug_print();
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;*/
 					}
+					/*else if (tag == PC_RETURN_TAG::INVALID)
+					{
+						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
+						gbsptr->debug_print();
+					}*/
+
+					//remove if u want to make the the playerphase not reset when u click on invalid target
+					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+					//gbsptr->debug_print();
+					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+					int i = static_cast<int>(gbsptr->getGBPhase());
+					gbsptr->GBPTriggered()[i] = true;
 				}
-				break;
 				//=========================================================
+
+				break;
 			}
 			default: 
 			{
@@ -522,7 +559,7 @@ namespace TBS
 			{
 			case PhaseSystem::GBPhase::START_PHASE:
 			{
-				std::cout << "Starting" << std::endl;
+				//std::cout << "Starting" << std::endl;
 				gbsptr->nextGBPhase();
 				index = static_cast<size_t>(gbsptr->getGBPhase());
 				gbsptr->GBPTriggered()[index] = true;
@@ -530,7 +567,7 @@ namespace TBS
 			}
 			case PhaseSystem::GBPhase::STANDBY_PHASE:
 			{
-				std::cout << "Standing By"<< std::endl;
+				//std::cout << "Standing By"<< std::endl;
 				gbsptr->nextGBPhase();
 				index = static_cast<size_t>(gbsptr->getGBPhase());
 				gbsptr->GBPTriggered()[index] = true;
@@ -538,10 +575,8 @@ namespace TBS
 			}
 			case PhaseSystem::GBPhase::DRAW_PHASE:
 			{
-				std::cout << "Drawing cards" << std::endl;
-	
 				//draw until max_hand
-				for (int i = 0; i < MAX_HAND; ++i)
+				for (int i = 0; i < DRAW_COUNT; ++i)
 				{
 					add_card(*ecsptr);
 				}

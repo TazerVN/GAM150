@@ -17,7 +17,7 @@
 #define MAX_COMPONENT 20
 
 constexpr size_t NULL_INDEX = -1;
-constexpr size_t MAX_HAND = 6;
+constexpr size_t DRAW_COUNT = 6;
 
 namespace Components
 {
@@ -152,7 +152,8 @@ namespace Components
 
 		//std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
 
-		std::vector<size_t>data_card_hand;
+		std::vector<size_t> data_card_hand;
+		std::vector<size_t> data_discard_pile;
 	};
 
 	enum class CardTag
@@ -163,20 +164,19 @@ namespace Components
 		EVENT = 3
 	};
 
-	//===================Turn Based======================================
 	//struct TurnBasedStats
-	//{
-	//	int  maxPoints{ 0 };			// per-round cap (set when entity created)
-	//	int  points{ 0 };			// current round points (reset at round start)
-	//	f32 shields{ 0.f };
-	//	f32 ini_movSpd; f32 cur_movSpd;
-	//};
+	//	int maxPoints;			// per-round cap (set when entity created)
+	//	int points {0};			// current round points (reset at round start)
+	//	int shields{0};
+	//	f32 ini_movSpd;
+	//	f32 max_movSpd{ini_movSpd}, cur_movSpd{ max_movSpd };
 	struct TurnBasedStats
 	{
-		int  maxPoints{ 0 };			// per-round cap (set when entity created)
-		int  points {0};			// current round points (reset at round start)
-		f32 shields{0.f};
-		f32 ini_movSpd; f32 cur_movSpd{ini_movSpd};
+		int maxPoints;			// per-round cap (set when entity created)
+		int points {0};			// current round points (reset at round start)
+		int shields{0};
+		f32 ini_movSpd;
+		f32 max_movSpd{ini_movSpd}, cur_movSpd{ max_movSpd };
 	};
 
 }

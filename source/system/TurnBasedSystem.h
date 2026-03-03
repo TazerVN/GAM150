@@ -65,6 +65,7 @@ namespace TBS
 		void debug_print(ECS::Registry& ecs) const;
 		void show_HP(ECS::Registry& ecs) const;
 		void show_hand(ECS::Registry& ecs) const;
+		void show_stats(ECS::Registry& ecs) const;
 
 		void next_enemy_or_player(ECS::Registry& ecs);	// For Enemy CPU
 		void yield_to_player(ECS::Registry& ecs);

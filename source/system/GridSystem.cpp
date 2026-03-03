@@ -269,7 +269,13 @@ namespace Grid
 				if (selected_part && this->cur != -1) 
 				{
 					//check if it is within movement range 
-					if (!check_within_range(this->cur, x, y)) return;
+					if (!check_within_range(this->cur, x, y))
+					{
+						std::cout << "Outside movement range" << std::endl;
+						reset_selected_player();
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+						return;
+					}
 
 					if (this->pos[x][y] != -1)
 					{
@@ -277,12 +283,11 @@ namespace Grid
 						return;
 					}
 					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+					//move the entity
 					this->moveEntity(ecs, this->cur, x, y);
-					this->activate[this->cur_x][this->cur_y] = false;
-					this->cur_x = -1;
-					this->cur_y = -1;
-					this->cur = -1;
-					selected_part = false;
+					reset_selected_player();
+					tbs->show_stats(ecs);
 				}
 
 				//check if the grid cell with entity is clicked
@@ -403,13 +408,7 @@ namespace Grid
 
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
-		//check if there is an entity on the selected tile first
-		/*if (this->pos[x][y] != -1)
-		{
-			std::cout << "Cannot move onto another entity" << std::endl;
-			return;
-		}*/
-		bool isHere = false;
+		//get player's position first
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
@@ -417,13 +416,12 @@ namespace Grid
 				if (this->pos[i][j] == e)
 				{
 					this->pos[i][j] = -1;
-					isHere = true;
+
+					int dist = grid_dist_chebyshev(i, j, x, y);
+					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 				}
 			}
 		}
-
-		if (isHere == false) return;
-
 		this->pos[x][y] = e;
 	}
 
@@ -435,7 +433,7 @@ namespace Grid
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 			tbs->set_selected_card(false);
 			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-			gbsptr->debug_print();
+			//gbsptr->debug_print();
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
@@ -551,12 +549,23 @@ namespace Grid
 	{
 		for (AEVec2 ite : highlighted_cells)
 		{
-			if (x == ite.x && y == ite.y)
+			if (x == s32(ite.x) && y == s32(ite.y))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+
+	s32 GameBoard::grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+	{
+		return math_absolute(x2 - x1) + math_absolute(y2 - y1);
+	}
+
+	s32 GameBoard::grid_dist_chebyshev(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+	{
+		int lhs{ math_absolute(x2 - x1) }; int rhs{ math_absolute(y2 - y1) };
+		return math_max( lhs,rhs );
 	}
 
 	bool GameBoard::findEntityCell(Entity e, s32& outX, s32& outY) const
