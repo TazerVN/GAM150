@@ -247,16 +247,15 @@ namespace Grid
 			{
 				if (tbs->is_current_selected_card())
 				{
-					//if the card is selected and the selected pos is entity
+					//if the card is selected and the selected pos has entity
 					if (pos[x][y] != -1)
 					{
-						//determine target 
 						tbs->set_targetted_ent(pos[x][y]);
 						tbs->set_targetted_xy(x, y);
-						
+
+						tbs->play_card_triggered = true;
 						gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
 						gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
-						return;
 					}
 					else {
 						std::cout << "Select a valid cell with entity!" << std::endl;
@@ -270,7 +269,7 @@ namespace Grid
 				if (selected_part && this->cur != -1) 
 				{
 					//check if it is within movement range 
-					
+					if (!check_within_range(this->cur, x, y)) return;
 
 					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 					this->moveEntity(ecs, this->cur, x, y);
@@ -352,6 +351,7 @@ namespace Grid
 	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbs = tbsys;
+		ecsptr = &ecs;
 		evsptr = &evs;
 		gbsptr = &gb;
 
@@ -420,17 +420,24 @@ namespace Grid
 		if (isHere == false) return;
 
 		this->pos[x][y] = e;
-		/*gbsptr->nextPlayerPhase();
-		gbsptr->debug_print();*/
 	}
 
 	void GameBoard::update(ECS::Registry& ecs)
 	{
-		//when movement is selected and right mouse is clicked
+		if (tbs->is_current_selected_card()
+		 && AEInputCheckTriggered(AEVK_RBUTTON))
+		{
+			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+			tbs->set_selected_card(false);
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+			gbsptr->debug_print();
+		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
 			reset_selected_player();
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 		}
+		
 		
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -442,21 +449,6 @@ namespace Grid
 
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
-
-
-				/*if (this->highlight_activate[i][j] == highlight_tag::UNHIGHLIGHTED)
-				{
-					color->p_color = color->c_color;
-				}*/
-
-				/*if (this->activate[i][j])
-				{
-					color->p_color.b = 0.5f;
-					color->p_color.r = 0.5f;
-				}
-				else{
-					color->p_color = color->c_color;
-				}*/
 
 				switch (this->highlight_activate[i][j])
 				{
@@ -522,6 +514,11 @@ namespace Grid
 		return highlight_activate;
 	}
 
+	bool GameBoard::selected_player() const
+	{
+		return selected_part;
+	}
+
 	void GameBoard::reset_selected_player()
 	{
 		if (!selected_part) return;
@@ -543,6 +540,18 @@ namespace Grid
 		if (i < 0 || i >= MAX_I || j < 0 || j >= MAX_J) return { -1.f, -1.f };
 
 		return { f32(i), f32(j) };
+	}
+
+	bool GameBoard::check_within_range(Entity id, s32 const& x, s32 const& y)
+	{
+		for (AEVec2 ite : highlighted_cells)
+		{
+			if (x == ite.x && y == ite.y)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	bool GameBoard::findEntityCell(Entity e, s32& outX, s32& outY) const

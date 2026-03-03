@@ -70,6 +70,7 @@ namespace TBS
 		void yield_to_player(ECS::Registry& ecs);
 
 		//============Combat=======================
+		bool play_card_triggered{false};
 		void check_input(ECS::Registry&);
 		void add_card(ECS::Registry& ecs);
 		void remove_card(ECS::Registry& ecs, Entity user, int index);

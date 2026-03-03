@@ -13,7 +13,7 @@
 //forward declaration for gameboard state
 namespace PhaseSystem { class GameBoardState; }
 namespace TBS { class TurnBasedSystem; }
-
+namespace Grid { class GameBoard; }
 namespace CardInteraction
 {
 	void card_onHover(ECS::Registry& ecs, Entity id);
@@ -28,14 +28,17 @@ namespace CardInteraction
 		bool reset;
 
 		TBS::TurnBasedSystem* tbsptr = nullptr;
+		
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		MeshFactory* mfptr = nullptr;
+		Grid::GameBoard* gbptr = nullptr;
 		TextureFactory::TextureFactory* tfptr = nullptr;
 
 	public:
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
-		CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs, PhaseSystem::GameBoardState& gbs);
+		CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, 
+			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs);
 
 		CardHand();
 

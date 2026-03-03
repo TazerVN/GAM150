@@ -26,6 +26,7 @@ namespace Grid
 	class GameBoard
 	{
 		private:
+		ECS::Registry* ecsptr = nullptr;
 		TBS::TurnBasedSystem* tbs;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
@@ -64,8 +65,11 @@ namespace Grid
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
 		std::vector<AEVec2>& get_highlighted_cell();
 
+		bool selected_player() const;
 		void reset_selected_player();
 		AEVec2 Get_gridPos(AEVec2 const& worldPos);
+
+		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 	};
 	
 	//class Grid

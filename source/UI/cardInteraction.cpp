@@ -3,6 +3,7 @@
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../System/TurnBasedSystem.h"
+#include "../system/GridSystem.h"
 #include "../system/PhaseSystem.h"
 #include <iostream>
 #include "AEEngine.h"
@@ -61,8 +62,8 @@ namespace CardInteraction
 		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 	}
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf,f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs,
-		PhaseSystem::GameBoardState& gbs)
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf,f32 x, f32 y, f32 width, f32 height, 
+		TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
 		: CardHand()
 	{
 		this->reset = true;
@@ -73,6 +74,7 @@ namespace CardInteraction
 		ecs.addComponent(this->id, trans);
 		tbsptr = &tbs;
 		gbsptr = &gbs;
+		gbptr = &gb;
 		mfptr = &mf;
 		tfptr = &tf;
 	}
@@ -81,12 +83,11 @@ namespace CardInteraction
 	{
 		if (gbsptr == nullptr) return;
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
-
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
 		{
 			if (this->activate[i] == true)
 			{
-				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
+				if (!gbptr->selected_player() && gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
 				{
 					tbsptr->select_hand_index(i);
 					tbsptr->select_card(ecs);

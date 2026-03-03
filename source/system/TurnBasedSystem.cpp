@@ -460,38 +460,41 @@ namespace TBS
 				gbsptr->GBPActive()[prev_index] = false;
 
 				//===================play card==============================
-				
-				PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(),targetted_entity, this->get_selected_cardhand_index());
-				if (tag == PC_RETURN_TAG::DIED)
+				if (play_card_triggered)
 				{
-					//must reset the position on the grid to be null or there will be bugs
-					if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
-					this->remove_participant(*ecsptr, targetted_entity);
+					play_card_triggered = false;
+
+					PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
+					if (tag == PC_RETURN_TAG::DIED)
+					{
+						//must reset the position on the grid to be null or there will be bugs
+						if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
+						this->remove_participant(*ecsptr, targetted_entity);
+					}
+
+
+					if (tag != PC_RETURN_TAG::INVALID)
+					{
+						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+						gbsptr->debug_print();
+						this->set_selected_card(false);
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+						gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+						int i = static_cast<int>(gbsptr->getGBPhase());
+						gbsptr->GBPTriggered()[i] = true;
+
+					}
+					else if (tag == PC_RETURN_TAG::INVALID)
+					{
+						gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+						int i = static_cast<int>(gbsptr->getGBPhase());
+						gbsptr->GBPTriggered()[i] = true;
+
+						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+						gbsptr->debug_print();
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+					}
 				}
-				
-
-				if (tag != PC_RETURN_TAG::INVALID)
-				{
-					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-					gbsptr->debug_print();
-					this->set_selected_card(false);
-					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-					int i = static_cast<int>(gbsptr->getGBPhase());
-					gbsptr->GBPTriggered()[i] = true;
-
-				}
-				else if(tag == PC_RETURN_TAG::INVALID)
-				{
-					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-					int i = static_cast<int>(gbsptr->getGBPhase());
-					gbsptr->GBPTriggered()[i] = true;
-
-					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-					gbsptr->debug_print();
-					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-				}
-
 				break;
 				//=========================================================
 			}
