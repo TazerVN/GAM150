@@ -259,7 +259,7 @@ namespace Grid
 					else {
 						tbs->set_selected_card(false);
 						gbsptr->prevPlayerPhase();
-						evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 						std::cout << "Select a valid cell with entity!" << std::endl;
 					}
 				}
@@ -270,6 +270,8 @@ namespace Grid
 				//check if an empty cell is clicked
 				if (selected_part && this->cur != -1) 
 				{
+
+					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 					this->moveEntity(ecs, this->cur, x, y);
 					this->activate[this->cur_x][this->cur_y] = false;
 					this->cur_x = -1;
@@ -297,14 +299,8 @@ namespace Grid
 						this->cur_x = x;
 						this->cur_y = y;
 						selected_part = true;
-					}
-
-					else 
-					{
-						this->activate[x][y] = false;
-						this->cur = -1;
-						this->cur_x = -1;
-						this->cur_y = -1;
+						evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
+						evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 					}
 				}
 				break;
@@ -336,7 +332,7 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbs = tbsys;
 		evsptr = &evs;
@@ -354,7 +350,7 @@ namespace Grid
 				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
 				this->activate[i][j] = false;
-				this->atk_activate[i][j] = false;
+				this->highlight_activate[i][j] = highlight_tag::UNHIGHLIGHTED;
 			}
 		}
 	}
@@ -431,7 +427,7 @@ namespace Grid
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
 
-				if (!this->atk_activate[i][j])
+				if (this->highlight_activate[i][j] == highlight_tag::UNHIGHLIGHTED)
 				{
 					color->p_color = color->c_color;
 				}
@@ -443,14 +439,26 @@ namespace Grid
 				}
 				else{
 					color->p_color = color->c_color;
-					
 				}
 
-				if (this->atk_activate[i][j])
+				switch (this->highlight_activate[i][j])
+				{
+				case highlight_tag::ATTACK_HIGHLIGHT:
 				{
 					color->p_color.r = 1.f;
 					color->p_color.g = 0.f;
 					color->p_color.b = 0.f;
+					break;
+				}
+				case highlight_tag::MOVE_HIGHLIGHT :
+				{
+					color->p_color.r = 0.f;
+					color->p_color.g = 0.f;
+					color->p_color.b = 0.7;
+					break;
+				}
+				default:
+					break;
 				}
 
 				//update entity cell
@@ -487,19 +495,14 @@ namespace Grid
 		return pos;
 	}
 
-	std::vector<AEVec2>& GameBoard::get_atk_highlighted_cell()
+	std::vector<AEVec2>& GameBoard::get_highlighted_cell()
 	{
-		return highlighted_atk_cells;
+		return highlighted_cells;
 	}
 
-	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_attack_activate()
+	std::array<std::array<highlight_tag, MAX_J>, MAX_I>& GameBoard::activate_highlight()
 	{
-		return atk_activate;
-	}
-
-	std::array<std::array<bool, MAX_J>, MAX_I>& GameBoard::get_move_activate()
-	{
-		return move_activate;
+		return highlight_activate;
 	}
 
 	void GameBoard::reset_selected_player()

@@ -21,7 +21,7 @@ namespace System {
 	//	
 	//}
 
-	Entity create_player(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
+	Entity create_actor(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -29,7 +29,7 @@ namespace System {
 		Components::Name nm{ name };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-		Components::TurnBasedStats tbs{5, 0, false, 0.f};
+		Components::TurnBasedStats tbs{5, 0, 0.f, 3.f};
 		//=====================Render==========================
 		Components::Texture texture{pTex};
 		Components::Transform trans{ pos,pos,size, size,0.f };

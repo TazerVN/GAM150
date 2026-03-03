@@ -161,14 +161,19 @@ namespace Components
 	};
 
 	//===================Turn Based======================================
+	//struct TurnBasedStats
+	//{
+	//	int  maxPoints{ 0 };			// per-round cap (set when entity created)
+	//	int  points{ 0 };			// current round points (reset at round start)
+	//	f32 shields{ 0.f };
+	//	f32 ini_movSpd; f32 cur_movSpd;
+	//};
 	struct TurnBasedStats
 	{
-		int  maxPoints = 0;			// per-round cap (set when entity created)
-		int  points = 0;			// current round points (reset at round start)
-
-		bool needsRedraw = false;	// set true at round start; card system consumes it later
-
-		f32 shields = 0;
+		int  maxPoints{ 0 };			// per-round cap (set when entity created)
+		int  points {0};			// current round points (reset at round start)
+		f32 shields{0.f};
+		f32 ini_movSpd; f32 cur_movSpd{ini_movSpd};
 	};
 
 }

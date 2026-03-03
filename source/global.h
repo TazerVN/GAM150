@@ -5,6 +5,7 @@ using Entity = size_t;
 
 enum class highlight_tag
 {
-	MOVE_HIGHLIGHT,
-	ATTACK_HIGHLIGHT
+	UNHIGHLIGHTED = 0,
+	ATTACK_HIGHLIGHT = 1,
+	MOVE_HIGHLIGHT = 2
 };

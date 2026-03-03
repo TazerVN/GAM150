@@ -28,7 +28,7 @@ namespace Grid
 		private:
 		TBS::TurnBasedSystem* tbs;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
-		EventPool* evsptr = nullptr;
+		EventPool<highlight_tag>* evsptr = nullptr;
 		
 		Entity cur, prev_cur;
 		bool selected_part = false;
@@ -39,16 +39,15 @@ namespace Grid
 		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
-		std::array<std::array<bool, MAX_J>, MAX_I> atk_activate;
-		std::array<std::array<bool, MAX_J>, MAX_I> move_activate;
+		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 
-		std::vector<AEVec2> highlighted_atk_cells;
+		std::vector<AEVec2> highlighted_cells;
 
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 	public:
 
-		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
+		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		//i'm testing some stuff on the below function VVVV 
 		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
@@ -61,9 +60,9 @@ namespace Grid
 		void update(ECS::Registry& ecs);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
-		std::vector<AEVec2>& get_atk_highlighted_cell();
-		std::array<std::array<bool, MAX_J>, MAX_I>& get_attack_activate();
-		std::array<std::array<bool, MAX_J>, MAX_I>& get_move_activate();
+
+		std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
+		std::vector<AEVec2>& get_highlighted_cell();
 
 		void reset_selected_player();
 		AEVec2 Get_gridPos(AEVec2 const& worldPos);

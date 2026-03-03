@@ -24,18 +24,14 @@ namespace TBS
 		if (!is_active && participants.size() >= 2) start(ecs);
 	}
 
-	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp, 
+	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
 		System::CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
 	{
 		evsptr = &eventPool;
 		//highlight event
-		evsptr->pool.push_back(Event{});
+		evsptr->template_pool.push_back(EventTemplate<highlight_tag>{});
 		//unhighlight event
-		evsptr->pool.push_back(Event{});
-		//GBPhase next event
-		evsptr->pool.push_back(Event{});
-		//playcard event
-		evsptr->pool.push_back(Event{});
+		evsptr->template_pool.push_back(EventTemplate<highlight_tag>{});
 
 		ecsptr = &ecs;
 		gbsptr = &gbsp;
@@ -228,7 +224,10 @@ namespace TBS
 		std::cout << "Attacking with " << ecs.getComponent<Components::Name>(card)->value << std::endl;
 		std::cout << "Select Enemy to use card on" << std::endl;
 		set_selected_card(true);	//set current participant's selected card to true
-		evsptr->pool[HIGHLIGHT_EVENT].triggered = true;
+
+		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
+		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::ATTACK_HIGHLIGHT;
+
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 		gbsptr->debug_print();
 	}
@@ -475,7 +474,7 @@ namespace TBS
 				gbsptr->GBPTriggered()[prev_index] = true;
 				gbsptr->nextPlayerPhase();
 				gbsptr->debug_print();
-				evsptr->pool[UNHIGHLIGHT_EVENT].triggered = true;
+				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 				break;
 				//=========================================================
 			}

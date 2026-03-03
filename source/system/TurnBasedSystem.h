@@ -21,7 +21,7 @@ namespace TBS
 		size_t cur_round{0};
 
 		ECS::Registry* ecsptr = nullptr;
-		EventPool* evsptr = nullptr;
+		EventPool<highlight_tag>* evsptr = nullptr;
 		Grid::GameBoard* gameBoardptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		System::CardSystem* cardSysptr = nullptr;
@@ -40,7 +40,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(ECS::Registry&, EventPool&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
+		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 

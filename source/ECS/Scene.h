@@ -21,7 +21,7 @@ private:
 
 	System::CardSystem card_system;
 	PhaseSystem::GameBoardState gbs;
-	EventPool eventPool;
+	EventPool<highlight_tag> eventPool;
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
 
@@ -41,6 +41,6 @@ public:
 };
 
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, int range, highlight_tag type);
-void unhighlight_cells(Grid::GameBoard& gb, highlight_tag type);
+void unhighlight_cells(Grid::GameBoard& gb);
 AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb);
 AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);

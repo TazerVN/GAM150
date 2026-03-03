@@ -16,26 +16,23 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	Entity temp; 
 	
 	//Add player
-	temp = System::create_player(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player1", 100.f, tf.getTextureChar(0));
-	//System::add_card_player(*ecs, temp, sa);	//add sword attack
-	//System::add_card_player(*ecs, temp, ss);	//add silver slash attack
-	//System::add_card_player(*ecs, temp, fa);	//add fa attack
-
+	temp = System::create_actor(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(0));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
-
 	add_entity(temp);
 
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
+	//Holt shit the enemy script is so cool VVV
+
 	//Add enemy0
-	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
+	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
 	System::add_card_player(*ecs, temp, fa);	//add fire attack
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
-	temp = System::create_player(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
+	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
 	System::add_card_player(*ecs, temp, fa);	//add fire attack
 	System::add_card_player(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
@@ -62,18 +59,37 @@ void Scene::update()
 	enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
 	//==================Handle Events===============================
 
-	if (eventPool.pool[HIGHLIGHT_EVENT].triggered)
+	if (eventPool.template_pool[HIGHLIGHT_EVENT].triggered)
 	{
-		Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
-		f32& card_range = ecs->getComponent<Components::Attack>(card_ID)->range;
-		highlight_cells(*ecs, TBSys, BattleGrid,card_range,highlight_tag::ATTACK_HIGHLIGHT);
-		eventPool.pool[HIGHLIGHT_EVENT].triggered = false;
+		highlight_tag highlight_type = eventPool.template_pool[HIGHLIGHT_EVENT].returned_value;
+
+		switch (highlight_type)
+		{
+		case highlight_tag::ATTACK_HIGHLIGHT: 
+		{
+			Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
+			f32& card_range = ecs->getComponent<Components::Attack>(card_ID)->range;
+			highlight_cells(*ecs, TBSys, BattleGrid, card_range, highlight_type);
+
+			break;
+		}
+		case highlight_tag::MOVE_HIGHLIGHT:
+		{
+			f32& range = ecs->getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
+			highlight_cells(*ecs, TBSys, BattleGrid, range, highlight_type);
+		}
+			break;
+		default:
+			break;
+		}
+
+		eventPool.template_pool[HIGHLIGHT_EVENT].triggered = false;
 	}
 
-	if (eventPool.pool[UNHIGHLIGHT_EVENT].triggered)
+	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
 	{
-		unhighlight_cells(BattleGrid, highlight_tag::ATTACK_HIGHLIGHT);
-		eventPool.pool[UNHIGHLIGHT_EVENT].triggered = false;
+		unhighlight_cells(BattleGrid);
+		eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered = false;
 	}
 
 	//==============================================================
@@ -112,9 +128,6 @@ Grid::GameBoard& Scene::getBattleGrid()
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
-	Entity card_ID = tbs.draw_card(ecs, tbs.current(), tbs.get_selected_cardhand_index());
-	const char* card_name = ecs.getComponent<Components::Name>(card_ID)->value;
-
 	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
 
 	for (int i = 0; i <= range; ++i)
@@ -122,51 +135,47 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 		for (int j = 0; j <= range; ++j)
 		{
 			if (i + j == 0) continue;
-			if (cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J && i + j <= range)
+			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J)
 			{
-				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
-				gb.get_attack_activate()[cur_part_pos.x + i][cur_part_pos.y + j] = true;
+				if(gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
+					continue;
+				gb.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
+				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] = type;
 			}
-			if (cur_part_pos.x - i > -1 && cur_part_pos.y - j > -1 && i + j <= range)
+			if (i + j <= range &&cur_part_pos.x - i >= 0 && cur_part_pos.y - j >= 0)
 			{
-				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
-				gb.get_attack_activate()[cur_part_pos.x - i][cur_part_pos.y - j] = true;
+				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
+					continue;
+				gb.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
+				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] = type;
 			}
-			if (cur_part_pos.x + i < MAX_I && cur_part_pos.y - j > -1 && i + j <= range)
+			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y - j >= 0)
 			{
-				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
-				gb.get_attack_activate()[cur_part_pos.x + i][cur_part_pos.y - j] = true;
+				if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
+					continue;
+				gb.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
+				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] = type;
 			}
-			if (cur_part_pos.x - i > -1 && cur_part_pos.y + j < MAX_J && i + j <= range)
+			if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y + j < MAX_J)
 			{
-				gb.get_atk_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
-				gb.get_attack_activate()[cur_part_pos.x - i][cur_part_pos.y + j] = true;
+				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
+					continue;
+				gb.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
+				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] = type;
 			}
 		}
 	}
 	//=========================================================================
 }
 
-void unhighlight_cells(Grid::GameBoard& gb, highlight_tag type)
+void unhighlight_cells(Grid::GameBoard& gb)
 {
 	{
-		switch (type)
+		for (AEVec2 a : gb.get_highlighted_cell())
 		{
-		case highlight_tag::MOVE_HIGHLIGHT:
-			break;
-		case highlight_tag::ATTACK_HIGHLIGHT: 
-		{
-			//un-highligh cells
-			for (AEVec2 a : gb.get_atk_highlighted_cell())
-			{
-				gb.get_attack_activate()[int(a.x)][int(a.y)] = false;
-				gb.get_atk_highlighted_cell().clear();
-			}
-			break;
+			gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;
 		}
-		default:
-			break;
-		}
+		gb.get_highlighted_cell().clear();
 	}
 }
 
