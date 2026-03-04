@@ -21,9 +21,7 @@ constexpr size_t DRAW_COUNT = 6;
 
 namespace Components
 {
-	
-
-	enum DamageType
+	enum class DamageType
 	{
 		SLASHING,
 		PIERCING,

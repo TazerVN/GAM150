@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\global.cpp" />
+    <ClCompile Include="source\system\CombatSystem.cpp" />
     <ClCompile Include="source\system\EnemyDirector.cpp" />
     <ClCompile Include="source\system\particleSystem.cpp" />
     <ClCompile Include="source\util\BST.cpp" />
@@ -43,6 +44,7 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\system\CombatSystem.h" />
     <ClInclude Include="source\system\EnemyDirector.h" />
     <ClInclude Include="source\system\particleSystem.h" />
     <ClInclude Include="source\util\BST.h" />
