@@ -269,15 +269,25 @@ namespace Grid
 				if (selected_part && this->cur != -1) 
 				{
 					//check if it is within movement range 
-					if (!check_within_range(this->cur, x, y)) return;
+					if (!check_within_range(this->cur, x, y))
+					{
+						std::cout << "Outside movement range" << std::endl;
+						reset_selected_player();
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+						return;
+					}
 
+					if (this->pos[x][y] != -1)
+					{
+						std::cout << "Cannot move onto another entity" << std::endl;
+						return;
+					}
 					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+					//move the entity
 					this->moveEntity(ecs, this->cur, x, y);
-					this->activate[this->cur_x][this->cur_y] = false;
-					this->cur_x = -1;
-					this->cur_y = -1;
-					this->cur = -1;
-					selected_part = false;
+					reset_selected_player();
+					tbs->show_stats(ecs);
 				}
 
 				//check if the grid cell with entity is clicked
@@ -313,17 +323,17 @@ namespace Grid
 	void cell_onHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.r = 0.7f;
-		c->p_color.g = 0.7f;
-		c->p_color.b = 0.7f;
+		c->d_color.r = 0.7f;
+		c->d_color.g = 0.7f;
+		c->d_color.b = 0.7f;
 	}
 
 	void cell_offHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->p_color.r = c->c_color.r;
-		c->p_color.g = c->c_color.g;
-		c->p_color.b = c->c_color.b;
+		c->d_color.r = c->c_color.r;
+		c->d_color.g = c->c_color.g;
+		c->d_color.b = c->c_color.b;
 	}
 	
 
@@ -392,19 +402,13 @@ namespace Grid
 		if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
-		color->p_color.g = 0.5f;
-		color->p_color.r = 0.5f;
+		color->d_color.g = 0.5f;
+		color->d_color.r = 0.5f;
 	}
 
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
-		//check if there is an entity on the selected tile first
-		if (this->pos[x][y] != -1)
-		{
-			std::cout << "Cannot move onto another entity" << std::endl;
-			return;
-		}
-		bool isHere = false;
+		//get player's position first
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
@@ -412,13 +416,12 @@ namespace Grid
 				if (this->pos[i][j] == e)
 				{
 					this->pos[i][j] = -1;
-					isHere = true;
+
+					int dist = grid_dist_chebyshev(i, j, x, y);
+					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 				}
 			}
 		}
-
-		if (isHere == false) return;
-
 		this->pos[x][y] = e;
 	}
 
@@ -430,7 +433,7 @@ namespace Grid
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 			tbs->set_selected_card(false);
 			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-			gbsptr->debug_print();
+			//gbsptr->debug_print();
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
@@ -454,16 +457,16 @@ namespace Grid
 				{
 				case highlight_tag::ATTACK_HIGHLIGHT:
 				{
-					color->p_color.r = color->p_color.r + 0.5f;
-					color->p_color.g = color->p_color.g - 0.3f;
-					color->p_color.b = color->p_color.b - 0.3f;
+					color->d_color.r = color->d_color.r + 0.5f;
+					color->d_color.g = color->d_color.g - 0.3f;
+					color->d_color.b = color->d_color.b - 0.3f;
 					break;
 				}
 				case highlight_tag::MOVE_HIGHLIGHT :
 				{
-					color->p_color.r = color->p_color.r - 0.2f;
-					color->p_color.g = color->p_color.g - 0.2f;
-					color->p_color.b = color->p_color.b + 0.4f;
+					color->d_color.r = color->d_color.r - 0.2f;
+					color->d_color.g = color->d_color.g - 0.2f;
+					color->d_color.b = color->d_color.b + 0.4f;
 					break;
 				}
 				default:
@@ -493,8 +496,8 @@ namespace Grid
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 				color = ecs.getComponent<Components::Color>(current_cell);
-				color->p_color.g = color->p_color.g - 0.4f;
-				color->p_color.r = color->p_color.r - 0.4f;
+				color->d_color.g = color->d_color.g - 0.4f;
+				color->d_color.r = color->d_color.r - 0.4f;
 			}
 		}
 	}
@@ -546,12 +549,23 @@ namespace Grid
 	{
 		for (AEVec2 ite : highlighted_cells)
 		{
-			if (x == ite.x && y == ite.y)
+			if (x == s32(ite.x) && y == s32(ite.y))
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+
+	s32 GameBoard::grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+	{
+		return math_absolute(x2 - x1) + math_absolute(y2 - y1);
+	}
+
+	s32 GameBoard::grid_dist_chebyshev(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+	{
+		int lhs{ math_absolute(x2 - x1) }; int rhs{ math_absolute(y2 - y1) };
+		return math_max( lhs,rhs );
 	}
 
 	bool GameBoard::findEntityCell(Entity e, s32& outX, s32& outY) const

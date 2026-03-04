@@ -14,8 +14,8 @@
 #define CELL_WIDTH 128
 #define CELL_HEIGHT 128
 
-#define MAX_I 10
-#define MAX_J 10
+#define MAX_I 15
+#define MAX_J 15
 
 //forward declaring tbs so that linker can use it 
 namespace TBS { class TurnBasedSystem; }
@@ -70,6 +70,8 @@ namespace Grid
 		AEVec2 Get_gridPos(AEVec2 const& worldPos);
 
 		bool check_within_range(Entity id, s32 const& x, s32 const& y);
+		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
+		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 	};
 	
 	//class Grid

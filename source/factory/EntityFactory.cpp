@@ -29,7 +29,7 @@ namespace System {
 		Components::Name nm{ name };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-		Components::TurnBasedStats tbs{5, 0, 0.f, 3.f};
+		Components::TurnBasedStats tbs{5,0,0,3.f};
 		//=====================Render==========================
 		Components::Texture texture{pTex};
 		Components::Transform trans{ pos,pos,size, size,0.f };
@@ -87,13 +87,15 @@ namespace System {
 		user_cards->add_card_to_hand(cardID);
 	}
 
+	//void remove_card_player(ECS::Registry& ecs, Entity user, int index)
+	//
+	//	remove data from ecs
+	//
 	void remove_card_player(ECS::Registry& ecs, Entity user, int index)
 	{
 		ECS::ComponentTypeID card_storage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
 		//if user dont have card storage return
 		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
-
-		if (index >= MAX_HAND || index < 0) return;
 
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
 		//if the index is invalid return

@@ -57,7 +57,8 @@ void game_init()
 	RM.RenderSystem_init(ecs);
 
 	ecs.remove_empty_groups();
-	PS.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
+	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
+	PS.spawn(ecs, mf);
 }
 
 void game_update()
@@ -74,6 +75,7 @@ void game_update()
 	scene.update();
 	scene.getBattleGrid().update(ecs);
 	UIM.update(scene);
+	PS.update(ecs, 0.2);
 
 	//==========Object updates===========
 

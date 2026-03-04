@@ -4,6 +4,8 @@
 #include "../system/TurnBasedSystem.h"
 #include "../System/GridSystem.h"
 
+int math_absolute(int);
+int math_max(int const&, int const&);
 bool point2circle_intersect(float pointX, float pointY, float circleX, float circleY, float diameter);
 bool point2rect_intersect(float rx, float ry, float w, float h, float px, float py);
 bool rect2rect_intersect(float r1X, float r1Y, float r1W, float r1H, float r2X, float r2Y, float r2W, float r2H);
