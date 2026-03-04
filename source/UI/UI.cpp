@@ -38,21 +38,34 @@ namespace UI
 		this->list.push_back(end_turn);
 	}
 
-	void UIManager::update(ECS::Registry& ecs)
+	void UIManager::update(Scene& scene)
 	{
-		this->health_update(ecs);
+		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+
+		/*for(int i = 0; i < this->list.size(); i++)
+		{
+			for(int j = 0; j <  scene.getTBS().pa; j++){
+				if (!scene.getECS().getBitMask()[this->list[i].first].test(hpID)) continue;
+				else if(scene.entities_store()[j] == this->list[i].first) continue;
+				else{
+					this->list[i] = this->list[this->list.size() - 1];
+					this->list.pop_back();
+				}
+			}
+		}*/
+		this->health_update(scene.getECS());
 
 		for(std::pair<Entity, Entity> p : this->list)
 		{
 
-			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-			ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+			
 
-			if (!ecs.getBitMask()[p.first].test(transID)) continue;
-			if (!ecs.getBitMask()[p.second].test(transID)) continue;
+			if (!scene.getECS().getBitMask()[p.first].test(transID)) continue;
+			if (!scene.getECS().getBitMask()[p.second].test(transID)) continue;
 
-			Components::Transform* parent = ecs.getComponent<Components::Transform>(p.first);
-			Components::Transform* child = ecs.getComponent<Components::Transform>(p.second);
+			Components::Transform* parent = scene.getECS().getComponent<Components::Transform>(p.first);
+			Components::Transform* child = scene.getECS().getComponent<Components::Transform>(p.second);
 
 			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;

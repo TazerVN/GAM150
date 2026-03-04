@@ -73,7 +73,7 @@ void game_update()
 	card.update_logic(ecs, scene.getTBS(), mf, TF);
 	scene.update();
 	scene.getBattleGrid().update(ecs);
-	UIM.update(ecs);
+	UIM.update(scene);
 
 	//==========Object updates===========
 

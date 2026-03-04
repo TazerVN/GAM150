@@ -79,6 +79,7 @@ namespace TBS
 				std::cout << "Paricipant hand size : " << participant_hand.size() << std::endl;
 				//kill the removed participant
 				ecs.destroyEntity(parti);
+
 			}
 		}
 	}
