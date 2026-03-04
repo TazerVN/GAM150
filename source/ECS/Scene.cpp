@@ -120,6 +120,7 @@ TBS::TurnBasedSystem& Scene::getTBS()
 	return TBSys;
 }
 
+
 Grid::GameBoard& Scene::getBattleGrid()
 {
 	return BattleGrid;

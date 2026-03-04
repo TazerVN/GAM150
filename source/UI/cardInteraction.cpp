@@ -114,8 +114,8 @@ namespace CardInteraction
 			this->reset = false;
 			std::cout << "Shuffle New Cards" << std::endl;
 
-			Components::Input* in = ecs.getComponent<Components::Input>(this->id);
-			in->onClick = [this] { this->reset_hand(); };
+			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
+			in->onClick = [this] { this->reset_hand(); };*/
 		}
 		this->update_pos(ecs);
 

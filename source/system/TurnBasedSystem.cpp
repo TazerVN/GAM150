@@ -101,6 +101,11 @@ namespace TBS
 		}
 	}
 
+	std::vector<Entity>& TurnBasedSystem::get_participant()
+	{
+		return participants;
+	}
+
 	void TurnBasedSystem::start(ECS::Registry& ecs)
 	{
 		//check for edge cases

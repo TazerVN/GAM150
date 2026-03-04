@@ -38,6 +38,7 @@ public:
 	PhaseSystem::GameBoardState& getGBS();
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
+
 };
 
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, int range, highlight_tag type);

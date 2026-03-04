@@ -43,6 +43,7 @@ namespace TBS
 		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
+		std::vector<Entity>& get_participant();
 
 		//returns ID of the active participant in turn order
 		Entity current() const;
