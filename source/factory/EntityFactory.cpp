@@ -41,7 +41,6 @@ namespace System {
 		ecs.addComponent(id, HP);
 		ecs.addComponent(id, card_storage);
 		ecs.addComponent(id, tbs);
-
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
@@ -104,10 +103,10 @@ namespace System {
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
-		cards.push_back(create_atk_card(ecs,"Sword Attack", 52.f, Components::SLASHING,1.f));	//0
-		cards.push_back(create_atk_card(ecs,"Fire Sword", 45.f, Components::FIRE,2.f));			//1
-		cards.push_back(create_atk_card(ecs,"Steven Sword", 100.f, Components::PIERCING,3.f));	//2
-		cards.push_back(create_atk_card(ecs,"Gun", 20.f, Components::PIERCING, 4.f));			//3
+		cards.push_back(create_atk_card(ecs,"Sword Attack", 10.f, Components::DamageType::SLASHING,1.f));	//0
+		cards.push_back(create_atk_card(ecs,"Fire Sword", 12.f, Components::DamageType::FIRE,2.f));			//1
+		cards.push_back(create_atk_card(ecs,"Steven Sword", 20.f, Components::DamageType::PIERCING,3.f));	//2
+		cards.push_back(create_atk_card(ecs,"Gun", 8.f, Components::DamageType::PIERCING, 9.f));			//3
 		//cards.push_back(create_defense_card(ecs,"Shield", 10.f, 0.f));							//4
 	};
 	Entity& CardSystem::get_card(int index) 

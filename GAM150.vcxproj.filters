@@ -31,6 +31,7 @@
     <ClCompile Include="source\system\particleSystem.cpp" />
     <ClCompile Include="source\system\EnemyDirector.cpp" />
     <ClCompile Include="source\util\json_parser.cpp" />
+    <ClCompile Include="source\system\CombatSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -63,5 +64,6 @@
     <ClInclude Include="source\system\particleSystem.h" />
     <ClInclude Include="source\system\EnemyDirector.h" />
     <ClInclude Include="source\util\json_parser.h" />
+    <ClInclude Include="source\system\CombatSystem.h" />
   </ItemGroup>
 </Project>

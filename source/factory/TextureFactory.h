@@ -5,8 +5,9 @@
 namespace TextureFactory
 {
 	enum CardTextureID : s8{
-		C_DISPLAY = 0, C_SAMPLE = 1, C_SLASH = 2, C_SLASH2 = 3, C_BLACKHOLE = 4, C_BARRIER = 5,
-		C_BARRIER2 = 6
+		C_DISPLAY = 0, C_SAMPLE = 1, C_SLASH = 2, C_SLASH2 = 3,  C_BARRIER = 4,
+		C_BARRIER2 = 5, C_FIREBOLT = 6, C_GUSTOFWIND = 7, C_SHOOT = 8, C_SHOOT2 = 9,
+		C_BLACKHOLE , C_AURAFARM
 	};
 	class TextureFactory
 	{

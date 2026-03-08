@@ -3,6 +3,7 @@
 #include "../util/util.h"
 #include "../system/TurnBasedSystem.h"
 #include "../system/PhaseSystem.h"
+#include "../util/Pathfinding.h"
 #include "../global.h"
 
 float offset = 1.0f;
@@ -417,7 +418,7 @@ namespace Grid
 				{
 					this->pos[i][j] = -1;
 
-					int dist = grid_dist_chebyshev(i, j, x, y);
+					int dist = grid_dist_manhattan(i, j, x, y);
 					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 				}
 			}

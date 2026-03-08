@@ -29,7 +29,7 @@ namespace Components
 		Tag value;
 	};
 
-	enum DamageType
+	enum class DamageType
 	{
 		SLASHING,
 		PIERCING,

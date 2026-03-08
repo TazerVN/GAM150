@@ -3,6 +3,7 @@
 #include "../util/util.h"
 #include "../UI/cardInteraction.h"
 #include "../global.h"
+#include "CombatSystem.h"
 #include <iomanip>
 namespace TBS
 {
@@ -287,7 +288,12 @@ namespace TBS
 					std::cout << "Cannot hit yourself" << std::endl;
 					return PC_RETURN_TAG::INVALID;
 				}
-				if (Call_AttackSystem(ecs, cardID, player, target))
+
+				ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
+				if (!ecs.getBitMask()[cardID].test(atkID)) return PC_RETURN_TAG::INVALID;
+				f32 card_damage = ecs.getComponent<Components::Attack>(cardID)->damage;
+
+				if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
 					ret = PC_RETURN_TAG::DIED;
 				else
 					ret = PC_RETURN_TAG::VALID;
@@ -310,31 +316,6 @@ namespace TBS
 		remove_card(ecs,player,index);
 		return ret;
 	}
-
-	bool TurnBasedSystem::Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity player, Entity target)
-	{
-		bool ret = false;
-		//attack component
-
-		std::string name = ecs.getComponent<Components::Name>(participants[size_t(cur_player)])->value;
-		std::string targetName = ecs.getComponent<Components::Name>(target)->value;
-		std::string cardName = ecs.getComponent<Components::Name>(cardID)->value;
-
-		std::cout << '\n' << name << " used " << cardName << " on " << targetName << std::endl << std::endl;
-
-		ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
-		//test if card have attack id
-		if (!ecs.getBitMask()[cardID].test(atkID)) return false;
-		if (!(ecs.getBitMask()[target].test(hpID))) return false;
-
-		//if the have components then reduce the HP amount
-		ecs.getComponent<Components::HP>(target)->c_value -= ecs.getComponent<Components::Attack>(cardID)->damage;
-		if (ecs.getComponent<Components::HP>(target)->c_value <= 0.f) ret = true;
-
-		return ret;
-	}
-
 
 	void TurnBasedSystem::Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target)
 	{
