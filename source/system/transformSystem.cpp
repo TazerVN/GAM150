@@ -21,8 +21,8 @@ namespace TransformSystem{
 					Components::TagClass* tag = ecs.getComponent<Components::TagClass>(ent);
 					if(tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
 					{
-						//transform->pos_onscreen.x = transform->pos.x + camera_x; 
-						//transform->pos_onscreen.y = transform->pos.y + camera_y; 
+						transform->pos_onscreen.x = transform->pos.x + camera_x; 
+						transform->pos_onscreen.y = transform->pos.y + camera_y; 
 					}
 
 					

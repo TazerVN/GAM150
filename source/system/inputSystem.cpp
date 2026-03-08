@@ -37,6 +37,7 @@ namespace InputSystem
 		}
 
 		this->buffer.sort(IM_CMP);
+		bool active_hover = false;
 
 		for (std::pair<s8, Entity> temp : this->buffer)
 		{
@@ -66,12 +67,14 @@ namespace InputSystem
 				}
 				else if (AEInputCheckReleased(in->type))
 				{
+					//pass for now
 				}
-				else if (in->hover == true)
+				else if (active_hover == false && in->hover == true)
 				{ 
-
-					if (in->onHover != nullptr) in->onHover();
-
+					if (in->onHover != nullptr) {
+						in->onHover();
+					} 
+					active_hover = true;
 				}
 			}
 			else
