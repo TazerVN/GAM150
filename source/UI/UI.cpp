@@ -134,10 +134,12 @@ namespace UI
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 0.5, 0.5f, 0.5f ,1.0f };
 		Components::Input in(AEVK_LBUTTON, true, func, nullptr, nullptr);	//add input system for grid
+		Components::TagClass tag{Components::Tag::UI};	//add input system for grid
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, in);
+		ecs.addComponent(id, tag);
 
 		return id;
 	}
@@ -150,9 +152,12 @@ namespace UI
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Text text{ a, tf.getFontID(), z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		scene.getECS().addComponent(id, trans);
 		scene.getECS().addComponent(id, text);
 		scene.getECS().addComponent(id, color);
+		scene.getECS().addComponent(id, tag);
+
 
 		return id;
 	}

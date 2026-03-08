@@ -21,10 +21,6 @@ namespace RenderSystem
 
 	RenderSystem::RenderSystem()
 	{
-		this->e_buffer.clear();
-		this->z_buffer.clear();
-		this->e_buffer.reserve(BUFFER_CAPACITY);
-		this->z_buffer.reserve(BUFFER_CAPACITY);
 	}
 
 
