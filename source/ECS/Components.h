@@ -143,6 +143,10 @@ namespace Components
 		f32 value;
 		f32 range;
 	};
+	struct Card_Cost
+	{
+		f32 value;
+	};
 	struct Name
 	{
 		const char* value;
@@ -157,11 +161,12 @@ namespace Components
 	class Card_Storage
 	{
 		public:
+		void add_card_to_deck(Entity cardID);
 		void add_card_to_hand(Entity cardID);
 		void remove_card_from_hand(int index);
+		void reshuffle_discard2deck();
 
-		//std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
-
+		std::vector<size_t> data_deck;
 		std::vector<size_t> data_card_hand;
 		std::vector<size_t> data_discard_pile;
 	};

@@ -2,6 +2,11 @@
 #include "../ECS/ECSystem.h"
 #include <iostream>
 
+void Components::Card_Storage::add_card_to_deck(Entity cardID)
+{
+	data_deck.push_back(cardID);
+}
+
 void Components::Card_Storage::add_card_to_hand(Entity cardID)
 {
 	data_card_hand.push_back(cardID);
@@ -13,6 +18,15 @@ void Components::Card_Storage::remove_card_from_hand(int index)
 	data_card_hand.erase(data_card_hand.begin() + index);
 }
 
+void Components::Card_Storage::reshuffle_discard2deck()
+{
+	if (data_discard_pile.empty()) { std::cout << "Discard Pile Empty" << std::endl; return; }
+	for (Entity card : data_discard_pile)
+	{
+		data_deck.push_back(card);
+	}
+	data_discard_pile.clear();
+}
 
 Components::Input::Input(u8 type, bool hover,
 						 std::function<void()> onClick,

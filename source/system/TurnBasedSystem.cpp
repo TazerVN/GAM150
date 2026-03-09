@@ -35,6 +35,7 @@ namespace TBS
 		{
 			std::cout << e;
 		}
+
 		std::cout<< std::endl;
 		++cur_round;
 	}
@@ -267,9 +268,19 @@ namespace TBS
 	{
 		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
+		Entity cardID = this->draw_card(ecs, player, index);
+
+		f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
+		int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
+
+		if (card_cost > player_curMana)
+		{
+			std::cout << "Not enough mana!!" << std::endl;
+			return PC_RETURN_TAG::INVALID;
+		}
+
 		if (target != NULL_INDEX)
 		{
-			Entity cardID = this->draw_card(ecs, player, index);
 			f32& card_range = ecs.getComponent<Components::Attack>(cardID)->range;
 
 			Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
@@ -313,6 +324,7 @@ namespace TBS
 			}
 		}
 		//remove the card that just played inside tbs
+		player_curMana -= card_cost;
 		remove_card(ecs,player,index);
 		return ret;
 	}
@@ -328,10 +340,13 @@ namespace TBS
 	{
 		//print out info every action
 		std::cout << "======================Turn based Stats======================" << std::endl;
-		show_HP(ecs);
+		//show deck cards
+		show_deck(ecs);
 		//Entity cur = current();
 		show_hand(ecs);
+		show_discard(ecs);
 		show_stats(ecs);
+		show_HP(ecs);
 		std::cout << "============================================================" << std::endl;
 	}
 
@@ -343,6 +358,21 @@ namespace TBS
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 		}
+	}
+
+	void TurnBasedSystem::show_deck(ECS::Registry& ecs) const
+	{
+		std::cout << "---------Player's Deck---------" << std::endl;
+
+		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+		size_t sz = playerStorage->data_deck.size();
+		for (size_t i = 0; i < sz; ++i)
+		{
+			Entity cardID = playerStorage->data_deck[i];
+			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
+			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
+		}
+		std::cout << "-------------------------------" << std::endl;
 	}
 
 	void TurnBasedSystem::show_hand(ECS::Registry& ecs) const
@@ -358,6 +388,21 @@ namespace TBS
 			std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
 		std::cout << "------------------------------" << std::endl;
+	}
+
+	void TurnBasedSystem::show_discard(ECS::Registry& ecs) const
+	{
+		//disolay player hands
+		std::cout << "---------Player's Discard Piler---------" << std::endl;
+		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+		size_t sz = playerStorage->data_discard_pile.size();
+		for (size_t i = 0; i < sz; ++i)
+		{
+			Entity cardID = playerStorage->data_discard_pile[i];
+			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
+			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
+		}
+		std::cout << "----------------------------------------" << std::endl;
 	}
 
 	void TurnBasedSystem::show_stats(ECS::Registry& ecs) const
@@ -388,14 +433,28 @@ namespace TBS
 		}
 	}
 
-	void TurnBasedSystem::add_card(ECS::Registry& ecs)
+	void TurnBasedSystem::DrawPhase_add_card(ECS::Registry& ecs)
 	{
-		//temporary code random card from the card pool
-		int index = int(AERandFloat() * cardSysptr->size());
+		//get random card from the player's deck
+		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+		std::vector<size_t>& deck = storage->data_deck;
 
-		Entity card = cardSysptr->get_card(index);
+		if (deck.empty())
+		{
+			storage->reshuffle_discard2deck();
 
-		System::add_card_player(ecs, playerID, card);	//add a random card
+			if (deck.empty())
+			{
+				std::cout << "Error" << std::endl;
+				return;
+			}
+		}
+
+		int index = int(AERandFloat() * deck.size());
+		Entity card = deck[index];
+		System::add_card_player_hand(ecs, playerID, card);	//add a random card
+		//remove the card afterwards
+		deck.erase(deck.begin() + index);
 	}
 
 	void TurnBasedSystem::remove_card(ECS::Registry& ecs,Entity user,int index)
@@ -469,7 +528,7 @@ namespace TBS
 			{
 				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
-
+				
 				debug_print(*ecsptr);
 
 				gbsptr->GBPActive()[prev_index] = false;
@@ -499,16 +558,7 @@ namespace TBS
 					if (tag != PC_RETURN_TAG::INVALID)
 					{
 						this->set_selected_card(false);
-						/*gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-						gbsptr->debug_print();
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;*/
 					}
-					/*else if (tag == PC_RETURN_TAG::INVALID)
-					{
-						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
-						gbsptr->debug_print();
-					}*/
-
 					//remove if u want to make the the playerphase not reset when u click on invalid target
 					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 					//gbsptr->debug_print();
@@ -565,7 +615,7 @@ namespace TBS
 				//draw until max_hand
 				for (int i = 0; i < DRAW_COUNT; ++i)
 				{
-					add_card(*ecsptr);
+					DrawPhase_add_card(*ecsptr);
 				}
 				cardHandptr->reset_hand();
 

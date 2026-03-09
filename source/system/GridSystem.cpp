@@ -259,7 +259,10 @@ namespace Grid
 						gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
 					}
 					else {
-						std::cout << "Select a valid cell with entity!" << std::endl;
+						std::cout << "Select a valid cell with entity" << std::endl;
+						tbs->set_selected_card(false);
+						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 					}
 				}
 				break;

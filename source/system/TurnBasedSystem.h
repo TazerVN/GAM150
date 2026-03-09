@@ -64,9 +64,14 @@ namespace TBS
 		void start(ECS::Registry& ecs);
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
 		void debug_print(ECS::Registry& ecs) const;
+
+		//==============Player Stats==============
+		void show_deck(ECS::Registry& ecs) const;
 		void show_HP(ECS::Registry& ecs) const;
 		void show_hand(ECS::Registry& ecs) const;
+		void show_discard(ECS::Registry& ecs) const;
 		void show_stats(ECS::Registry& ecs) const;
+
 
 		void next_enemy_or_player(ECS::Registry& ecs);	// For Enemy CPU
 		void yield_to_player(ECS::Registry& ecs);
@@ -74,7 +79,7 @@ namespace TBS
 		//============Combat=======================
 		bool play_card_triggered{false};
 		void check_input(ECS::Registry&);
-		void add_card(ECS::Registry& ecs);
+		void DrawPhase_add_card(ECS::Registry& ecs);
 		void remove_card(ECS::Registry& ecs, Entity user, int index);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
