@@ -66,7 +66,7 @@ namespace RenderSystem
 
 	}
 
-	void RenderSystem::RM_render(ECS::Registry& ecs)
+	void RenderSystem::RM_render(ECS::Registry& ecs, Entity camera)
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
@@ -76,6 +76,7 @@ namespace RenderSystem
 		//twan's old code
 
 		buffer.sort(renderCMP);
+		Components::Transform* cam_t = ecs.getComponent<Components::Transform>(camera);
 
 		while (!this->buffer.empty())
 		{
@@ -90,18 +91,35 @@ namespace RenderSystem
 			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
 			ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
 			ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+			ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
 
 			if (!ecs.getBitMask()[current_e].test(transID)) continue;
 			if (!ecs.getBitMask()[current_e].test(colorID)) continue;
 
+
+			f32 camera_x = cam_t->pos.x;
+			f32 camera_y = cam_t->pos.y;
+
+			if (ecs.getBitMask()[current_e].test(tagID))
+			{
+				Components::TagClass* tag = ecs.getComponent<Components::TagClass>(current_e);
+				if(tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
+				{
+					camera_x = 0;
+					camera_y = 0;
+				}
+			}
+
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(current_e);
 			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
+
+			AEVec2 new_pos;
+			AEVec2Set(&new_pos, transform->pos_onscreen.x - camera_x, transform->pos_onscreen.y - camera_y);
 
 			if (ecs.getBitMask()[current_e].test(meshID))
 			{
 				Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(current_e);
 				if (mesh->on == false) continue;
-
 
 
 				if (mesh->r_mode == TEXTURE)
@@ -113,21 +131,21 @@ namespace RenderSystem
 					AEGfxSetTransparency(1.0f);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, transform->size, &transform->mtx);
 				}
 				else
 				{
 					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, transform->pos_onscreen, transform->size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, transform->size, &transform->mtx);
 				}
 			}
 			else if (ecs.getBitMask()[current_e].test(textID))
 			{
 				Components::Text* text = ecs.getComponent<Components::Text>(current_e);
 
-				AEGfxPrint(text->fontID, text->text, transform->pos_onscreen.x, transform->pos_onscreen.y, transform->size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
+				AEGfxPrint(text->fontID, text->text, new_pos.x, new_pos.y, transform->size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 			}
 
 		}

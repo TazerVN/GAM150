@@ -1,11 +1,13 @@
 #include "transformSystem.h"
 
-namespace TransformSystem{
-	void TransformSystem::update(ECS::Registry& ecs, f32& camera_x, f32& camera_y){
+namespace TransformSystem
+{
+
+	void TransformSystem::update(ECS::Registry& ecs)
+	{
 
 		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Particle>();
 		ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
-	//create bitsets
 		ECS::ComponentBitMask objMask;
 		objMask.set(transID);
 		objMask.set(tagID);
@@ -19,13 +21,15 @@ namespace TransformSystem{
 					if (!ecs.getBitMask()[ent].test(transID)) continue;
 					Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
 					Components::TagClass* tag = ecs.getComponent<Components::TagClass>(ent);
-					if(tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
+
+
+					if (tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
 					{
-						transform->pos_onscreen.x = transform->pos.x + camera_x; 
-						transform->pos_onscreen.y = transform->pos.y + camera_y; 
+						transform->pos_onscreen.x = transform->pos.x;
+						transform->pos_onscreen.y = transform->pos.y;
 					}
 
-					
+
 				}
 			}
 		}

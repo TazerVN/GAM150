@@ -6,8 +6,9 @@ namespace InputSystem
 {
 	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs);
 
-	void InputManager::update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs)
+	void InputManager::update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs, Entity camera_id)
 	{
+		Components::Transform* cam = ecs.getComponent<Components::Transform>(camera_id);
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
 
 		this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
@@ -17,6 +18,7 @@ namespace InputSystem
 		this->mousey = AEClamp(this->mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
 
 		ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
+		ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
 		//create bitsets
 		ECS::ComponentBitMask objMask;
 		objMask.set(iID);
@@ -36,20 +38,22 @@ namespace InputSystem
 			
 		}
 
+
+
 		this->buffer.sort(IM_CMP);
 		bool active_hover = false;
 
 		for (std::pair<s8, Entity> temp : this->buffer)
 		{
+			f32 camera_x = cam->pos.x;
+			f32 camera_y = cam->pos.y;
 			Entity e = temp.second;
 
 			ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
 			ECS::ComponentTypeID tID = ECS::getComponentTypeID<Components::Transform>();
-			ECS::ComponentTypeID mID = ECS::getComponentTypeID<Components::Mesh>();
 
 			if (!ecs.getBitMask()[e].test(tID)) continue;
 			if (!ecs.getBitMask()[e].test(iID)) continue;
-			if (!ecs.getBitMask()[e].test(mID)) continue;
 
 			Components::Input* in = ecs.getComponent<Components::Input>(e);
 
@@ -57,24 +61,64 @@ namespace InputSystem
 
 
 			Components::Transform* t = ecs.getComponent<Components::Transform>(e);
-
-
-			if (point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex), f32(this->mousey)))
+			if (ecs.getBitMask()[e].test(tagID))
 			{
-				if (AEInputCheckTriggered(in->type))
+				Components::TagClass* tag = ecs.getComponent<Components::TagClass>(e);
+				if (tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
+				{
+					camera_x = 0;
+					camera_y = 0;
+				}
+			}
+
+
+			if (in->col && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex) + camera_x, f32(this->mousey) + camera_y ))
+			{
+				if (in->drag == false)
+				{
+
+					if (AEInputCheckTriggered(in->type))
+					{
+						if (in->onClick != nullptr) in->onClick();
+					}
+					else if (active_hover == false && in->hover == true)
+					{
+						if (in->onHover != nullptr)
+						{
+							in->onHover();
+						}
+						active_hover = true;
+					}
+				}
+				else{
+					if (AEInputCheckCurr(in->type))
+					{
+						if (in->onClick != nullptr) in->onClick();
+					}
+					else if(AEInputCheckReleased(in->type))
+					{
+						//pass for now
+					}
+					else if (active_hover == false && in->hover == true)
+					{
+						if (in->onHover != nullptr)
+						{
+							in->onHover();
+						}
+						active_hover = true;
+					}
+				}
+			}
+			else if(!in->col)
+			{
+				if (AEInputCheckCurr(in->type))
 				{
 					if (in->onClick != nullptr) in->onClick();
+					active_hover = true;
 				}
 				else if (AEInputCheckReleased(in->type))
 				{
 					//pass for now
-				}
-				else if (active_hover == false && in->hover == true)
-				{ 
-					if (in->onHover != nullptr) {
-						in->onHover();
-					} 
-					active_hover = true;
 				}
 			}
 			else
@@ -87,6 +131,8 @@ namespace InputSystem
 
 	}
 
+
+
 	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs)
 	{
 		return (rhs.first > lhs.first) ? true : false;
@@ -96,6 +142,8 @@ namespace InputSystem
 	{
 		this->mousex = 0;
 		this->mousey = 0;
+		
 	}
+
 
 }
