@@ -16,16 +16,16 @@ namespace CardInteraction
 
 	void hand_onHover(ECS::Registry& ecs, Entity id)
 	{
-		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
-		t->pos_onscreen.y = t->pos.y + 40;
-		t->size_col.x = t->size.x + 40;
+		//Components::Transform* t = ecs.getComponent<Components::Transform>(id);
+		//t->pos_onscreen.y = t->pos.y + 40;
+		//t->size_col.x = t->size.x + 40;
 	}
 
 	void hand_offHover(ECS::Registry& ecs, Entity id)
 	{
-		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
+		/*Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		t->pos_onscreen = t->pos;
-		t->size_col.x = t->size.x;
+		t->size_col.x = t->size.x;*/
 	}
 
 
@@ -47,6 +47,8 @@ namespace CardInteraction
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		Components::Input input(AEVK_SPACE, true, [this] { this->reset_hand(); }, [id = this->id, &ecs] { hand_onHover(ecs, id); }, [id = this->id, &ecs] { hand_offHover(ecs, id); });
+		Components::TagClass tag{Components::Tag::CARDS};
+		ecs.addComponent(this->id, tag);
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
 	}
@@ -57,8 +59,10 @@ namespace CardInteraction
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		Components::Input input(AEVK_SPACE, true, [this] { this->reset_hand(); }, [id = this->id, &ecs] { hand_onHover(ecs, id); }, [id = this->id, &ecs] { hand_offHover(ecs, id); });
+		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
+		ecs.addComponent(this->id, tag);
 		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 	}
 
@@ -70,8 +74,10 @@ namespace CardInteraction
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id, &ecs] { hand_onHover(ecs, id); }, [id = this->id, &ecs] { hand_offHover(ecs, id); });
+		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
+		ecs.addComponent(this->id, tag);
 		tbsptr = &tbs;
 		gbsptr = &gbs;
 		gbptr = &gb;
@@ -247,7 +253,7 @@ namespace CardInteraction
 		c->d_color.r = 0.7f;
 		c->d_color.g = 0.7f;
 		c->d_color.b = 0.7f;
-		t->pos_onscreen.y = t->pos.y + 20;
+		//t->pos_onscreen.y = t->pos.y + 20;
 	}
 
 
@@ -268,6 +274,8 @@ namespace CardInteraction
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id);}, 10);
 		Components::Switch s{ true };
+		Components::TagClass tag{ Components::Tag::CARDS };
+		ecs.addComponent(id, tag);
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -286,12 +294,17 @@ namespace CardInteraction
 		Components::Texture texture{ pTex };
 		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
 		Components::Switch s{ true };
+		Components::TagClass tag{ Components::Tag::CARDS };
+
+		ecs.addComponent(id, tag);
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, input);
+
+
 
 		return id;
 	}

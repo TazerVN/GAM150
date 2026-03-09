@@ -110,12 +110,14 @@ namespace Components
 		bool on;
 		u8 type; //for AE internal input system check
 		bool hover;
+		bool drag;
+		bool col;
 		s8 z;
 		Input(u8 type, bool hover, 
 			  std::function<void()> onClick, 
 			  std::function<void()> onHover, 
 			  std::function<void()> offHover,
-			  s8 z = 0);
+			  s8 z = 0, bool drag = false, bool col = true);
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;
