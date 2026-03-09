@@ -27,7 +27,7 @@ bool point2rect_intersect(float rx, float ry, float w, float h, float px, float 
 	float minY = ry - h * 0.5f;
 	float maxY = ry + h * 0.5f;
 
-	return(minX <= px && px <= maxX && minY <= py && py <= maxY) ? 1 : 0;
+	return(minX <= px && px <= maxX && minY <= py && py <= maxY) ? true : false;
 }
 
 bool rect2rect_intersect(float r1X, float r1Y, float r1W, float r1H, float r2X, float r2Y, float r2W, float r2H) {

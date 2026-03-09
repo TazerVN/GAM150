@@ -174,7 +174,7 @@ namespace CardInteraction
 			if (ecs.getBitMask()[i].test(aID)) {};
 
 			Components::Name* name = ecs.getComponent<Components::Name>(cs->data_card_hand.at(i));
-			Components::Attack* a = ecs.getComponent<Components::Attack>(cs->data_card_hand.at(i));
+			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cs->data_card_hand.at(i));
 
 			AEGfxTexture* texture = nullptr;
 

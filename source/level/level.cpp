@@ -50,7 +50,7 @@ void game_init()
 	//AEGfxSetCamPosition(camerax, cameray);
 
 
-	scene.init(ecs, mf, TF, card);	
+	scene.init(ecs, mf, TF, CS, card);	
 	UIM.init(scene, mf, TF);
 	CS.init(ecs);
 
@@ -78,10 +78,10 @@ void game_update()
 	TrS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	scene.update();
-	scene.getBattleGrid().update(ecs);
 	UIM.update(scene);
 	PS.update(ecs, 0.2);
 	CS.update(ecs);
+	scene.getBattleGrid().update(ecs,CS.id());	//gameboard update
 
 	//==========Object updates===========
 

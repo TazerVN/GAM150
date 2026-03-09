@@ -1,7 +1,9 @@
 #include "Scene.h"
 
-void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, CardInteraction::CardHand& ch)
+void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 {
+	cameraSys = &cam;
+
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
@@ -12,6 +14,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	Entity sa = card_system.get_card(0);
 	Entity fa = card_system.get_card(1);
 	Entity ss = card_system.get_card(2);
+	Entity blackHole = card_system.get_card(4);
 	//add cards to the player
 	Entity temp; 
 	
@@ -19,14 +22,20 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	temp = System::create_actor(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(0));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
-	//get fire_attack 5 times
-	for (int i = 0; i < 8; ++i)
+
+	/*for (int i = 0; i < 8; ++i)
 	{
 		System::add_card_player_deck(*ecs, temp, sa);
 		System::add_card_player_deck(*ecs, temp, fa);
 	}
-	System::add_card_player_deck(*ecs, temp, ss);
-
+	System::add_card_player_deck(*ecs, temp, ss);*/
+	/*for (int i = 0; i < 8; ++i)
+	{
+		System::add_card_player_deck(*ecs, temp, blackHole);
+	}*/
+	System::add_card_player_deck(*ecs, temp, blackHole);
+	System::add_card_player_deck(*ecs, temp, sa);
+	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
 	//Holt shit the enemy script is so cool VVV
@@ -75,7 +84,8 @@ void Scene::update()
 		case highlight_tag::ATTACK_HIGHLIGHT: 
 		{
 			Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
-			f32& card_range = ecs->getComponent<Components::Attack>(card_ID)->range;
+			f32& card_range = ecs->getComponent<Components::Targetting_Component>(card_ID)->range;
+
 			highlight_cells(*ecs, TBSys, BattleGrid, card_range, highlight_type);
 
 			break;
@@ -136,7 +146,8 @@ Grid::GameBoard& Scene::getBattleGrid()
 void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
-	AEVec2 cur_part_pos = Get_CurPart_gridPos(ecs, tbs, gb);
+
+	AEVec2 cur_part_pos = gb.Get_CurPart_gridPos();
 
 	for (int i = 0; i <= range; ++i)
 	{
@@ -178,34 +189,9 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 
 void unhighlight_cells(Grid::GameBoard& gb)
 {
+	for (AEVec2 a : gb.get_highlighted_cell())
 	{
-		for (AEVec2 a : gb.get_highlighted_cell())
-		{
-			gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;
-		}
-		gb.get_highlighted_cell().clear();
+		gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;
 	}
-}
-
-AEVec2& Get_CurPart_gridPos(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb)
-{
-	Entity cur_part = tbs.current();
-	std::array<std::array<Entity, MAX_J>, MAX_I>& positions = gb.get_pos();
-
-	AEVec2 temp = { -1.f,-1.f };
-
-	for (int i = 0; i < MAX_I; ++i)
-	{
-		for (int j = 0; j < MAX_J; ++j)
-		{
-			if (positions[i][j] == cur_part)
-			{
-				AEVec2Set(&temp, (f32)i, (f32)j);
-				break;
-			}
-		}
-		if (temp.x != -1.f && temp.y != -1.f) break;
-	}
-
-	return temp;
+	gb.get_highlighted_cell().clear();
 }

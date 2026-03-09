@@ -1,0 +1,44 @@
+[
+	{
+		"name" : "Sword Attack",
+		"targetting" : 0,
+		"card_type" : "ATK",
+		"damage_type" : "SLASHING",
+		"value" : 5.0,
+		"range" : 1.0
+	}
+	,
+	{
+		"name" : "Fire Bolt",
+		"targetting" : 0,
+		"card_type" : "ATK",
+		"damage_type" : "FIRE",
+		"value" : 5.0,
+		"range" : 10.0
+	}
+	,
+	{
+		"name" : "Steven's Sword",
+		"targetting" : 0,
+		"card_type" : "ATK",
+		"damage_type" : "FIRE",
+		"value" : 20.0,
+		"range" : 3.0
+	}
+	,
+	{
+		"name" : "Defend",
+		"targetting" : 0,
+		"card_type" : "DEF",
+		"value" : 5.0,
+		"range" : 0.0
+	},
+	{
+		"name" : "Fire Ball",
+		"targetting" : 0,
+		"card_type" : "ATK",
+		"value" : 5.0,
+		"range" : 10.0,
+		"aoe" : 5.0
+	}
+]

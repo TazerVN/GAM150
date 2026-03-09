@@ -251,7 +251,20 @@ namespace TBS
 		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::ATTACK_HIGHLIGHT;
 
-		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
+		//if single target do grid select else aoe select
+		ECS::ComponentTypeID targCompID = ECS::getComponentTypeID<Components::Targetting_Component>();
+		if (!ecs.getBitMask()[card].test(targCompID))
+		{
+			std::cout << "This card does not have targetting" << std::endl;
+			return;
+		}
+
+		Components::Targetting_Component* targComp = ecs.getComponent<Components::Targetting_Component>(card);
+		
+		if(targComp->targetting_type == Components::Targetting::SINGLE_TARGET)
+			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
+		else 
+			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::AOE_GRID_SELECT);
 		//gbsptr->debug_print();
 	}
 
@@ -281,8 +294,6 @@ namespace TBS
 
 		if (target != NULL_INDEX)
 		{
-			f32& card_range = ecs.getComponent<Components::Attack>(cardID)->range;
-
 			Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
 			switch (*tag)
 			{
@@ -300,9 +311,14 @@ namespace TBS
 					return PC_RETURN_TAG::INVALID;
 				}
 
-				ECS::ComponentTypeID atkID = ECS::getComponentTypeID<Components::Attack>();
-				if (!ecs.getBitMask()[cardID].test(atkID)) return PC_RETURN_TAG::INVALID;
-				f32 card_damage = ecs.getComponent<Components::Attack>(cardID)->damage;
+				ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
+				if (!ecs.getBitMask()[cardID].test(card_value_ID))
+				{
+					std::cout << "Selected card doesn't have card_data component";
+					return PC_RETURN_TAG::INVALID;
+				}
+
+				f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
 
 				if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
 					ret = PC_RETURN_TAG::DIED;
@@ -329,12 +345,6 @@ namespace TBS
 		return ret;
 	}
 
-	void TurnBasedSystem::Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target)
-	{
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
-
-		if (!(ecs.getBitMask()[target].test(hpID))) return;
-	}
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
 	{

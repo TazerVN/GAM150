@@ -37,6 +37,12 @@ namespace Components
 		FIRE
 	};
 
+	enum class Targetting
+	{
+		SINGLE_TARGET,
+		AOE
+	};
+
 	struct Text{
 		const char* text;
 		s8 fontID;
@@ -72,7 +78,15 @@ namespace Components
 		bool s;
 	};
 
-
+	/*struct Transform
+	{
+		AEVec2 pos{ 0.f,0.f };
+		AEVec2 pos_onscreen{ 0.f,0.f };
+		AEVec2 size{ 0,0 };
+		AEVec2 size_col{ 0,0 };
+		AEMtx33 mtx{};
+		float rotation{ 0.f };
+	};*/
 	struct Transform
 	{
 		AEVec2 pos{ 0.f,0.f };
@@ -132,17 +146,40 @@ namespace Components
 
 
 	//===========================CARDS=========================================
+
+
+	/*struct Card_Value
+	{
+		f32 value = 0.0f;
+		DamageType type;
+	};*/
+	struct Card_Value
+	{
+		f32 value=0.0f;
+		DamageType type;
+	};
+
+
+	/*struct Targetting_Component
+	{
+		Targetting targetting_type;
+		f32 range = 0.0f;
+		f32 aoe = 0.0f;
+	};*/
+	struct Targetting_Component
+	{
+		Targetting targetting_type;
+		f32 range=0.0f;
+		f32 aoe=0.0f;
+	};
+
 	struct Attack
 	{
 		f32 damage;
 		DamageType type;
 		f32 range;
 	};
-	struct Defense
-	{
-		f32 value;
-		f32 range;
-	};
+
 	struct Card_Cost
 	{
 		f32 value;

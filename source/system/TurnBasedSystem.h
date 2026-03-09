@@ -78,6 +78,9 @@ namespace TBS
 
 		//============Combat=======================
 		bool play_card_triggered{false};
+
+		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player, Entity target, int index);
+
 		void check_input(ECS::Registry&);
 		void DrawPhase_add_card(ECS::Registry& ecs);
 		void remove_card(ECS::Registry& ecs, Entity user, int index);
@@ -87,10 +90,6 @@ namespace TBS
 		//draw the card of the player
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 
-		//function to determine the play card it could be attack it could be defense or support
-
-		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player , Entity target, int index);
-		void Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs);
 

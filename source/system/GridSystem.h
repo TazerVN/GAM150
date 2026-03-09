@@ -27,7 +27,7 @@ namespace Grid
 	{
 		private:
 		ECS::Registry* ecsptr = nullptr;
-		TBS::TurnBasedSystem* tbs;
+		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
 		
@@ -40,9 +40,12 @@ namespace Grid
 		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
+
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
+		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
 		std::vector<AEVec2> highlighted_cells;
+		std::vector<AEVec2> aoe_highlighted_cells;
 
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
@@ -58,7 +61,7 @@ namespace Grid
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
 		bool moveEntityAI(Entity e, s32 x, s32 y);
 
-		void update(ECS::Registry& ecs);
+		void update(ECS::Registry& ecs, Entity camera);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 
@@ -67,7 +70,8 @@ namespace Grid
 
 		bool selected_player() const;
 		void reset_selected_player();
-		AEVec2 Get_gridPos(AEVec2 const& worldPos);
+		AEVec2 Get_gridPos(AEVec2 const& pos,Entity camera);
+		AEVec2& Get_CurPart_gridPos();
 
 		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);

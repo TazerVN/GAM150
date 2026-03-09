@@ -19,11 +19,7 @@ namespace RenderSystem
 		return false;
 	}
 
-	RenderSystem::RenderSystem()
-	{
-	}
-
-
+	RenderSystem::RenderSystem(){}
 
 	void RenderSystem::RenderSystem_init(ECS::Registry& ecs)
 	{
