@@ -19,6 +19,13 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	temp = System::create_actor(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(0));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
+	//get fire_attack 5 times
+	for (int i = 0; i < 8; ++i)
+	{
+		System::add_card_player_deck(*ecs, temp, sa);
+		System::add_card_player_deck(*ecs, temp, fa);
+	}
+	System::add_card_player_deck(*ecs, temp, ss);
 
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
@@ -26,15 +33,15 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 
 	//Add enemy0
 	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
-	System::add_card_player(*ecs, temp, fa);	//add fire attack
-	System::add_card_player(*ecs, temp, sa);	//add sword attack
+	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
+	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
 	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
-	System::add_card_player(*ecs, temp, fa);	//add fire attack
-	System::add_card_player(*ecs, temp, sa);	//add sword attack
+	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
+	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 

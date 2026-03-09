@@ -29,7 +29,11 @@ namespace System {
 		Components::Name nm{ name };
 		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
-		Components::TurnBasedStats tbs{5,0,0,3.f};
+		Components::TurnBasedStats tbstats
+		{	5,	//max points
+			0,	//cur_points
+			0,	//shields
+			7.f};	//movement spd
 		//=====================Render==========================
 		Components::Texture texture{pTex};
 		Components::Transform trans{ pos,pos,size, size,0.f };
@@ -40,7 +44,7 @@ namespace System {
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
 		ecs.addComponent(id, card_storage);
-		ecs.addComponent(id, tbs);
+		ecs.addComponent(id, tbstats);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
@@ -49,47 +53,58 @@ namespace System {
 		return id;
 	}
 
-	Entity create_atk_card(ECS::Registry& ecs, const char* name, f32 atk,Components::DamageType dtype,f32 range)
+	Entity create_atk_card(ECS::Registry& ecs, const char* name, f32 atk,Components::DamageType dtype,f32 range,f32 cost)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::CardTag cardTag = Components::CardTag::ATTACK;
 		Components::Name nm{ name };
 		Components::Attack attack{ atk, dtype, range};
+		Components::Card_Cost card_cost{ cost };
 		ecs.addComponent(id, cardTag);
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, attack);
+		ecs.addComponent(id, card_cost);
 		return id;
 	}
 
-	Entity create_defense_card(ECS::Registry& ecs, const char* name, f32 val, f32 range)
+	Entity create_defense_card(ECS::Registry& ecs, const char* name, f32 val, f32 range, f32 cost)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::CardTag cardTag{ Components::CardTag::DEFENSE };
 		Components::Name nm{ name };
 		Components::Defense def {val,range};
+		Components::Card_Cost{ cost };
 		ecs.addComponent(id, cardTag);
 		ecs.addComponent(id, nm);
+		ecs.addComponent(id, cost);
 		return id;
 	}
 
-	void add_card_player(ECS::Registry& ecs, Entity user, Entity cardID)
+	void add_card_player_hand(ECS::Registry& ecs, Entity user, Entity cardID)
 	{
 		ECS::ComponentTypeID card_storage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
 		//if user dont have card storage return
 		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
 
-		//std::array<Entity, MAX_HAND>& user_storage = ecs.getComponent<Components::Card_Storage>(user)->card_storage;
 		//get reference to the user's card_storage
 		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
+
 		user_cards->add_card_to_hand(cardID);
 	}
 
-	//void remove_card_player(ECS::Registry& ecs, Entity user, int index)
-	//
-	//	remove data from ecs
-	//
+	void add_card_player_deck(ECS::Registry& ecs, Entity user, Entity cardID)
+	{
+		ECS::ComponentTypeID card_storage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
+		//if user dont have card storage return
+		if (!(ecs.getBitMask()[user].test(card_storage_ID))) return;
+
+		//get reference to the user's card_storage
+		Components::Card_Storage* user_cards = ecs.getComponent<Components::Card_Storage>(user);
+		user_cards->add_card_to_deck(cardID);
+	}
+
 	void remove_card_player(ECS::Registry& ecs, Entity user, int index)
 	{
 		ECS::ComponentTypeID card_storage_ID = ECS::getComponentTypeID<Components::Card_Storage>();
@@ -103,10 +118,10 @@ namespace System {
 
 	void CardSystem::init_cards(ECS::Registry& ecs) 
 	{
-		cards.push_back(create_atk_card(ecs,"Sword Attack", 10.f, Components::DamageType::SLASHING,1.f));	//0
-		cards.push_back(create_atk_card(ecs,"Fire Sword", 12.f, Components::DamageType::FIRE,2.f));			//1
-		cards.push_back(create_atk_card(ecs,"Steven Sword", 20.f, Components::DamageType::PIERCING,3.f));	//2
-		cards.push_back(create_atk_card(ecs,"Gun", 8.f, Components::DamageType::PIERCING, 9.f));			//3
+		cards.push_back(create_atk_card(ecs,"Sword Attack", 10.f, Components::DamageType::SLASHING,1.f,1.f));	//0
+		cards.push_back(create_atk_card(ecs,"Fire Sword", 12.f, Components::DamageType::FIRE,2.f,1.f));			//1
+		cards.push_back(create_atk_card(ecs,"Steven Sword", 20.f, Components::DamageType::PIERCING,3.f,1.f));	//2
+		cards.push_back(create_atk_card(ecs,"Gun", 8.f, Components::DamageType::PIERCING, 9.f,1.f));			//3
 		//cards.push_back(create_defense_card(ecs,"Shield", 10.f, 0.f));							//4
 	};
 	Entity& CardSystem::get_card(int index) 
