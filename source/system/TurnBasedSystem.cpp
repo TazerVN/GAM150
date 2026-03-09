@@ -540,7 +540,6 @@ namespace TBS
 				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 				gbsptr->GBPTriggered()[index] = false;
 				gbsptr->GBPActive()[prev_index] = false;
-
 				//===================play card==============================
 				if (play_card_triggered)
 				{
@@ -559,16 +558,12 @@ namespace TBS
 					{
 						this->set_selected_card(false);
 					}
-					//remove if u want to make the the playerphase not reset when u click on invalid target
-					gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-					//gbsptr->debug_print();
-					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-
-					gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-					int i = static_cast<int>(gbsptr->getGBPhase());
-					gbsptr->GBPTriggered()[i] = true;
+					
+				gbsptr->GBPActive()[index] = true;
 				}
 				//=========================================================
+
+
 
 				break;
 			}
@@ -640,6 +635,35 @@ namespace TBS
 					}
 				}
 				//this is break for the GPhase
+				break;
+			}
+			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
+			{
+				//TWAN Do your animations here
+				std::cout << "Animating" << std::endl;
+				//Whenever u are done do this code to go back
+				//instead of press P to end animation state u do this
+				//if (AEInputCheckTriggered(AEVK_P))
+				//{
+				//	gbsptr->GBPActive()[index] = false;
+				//	//remove if u want to make the the playerphase not reset when u click on invalid target
+				//	gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+				//	//gbsptr->debug_print();
+				//	evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+				//	gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+				//	int i = static_cast<int>(gbsptr->getGBPhase());
+				//	gbsptr->GBPTriggered()[i] = true;
+				//}
+				gbsptr->GBPActive()[index] = false;
+				//remove if u want to make the the playerphase not reset when u click on invalid target
+				gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+				//gbsptr->debug_print();
+				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+				gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+				int i = static_cast<int>(gbsptr->getGBPhase());
+				gbsptr->GBPTriggered()[i] = true;
 				break;
 			}
 			default:
