@@ -22,6 +22,7 @@ namespace TransformSystem
 		AEVec2 get_pos(ECSystem::ECS& ecs, ECSystem::Entity& e);
 		AEVec2 get_size(ECSystem::ECS& ecs, ECSystem::Entity& e);
 		f32 get_rotation(ECSystem::ECS& ecs, ECSystem::Entity& e);*/
+		void update(ECS::Registry& ecs, f32& camera_x, f32& camera_y);
 	};
 
 }

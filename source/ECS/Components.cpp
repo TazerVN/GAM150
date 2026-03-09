@@ -31,9 +31,9 @@ void Components::Card_Storage::reshuffle_discard2deck()
 Components::Input::Input(u8 type, bool hover,
 						 std::function<void()> onClick,
 						 std::function<void()> onHover,
-						 std::function<void()> offHover)
+						 std::function<void()> offHover, s8 z)
 	: type(type), hover(hover), onClick(onClick),
-	onHover(onHover), offHover(offHover), on(true)
+	onHover(onHover), offHover(offHover), on(true), z{z}
 {
 }
 

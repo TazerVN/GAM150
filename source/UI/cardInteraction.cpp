@@ -79,7 +79,7 @@ namespace CardInteraction
 		tfptr = &tf;
 	}
 
-	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf)
+	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)
 	{
 		if (gbsptr == nullptr) return;
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
@@ -117,11 +117,11 @@ namespace CardInteraction
 			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
 			in->onClick = [this] { this->reset_hand(); };*/
 		}
-		this->update_pos(ecs);
+		this->update_pos(ecs, dt);
 
 	}
 
-	void CardHand::update_pos(ECS::Registry& ecs)
+	void CardHand::update_pos(ECS::Registry& ecs, f32 dt)
 	{
 
 		Components::Transform* cardhand_pos = ecs.getComponent<Components::Transform>(this->id);
@@ -129,13 +129,24 @@ namespace CardInteraction
 		int i = 0;
 		for (Entity eID : this->curr_hand_display)
 		{
-
+			int speed = 500;
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(eID);
 			Components::Input* in = ecs.getComponent<Components::Input>(eID);
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(eID);
+			
+			f32 target_x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_col.x - cardhand_pos->size_col.x / 2 + transform->size_col.x / 2;
+			f32 target_y = cardhand_pos->pos_onscreen.y;
+			
+			/*if(transform->pos.x < target_x) transform->pos.x += dt * speed;
+			else transform->pos.x -= dt * speed; 
 
-			transform->pos.x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_col.x - cardhand_pos->size_col.x / 2 + transform->size_col.x / 2;
-			transform->pos.y = cardhand_pos->pos_onscreen.y;
+			if (transform->pos.y < target_y) transform->pos.y += dt * speed;
+			else transform->pos.y -= dt * speed;*/
+
+			transform->pos.x = target_x;
+			transform->pos.y = target_y;
+			
+
 			i++;
 		}
 	}
@@ -255,7 +266,7 @@ namespace CardInteraction
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id);}, 10);
 		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
@@ -273,7 +284,7 @@ namespace CardInteraction
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
-		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); });
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
 		Components::Switch s{ true };
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);

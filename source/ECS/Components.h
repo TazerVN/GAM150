@@ -21,6 +21,14 @@ constexpr size_t DRAW_COUNT = 6;
 
 namespace Components
 {
+	enum class Tag{
+		CARDS, GRID, ACTOR, UI
+	};
+
+	struct TagClass{
+		Tag value;
+	};
+
 	enum class DamageType
 	{
 		SLASHING,
@@ -102,10 +110,12 @@ namespace Components
 		bool on;
 		u8 type; //for AE internal input system check
 		bool hover;
+		s8 z;
 		Input(u8 type, bool hover, 
 			  std::function<void()> onClick, 
 			  std::function<void()> onHover, 
-			  std::function<void()> offHover);
+			  std::function<void()> offHover,
+			  s8 z = 0);
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;

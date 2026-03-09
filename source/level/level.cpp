@@ -32,6 +32,7 @@ RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
 TimerSystem::TimerSystem TS;
 Particle::ParticleSystem PS;
+TransformSystem::TransformSystem TrS;
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -63,6 +64,7 @@ void game_init()
 
 void game_update()
 {
+	f32 dt = AEFrameRateControllerGetFrameTime();
 	AESysFrameStart();
 	//==============(Logic Update)==============
 
@@ -71,7 +73,8 @@ void game_update()
 	
 	IM.update(ecs, scene.getGBS());
 	TS.update(ecs);
-	card.update_logic(ecs, scene.getTBS(), mf, TF);
+	TrS.update(ecs, camerax, cameray);
+	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	scene.update();
 	scene.getBattleGrid().update(ecs);
 	UIM.update(scene);
@@ -79,6 +82,9 @@ void game_update()
 
 	//==========Object updates===========
 
+	//camerax += dt * 100;
+
+	AEGfxSetCamPosition(camerax, cameray);
 
 	/*sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
