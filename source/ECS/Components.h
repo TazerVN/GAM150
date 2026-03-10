@@ -11,8 +11,7 @@
 
 #include "../global.h"
 #include "../factory/MeshFactory.h"
-#include "../system/CardFunctions.h"
-
+#include "../system/CardConstants.h"
 
 #define MAX_CARDS 1000
 #define MAX_COMPONENT 20

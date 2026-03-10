@@ -198,16 +198,16 @@ namespace CardInteraction
 
 			switch (a->type)
 			{
-				case (Components::DamageType::SLASHING):
+				case (DamageType::SLASHING):
 					texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
 					break;
-				case (Components::DamageType::PIERCING):
+				case (DamageType::PIERCING):
 					texture = tfptr->getTextureCard(TextureFactory::C_SHOOT);
 					break;
-				case (Components::DamageType::FIRE):
+				case (DamageType::FIRE):
 					texture = tfptr->getTextureCard(TextureFactory::C_FIREBOLT);
 					break;
-				case (Components::DamageType::BLUDGEONING):
+				case (DamageType::BLUDGEONING):
 				default:
 					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
 					break;

@@ -69,5 +69,6 @@
     <ClInclude Include="source\system\CombatSystem.h" />
     <ClInclude Include="source\system\CameraSystem.h" />
     <ClInclude Include="source\system\CardFunctions.h" />
+    <ClInclude Include="source\system\CardConstants.h" />
   </ItemGroup>
 </Project>

@@ -1,21 +1,20 @@
 #include "Scene.h"
 #include "../factory/EntityFactory.h"
 
-void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 {
 	cameraSys = &cam;
+	cardSys = &cs;
 
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
 	//must init appoint ecs first
 	ecs = &ECS;
-
-	card_system.init_cards(*ecs);
-	Entity sa = card_system.get_card(CardSystemNames::SLASH);
-	Entity fa = card_system.get_card(CardSystemNames::SLASH_PLUS);
-	Entity ss = card_system.get_card(CardSystemNames::SHOOT);
-	Entity blackHole = card_system.get_card(CardSystemNames::SHOOT_PLUS);
+	Entity sa = cardSys->get_card(CardSystemNames::SLASH);
+	Entity fa = cardSys->get_card(CardSystemNames::SLASH_PLUS);
+	Entity ss = cardSys->get_card(CardSystemNames::SHOOT);
+	Entity blackHole = cardSys->get_card(CardSystemNames::SHOOT_PLUS);
 	//add cards to the player
 	Entity temp; 
 	
@@ -55,7 +54,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
-	TBSys.init(*ecs,eventPool, BattleGrid, gbs, card_system, ch ,entities);
+	TBSys.init(*ecs,eventPool, BattleGrid, gbs, *cardSys, ch ,entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 
 	

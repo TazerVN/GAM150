@@ -1,7 +1,11 @@
 #pragma once
 
 #include "../ECS/ECSystem.h"
+#include "CardConstants.h"
 #include <vector>
+
+//forward declarations
+struct JSON_CARD;
 
 enum class CardSystemNames
 {
@@ -23,55 +27,13 @@ enum class CardSystemNames
 	BLACK_HOLE
 };
 
-enum class Targetting
-{
-	SELF,
-	SINGLE_TARGET,
-	LINE,
-	AOE
-};
-
-enum class CardTag
-{
-	ATTACK = 0,
-	DEFENSE = 1,
-	ITEM = 2,
-	EVENT = 3
-};
-
-enum class DamageType
-{
-	SLASHING,
-	PIERCING,
-	BLUDGEONING,
-	FIRE
-};
-
-enum class DefenseType
-{
-	SHIELDING,
-	DAMAGE_REDUCTION,
-};
-
-enum class ItemType
-{
-	HEALING,
-	PP_BUFF,
-	ATK_BUFF,
-	MOV_BUFF,
-	DRAWING_CARD
-};
-
-enum class EventType
-{
-	FORCED_MOVEMENT
-};
-
 /*void Call_AttackSystem(ECS::Registry& ecs, Entity cardID, Entity target);*/
-Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, DamageType dtype, f32 range, f32 cost);
-Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, DamageType dtype, f32 range, f32 aoe, f32 cost);
+Entity create_st_atk_card(ECS::Registry& ecs, char* name, f32 atk, DamageType dtype, f32 range, f32 cost);
+Entity create_aoe_atk_card(ECS::Registry& ecs, char* name, f32 atk, DamageType dtype, f32 range, f32 aoe, f32 cost);
+Entity create_def_card(ECS::Registry& ecs, char* name, f32 val, DefenseType deftype, f32 range, f32 cost);
+Entity create_item_card(ECS::Registry& ecs, char* name, f32 val, ItemType itemtype, f32 range, f32 cost);
 
-Entity create_def_card(ECS::Registry& ecs, const char* name, f32 val, DefenseType deftype, f32 range, f32 cost);
+Entity create_card(ECS::Registry& ecs, JSON_CARD const& json_card);
 
 class CardSystem
 {

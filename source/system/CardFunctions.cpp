@@ -6,7 +6,7 @@ Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, DamageT
 	Targetting targetting_type =Targetting::SINGLE_TARGET;
 	Entity id = ecs.createEntity();
 	//default player values
-	Components::CardTag cardTag = Components::CardTag::ATTACK;
+	CardTag cardTag =CardTag::ATTACK;
 	Components::Name nm{ name };
 
 	Components::Card_Value card_val{ atk,dtype };
@@ -26,7 +26,7 @@ Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Damage
 	Targetting targetting_type =Targetting::AOE;
 	Entity id = ecs.createEntity();
 	//default player values
-	Components::CardTag cardTag = Components::CardTag::ATTACK;
+	CardTag cardTag = CardTag::ATTACK;
 	Components::Name nm{ name };
 
 	Components::Card_Value card_val{ atk,dtype };
@@ -41,17 +41,28 @@ Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Damage
 	return id;
 }
 
+Entity create_card(ECS::Registry& ecs, JSON_CARD const& json_card)
+{
+	Entity id = ecs.createEntity();
+	return id;
+}
+
 void CardSystem::init_cards(ECS::Registry& ecs)
 {
 	std::vector<JSON_CARD> vec;
 	JSON_RET ret = parse_data(vec, "../../Assets/cards/cards.json");
 
-	cards.push_back(create_st_atk_card(ecs, "Sword Attack", 10.f, Components::DamageType::SLASHING, 1.f, 1.f));				//0
-	cards.push_back(create_st_atk_card(ecs, "Fire Sword", 12.f, Components::DamageType::FIRE, 2.f, 1.f));						//1
-	cards.push_back(create_st_atk_card(ecs, "Steven Sword", 20.f, Components::DamageType::PIERCING, 3.f, 1.f));				//2
-	cards.push_back(create_st_atk_card(ecs, "Gun", 8.f, Components::DamageType::PIERCING, 9.f, 1.f));							//3
-	cards.push_back(create_aoe_atk_card(ecs, "Black Hole", 1.f, Components::DamageType::BLUDGEONING, 4.f, 3.f, 1.f));		//4
+	cards.push_back(create_st_atk_card(ecs, "Sword Attack", 10.f, DamageType::SLASHING, 1.f, 1.f));				//0
+	cards.push_back(create_st_atk_card(ecs, "Fire Sword", 12.f, DamageType::FIRE, 2.f, 1.f));						//1
+	cards.push_back(create_st_atk_card(ecs, "Steven Sword", 20.f,DamageType::PIERCING, 3.f, 1.f));				//2
+	cards.push_back(create_st_atk_card(ecs, "Gun", 8.f, DamageType::PIERCING, 9.f, 1.f));							//3
+	cards.push_back(create_aoe_atk_card(ecs, "Black Hole", 1.f, DamageType::BLUDGEONING, 4.f, 3.f, 1.f));		//4
 	//cards.push_back(create_defense_card(ecs,"Shield", 10.f, 0.f));							
+
+	/*for (JSON_CARD card : vec)
+	{
+		cards.push_back(create_card(ecs, card));
+	}*/
 };
 Entity& CardSystem::get_card(CardSystemNames card)
 {

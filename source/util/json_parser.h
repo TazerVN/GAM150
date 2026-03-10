@@ -12,7 +12,7 @@ struct JSON_CARD
 {
 	char* name;
 	int targetting;
-	int card_type;
+	int card_tag;
 	float value;
 	float range;
 	float aoe;

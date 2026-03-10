@@ -21,8 +21,10 @@ AEGfxTexture* cardtext;
 
 ECS::Registry ecs;
 MeshFactory mf{};
+
 Scene scene;
 
+CardSystem card_system;
 InputSystem::InputManager IM;
 UI::UIManager UIM;
 TextureFactory::TextureFactory TF;
@@ -49,8 +51,8 @@ void game_init()
 
 	//AEGfxSetCamPosition(camerax, cameray);
 
-
-	scene.init(ecs, mf, TF, CS, card);	
+	card_system.init_cards(ecs);
+	scene.init(ecs, mf,card_system, TF, CS, card);	
 	UIM.init(scene, mf, TF);
 	CS.init(ecs);
 

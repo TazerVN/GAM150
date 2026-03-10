@@ -20,17 +20,17 @@ private:
 	size_t next_entity = 0;
 	std::vector<Entity> entities;
 
-	CardSystem card_system;
 	PhaseSystem::GameBoardState gbs;
 	EventPool<highlight_tag> eventPool;
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
 	Camera::CameraSystem* cameraSys;
+	CardSystem* cardSys;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 
 public:
-	void init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam , CardInteraction::CardHand& ch);
+	void init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam , CardInteraction::CardHand& ch);
 	void update();
 	void add_entity(Entity e);
 	std::vector<Entity>& entities_store();
