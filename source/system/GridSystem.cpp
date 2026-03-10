@@ -246,13 +246,27 @@ namespace Grid
 		switch (gbsptr->getPlayerPhase())
 		{
 			case PhaseSystem::PlayerPhase::AOE_GRID_SELECT :
-			case PhaseSystem::PlayerPhase::GRID_SELECT :
 			{
 				if (tbsptr->is_current_selected_card())
 				{
 					//if the card is selected and the selected pos has entity
 					if (pos[x][y] != -1)
 					{
+						if (pos[x][y] == tbsptr->current())
+						{
+							unselect_card();
+							move_select(x, y);
+							return;
+						}
+
+						if (!check_within_range(this->cur, x, y))
+						{
+							std::cout << "Target is outside range" << std::endl;
+							unselect_card();
+
+							return;
+						}
+
 						tbsptr->set_targetted_ent(pos[x][y]);
 						tbsptr->set_targetted_xy(x, y);
 
@@ -262,9 +276,34 @@ namespace Grid
 					}
 					else {
 						std::cout << "Select a valid cell with entity" << std::endl;
-						tbsptr->set_selected_card(false);
-						gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+						unselect_card();
+					}
+				}
+				break;
+			}
+			case PhaseSystem::PlayerPhase::GRID_SELECT :
+			{
+				if (tbsptr->is_current_selected_card())
+				{
+					if (pos[x][y] != -1)
+					{
+						if (!check_within_range(this->cur, x, y))
+						{
+							std::cout << "Target is outside range" << std::endl;
+							unselect_card();
+
+							return;
+						}
+						tbsptr->set_targetted_ent(pos[x][y]);
+						tbsptr->set_targetted_xy(x, y);
+
+						tbsptr->play_card_triggered = true;
+						gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
+						gbsptr->GBPTriggered()[static_cast<size_t>(gbsptr->getGBPhase())] = true;
+					}
+					else {
+						std::cout << "Select a valid cell with entity" << std::endl;
+						unselect_card();
 					}
 				}
 				break;
@@ -274,55 +313,68 @@ namespace Grid
 				//check if an empty cell is clicked
 				if (selected_part && this->cur != -1) 
 				{
-					//check if it is within movement range 
-					if (!check_within_range(this->cur, x, y))
-					{
-						std::cout << "Outside movement range" << std::endl;
-						reset_selected_player();
-						evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-						return;
-					}
-
-					if (this->pos[x][y] != -1)
-					{
-						std::cout << "Cannot move onto another entity" << std::endl;
-						return;
-					}
-					evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-
-					//move the entity
-					this->moveEntity(ecs, this->cur, x, y);
-					reset_selected_player();
-					tbsptr->show_stats(ecs);
+					move_trigger(x,y);
 				}
-
 				//check if the grid cell with entity is clicked
-				else if (!selected_part && this->pos[x][y] != -1) {
-
-					//check if the entity is the same as the current turn
-						//if the current turn is not the entity then dont allow selection
-
-					if (pos[x][y] != tbsptr->current())
-					{
-						std::cout << "Cannot select this entity!" << std::endl;
-						return;
-					}
-
-					if (this->activate[x][y] == false) 
-					{
-						this->activate[x][y] = true;
-						this->cur = this->pos[x][y];
-						this->cur_x = x;
-						this->cur_y = y;
-						selected_part = true;
-						evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
-						evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
-					}
+				else if (!selected_part && this->pos[x][y] != -1) 
+				{
+					move_select(x,y);
 				}
 				break;
 			}
 			default :
 				break;
+		}
+	}
+
+	void GameBoard::unselect_card()
+	{
+		tbsptr->set_selected_card(false);
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+	}
+
+	void GameBoard::move_trigger(s32 const& x, s32 const& y)
+	{
+		//check if it is within movement range 
+		if (!check_within_range(this->cur, x, y))
+		{
+			std::cout << "Outside movement range" << std::endl;
+			reset_selected_player();
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+			return;
+		}
+
+		if (this->pos[x][y] != -1)
+		{
+			std::cout << "Cannot move onto another entity" << std::endl;
+			return;
+		}
+		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+		//move the entity
+		this->moveEntity(*ecsptr, this->cur, x, y);
+		reset_selected_player();
+		tbsptr->show_stats(*ecsptr);
+	}
+
+	void GameBoard::move_select(s32 const& x, s32 const& y)
+	{
+		if (pos[x][y] != tbsptr->current())
+		{
+			std::cout << "Cannot select this entity!" << std::endl;
+			return;
+		}
+
+		if (this->activate[x][y] == false)
+		{
+			this->activate[x][y] = true;
+			this->cur = this->pos[x][y];
+			this->cur_x = x;
+			this->cur_y = y;
+			selected_part = true;
+			evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
+			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 		}
 	}
 
@@ -546,9 +598,9 @@ namespace Grid
 
 				if(this->aoe_highlight_activate[i][j])
 				{
-					color->d_color.r = (aoe_highlight_activate[i][j] == 2) ? 0.5f : 1.f;
-					color->d_color.g = 0.f;
-					color->d_color.b = 0.f;
+					color->d_color.r -= (aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4;
+					color->d_color.g -= 0.8f;
+					color->d_color.b -= 0.8f;
 				}
 
 				//update entity cell

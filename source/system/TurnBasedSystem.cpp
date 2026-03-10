@@ -5,6 +5,7 @@
 #include "../global.h"
 #include "CombatSystem.h"
 #include <iomanip>
+#include "../factory/EntityFactory.h"
 namespace TBS
 {
 	// round start helper forcing it to start yadda yadda
@@ -45,7 +46,7 @@ namespace TBS
 	}
 
 	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
-		System::CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
+		CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
 	{
 		evsptr = &eventPool;
 		//highlight event
@@ -292,53 +293,43 @@ namespace TBS
 			return PC_RETURN_TAG::INVALID;
 		}
 
-		if (target != NULL_INDEX)
-		{
-			Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
-			switch (*tag)
-			{
-			case Components::CardTag::ATTACK:
-			{
-				if (!gameBoardptr->check_within_range(this->current(), targetted_x, targetted_y))
-				{
-					std::cout << "Cannot hit target outside range" << std::endl;
-					return PC_RETURN_TAG::INVALID;
-				}
+		//if (target != NULL_INDEX)
+		//{
+		//	Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
+		//	switch (*tag)
+		//	{
+		//	case Components::CardTag::ATTACK:
+		//	{
+		//		// cannot hit your self
+		//		if (target == current())
+		//		{
+		//			std::cout << "Cannot hit yourself" << std::endl;
+		//			return PC_RETURN_TAG::INVALID;
+		//		}
 
-				if (target == current())
-				{
-					std::cout << "Cannot hit yourself" << std::endl;
-					return PC_RETURN_TAG::INVALID;
-				}
+		//		ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
+		//		if (!ecs.getBitMask()[cardID].test(card_value_ID))
+		//		{
+		//			std::cout << "Selected card doesn't have card_data component";
+		//			return PC_RETURN_TAG::INVALID;
+		//		}
 
-				ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
-				if (!ecs.getBitMask()[cardID].test(card_value_ID))
-				{
-					std::cout << "Selected card doesn't have card_data component";
-					return PC_RETURN_TAG::INVALID;
-				}
+		//		f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
 
-				f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
+		//		if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
+		//			ret = PC_RETURN_TAG::DIED;
+		//		else
+		//			ret = PC_RETURN_TAG::VALID;
+		//		break;
+		//	}
+		//	default:
+		//		break;
+		//	}
+		//}
+		
+		//run the function related to the card
+		//example 
 
-				if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
-					ret = PC_RETURN_TAG::DIED;
-				else
-					ret = PC_RETURN_TAG::VALID;
-				break;
-			}
-			case Components::CardTag::DEFENSE:
-			{
-				if (target != current())
-				{
-					std::cout << "Can only be used on yourself" << std::endl;
-					return PC_RETURN_TAG::INVALID;
-					break;
-				}
-			}
-			default:
-				break;
-			}
-		}
 		//remove the card that just played inside tbs
 		player_curMana -= card_cost;
 		remove_card(ecs,player,index);

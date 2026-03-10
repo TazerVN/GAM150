@@ -9,6 +9,7 @@
 #include "../system/TurnBasedSystem.h"
 #include "../system/EnemyDirector.h"
 #include "../system/CameraSystem.h"
+#include "../system/CardFunctions.h"
 
 #include "AEEngine.h"
 
@@ -20,7 +21,7 @@ private:
 	size_t next_entity = 0;
 	std::vector<Entity> entities;
 
-	System::CardSystem card_system;
+	CardSystem card_system;
 	PhaseSystem::GameBoardState gbs;
 	EventPool<highlight_tag> eventPool;
 	TBS::TurnBasedSystem TBSys;

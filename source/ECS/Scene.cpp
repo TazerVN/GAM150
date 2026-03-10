@@ -11,10 +11,10 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	ecs = &ECS;
 
 	card_system.init_cards(*ecs);
-	Entity sa = card_system.get_card(0);
-	Entity fa = card_system.get_card(1);
-	Entity ss = card_system.get_card(2);
-	Entity blackHole = card_system.get_card(4);
+	Entity sa = card_system.get_card(CardSystemNames::SLASH);
+	Entity fa = card_system.get_card(CardSystemNames::FIREBOLT);
+	Entity ss = card_system.get_card(CardSystemNames::STEP_SLASH);
+	Entity blackHole = card_system.get_card(CardSystemNames::BLACK_HOLE);
 	//add cards to the player
 	Entity temp; 
 	

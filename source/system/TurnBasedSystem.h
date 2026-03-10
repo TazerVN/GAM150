@@ -2,7 +2,7 @@
 #include <vector>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-#include "../factory/EntityFactory.h"
+#include "../system/CardFunctions.h"
 #include "../util/Event.h"
 #include "../system/PhaseSystem.h"
 #include "AEEngine.h"
@@ -24,7 +24,7 @@ namespace TBS
 		EventPool<highlight_tag>* evsptr = nullptr;
 		Grid::GameBoard* gameBoardptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
-		System::CardSystem* cardSysptr = nullptr;
+		CardSystem* cardSysptr = nullptr;
 		CardInteraction::CardHand* cardHandptr = nullptr;
 		Entity targetted_entity = -1;
 		int targetted_x{-1}, targetted_y{ -1 };
@@ -40,7 +40,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
+		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 		std::vector<Entity>& get_participant();

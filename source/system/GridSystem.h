@@ -53,8 +53,10 @@ namespace Grid
 
 		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
-		//i'm testing some stuff on the below function VVVV 
-		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
+		
+		void unselect_card();
+		void move_trigger(s32 const& x, s32 const& y);
+		void move_select(s32 const& x, s32 const& y);
 		void moveEntity(ECS::Registry& ecs ,Entity e, s32 x, s32 y);
 
 		// helper functions for CPU - Zejin 
