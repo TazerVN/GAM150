@@ -56,7 +56,7 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
 	Components::Color color{ 0.4f - 0.4f * AERandFloat(), 0.7f + 0.3f * AERandFloat(), 1.0f, AERandFloat()};
-	Components::Timer timer { AERandFloat()};
+	Components::Timer timer { AERandFloat() };
 	Components::Particle particle { 1.0f };
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
