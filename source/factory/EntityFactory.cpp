@@ -27,6 +27,7 @@ namespace System {
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_SPRITE), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Timer timer{ 1.f };
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -36,6 +37,7 @@ namespace System {
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
+		ecs.addComponent(id, timer);
 
 		return id;
 	}
@@ -59,6 +61,7 @@ namespace System {
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Timer timer{1.f};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -68,6 +71,7 @@ namespace System {
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
+		ecs.addComponent(id, timer);
 
 		return id;
 	}

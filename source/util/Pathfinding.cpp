@@ -45,7 +45,7 @@ AStarResult AStar_FindPath_Grid4(
         return out;
 
     const int N = width * height;
-    const int INF = std::numeric_limits<int>::max();
+    constexpr int INF = std::numeric_limits<int>::max();
 
     std::vector<int> g(N, INF);
     std::vector<int> parent(N, -1);
