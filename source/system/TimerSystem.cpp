@@ -19,9 +19,7 @@ void TimerSystem::update(ECS::Registry& ecs)
 			for (Entity ent : it->second)
 			{
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
-				if(timer->reset == true){
-					timer->start = true;
-					timer->reset = false;
+				if(timer->reset == true && timer->seconds >= timer->max_seconds){
 					timer->seconds = 0;
 				}
 				else if(timer->start == true && timer->seconds < timer->max_seconds)
