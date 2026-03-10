@@ -403,9 +403,12 @@ namespace Grid
 	void cell_offHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
+		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
+
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
 		c->d_color.b = c->c_color.b;
+		t->seconds = 0;
 
 		if (character != -1)
 		{
@@ -414,6 +417,8 @@ namespace Grid
 			cc->d_color.g = cc->c_color.g;
 			cc->d_color.b = cc->c_color.b;
 		}
+
+
 	}
 
 	

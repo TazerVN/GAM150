@@ -649,7 +649,7 @@ namespace TBS
 				//	gbsptr->GBPActive()[index] = false;
 				//	//remove if u want to make the the playerphase not reset when u click on invalid target
 				//	gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-				//	//gbsptr->debug_print();
+				//	gbsptr->debug_print();
 				//	evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 
 				//	gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
@@ -661,7 +661,6 @@ namespace TBS
 				gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 				//gbsptr->debug_print();
 				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-
 				gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
 				int i = static_cast<int>(gbsptr->getGBPhase());
 				gbsptr->GBPTriggered()[i] = true;

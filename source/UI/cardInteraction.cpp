@@ -47,7 +47,7 @@ namespace CardInteraction
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
 		Components::Input input(AEVK_SPACE, true, [this] { this->reset_hand(); }, [id = this->id, &ecs] { hand_onHover(ecs, id); }, [id = this->id, &ecs] { hand_offHover(ecs, id); });
-		Components::TagClass tag{Components::Tag::CARDS};
+		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, tag);
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
@@ -66,8 +66,8 @@ namespace CardInteraction
 		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
 	}
 
-	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf,f32 x, f32 y, f32 width, f32 height, 
-		TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
+	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height,
+					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
 		: CardHand()
 	{
 		this->reset = true;
@@ -91,22 +91,39 @@ namespace CardInteraction
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
 		{
+			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
+			{
+				if (tbs.get_selected_cardhand_index() == i)
+				{
+					card_onClick(ecs, this->curr_hand_display[i]);
+				}
+				else
+				{
+					card_offClick(ecs, this->curr_hand_display[i]);
+				}
+			}
+
 			if (this->activate[i] == true)
 			{
+
 				if (!gbptr->selected_player() && gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
 				{
 					tbsptr->select_hand_index(i);
 					tbsptr->select_card(ecs);
 				}
+
+
 				this->activate[i] = false;
 			}
+
+
 		}
 
 
 		if (this->reset == true)
 		{
 			std::cout << "cardhand address: " << this << std::endl;
-			
+
 			//clear the data
 			for (int index = 0; index < curr_hand_display.size(); index++)
 			{
@@ -139,19 +156,19 @@ namespace CardInteraction
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(eID);
 			Components::Input* in = ecs.getComponent<Components::Input>(eID);
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(eID);
-			
+
 			f32 target_x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_col.x - cardhand_pos->size_col.x / 2 + transform->size_col.x / 2;
 			f32 target_y = cardhand_pos->pos_onscreen.y;
-			
+
 			/*if(transform->pos.x < target_x) transform->pos.x += dt * speed;
-			else transform->pos.x -= dt * speed; 
+			else transform->pos.x -= dt * speed;
 
 			if (transform->pos.y < target_y) transform->pos.y += dt * speed;
 			else transform->pos.y -= dt * speed;*/
 
 			transform->pos.x = target_x;
 			transform->pos.y = target_y;
-			
+
 
 			i++;
 		}
@@ -181,19 +198,19 @@ namespace CardInteraction
 
 			switch (a->type)
 			{
-			case (Components::DamageType::SLASHING):
-				texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
-				break;
-			case (Components::DamageType::PIERCING):
-				texture = tfptr->getTextureCard(TextureFactory::C_SHOOT);
-				break;
-			case (Components::DamageType::FIRE):
-				texture = tfptr->getTextureCard(TextureFactory::C_FIREBOLT);
-				break;
-			case (Components::DamageType::BLUDGEONING):
-			default:
-				texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
-				break;
+				case (Components::DamageType::SLASHING):
+					texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
+					break;
+				case (Components::DamageType::PIERCING):
+					texture = tfptr->getTextureCard(TextureFactory::C_SHOOT);
+					break;
+				case (Components::DamageType::FIRE):
+					texture = tfptr->getTextureCard(TextureFactory::C_FIREBOLT);
+					break;
+				case (Components::DamageType::BLUDGEONING):
+				default:
+					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
+					break;
 			}
 
 			Entity eid = ecs.createEntity();
@@ -213,7 +230,7 @@ namespace CardInteraction
 		}
 	}
 
-	void CardHand::remove_card(ECS::Registry& ecs,int index)
+	void CardHand::remove_card(ECS::Registry& ecs, int index)
 	{
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
@@ -231,7 +248,7 @@ namespace CardInteraction
 				this->activate[j] = this->activate[i];
 				++j;
 			}
-			
+
 		}
 		this->curr_hand_display.pop_back();
 		this->curr_card_id.pop_back();
@@ -246,14 +263,49 @@ namespace CardInteraction
 	}
 
 
+	void card_onClick(ECS::Registry& ecs, Entity id)
+	{
+		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+		c->d_color.r = c->c_color.r - minimum + (1.f - minimum) * lerp;
+		c->d_color.b = c->c_color.b - minimum + (1.f - minimum) * lerp;
+		c->d_color.g = c->c_color.g - minimum + (1.f - minimum) * lerp;
+		t->pos_onscreen.y = t->pos.y + lerp * minimum * t->size.y/6;
+	}
+
+	void card_offClick(ECS::Registry& ecs, Entity id)
+	{
+		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		c->d_color = c->c_color;
+		t->pos_onscreen.y = t->pos.y;
+
+	}
+
 	void card_onHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->d_color.r = 0.7f;
-		c->d_color.g = 0.7f;
-		c->d_color.b = 0.7f;
-		//t->pos_onscreen.y = t->pos.y + 20;
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+
+		c->d_color.r = minimum + (1.f - minimum) * lerp;
+		c->d_color.b = minimum + (1.f - minimum) * lerp;
+		c->d_color.g = minimum + (1.f - minimum) * lerp;
+		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size.y / 4;
 	}
 
 
@@ -262,8 +314,16 @@ namespace CardInteraction
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
 		c->d_color = c->c_color;
-		t->pos_onscreen = t->pos;
+		t->pos_onscreen.x = t->pos.x;
+		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size.y / 4;
+		timer->seconds = 0;
 	}
 
 	Entity selectableCard_create(Entity id, ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> fp)
@@ -272,15 +332,17 @@ namespace CardInteraction
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id);}, 10);
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
+		Components::Timer timer{ 0.5f, 0.f, true, true };
 		ecs.addComponent(id, tag);
 		ecs.addComponent(id, s);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, input);
+		ecs.addComponent(id, timer);
 
 		return id;
 	}
@@ -295,6 +357,7 @@ namespace CardInteraction
 		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
+		Components::Timer timer{ 0.5f, 0.f, true, true };
 
 		ecs.addComponent(id, tag);
 		ecs.addComponent(id, s);
@@ -303,6 +366,7 @@ namespace CardInteraction
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, input);
+		ecs.addComponent(id, timer);
 
 
 
