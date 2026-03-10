@@ -380,25 +380,35 @@ namespace Grid
 	void cell_onHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		c->d_color.r = 0.7f;
-		c->d_color.g = 0.7f;
-		c->d_color.b = 0.7f;
+		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = t->seconds / (t->max_seconds / 2.f) >= 1.f ? t->max_seconds - t->seconds : t->seconds ;
+		f32 minimum = 0.6f;
+
+		c->d_color.r = minimum + (1.f - minimum) * lerp;
+		c->d_color.b = minimum + (1.f - minimum) * lerp;
+		c->d_color.g = minimum + (1.f - minimum) * lerp;
+		
 
 		if(character != -1)
 		{
 			Components::Color* cc = ecs.getComponent<Components::Color>(character);
-			cc->d_color.r = 0.7f;
-			cc->d_color.g = 0.7f;
-			cc->d_color.b = 0.7f;
+			cc->d_color.r = minimum + (1.f - minimum) * lerp;
+			cc->d_color.b = minimum + (1.f - minimum) * lerp;
+			cc->d_color.g = minimum + (1.f - minimum) * lerp;
+		
 		}
 	}
 
 	void cell_offHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
+		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
+
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
 		c->d_color.b = c->c_color.b;
+		t->seconds = 0;
 
 		if (character != -1)
 		{
@@ -407,6 +417,8 @@ namespace Grid
 			cc->d_color.g = cc->c_color.g;
 			cc->d_color.b = cc->c_color.b;
 		}
+
+
 	}
 
 	
@@ -486,6 +498,7 @@ namespace Grid
 			}
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
+		Components::Timer timer{ 2.f , 0.f, true, true};
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -493,6 +506,7 @@ namespace Grid
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, gc);
 		ecs.addComponent(id, in);
+		ecs.addComponent(id, timer);
 
 		return id;
 	}

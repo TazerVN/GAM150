@@ -18,6 +18,8 @@ namespace CardInteraction
 {
 	void card_onHover(ECS::Registry& ecs, Entity id);
 	void card_offHover(ECS::Registry& ecs, Entity id);
+	void card_onClick(ECS::Registry& ecs, Entity id);
+	void card_offClick(ECS::Registry& ecs, Entity id);
 	class CardHand
 	{
 	private:
