@@ -100,6 +100,8 @@ namespace Components
 	struct Texture
 	{
 		AEGfxTexture* texture{ nullptr };
+		f32 offset_x, offset_y;
+		Texture(AEGfxTexture* texture, f32 offset_x = 0, f32 offset_y = 0);
 	};
 
 	struct Mesh

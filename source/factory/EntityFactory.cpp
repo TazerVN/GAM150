@@ -8,7 +8,7 @@
 #include "EntityFactory.h"
 
 namespace System {
-	Entity create_actor(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
+	Entity create_actor_spritesheet(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -22,7 +22,39 @@ namespace System {
 			0,	//shields
 			7.f};	//movement spd
 		//=====================Render==========================
-		Components::Texture texture{pTex};
+		Components::Texture texture{pTex, 0.0f, 0.0f};
+		Components::Transform trans{ pos,pos,size, size,0.f };
+		//twan help me add more mesh
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_SPRITE), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+
+		ecs.addComponent(id, nm);
+		ecs.addComponent(id, HP);
+		ecs.addComponent(id, card_storage);
+		ecs.addComponent(id, tbstats);
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, texture);
+
+		return id;
+	}
+
+	Entity create_actor_normal(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex)
+	{
+		Entity id = ecs.createEntity();
+		//default player values
+		//=====================Stats==========================
+		Components::Name nm{ name };
+		Components::Card_Storage card_storage;
+		Components::HP HP{ hp };
+		Components::TurnBasedStats tbstats
+		{ 5,	//max points
+			0,	//cur_points
+			0,	//shields
+			7.f };	//movement spd
+		//=====================Render==========================
+		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };

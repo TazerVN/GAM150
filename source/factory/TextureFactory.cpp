@@ -43,6 +43,7 @@ namespace TextureFactory
 
 		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy1.png"));
 		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy2.png"));
+		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet.png"));
 		this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
 	}
 
