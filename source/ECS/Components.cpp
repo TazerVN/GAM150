@@ -46,3 +46,5 @@ Components::Timer::Timer() : seconds{ 0 }, max_seconds{ 0 }, start{ false }, res
 Components::Timer::Timer(f32 max, f32 current, bool start, bool reset) : seconds{ current }, max_seconds{ max }, start{ start }, reset{reset} {}
 
 Components::HP::HP(f32 max) : c_value{max}, max_value{max}{}
+
+Components::Texture::Texture(AEGfxTexture* texture, f32 offset_x, f32 offset_y) : texture{ texture }, offset_x{ offset_x }, offset_y{offset_y} {}

@@ -19,7 +19,7 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	Entity temp; 
 	
 	//Add player
-	temp = System::create_actor(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(0));
+	temp = System::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
 
@@ -41,14 +41,14 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 	//Holt shit the enemy script is so cool VVV
 
 	//Add enemy0
-	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(1));
+	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0));
 	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
 	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
-	temp = System::create_actor(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
+	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
 	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
 	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
 	add_entity(temp);

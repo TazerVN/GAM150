@@ -463,7 +463,7 @@ namespace Grid
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
-		transform->pos.y = transform->size.y / 2 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
+		transform->pos.y = transform->size.y / 2 + this->offset.y - (x + y) * CELL_HEIGHT / 2;
 		transform->pos_onscreen = transform->pos;
 
 
@@ -564,7 +564,7 @@ namespace Grid
 				transform = ecs.getComponent<Components::Transform>(e);
 				color = ecs.getComponent<Components::Color>(e);
 				transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
-				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
+				transform->pos.y = transform->size.y / 3 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos_onscreen = transform->pos;
 
 

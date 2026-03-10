@@ -15,11 +15,15 @@ namespace Camera
 		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
 
 		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-		mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+		mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
 
 		transform->pos.x = cam.buffer_x - f32(mousex);
 		transform->pos.y = cam.buffer_y - f32(mousey);
+
+
+		transform->pos.x = AEClamp(transform->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+		transform->pos.y = AEClamp(transform->pos.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
 	}
 
@@ -35,10 +39,11 @@ namespace Camera
 			mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
 
 			mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-			mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+			mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
 			cam.buffer_x = f32(transform->pos.x) + mousex;
 			cam.buffer_y = f32(transform->pos.y) + mousey;
+
 		}
 		else if(AEInputCheckTriggered(AEVK_MBUTTON))
 		{

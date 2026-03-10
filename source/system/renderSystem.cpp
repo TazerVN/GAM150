@@ -123,7 +123,7 @@ namespace RenderSystem
 					Components::Texture* texture = ecs.getComponent<Components::Texture>(current_e);
 					AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 					AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-					AEGfxTextureSet(texture->texture, 0, 0);
+					AEGfxTextureSet(texture->texture, texture->offset_x, texture->offset_y);
 					AEGfxSetTransparency(1.0f);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
