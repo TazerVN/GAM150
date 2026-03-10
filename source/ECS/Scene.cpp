@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "../factory/EntityFactory.h"
 
 void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 {
@@ -12,9 +13,9 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, TextureFactory::TextureFact
 
 	card_system.init_cards(*ecs);
 	Entity sa = card_system.get_card(CardSystemNames::SLASH);
-	Entity fa = card_system.get_card(CardSystemNames::FIREBOLT);
-	Entity ss = card_system.get_card(CardSystemNames::STEP_SLASH);
-	Entity blackHole = card_system.get_card(CardSystemNames::BLACK_HOLE);
+	Entity fa = card_system.get_card(CardSystemNames::SLASH_PLUS);
+	Entity ss = card_system.get_card(CardSystemNames::SHOOT);
+	Entity blackHole = card_system.get_card(CardSystemNames::SHOOT_PLUS);
 	//add cards to the player
 	Entity temp; 
 	

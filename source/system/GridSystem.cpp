@@ -377,8 +377,6 @@ namespace Grid
 			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 		}
 	}
-
-	void cell_onHover(ECS::Registry& ecs, Entity id)
 	void cell_onHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
@@ -395,7 +393,6 @@ namespace Grid
 		}
 	}
 
-	void cell_offHover(ECS::Registry& ecs, Entity id)
 	void cell_offHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
@@ -432,7 +429,6 @@ namespace Grid
 			}, 
 			[x, y,id, &ecs, this]
 			{ 
-				cell_onHover(ecs, id);
 				cell_onHover(ecs, id, this->pos[x][y]);
 
 				if(!aoe_highlighted_cells.empty())
@@ -483,11 +479,9 @@ namespace Grid
 						this->aoe_highlight_activate[x][y] = 2;
 					}
 				}
-			}, 
-			[id, &ecs] 
+			},
 			[x, y, id, &ecs, this]
 			{ 
-				cell_offHover(ecs, id);
 				cell_offHover(ecs, id, this->pos[x][y]);
 			}
 		);	//add input system for grid

@@ -1,7 +1,6 @@
 #pragma once
 #include "../global.h"
 #include "../ECS/ECSystem.h"
-#include "../factory/EntityFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../system/PhaseSystem.h"
 #include "../util/Event.h"
