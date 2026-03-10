@@ -326,21 +326,38 @@ namespace Grid
 		}
 	}
 
-	void cell_onHover(ECS::Registry& ecs, Entity id)
+	void cell_onHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		c->d_color.r = 0.7f;
 		c->d_color.g = 0.7f;
 		c->d_color.b = 0.7f;
+
+		if(character != -1)
+		{
+			Components::Color* cc = ecs.getComponent<Components::Color>(character);
+			cc->d_color.r = 0.7f;
+			cc->d_color.g = 0.7f;
+			cc->d_color.b = 0.7f;
+		}
 	}
 
-	void cell_offHover(ECS::Registry& ecs, Entity id)
+	void cell_offHover(ECS::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
 		c->d_color.b = c->c_color.b;
+
+		if (character != -1)
+		{
+			Components::Color* cc = ecs.getComponent<Components::Color>(character);
+			cc->d_color.r = cc->c_color.r;
+			cc->d_color.g = cc->c_color.g;
+			cc->d_color.b = cc->c_color.b;
+		}
 	}
+
 	
 
 
@@ -361,7 +378,7 @@ namespace Grid
 			}, 
 			[x, y,id, &ecs, this]
 			{ 
-				cell_onHover(ecs, id);
+				cell_onHover(ecs, id, this->pos[x][y]);
 
 				if(!aoe_highlighted_cells.empty())
 					for (AEVec2 a : aoe_highlighted_cells)
@@ -412,9 +429,9 @@ namespace Grid
 					}
 				}
 			}, 
-			[id, &ecs] 
+			[x, y, id, &ecs, this]
 			{ 
-				cell_offHover(ecs, id);
+				cell_offHover(ecs, id, this->pos[x][y]);
 			}
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
