@@ -1,43 +1,205 @@
 [
 	{
-		"name" : "Sword Attack",
-		"targetting" : 0,
+		"name" : "Slash",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
 		"card_type" : "ATK",
 		"damage_type" : "SLASHING",
 		"value" : 5.0,
 		"range" : 1.0
-	}
-	,
-	{
-		"name" : "Fire Bolt",
-		"targetting" : 0,
-		"card_type" : "ATK",
-		"damage_type" : "FIRE",
-		"value" : 5.0,
-		"range" : 10.0
-	}
-	,
-	{
-		"name" : "Steven's Sword",
-		"targetting" : 0,
-		"card_type" : "ATK",
-		"damage_type" : "FIRE",
-		"value" : 20.0,
-		"range" : 3.0
-	}
-	,
-	{
-		"name" : "Defend",
-		"targetting" : 0,
-		"card_type" : "DEF",
-		"value" : 5.0,
-		"range" : 0.0
 	},
 	{
-		"name" : "Fire Ball",
-		"targetting" : 0,
+		"name" : "Slash+",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
 		"card_type" : "ATK",
+		"damage_type" : "SLASHING",
+		"value" : 9.0,
+		"range" : 1.0
+	},
+	{
+		"name" : "Shoot",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
+		"card_type" : "ATK",
+		"damage_type" : "PIERCING",
 		"value" : 5.0,
+		"range" : 10.0
+	},
+	{
+		"name" : "Shoot+",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGETt",
+		"card_type" : "ATK",
+		"damage_type" : "PIERCING",
+		"value" : 9.0,
+		"range" : 10.0
+	},
+	{
+		"name" : "Firebolt",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
+		"card_type" : "ATK",
+		"damage_type" : "FIRE",
+		"value" : 7.0,
+		"range" : 10.0
+	},
+	{
+		"name" : "Step Slash",
+		"cost" : 1.0,
+		"targetting" : "LINE",
+		"card_type" : "ATK",
+		"damage_type" : "SLASHING",
+		"value" : 7.0,
+		"range" : 3.0
+	},
+	{
+		"name" : "Disk Detonate",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
+		"card_type" : "ATK",
+		"damage_type" : "FIRE",
+		"value" : 7.0,
+		"range" : 3.0
+	},
+	{
+		"name" : "Snipe",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
+		"card_type" : "ATK",
+		"damage_type" : "PIERCING",
+		"value" : 10.0,
+		"range" : 99.0
+	},
+
+
+	{
+		"name" : "Barrier",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "DEF",
+		"defense_type" : "SHIELDING",
+		"value" : 10.0
+	},
+	{
+		"name" : "Barrier+",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "DEF",
+		"defense_type" : "SHIELDING",
+		"value" : 10.0
+	},
+	{
+		"name" : "DMG Cut",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "DEF",
+		"defense_type" : "DAMAGE_REDUCTION",
+		"value" : 0.5
+	},
+	{
+		"name" : "Aura Farm",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "DEF",
+		"defense_type" : "DAMAGE_REDUCTION",
+		"value" : 1.0
+	},
+
+	
+	{
+		"name" : "Recovery",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "HEALING",
+		"value" : 3.0
+	},
+	{
+		"name" : "Recovery+",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "HEALING",
+		"value" : 6.0
+	},
+	{
+		"name" : "Recovery++",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "HEALING",
+		"value" : 9.0
+	},
+	{
+		"name" : "Recovery++",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "HEALING",
+		"value" : 9.0
+	},
+	{
+		"name" : "PP up",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "PP_BUFF",
+		"value" : 2.0
+	},
+	{
+		"name" : "STR Disk",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "ATK_BUFF",
+		"value" : 2.0
+	},
+	{
+		"name" : "Swift foot",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "MOV_BUFF",
+		"value" : 1.0
+	},
+
+	{
+		"name" : "Data Draw",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "DRAWING_CARD",
+		"value" : 2.0
+	},
+
+	{
+		"name" : "Rand Generate",
+		"cost" : 1.0,
+		"targetting" : "SELF",
+		"card_type" : "ITEM",
+		"item_type" : "DRAWING_CARD",
+		"value" : 1.0
+	},
+
+	{
+		"name" : "Gust of Wind",
+		"cost" : 1.0,
+		"targetting" : "SINGLE_TARGET",
+		"card_type" : "EVENT",
+		"event_type" : "FORCED_MOVEMENT",
+		"value" : 6.0,
+		"range" : 10.0,
+		"aoe" : 5.0
+	},
+
+	{
+		"name" : "Black Hole",
+		"cost" : 1.0,
+		"targetting" : "AOE",
+		"card_type" : "EVENT",
+		"event_type" : "FORCED_MOVEMENT",
+		"value" : 1.0,
 		"range" : 10.0,
 		"aoe" : 5.0
 	}

@@ -11,6 +11,7 @@
 
 #include "../global.h"
 #include "../factory/MeshFactory.h"
+#include "../system/CardFunctions.h"
 
 
 #define MAX_CARDS 1000
@@ -27,20 +28,6 @@ namespace Components
 
 	struct TagClass{
 		Tag value;
-	};
-
-	enum class DamageType
-	{
-		SLASHING,
-		PIERCING,
-		BLUDGEONING,
-		FIRE
-	};
-
-	enum class Targetting
-	{
-		SINGLE_TARGET,
-		AOE
 	};
 
 	struct Text{
@@ -175,6 +162,12 @@ namespace Components
 		f32 aoe=0.0f;
 	};
 
+
+	struct Card_Cost
+	{
+		f32 value;
+	};
+
 	struct Attack
 	{
 		f32 damage;
@@ -182,14 +175,11 @@ namespace Components
 		f32 range;
 	};
 
-	struct Card_Cost
-	{
-		f32 value;
-	};
 	struct Name
 	{
 		const char* value;
 	};
+
 	struct HP
 	{
 		f32 c_value;
@@ -208,14 +198,6 @@ namespace Components
 		std::vector<size_t> data_deck;
 		std::vector<size_t> data_card_hand;
 		std::vector<size_t> data_discard_pile;
-	};
-
-	enum class CardTag
-	{
-		ATTACK = 0,
-		DEFENSE = 1,
-		ITEM = 2,
-		EVENT = 3
 	};
 
 	//struct TurnBasedStats

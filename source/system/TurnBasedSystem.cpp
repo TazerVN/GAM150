@@ -262,7 +262,7 @@ namespace TBS
 
 		Components::Targetting_Component* targComp = ecs.getComponent<Components::Targetting_Component>(card);
 		
-		if(targComp->targetting_type == Components::Targetting::SINGLE_TARGET)
+		if(targComp->targetting_type == Targetting::SINGLE_TARGET)
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 		else 
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::AOE_GRID_SELECT);

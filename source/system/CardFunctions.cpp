@@ -1,9 +1,9 @@
 #include "CardFunctions.h"
 #include "../util/json_parser.h"
 
-Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Components::DamageType dtype, f32 range, f32 cost)
+Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, DamageType dtype, f32 range, f32 cost)
 {
-	Components::Targetting targetting_type = Components::Targetting::SINGLE_TARGET;
+	Targetting targetting_type =Targetting::SINGLE_TARGET;
 	Entity id = ecs.createEntity();
 	//default player values
 	Components::CardTag cardTag = Components::CardTag::ATTACK;
@@ -21,9 +21,9 @@ Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Compone
 	return id;
 }
 
-Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, Components::DamageType dtype, f32 range, f32 aoe, f32 cost)
+Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, DamageType dtype, f32 range, f32 aoe, f32 cost)
 {
-	Components::Targetting targetting_type = Components::Targetting::AOE;
+	Targetting targetting_type =Targetting::AOE;
 	Entity id = ecs.createEntity();
 	//default player values
 	Components::CardTag cardTag = Components::CardTag::ATTACK;
