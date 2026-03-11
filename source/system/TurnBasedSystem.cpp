@@ -352,15 +352,12 @@ namespace TBS
 	{
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
-			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-			std::string& name = ecs.getComponent<Components::Name>(participants[i])->value;
-			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
 			ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
 
-			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+			std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
 
 			if (ecs.getBitMask()[participants[i]].test(hpID))
 			{
@@ -633,7 +630,7 @@ namespace TBS
 			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 			{
 				//TWAN Do your animations here
-				std::cout << "Animating" << std::endl;
+				
 				
 				//example sample case where animation player can work
 				/*if (update_animation())
@@ -642,27 +639,47 @@ namespace TBS
 				}*/
 
 				//will remove below code once the animation machine is done
-				play_card_triggered = true;
 
-				if (play_card_triggered)
+				if (gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)
 				{
-					play_card_triggered = false;
-
-					PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
-					//remove the card that just played inside tbs
-					if (tag == PC_RETURN_TAG::DIED)
+					std::cout << "Movement Animating" << std::endl;
+					/*if (AEInputCheckTriggered(AEVK_P))
 					{
-						//must reset the position on the grid to be null or there will be bugs
-						if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
-						this->remove_participant(*ecsptr, targetted_entity);
-					}
-
-					if (tag != PC_RETURN_TAG::INVALID)
-					{
-						this->set_selected_card(false);
-					}
-
+						end_player_resolution();
+					}*/
 					end_player_resolution();
+				}
+				else
+				{
+					if (!play_card_triggered)
+					{
+						std::cout << "Card Animating" << std::endl;
+						/*if (AEInputCheckTriggered(AEVK_P))
+						{
+							play_card_triggered = true;
+						}*/
+						play_card_triggered = true;
+					}
+					if (play_card_triggered)
+					{
+						play_card_triggered = false;
+
+						PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
+						//remove the card that just played inside tbs
+						if (tag == PC_RETURN_TAG::DIED)
+						{
+							//must reset the position on the grid to be null or there will be bugs
+							if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
+							this->remove_participant(*ecsptr, targetted_entity);
+						}
+
+						if (tag != PC_RETURN_TAG::INVALID)
+						{
+							this->set_selected_card(false);
+						}
+
+						end_player_resolution();
+					}
 				}
 				break;
 			}
