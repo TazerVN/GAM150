@@ -102,7 +102,7 @@ namespace UI
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 
 			hp_child->c_value = hp_parent->c_value / hp_parent->max_value * hp_child->max_value;
-			transform_child->size.x = hp_child->c_value / hp_child->max_value * transform_child->size_col.x;
+			transform_child->size.x = hp_child->c_value / hp_child->max_value * transform_child->size_og.x;
 		}
 
 	}

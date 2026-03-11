@@ -72,7 +72,7 @@ namespace InputSystem
 			}
 
 
-			if (in->col && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_col.x, t->size_col.y, f32(this->mousex) + camera_x, f32(this->mousey) + camera_y ))
+			if (in->col && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_og.x, t->size_og.y, f32(this->mousex) + camera_x, f32(this->mousey) + camera_y ))
 			{
 				if (in->drag == false)
 				{

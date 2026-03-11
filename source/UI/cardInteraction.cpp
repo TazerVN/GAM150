@@ -161,7 +161,7 @@ namespace CardInteraction
 			Components::Input* in = ecs.getComponent<Components::Input>(eID);
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(eID);
 
-			f32 target_x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_col.x - cardhand_pos->size_col.x / 2 + transform->size_col.x / 2;
+			f32 target_x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_og.x - cardhand_pos->size_og.x / 2 + transform->size_og.x / 2;
 			f32 target_y = cardhand_pos->pos_onscreen.y;
 
 			/*if(transform->pos.x < target_x) transform->pos.x += dt * speed;
@@ -315,7 +315,10 @@ namespace CardInteraction
 		c->d_color.r = minimum + (1.f - minimum) * lerp;
 		c->d_color.b = minimum + (1.f - minimum) * lerp;
 		c->d_color.g = minimum + (1.f - minimum) * lerp;
-		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size.y / 4;
+		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size_og.y / 4;
+
+		t->size.y = t->size_og.y*2 + lerp * t->size_og.y;
+		t->size.x = t->size_og.x*2 + lerp * t->size_og.x;
 	}
 
 
