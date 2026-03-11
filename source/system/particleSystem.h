@@ -20,7 +20,7 @@ namespace Particle
 
 		void update(ECS::Registry& ecs, f32 dt);
 
-		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
+		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 velX, f32 velY);
 
 		void particleDigitize(ECS::Registry& ecs, MeshFactory& mf);
 		/*
