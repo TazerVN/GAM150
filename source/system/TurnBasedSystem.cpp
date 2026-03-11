@@ -17,7 +17,7 @@ namespace TBS
 		gbsptr->resetPlayerPhase();
 
 		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
-		char const* nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
+		std::string& nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
 		std::cout << nm << " Turn" << std::endl;
 	}
 	void TurnBasedSystem::round_end()
@@ -197,7 +197,7 @@ namespace TBS
 			gbsptr->resetPlayerPhase();
 		}
 
-		gameBoardptr->reset_selected_player();
+		gameBoardptr->unselect_movement();
 		debug_print(ecs);
 	}
 
@@ -234,6 +234,8 @@ namespace TBS
 
 	void TurnBasedSystem::select_card(ECS::Registry& ecs)
 	{
+		gameBoardptr->unselect_card();
+		gameBoardptr->unselect_movement();
 		int index = get_selected_cardhand_index();
 
 		Entity current_entt = current();
@@ -300,13 +302,6 @@ namespace TBS
 		//	{
 		//	case Components::CardTag::ATTACK:
 		//	{
-		//		// cannot hit your self
-		//		if (target == current())
-		//		{
-		//			std::cout << "Cannot hit yourself" << std::endl;
-		//			return PC_RETURN_TAG::INVALID;
-		//		}
-
 		//		ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
 		//		if (!ecs.getBitMask()[cardID].test(card_value_ID))
 		//		{
@@ -329,6 +324,8 @@ namespace TBS
 		
 		//run the function related to the card
 		//example 
+
+		//cardSysptr->CardScripts().runCardFunction(cardID,target);
 
 		//remove the card that just played inside tbs
 		player_curMana -= card_cost;
@@ -356,7 +353,7 @@ namespace TBS
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
 			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+			std::string& name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;
 		}
 	}
@@ -542,30 +539,9 @@ namespace TBS
 				gbsptr->GBPTriggered()[index] = false;
 				gbsptr->GBPActive()[prev_index] = false;
 				//===================play card==============================
-				if (play_card_triggered)
-				{
-					play_card_triggered = false;
 
-					PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
-					//remove the card that just played inside tbs
-					if (tag == PC_RETURN_TAG::DIED)
-					{
-						//must reset the position on the grid to be null or there will be bugs
-						if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
-						this->remove_participant(*ecsptr, targetted_entity);
-					}
-
-					if (tag != PC_RETURN_TAG::INVALID)
-					{
-						this->set_selected_card(false);
-					}
-					
 				gbsptr->GBPActive()[index] = true;
-				}
 				//=========================================================
-
-
-
 				break;
 			}
 			default: 
@@ -642,28 +618,36 @@ namespace TBS
 			{
 				//TWAN Do your animations here
 				std::cout << "Animating" << std::endl;
-				//Whenever u are done do this code to go back
-				//instead of press P to end animation state u do this
-				//if (AEInputCheckTriggered(AEVK_P))
-				//{
-				//	gbsptr->GBPActive()[index] = false;
-				//	//remove if u want to make the the playerphase not reset when u click on invalid target
-				//	gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-				//	gbsptr->debug_print();
-				//	evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+				
+				//example sample case where animation player can work
+				/*if (update_animation())
+				{
+					play_card_triggered = true;
+				}*/
 
-				//	gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-				//	int i = static_cast<int>(gbsptr->getGBPhase());
-				//	gbsptr->GBPTriggered()[i] = true;
-				//}
-				gbsptr->GBPActive()[index] = false;
-				//remove if u want to make the the playerphase not reset when u click on invalid target
-				gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-				//gbsptr->debug_print();
-				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-				gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-				int i = static_cast<int>(gbsptr->getGBPhase());
-				gbsptr->GBPTriggered()[i] = true;
+				//will remove below code once the animation machine is done
+				play_card_triggered = true;
+
+				if (play_card_triggered)
+				{
+					play_card_triggered = false;
+
+					PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
+					//remove the card that just played inside tbs
+					if (tag == PC_RETURN_TAG::DIED)
+					{
+						//must reset the position on the grid to be null or there will be bugs
+						if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
+						this->remove_participant(*ecsptr, targetted_entity);
+					}
+
+					if (tag != PC_RETURN_TAG::INVALID)
+					{
+						this->set_selected_card(false);
+					}
+
+					end_player_resolution();
+				}
 				break;
 			}
 			default:
@@ -673,5 +657,18 @@ namespace TBS
 			}
 			}
 		}
+	}
+
+	void TurnBasedSystem::end_player_resolution()
+	{
+		gbsptr->GBPActive()[static_cast<int>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = false;
+		//remove if u want to make the the playerphase not reset when u click on invalid target
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+		//gbsptr->debug_print();
+		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+
+		gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+		int i = static_cast<int>(gbsptr->getGBPhase());
+		gbsptr->GBPTriggered()[i] = true;
 	}
 }

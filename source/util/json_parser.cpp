@@ -2,6 +2,7 @@
 #include "../../Extern/rapidjson/document.h"
 #include <fstream>
 #include <iostream>
+#include <array>
 
 JSON_RET parse_data(std::vector<JSON_CARD>& vec, char const* str)
 {
@@ -29,20 +30,81 @@ JSON_RET parse_data(std::vector<JSON_CARD>& vec, char const* str)
 	for (int i = 0; i < arr.Size(); ++i)
 
 	{
-		const char* name = (arr[i].HasMember("name")) ? arr[i]["name"].GetString() : "NULL";
-		const float cost = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.f;
+		const int id = (arr[i].HasMember("id")) ? arr[i]["id"].GetInt() : -1;
+		std::string name = (arr[i].HasMember("name")) ? arr[i]["name"].GetString() : "NULL";
+		const float cost = (arr[i].HasMember("cost")) ? arr[i]["cost"].GetFloat() : -1.f;
 		const char* targetting = (arr[i].HasMember("targetting")) ? arr[i]["targetting"].GetString() : "NULL";
-		const char* card_type = (arr[i].HasMember("card_type")) ? arr[i]["card_type"].GetString() : "NULL";
-		const char* damage_type = (arr[i].HasMember("damage_type")) ? arr[i]["damage_type"].GetString() : "NULL";
+		const char* card_tag = (arr[i].HasMember("card_type")) ? arr[i]["card_type"].GetString() : "NULL";
+		const char* type = (arr[i].HasMember("type")) ? arr[i]["type"].GetString() : "NULL";
 		const float value = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.f;
 		const float range = (arr[i].HasMember("range")) ? arr[i]["range"].GetFloat() : -1.f;
 		const float aoe = (arr[i].HasMember("aoe")) ? arr[i]["aoe"].GetFloat() : -1.f;
 
+		Targetting targ{};
+		std::array<std::string, static_cast<size_t>(Targetting::COUNT)> targetting_names =
+		{ "SELF","SINGLE_TARGET","LINE","AOE" };
+		for (int j = 0; j < targetting_names.size(); ++j)
+		{
+			if (targetting == targetting_names[j])
+			{
+				targ = static_cast<Targetting>(j);
+			}
+		}
 
+		CardTag cardTAG{};
+		CardType cardTYPE{};
+
+		std::array<std::string, static_cast<size_t>(CardType::COUNT)> type_names = 
+		{ "SLASHING","PIERCING","BLUDGEONING","FIRE","SHIELDING","DAMAGE_REDUCTION","HEALING",
+			"PP_BUFF","ATK_BUFF","MOV_BUFF","DRAWING_CARD","FORCED_MOVEMENT" };
+		if (card_tag == "ATK")
+		{
+			cardTAG = CardTag::ATTACK;
+			for (int i = 0; i < type_names.size(); ++i)
+			{
+				if (type == type_names[i])
+				{
+					cardTYPE = static_cast<CardType>(i);
+				}
+			}
+		}
+		else if (card_tag == "DEF")
+		{
+			cardTAG = CardTag::DEFENSE;
+			for (int i = 0; i < type_names.size(); ++i)
+			{
+				if (type == type_names[i])
+				{
+					cardTYPE = static_cast<CardType>(i);
+				}
+			}
+		}
+		else if (card_tag == "ITEM")
+		{
+			cardTAG = CardTag::ITEM;
+			for (int i = 0; i < type_names.size(); ++i)
+			{
+				if (type == type_names[i])
+				{
+					cardTYPE = static_cast<CardType>(i);
+				}
+			}
+		}
+		else if (card_tag == "EVENT")
+		{
+			cardTAG = CardTag::EVENT;
+			for (int i = 0; i < type_names.size(); ++i)
+			{
+				if (type == type_names[i])
+				{
+					cardTYPE = static_cast<CardType>(i);
+				}
+			}
+		}
+
+		JSON_CARD temp_card{id,name,cost,targ,cardTAG,cardTYPE,value,range,aoe};
+		vec.push_back(temp_card);
 	}
-	/*std::cout << doc["name"].GetString() << std::endl;
-	std::cout << doc["card_type"].GetString() << std::endl;
-	std::cout << doc["Value"].GetFloat() << std::endl;*/
 
 	return JSON_RET::OK;
 }

@@ -4,7 +4,8 @@ enum class Targetting
 	SELF,
 	SINGLE_TARGET,
 	LINE,
-	AOE
+	AOE,
+	COUNT
 };
 
 enum class CardTag
@@ -12,33 +13,51 @@ enum class CardTag
 	ATTACK = 0,
 	DEFENSE = 1,
 	ITEM = 2,
-	EVENT = 3
+	EVENT = 3,
+	COUNT
 };
 
-enum class DamageType
+enum class CardType
 {
 	SLASHING,
 	PIERCING,
 	BLUDGEONING,
-	FIRE
-};
-
-enum class DefenseType
-{
+	FIRE,
 	SHIELDING,
 	DAMAGE_REDUCTION,
-};
-
-enum class ItemType
-{
 	HEALING,
 	PP_BUFF,
 	ATK_BUFF,
 	MOV_BUFF,
-	DRAWING_CARD
+	DRAWING_CARD,
+	FORCED_MOVEMENT,
+	COUNT
 };
 
-enum class EventType
-{
-	FORCED_MOVEMENT
-};
+//enum class DamageType
+//{
+//	SLASHING,
+//	PIERCING,
+//	BLUDGEONING,
+//	FIRE
+//};
+//
+//enum class DefenseType
+//{
+//	SHIELDING,
+//	DAMAGE_REDUCTION,
+//};
+//
+//enum class ItemType
+//{
+//	HEALING,
+//	PP_BUFF,
+//	ATK_BUFF,
+//	MOV_BUFF,
+//	DRAWING_CARD
+//};
+//
+//enum class EventType
+//{
+//	FORCED_MOVEMENT
+//};

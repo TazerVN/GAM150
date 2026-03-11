@@ -8,7 +8,7 @@
 #include "../system/TurnBasedSystem.h"
 #include "../system/EnemyDirector.h"
 #include "../system/CameraSystem.h"
-#include "../system/CardFunctions.h"
+#include "../system/CardSystem.h"
 
 #include "AEEngine.h"
 

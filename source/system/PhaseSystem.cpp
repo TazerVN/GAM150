@@ -4,7 +4,7 @@
 namespace PhaseSystem
 {
 	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "PLAYER_RESOLUTION", "ENEMY_PHASE", "ENEMY_RESOLUTION", "UNIN" };
-	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "GRID_SELECT", "AOE_GRID_SELECT" ,"UNIN"};
+	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "GRID_SELECT", "AOE_GRID_SELECT", "PLAYER_ANIMATION" ,"UNIN"};
 
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseTriggered{};
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseActive{};
@@ -80,36 +80,51 @@ namespace PhaseSystem
 	PlayerPhase GameBoardState::getPlayerPhase() const {
 		return this->player_curr;
 	}
+	GBPhase GameBoardState::getPrevGBPhase() const
+	{
+		return this->prev_GBPhase;
+	}
+	PlayerPhase GameBoardState::getPrevPlayerPhase() const {
+		return this->prev_PlayerPhase;
+	}
 	void GameBoardState::set_GBPhase(GBPhase gbp) {
+		prev_GBPhase = gb_curr;
 		this->gb_curr = gbp;
 	}
 	void GameBoardState::set_PlayerPhase(PlayerPhase pp) {
+		prev_PlayerPhase = player_curr;
 		this->player_curr = pp;
 	}
 
 	void GameBoardState::nextGBPhase(){
+		prev_GBPhase = gb_curr;
 		this->gb_curr++;
 	}
 	void GameBoardState::nextPlayerPhase(){
+		prev_PlayerPhase = player_curr;
 		this->player_curr++;
 	}
 
 	void GameBoardState::prevGBPhase()
 	{
+		prev_GBPhase = gb_curr;
 		this->gb_curr--;
 	}
 	void GameBoardState::prevPlayerPhase()
 	{
+		prev_PlayerPhase = player_curr;
 		this->player_curr--;
 	}
 
 	void GameBoardState::resetGPhase()
 	{
+		prev_GBPhase = gb_curr;
 		GBPhase firstPhase = static_cast<GBPhase>(0);
 		this->gb_curr = firstPhase;
 	}
 	void GameBoardState::resetPlayerPhase()
 	{
+		prev_PlayerPhase = player_curr;
 		PlayerPhase firstPhase = static_cast<PlayerPhase>(0);
 		this->player_curr = firstPhase;
 	}

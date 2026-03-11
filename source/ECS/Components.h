@@ -139,12 +139,12 @@ namespace Components
 	/*struct Card_Value
 	{
 		f32 value = 0.0f;
-		DamageType type;
+		CardType type;
 	};*/
 	struct Card_Value
 	{
 		f32 value=0.0f;
-		DamageType type;
+		CardType type;
 	};
 
 
@@ -170,13 +170,13 @@ namespace Components
 	struct Attack
 	{
 		f32 damage;
-		DamageType type;
+		CardType type;
 		f32 range;
 	};
 
 	struct Name
 	{
-		const char* value;
+		std::string value;
 	};
 
 	struct HP
