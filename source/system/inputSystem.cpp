@@ -47,6 +47,7 @@ namespace InputSystem
 		{
 			f32 camera_x = cam->pos.x;
 			f32 camera_y = cam->pos.y;
+			f32 zoom = cam->size.y;
 			Entity e = temp.second;
 
 			ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
@@ -68,11 +69,17 @@ namespace InputSystem
 				{
 					camera_x = 0;
 					camera_y = 0;
+					zoom = 1;
 				}
 			}
 
 
-			if (in->col && point2rect_intersect(t->pos_onscreen.x, t->pos_onscreen.y, t->size_og.x, t->size_og.y, f32(this->mousex) + camera_x, f32(this->mousey) + camera_y ))
+			f32 newpos_x = (t->pos_onscreen.x - camera_x) * zoom;
+			f32 newpos_y = (t->pos_onscreen.y - camera_y) * zoom;
+			f32 newsize_x = t->size_og.x * zoom;
+			f32 newsize_y = t->size_og.y * zoom;
+
+			if (in->col && point2rect_intersect(newpos_x, newpos_y, newsize_x, newsize_y, f32(this->mousex), f32(this->mousey)))
 			{
 				if (in->drag == false)
 				{
