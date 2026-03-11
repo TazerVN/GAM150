@@ -21,7 +21,7 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 				if (!ecs.getBitMask()[ent].test(transID)) continue;
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
 				transform->pos_onscreen.y -= dt * AERandFloat() * 10 ;
-				transform->pos_onscreen.x += 0.0f;
+				transform->pos_onscreen.x = 0.0f;
 				Components::Color* color = ecs.getComponent<Components::Color>(ent);
 				//color->d_color.b = 0.2f * AERandFloat();
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
@@ -36,14 +36,6 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 }
 
 
-Entity Particle::ParticleSystem::create_emitter(ECS::Registry& ecs,
-	f32 x, f32 y,
-	f32 spawnRate,
-	f32 lifetime,
-	f32 r, f32 g, f32 b, f32 a)
-{
-	return 0;
-}
 
 //void Particle::ParticleSystem::recycle(Entity e)
 //{
