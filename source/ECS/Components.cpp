@@ -2,6 +2,11 @@
 #include "../ECS/ECSystem.h"
 #include <iostream>
 
+void Components::Card_Storage::add_card_to_deck(Entity cardID)
+{
+	data_deck.push_back(cardID);
+}
+
 void Components::Card_Storage::add_card_to_hand(Entity cardID)
 {
 	data_card_hand.push_back(cardID);
@@ -13,13 +18,22 @@ void Components::Card_Storage::remove_card_from_hand(int index)
 	data_card_hand.erase(data_card_hand.begin() + index);
 }
 
+void Components::Card_Storage::reshuffle_discard2deck()
+{
+	if (data_discard_pile.empty()) { std::cout << "Discard Pile Empty" << std::endl; return; }
+	for (Entity card : data_discard_pile)
+	{
+		data_deck.push_back(card);
+	}
+	data_discard_pile.clear();
+}
 
 Components::Input::Input(u8 type, bool hover,
 						 std::function<void()> onClick,
 						 std::function<void()> onHover,
-						 std::function<void()> offHover, s8 z)
+						 std::function<void()> offHover, s8 z, bool drag, bool col)
 	: type(type), hover(hover), onClick(onClick),
-	onHover(onHover), offHover(offHover), on(true), z{z}
+	onHover(onHover), offHover(offHover), on(true), z{z}, drag{drag}, col{col}
 {
 }
 
@@ -32,3 +46,5 @@ Components::Timer::Timer() : seconds{ 0 }, max_seconds{ 0 }, start{ false }, res
 Components::Timer::Timer(f32 max, f32 current, bool start, bool reset) : seconds{ current }, max_seconds{ max }, start{ start }, reset{reset} {}
 
 Components::HP::HP(f32 max) : c_value{max}, max_value{max}{}
+
+Components::Texture::Texture(AEGfxTexture* texture, f32 offset_x, f32 offset_y) : texture{ texture }, offset_x{ offset_x }, offset_y{offset_y} {}

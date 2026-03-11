@@ -2,7 +2,7 @@
 #include <vector>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-#include "../factory/EntityFactory.h"
+#include "../system/CardFunctions.h"
 #include "../util/Event.h"
 #include "../system/PhaseSystem.h"
 #include "AEEngine.h"
@@ -24,7 +24,7 @@ namespace TBS
 		EventPool<highlight_tag>* evsptr = nullptr;
 		Grid::GameBoard* gameBoardptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
-		System::CardSystem* cardSysptr = nullptr;
+		CardSystem* cardSysptr = nullptr;
 		CardInteraction::CardHand* cardHandptr = nullptr;
 		Entity targetted_entity = -1;
 		int targetted_x{-1}, targetted_y{ -1 };
@@ -40,7 +40,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, System::CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
+		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 		std::vector<Entity>& get_participant();
@@ -64,17 +64,25 @@ namespace TBS
 		void start(ECS::Registry& ecs);
 		void force_start_if_ready(ECS::Registry& ecs);  // starts automatically when participants >=2
 		void debug_print(ECS::Registry& ecs) const;
+
+		//==============Player Stats==============
+		void show_deck(ECS::Registry& ecs) const;
 		void show_HP(ECS::Registry& ecs) const;
 		void show_hand(ECS::Registry& ecs) const;
+		void show_discard(ECS::Registry& ecs) const;
 		void show_stats(ECS::Registry& ecs) const;
+
 
 		void next_enemy_or_player(ECS::Registry& ecs);	// For Enemy CPU
 		void yield_to_player(ECS::Registry& ecs);
 
 		//============Combat=======================
 		bool play_card_triggered{false};
+
+		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player, Entity target, int index);
+
 		void check_input(ECS::Registry&);
-		void add_card(ECS::Registry& ecs);
+		void DrawPhase_add_card(ECS::Registry& ecs);
 		void remove_card(ECS::Registry& ecs, Entity user, int index);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
@@ -82,10 +90,6 @@ namespace TBS
 		//draw the card of the player
 		Entity draw_card(ECS::Registry& ecs, Entity player, size_t chIndex);
 
-		//function to determine the play card it could be attack it could be defense or support
-
-		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player , Entity target, int index);
-		void Call_DefenseSystem(ECS::Registry& ecs, Entity cardID, Entity target);
 		//===============Update=====================
 		void update(ECS::Registry& ecs);
 

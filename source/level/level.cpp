@@ -9,12 +9,11 @@
 #include "../system/inputSystem.h"
 #include "../system/transformSystem.h"
 #include "../system/TimerSystem.h"
+#include "../system/CameraSystem.h"
+
 #include "../level/GameState.h"
 #include "../UI/UI.h"
 #include "../system/particleSystem.h"
-
-float camerax = 0.0f;
-float cameray = 0.0f;
 
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
@@ -22,8 +21,10 @@ AEGfxTexture* cardtext;
 
 ECS::Registry ecs;
 MeshFactory mf{};
+
 Scene scene;
 
+CardSystem card_system;
 InputSystem::InputManager IM;
 UI::UIManager UIM;
 TextureFactory::TextureFactory TF;
@@ -33,6 +34,7 @@ CardInteraction::CardHand card{};
 TimerSystem::TimerSystem TS;
 Particle::ParticleSystem PS;
 TransformSystem::TransformSystem TrS;
+Camera::CameraSystem CS;
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -47,14 +49,16 @@ void game_init()
 	TF.textureInit();
 	mf.MeshFactoryInit();
 
-	AEGfxSetCamPosition(camerax, cameray);
-	scene.init(ecs, mf, TF, card);	
+	//AEGfxSetCamPosition(camerax, cameray);
+
+	card_system.init_cards(ecs);
+	scene.init(ecs, mf,card_system, TF, CS, card);	
 	UIM.init(scene, mf, TF);
+	CS.init(ecs);
 
 	card = CardInteraction::CardHand(ecs, mf,TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS());
-	/*grid2D.placeEntity(scene.getECS(), scene.getPlayerID(), 5, 5);
-	grid2D.placeEntity(scene.getECS(), scene.getEnemyID(), 3, 2);*/
+
 	RM.RenderSystem_init(ecs);
 
 	ecs.remove_empty_groups();
@@ -71,26 +75,27 @@ void game_update()
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		leaveGameState();
 	
-	IM.update(ecs, scene.getGBS());
+	IM.update(ecs, scene.getGBS(), CS.id());
 	TS.update(ecs);
-	TrS.update(ecs, camerax, cameray);
+	TrS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	scene.update();
-	scene.getBattleGrid().update(ecs);
 	UIM.update(scene);
 	PS.update(ecs, 0.2);
+	CS.update(ecs);
+	scene.getBattleGrid().update(ecs,CS.id());	//gameboard update
 
 	//==========Object updates===========
 
 	//camerax += dt * 100;
 
-	AEGfxSetCamPosition(camerax, cameray);
+	//AEGfxSetCamPosition(camerax, cameray);
 
 	/*sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
 
 	//========(Render)====================
-	RM.RM_render(ecs);
+	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();
 }

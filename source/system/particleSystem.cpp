@@ -21,9 +21,9 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 				if (!ecs.getBitMask()[ent].test(transID)) continue;
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
 				transform->pos_onscreen.y -= dt * AERandFloat() * 10 ;
-				transform->pos_onscreen.x += 5.0f;
+				transform->pos_onscreen.x += 0.0f;
 				Components::Color* color = ecs.getComponent<Components::Color>(ent);
-				color->d_color.b = 0.2f * AERandFloat();
+				//color->d_color.b = 0.2f * AERandFloat();
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
 				if (timer->start == false)
 				{
@@ -34,8 +34,6 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 		}
 	}
 }
-
-
 
 
 Entity Particle::ParticleSystem::create_emitter(ECS::Registry& ecs,
@@ -57,8 +55,8 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 	//default single particle value
 	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
-	Components::Color color{ 0.5f, AERandFloat(), 0.5f ,AERandFloat()};
-	Components::Timer timer { AERandFloat()};
+	Components::Color color{ 0.4f - 0.4f * AERandFloat(), 0.7f + 0.3f * AERandFloat(), 1.0f, AERandFloat()};
+	Components::Timer timer { AERandFloat() };
 	Components::Particle particle { 1.0f };
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);

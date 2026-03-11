@@ -27,7 +27,7 @@ namespace Grid
 	{
 		private:
 		ECS::Registry* ecsptr = nullptr;
-		TBS::TurnBasedSystem* tbs;
+		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
 		
@@ -37,12 +37,18 @@ namespace Grid
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
-		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
+
+		uint8_t walkable[MAX_I * MAX_J]{};
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
+
+		std::vector<Cell> path;
+
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
+		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
 		std::vector<AEVec2> highlighted_cells;
+		std::vector<AEVec2> aoe_highlighted_cells;
 
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
@@ -50,15 +56,17 @@ namespace Grid
 
 		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
-		//i'm testing some stuff on the below function VVVV 
-		//void moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
+		
+		void unselect_card();
+		void move_trigger(s32 const& x, s32 const& y);
+		void move_select(s32 const& x, s32 const& y);
 		void moveEntity(ECS::Registry& ecs ,Entity e, s32 x, s32 y);
 
 		// helper functions for CPU - Zejin 
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
 		bool moveEntityAI(Entity e, s32 x, s32 y);
 
-		void update(ECS::Registry& ecs);
+		void update(ECS::Registry& ecs, Entity camera);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 
@@ -67,7 +75,8 @@ namespace Grid
 
 		bool selected_player() const;
 		void reset_selected_player();
-		AEVec2 Get_gridPos(AEVec2 const& worldPos);
+		AEVec2 Get_gridPos(AEVec2 const& pos,Entity camera);
+		AEVec2& Get_CurPart_gridPos();
 
 		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);

@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\system\CameraSystem.cpp" />
     <ClCompile Include="source\global.cpp" />
+    <ClCompile Include="source\system\CardFunctions.cpp" />
     <ClCompile Include="source\system\CombatSystem.cpp" />
     <ClCompile Include="source\system\EnemyDirector.cpp" />
     <ClCompile Include="source\system\particleSystem.cpp" />
@@ -44,6 +46,9 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\system\CameraSystem.h" />
+    <ClInclude Include="source\system\CardConstants.h" />
+    <ClInclude Include="source\system\CardFunctions.h" />
     <ClInclude Include="source\system\CombatSystem.h" />
     <ClInclude Include="source\system\EnemyDirector.h" />
     <ClInclude Include="source\system\particleSystem.h" />

@@ -11,7 +11,7 @@
 
 #include "../global.h"
 #include "../factory/MeshFactory.h"
-
+#include "../system/CardConstants.h"
 
 #define MAX_CARDS 1000
 #define MAX_COMPONENT 20
@@ -27,14 +27,6 @@ namespace Components
 
 	struct TagClass{
 		Tag value;
-	};
-
-	enum class DamageType
-	{
-		SLASHING,
-		PIERCING,
-		BLUDGEONING,
-		FIRE
 	};
 
 	struct Text{
@@ -72,7 +64,15 @@ namespace Components
 		bool s;
 	};
 
-
+	/*struct Transform
+	{
+		AEVec2 pos{ 0.f,0.f };
+		AEVec2 pos_onscreen{ 0.f,0.f };
+		AEVec2 size{ 0,0 };
+		AEVec2 size_col{ 0,0 };
+		AEMtx33 mtx{};
+		float rotation{ 0.f };
+	};*/
 	struct Transform
 	{
 		AEVec2 pos{ 0.f,0.f };
@@ -86,6 +86,8 @@ namespace Components
 	struct Texture
 	{
 		AEGfxTexture* texture{ nullptr };
+		f32 offset_x, offset_y;
+		Texture(AEGfxTexture* texture, f32 offset_x = 0, f32 offset_y = 0);
 	};
 
 	struct Mesh
@@ -110,12 +112,14 @@ namespace Components
 		bool on;
 		u8 type; //for AE internal input system check
 		bool hover;
+		bool drag;
+		bool col;
 		s8 z;
 		Input(u8 type, bool hover, 
 			  std::function<void()> onClick, 
 			  std::function<void()> onHover, 
 			  std::function<void()> offHover,
-			  s8 z = 0);
+			  s8 z = 0, bool drag = false, bool col = true);
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;
@@ -130,21 +134,51 @@ namespace Components
 
 
 	//===========================CARDS=========================================
+
+
+	/*struct Card_Value
+	{
+		f32 value = 0.0f;
+		DamageType type;
+	};*/
+	struct Card_Value
+	{
+		f32 value=0.0f;
+		DamageType type;
+	};
+
+
+	/*struct Targetting_Component
+	{
+		Targetting targetting_type;
+		f32 range = 0.0f;
+		f32 aoe = 0.0f;
+	};*/
+	struct Targetting_Component
+	{
+		Targetting targetting_type;
+		f32 range=0.0f;
+		f32 aoe=0.0f;
+	};
+
+
+	struct Card_Cost
+	{
+		f32 value;
+	};
+
 	struct Attack
 	{
 		f32 damage;
 		DamageType type;
 		f32 range;
 	};
-	struct Defense
-	{
-		f32 value;
-		f32 range;
-	};
+
 	struct Name
 	{
 		const char* value;
 	};
+
 	struct HP
 	{
 		f32 c_value;
@@ -155,21 +189,14 @@ namespace Components
 	class Card_Storage
 	{
 		public:
+		void add_card_to_deck(Entity cardID);
 		void add_card_to_hand(Entity cardID);
 		void remove_card_from_hand(int index);
+		void reshuffle_discard2deck();
 
-		//std::array<size_t, MAX_HAND> data_card_hand{NULL_INDEX};
-
+		std::vector<size_t> data_deck;
 		std::vector<size_t> data_card_hand;
 		std::vector<size_t> data_discard_pile;
-	};
-
-	enum class CardTag
-	{
-		ATTACK = 0,
-		DEFENSE = 1,
-		ITEM = 2,
-		EVENT = 3
 	};
 
 	//struct TurnBasedStats

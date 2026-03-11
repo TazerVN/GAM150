@@ -20,7 +20,7 @@ namespace RenderSystem
 		public:
 		RenderSystem();
 		void RenderSystem_init(ECS::Registry& ecs);
-		void RM_render(ECS::Registry& ecs);
+		void RM_render(ECS::Registry& ecs, Entity camera);
 
 	};
 };
