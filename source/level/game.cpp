@@ -63,7 +63,7 @@ void game_init()
 
 	ecs.remove_empty_groups();
 	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
-	PS.spawn(ecs, mf);
+	PS.particleDigitize(ecs, mf);
 }
 
 void game_update()
@@ -77,7 +77,7 @@ void game_update()
 	
 	IM.update(ecs, scene.getGBS(), CS.id());
 	TS.update(ecs);
-	TrS.update(ecs);
+	//TrS.update(ecs);
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	scene.update();
 	UIM.update(scene);
