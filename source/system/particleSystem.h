@@ -33,8 +33,7 @@ namespace Particle
 		void particleBurst(ECS::Registry& ecs, MeshFactory& mf);
 		/*
 		* Use in this:
-		* - When enemy dies, spawn this particle
-		* - WHen draw card, spawn this particle to as if it visually creating the card
+		* - player or enemy get hit spawn this.
 		*/
 
 	private:
