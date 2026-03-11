@@ -87,12 +87,17 @@ namespace CardInteraction
 
 	void CardHand::update_logic(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)
 	{
+		//guard against gbsptr being null
 		if (gbsptr == nullptr) return;
+		//if not within main phase return
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
+
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
 		{
 			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
 			{
+
+
 				if (tbs.get_selected_cardhand_index() == i)
 				{
 					card_onClick(ecs, this->curr_hand_display[i]);
@@ -105,14 +110,13 @@ namespace CardInteraction
 
 			if (this->activate[i] == true)
 			{
-
-				if (!gbptr->selected_player() && gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
-				{
-					tbsptr->select_hand_index(i);
-					tbsptr->select_card(ecs);
-				}
-
-
+				//if (!gbptr->selected_player() && gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
+				//{
+				//	tbsptr->select_hand_index(i);
+				//	tbsptr->select_card(ecs);
+				//}
+				tbsptr->select_hand_index(i);
+				tbsptr->select_card(ecs);
 				this->activate[i] = false;
 			}
 
@@ -198,24 +202,30 @@ namespace CardInteraction
 
 			switch (a->type)
 			{
-				case (DamageType::SLASHING):
+				case (CardType::SLASHING):
 					texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
 					break;
-				case (DamageType::PIERCING):
+				case (CardType::PIERCING):
 					texture = tfptr->getTextureCard(TextureFactory::C_SHOOT);
 					break;
-				case (DamageType::FIRE):
+				case (CardType::FIRE):
 					texture = tfptr->getTextureCard(TextureFactory::C_FIREBOLT);
 					break;
-				case (DamageType::BLUDGEONING):
-				default:
+				case (CardType::FORCED_MOVEMENT):
 					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
+				default:
+					texture = tfptr->getTextureCard(TextureFactory::C_SAMPLE);
 					break;
 			}
 
 			Entity eid = ecs.createEntity();
 
-			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 1, texture, [this, eid] { this->activate_card(eid); }));
+			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 1, texture, 
+				[this, eid]
+				{ 
+					this->activate_card(eid); 
+				}
+			));
 		}
 	}
 

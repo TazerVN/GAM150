@@ -58,7 +58,19 @@ bool EnemyDirector::loadScriptFile(const std::string& filePath)
     }
 
     std::cout << "[EnemyDirector] Opened OK.\n";
-    scripts_.clear();
+
+    timeline_.clear();
+    timelineIp_ = 0;
+    spawnCount_ = 0;
+
+    enum class Section
+    {
+        NONE,
+        SPAWN,
+        BEHAVIOUR
+    };
+
+    Section section = Section::NONE;
 
     std::string line;
     int loaded = 0;
@@ -66,23 +78,55 @@ bool EnemyDirector::loadScriptFile(const std::string& filePath)
     while (std::getline(ifs, line))
     {
         std::cout << "[ED] raw line: '" << line << "'\n";
-        if (isCommentOrEmpty(line)) continue;
 
-        Tokens t = tokenize(line);
-        std::cout << "[ED] tokens=" << t.size() << "\n";
-        if (t.size() < 2) continue;
+        std::string s = ltrim_copy(line);
 
-        const std::string& actorId = t[0];
-        scripts_[actorId].lines.push_back(std::move(t));
-        loaded++;
+        // handle empty
+        if (s.empty()) continue;
+
+        // section headers
+        if (s == "# ---- SPAWN ----")
+        {
+            section = Section::SPAWN;
+            continue;
+        }
+        if (s == "# -- BEHVAIOUR --" || s == "# -- BEHAVIOUR --")
+        {
+            section = Section::BEHAVIOUR;
+            continue;
+        }
+
+        // skip comments
+        if (isCommentOrEmpty(s)) continue;
+
+        if (section == Section::SPAWN)
+        {
+            spawnCount_ = std::stoi(s);
+            std::cout << "[ED] spawnCount = " << spawnCount_ << "\n";
+            continue;
+        }
+
+        if (section == Section::BEHAVIOUR)
+        {
+            Tokens t = tokenize(s);
+            std::cout << "[ED] tokens=" << t.size() << "\n";
+            if (t.empty()) continue;
+
+            timeline_.push_back(std::move(t));
+            ++loaded;
+        }
     }
 
-    std::cout << "[ED] scripts loaded keys: ";
-    for (auto& kv : scripts_) std::cout << kv.first << "(" << kv.second.lines.size() << ") ";
-    std::cout << "\n";
+    std::cout << "[ED] timeline loaded lines: " << timeline_.size() << "\n";
+    std::cout << "[ED] spawn count: " << spawnCount_ << "\n";
+    std::cout << "[EnemyDirector] Loaded " << loaded << " behaviour lines.\n";
 
-    std::cout << "[EnemyDirector] Loaded " << loaded << " instruction lines.\n";
-    return loaded > 0;
+    return spawnCount_ > 0 || loaded > 0;
+}
+
+int EnemyDirector::getSpawnCount() const
+{
+    return spawnCount_;
 }
 
 void EnemyDirector::bindActor(const std::string& actorId, Entity e)
@@ -90,19 +134,9 @@ void EnemyDirector::bindActor(const std::string& actorId, Entity e)
     idToEntity_[actorId] = e;
     entityToId_[e] = actorId;
 
-    // ensure entry exists
-    (void)scripts_[actorId];
-
     std::cout << "[ED] bindActor " << actorId << " -> entity " << e << "\n";
 }
 
-bool EnemyDirector::getActorIdFromEntity(Entity e, std::string& outId) const
-{
-    auto it = entityToId_.find(e);
-    if (it == entityToId_.end()) return false;
-    outId = it->second;
-    return true;
-}
 
 void EnemyDirector::update(ECS::Registry& ecs,
     PhaseSystem::GameBoardState& gbs,
@@ -110,90 +144,85 @@ void EnemyDirector::update(ECS::Registry& ecs,
     Grid::GameBoard& board,
     Entity playerID)
 {
-    // Enemy turn started
+    (void)gbs;
+
+    if (timeline_.empty()) return;
+
+    Entity cur = tbs.current();
+    if (cur == NULL_INDEX) return;
+
+    // If it is player's turn, reset the latch and do nothing
+    if (cur == playerID)
+    {
+        hordeTurnConsumed_ = false;
+        return;
+    }
+
+    // If we already processed this enemy turn, do nothing
+    if (hordeTurnConsumed_)
+        return;
+
+    // Enemy turn just began, consume it once
     hordeTurnConsumed_ = true;
 
-    // infinite loop guard
-    // stops the game from freezing for any bugs related to turn passing
-    const size_t guardMax = 64;
+    const size_t guardMax = 128;
     size_t guard = 0;
 
-    // Process enemies in initiative order until we reach player
-    while (tbs.current() != playerID && guard++ < guardMax)
+    std::cout << "\n[ED] ===== HORDE TIMELINE BEGIN =====\n";
+
+    while (guard++ < guardMax)
     {
-        Entity cur = tbs.current();
-        if (cur == NULL_INDEX) return;
+        if (timelineIp_ >= timeline_.size())
+            timelineIp_ = 0;
 
-        std::cout << "\n[ED] ===== Horde step =====\n";
+        const Tokens& cmd = timeline_[timelineIp_];
 
-        // =============== SKIPPING CONDITIONS ==================
-        // find actor id
-        std::string actorId;
-        if (!getActorIdFromEntity(cur, actorId))
+        std::cout << "[ED] cmd: ";
+        for (auto const& s : cmd) std::cout << s << ' ';
+        std::cout << "\n";
+
+        // STOP ends this horde chunk
+        if (cmd.size() == 1 && cmd[0] == "STOP")
         {
-            std::cout << "[ED] NO actorId binding for entity " << cur << " (skipping)\n";
-            tbs.next(ecs);
+            ++timelineIp_;
+            std::cout << "[ED] STOP hit. End of horde chunk.\n";
+            break;
+        }
+
+        // malformed line
+        if (cmd.size() < 2)
+        {
+            std::cout << "[ED] malformed line, skipping.\n";
+            ++timelineIp_;
             continue;
         }
 
-        // find script lines for that actor
-        auto sit = scripts_.find(actorId);
-        if (sit == scripts_.end() || sit->second.lines.empty())
+        const std::string& actorId = cmd[0];
+
+        auto it = idToEntity_.find(actorId);
+        if (it == idToEntity_.end())
         {
-            std::cout << "[ED] No script lines for actorId=" << actorId << " (skipping)\n";
-            tbs.next(ecs);
+            std::cout << "[ED] no bound entity for actorId=" << actorId << "\n";
+            ++timelineIp_;
             continue;
         }
-        //============= END OF SKIPPING CONDITIONS ===========
 
-        ScriptState& ss = sit->second;
+        Entity actor = it->second;
 
-        std::cout << "[ED] Acting actorId=" << actorId
-            << " ip=" << ss.ip
-            << " total=" << ss.lines.size() << "\n";
-
-        bool foundSTOP = false;
-        size_t safety = 0;
-        const size_t maxSteps = ss.lines.size();
-
-        // Execute commands until STOP
-        while (!foundSTOP && safety < maxSteps)
+        if (cmd[1] == "MOVE")
         {
-            if (ss.ip >= ss.lines.size()) ss.ip = 0;
-
-            const Tokens& cmd = ss.lines[ss.ip];
-
-            std::cout << "[ED] cmd: ";
-            for (auto const& s : cmd) std::cout << s << ' ';
-            std::cout << "\n";
-
-            if (cmd.size() >= 2 && cmd[1] == "MOVE")
-                execMOVE(ecs, board, cur, playerID, cmd);
-            else
-                std::cout << "[EnemyDirector] Unknown verb: "
-                << (cmd.size() >= 2 ? cmd[1] : "?") << "\n";
-
-            for (const std::string& tok : cmd)
-                if (tok == "STOP") { foundSTOP = true; break; }
-
-            ss.ip++;
-            safety++;
+            execMOVE(ecs, board, actor, playerID, cmd);
+        }
+        else
+        {
+            std::cout << "[ED] unknown verb: " << cmd[1] << "\n";
         }
 
-
-        // guard in case the LOOP does not have a STOP, auto stops at last instruction
-        if (!foundSTOP)
-        {
-            std::cout << "[EnemyDirector] WARNING: No STOP found for " << actorId
-                << " within one script loop; forcing end.\n";
-        }
-
-        // advance to next participant
-        tbs.next(ecs);
+        ++timelineIp_;
     }
 
     if (guard >= guardMax)
-        std::cout << "[EnemyDirector] ERROR: guardMax hit (turn loop).\n";
+        std::cout << "[ED] ERROR: guardMax hit while processing timeline.\n";
 }
 
 void EnemyDirector::execMOVE(ECS::Registry& ecs,

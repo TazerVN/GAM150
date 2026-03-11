@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+#include "../system/CardConstants.h"
 
 enum class JSON_RET
 {
@@ -10,9 +12,12 @@ enum class JSON_RET
 
 struct JSON_CARD
 {
-	char* name;
-	int targetting;
-	int card_tag;
+	int id;
+	std::string name;
+	float cost;
+	Targetting targetting;
+	CardTag card_tag;
+	CardType card_type;
 	float value;
 	float range;
 	float aoe;

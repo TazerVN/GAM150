@@ -2,7 +2,7 @@
 #include <vector>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-#include "../system/CardFunctions.h"
+#include "../system/CardSystem.h"
 #include "../util/Event.h"
 #include "../system/PhaseSystem.h"
 #include "AEEngine.h"
@@ -95,5 +95,7 @@ namespace TBS
 
 		void update_GBPhasetriggered();
 		void update_GBPhaseUpdate();
+
+		void end_player_resolution();
 	};
 }

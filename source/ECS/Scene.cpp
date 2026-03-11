@@ -1,7 +1,26 @@
 #include "Scene.h"
 #include "../factory/EntityFactory.h"
 
+
+// STEVEN HERE IS THE HELPER - Zejin
+Entity spawnEnemyAndBind(ECS::Registry& ecs,
+	MeshFactory& mf,
+	TextureFactory::TextureFactory& tf,
+	EnemyDirector& enemyDirector,
+	const std::string& actorId,
+	const char* name,
+	AEVec2 pos,
+	Entity fa,
+	Entity sa)
+{
+	Entity e = System::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, tf.getTextureChar(1));
+	enemyDirector.bindActor(actorId, e);
+	return e;
+}
+
+
 void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+
 {
 	cameraSys = &cam;
 	cardSys = &cs;
@@ -11,10 +30,6 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 
 	//must init appoint ecs first
 	ecs = &ECS;
-	Entity sa = cardSys->get_card(CardSystemNames::SLASH);
-	Entity fa = cardSys->get_card(CardSystemNames::SLASH_PLUS);
-	Entity ss = cardSys->get_card(CardSystemNames::SHOOT);
-	Entity blackHole = cardSys->get_card(CardSystemNames::SHOOT_PLUS);
 	//add cards to the player
 	Entity temp; 
 	
@@ -22,6 +37,10 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	temp = System::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
+	//Create Horde
+	Entity horde = ecs->createEntity();
+	ecs->addComponent(horde, Components::Name{ "Horde" });
+	ecs->addComponent(horde, Components::TurnBasedStats{});
 
 	/*for (int i = 0; i < 8; ++i)
 	{
@@ -33,28 +52,57 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	{
 		System::add_card_player_deck(*ecs, temp, blackHole);
 	}*/
-	System::add_card_player_deck(*ecs, temp, blackHole);
-	System::add_card_player_deck(*ecs, temp, sa);
+	System::add_card_player_deck(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));
+	System::add_card_player_deck(*ecs, temp, cardSys->get_card(CardSystemNames::BLACK_HOLE));
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
 	//Holt shit the enemy script is so cool VVV
 
+	////Add enemy0
+	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E0", "Enemy0", { 100.f, 100.f }, fa, sa);
+	//add_entity(temp);
+
+	////Add enemy1
+	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E1", "Enemy1", { 200.f, 100.f }, fa, sa);
+	//add_entity(temp);
+
+	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
+	{
+		std::string actorId = "E" + std::to_string(i);
+		std::string enemyName = "Enemy" + std::to_string(i);
+
+		// temporary spawn position logic
+		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
+
+		temp = System::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1));
+
+		add_entity(temp);                  // adds to scene/world
+		enemyDirector.bindActor(actorId, temp);
+	}
+
+	//New Vector for TBS
+	std::vector<Entity> tbsParticipants;
+	tbsParticipants.push_back(playerID);
+	tbsParticipants.push_back(horde);
+
+	TBSys.init(*ecs, eventPool, BattleGrid, gbs, cs, ch, tbsParticipants);
+
 	//Add enemy0
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0));
-	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
-	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
+	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add fire attack
+	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
-	System::add_card_player_hand(*ecs, temp, fa);	//add fire attack
-	System::add_card_player_hand(*ecs, temp, sa);	//add sword attack
+	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add fire attack
+	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
-	TBSys.init(*ecs,eventPool, BattleGrid, gbs, *cardSys, ch ,entities);
+	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cs, ch ,entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
 
 	
@@ -74,6 +122,12 @@ void Scene::update()
 	TBSys.update(*ecs);
 	enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
 	//==================Handle Events===============================
+
+	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
+	{
+		unhighlight_cells(BattleGrid);
+		eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered = false;
+	}
 
 	if (eventPool.template_pool[HIGHLIGHT_EVENT].triggered)
 	{
@@ -101,12 +155,6 @@ void Scene::update()
 		}
 
 		eventPool.template_pool[HIGHLIGHT_EVENT].triggered = false;
-	}
-
-	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
-	{
-		unhighlight_cells(BattleGrid);
-		eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered = false;
 	}
 
 	//==============================================================
