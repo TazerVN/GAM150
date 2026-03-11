@@ -23,49 +23,32 @@ public:
     void bindActor(const std::string& actorId, Entity e);
 
     // Called once per frame in Scene::update
-    // exceute at most 1 instruciton per enemy turn/phase
+    // Execute one horde chunk until a STOP line is reached
     void update(ECS::Registry& ecs,
         PhaseSystem::GameBoardState& gbs,
         TBS::TurnBasedSystem& tbs,
         Grid::GameBoard& board,
         Entity playerID);
 
-private:
-    // Assign instructions and ID's to entities as per the script
-    struct ScriptState {
-        std::vector<Tokens> lines;
-        size_t ip = 0; // instruction pointer
-    };
+    // Number of enemies to spawn for this level
+    int getSpawnCount() const;
 
-    std::unordered_map<std::string, ScriptState> scripts_;      // "E0" -> lines
+private:
+    // Number of enemies listed in the SPAWN section
+    int spawnCount_ = 0;
+
+    // Global behaviour timeline read in exact file order
+    std::vector<Tokens> timeline_;
+    size_t timelineIp_ = 0;
+    bool hordeTurnConsumed_ = 0;
+
+    // Actor ID binding stuff
     std::unordered_map<std::string, Entity> idToEntity_;        // "E0" -> entity
     std::unordered_map<Entity, std::string> entityToId_;        // entity -> "E0"
-
-    // latch to prevent executing every frame for same current enemy
-    Entity lastActorExecuted_ = NULL_INDEX;
 
 private:
     static bool isCommentOrEmpty(const std::string& line);
     static Tokens tokenize(const std::string& line);
-
-    bool getActorIdFromEntity(Entity e, std::string& outId) const;
-    bool hordeTurnConsumed_ = false;
-
-    size_t lastRoundSeen_ = 0;
-    Entity lastCurSeen_ = NULL_INDEX;
-
-    struct QueuedAction
-    {
-        Entity actor = NULL_INDEX;
-        std::string actorId;
-        Tokens cmd;          // tokens should look like ["E0","MOVE","LEFT","STOP"]
-        bool stopAfter = false;
-        bool valid = false;
-    };
-
-    QueuedAction queued_;
-    bool hordeActive_ = false;     // horde's turn ?
-    bool yieldToPlayer_ = false;   // for STOP token; pass to player when token is STOP
 
     // ============== Command executors =============
 

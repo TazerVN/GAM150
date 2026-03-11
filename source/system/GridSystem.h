@@ -37,9 +37,12 @@ namespace Grid
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
-		std::array<std::array<bool, MAX_J>, MAX_I> walkable;
+
+		uint8_t walkable[MAX_I * MAX_J]{};
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
+
+		std::vector<Cell> path;
 
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;

@@ -559,9 +559,9 @@ namespace Grid
 		if (!ecs.getBitMask()[e].test(transID)) return;
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
-		transform->pos.y = transform->size.y / 2 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
-		transform->pos.y = transform->size.y / 2 + this->offset.y - (x + y) * CELL_HEIGHT / 2;
+		transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
 		transform->pos_onscreen = transform->pos;
 
 
@@ -576,6 +576,7 @@ namespace Grid
 
 	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
 	{
+		int start_i{}, start_j{};
 		//get player's position first
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -583,13 +584,22 @@ namespace Grid
 			{
 				if (this->pos[i][j] == e)
 				{
+					start_i = i;
+					start_j = j;
 					this->pos[i][j] = -1;
 
 					int dist = grid_dist_manhattan(i, j, x, y);
+
 					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 				}
 			}
 		}
+		Cell s{ start_i, start_j };
+		Cell g{ x,  y };
+
+		AStarResult res = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g);
+		this->path = res.path;
+
 		this->pos[x][y] = e;
 	}
 
@@ -654,6 +664,7 @@ namespace Grid
 				{ 
 					continue;
 				}
+
 				Entity e = this->pos[i][j];
 
 				if (!ecs.getBitMask()[e].test(transID)) return;
@@ -661,6 +672,7 @@ namespace Grid
 
 				transform = ecs.getComponent<Components::Transform>(e);
 				color = ecs.getComponent<Components::Color>(e);
+
 				transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
 				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos.y = transform->size.y / 3 + this->offset.y - (i + j) * CELL_HEIGHT / 4;

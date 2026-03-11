@@ -1,7 +1,26 @@
 #include "Scene.h"
 #include "../factory/EntityFactory.h"
 
+
+// STEVEN HERE IS THE HELPER - Zejin
+Entity spawnEnemyAndBind(ECS::Registry& ecs,
+	MeshFactory& mf,
+	TextureFactory::TextureFactory& tf,
+	EnemyDirector& enemyDirector,
+	const std::string& actorId,
+	const char* name,
+	AEVec2 pos,
+	Entity fa,
+	Entity sa)
+{
+	Entity e = System::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, tf.getTextureChar(1));
+	enemyDirector.bindActor(actorId, e);
+	return e;
+}
+
+
 void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+
 {
 	cameraSys = &cam;
 	cardSys = &cs;
@@ -18,6 +37,10 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	temp = System::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2));
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
+	//Create Horde
+	Entity horde = ecs->createEntity();
+	ecs->addComponent(horde, Components::Name{ "Horde" });
+	ecs->addComponent(horde, Components::TurnBasedStats{});
 
 	/*for (int i = 0; i < 8; ++i)
 	{
@@ -35,6 +58,35 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
 	//Holt shit the enemy script is so cool VVV
+
+	////Add enemy0
+	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E0", "Enemy0", { 100.f, 100.f }, fa, sa);
+	//add_entity(temp);
+
+	////Add enemy1
+	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E1", "Enemy1", { 200.f, 100.f }, fa, sa);
+	//add_entity(temp);
+
+	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
+	{
+		std::string actorId = "E" + std::to_string(i);
+		std::string enemyName = "Enemy" + std::to_string(i);
+
+		// temporary spawn position logic
+		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
+
+		temp = System::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1));
+
+		add_entity(temp);                  // adds to scene/world
+		enemyDirector.bindActor(actorId, temp);
+	}
+
+	//New Vector for TBS
+	std::vector<Entity> tbsParticipants;
+	tbsParticipants.push_back(playerID);
+	tbsParticipants.push_back(horde);
+
+	TBSys.init(*ecs, eventPool, BattleGrid, gbs, cs, ch, tbsParticipants);
 
 	//Add enemy0
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0));

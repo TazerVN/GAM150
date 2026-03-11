@@ -355,6 +355,22 @@ namespace TBS
 			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
 			std::string& name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;
+			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
+			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
+			ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+
+			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+
+			if (ecs.getBitMask()[participants[i]].test(hpID))
+			{
+				f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
+				std::cout << name << "'s HP : " << HP << " | " << std::endl;
+			}
+			else
+			{
+				std::cout << name << " (no HP)" << std::endl;
+			}
 		}
 	}
 
