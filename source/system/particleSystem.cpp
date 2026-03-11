@@ -50,17 +50,22 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 	Components::Color color{ 0.4f - 0.4f * AERandFloat(), 0.7f + 0.3f * AERandFloat(), 1.0f, AERandFloat()};
 	Components::Timer timer { AERandFloat() };
 	Components::Particle particle { 1.0f };
+	Components::Velocity vel{0.f, 0.f};
+
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
 	ecs.addComponent(id, color);
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, particle);
+	ecs.addComponent(id, vel);
+
+
 
 	Particlebuffer.push_back(id);
 
 }
 
-void Particle::ParticleSystem::spawn(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory& mf)
 {
 	int max_count = 200;
 	for(int i = 0; i < max_count; i++)
@@ -71,4 +76,14 @@ void Particle::ParticleSystem::spawn(ECS::Registry& ecs, MeshFactory& mf)
 		spawn_one(ecs, mf, lhs, rhs, 50.0f, 50.0f, 0.0f, 1);
 	}
 
+}
+
+void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf)
+{
+	int max_count = 200;
+	for (int i = 0; i < max_count; i++)
+	{
+		spawn_one(ecs, mf, 0.f, 0.f, 25.0f, 25.0f, 0.0f, 1);
+
+	}
 }

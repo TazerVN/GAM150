@@ -22,7 +22,20 @@ namespace Particle
 
 		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 
-		void spawn(ECS::Registry& ecs, MeshFactory& mf);
+		void particleDigitize(ECS::Registry& ecs, MeshFactory& mf);
+		/*
+		* Use in this:
+		* - When enemy dies, spawn this particle
+		* - WHen draw card, spawn this particle to as if it visually creating the card
+		*/
+		
+
+		void particleBurst(ECS::Registry& ecs, MeshFactory& mf);
+		/*
+		* Use in this:
+		* - When enemy dies, spawn this particle
+		* - WHen draw card, spawn this particle to as if it visually creating the card
+		*/
 
 	private:
 		std::vector<Entity> Particlebuffer;
