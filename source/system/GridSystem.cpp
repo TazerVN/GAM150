@@ -408,7 +408,7 @@ namespace Grid
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
 		c->d_color.b = c->c_color.b;
-		t->seconds = 0;
+		t->seconds = 0.5f;
 
 		if (character != -1)
 		{
@@ -498,7 +498,7 @@ namespace Grid
 			}
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
-		Components::Timer timer{ 2.f , 0.f, true, true};
+		Components::Timer timer{ 1.f , 0.5f, true, true};
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -658,10 +658,10 @@ namespace Grid
 				transform = ecs.getComponent<Components::Transform>(e);
 				color = ecs.getComponent<Components::Color>(e);
 
-				/*transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
+				transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
 				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos.y = transform->size.y / 3 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
-				transform->pos_onscreen = transform->pos;*/
+				transform->pos_onscreen = transform->pos;
 
 
 				
