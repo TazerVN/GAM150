@@ -125,6 +125,11 @@ namespace Components
 		std::function<void()> offHover;
 	};
 
+	struct Velocity
+	{
+		AEVec2 vel{ 0.f,0.f };
+	};
+
 	struct Particle
 	{
 		AEVec2	velocity;
