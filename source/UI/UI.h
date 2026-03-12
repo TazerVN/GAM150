@@ -21,6 +21,7 @@ namespace UI
 		Entity ui_hp_bar(Scene& scene, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 		Entity ui_button(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func);
 		Entity ui_text(Scene& scene, TextureFactory::TextureFactory& tf, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, const char* a);
+		Entity ui_button_texture(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func);
 	};
 
 }

@@ -3,8 +3,22 @@
 namespace Camera
 {
 
+	CameraSystem::CameraSystem() : buffer_x{ 0 }, buffer_y{ 0 }, buffer_zoom{1.f}
+	{
+	}
+
 	void updateCameraPos(Camera::CameraSystem& cam, ECS::Registry& ecs)
 	{
+
+		s32 scroll_buffer{1};
+		AEInputMouseWheelDelta(&scroll_buffer);
+
+		if(scroll_buffer != 0.0f)
+		{
+			cam.buffer_zoom += scroll_buffer/10.f;
+			std::cout << scroll_buffer;
+		}
+		
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(cam.id());
 
 		s32 mousex, mousey;
@@ -25,7 +39,11 @@ namespace Camera
 		transform->pos.x = AEClamp(transform->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 		transform->pos.y = AEClamp(transform->pos.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
+		transform->size.x = cam.buffer_zoom;
+		transform->size.y = cam.buffer_zoom;
+
 	}
+
 
 	void setOrignalDragPos(Camera::CameraSystem& cam, ECS::Registry& ecs){
 		if (AEInputCheckTriggered(AEVK_MBUTTON))
@@ -54,7 +72,7 @@ namespace Camera
 	void CameraSystem::init(ECS::Registry& ecs)
 	{
 		this->camera_id = ecs.createEntity();
-		Components::Transform trans{ {0,0}, {0,0} ,{AEGfxGetWindowWidth(), AEGfxGetWindowHeight()}, {AEGfxGetWindowWidth(), AEGfxGetWindowHeight()},0.0f };
+		Components::Transform trans{ {0,0}, {0,0} ,{1.f, 1.f}, {AEGfxGetWindowWidth(), AEGfxGetWindowHeight()},0.0f };
 		Components::Input input(AEVK_MBUTTON, true, [this, &ecs] { 
 			setOrignalDragPos(*this, ecs);
 			updateCameraPos(*this, ecs);
@@ -82,28 +100,6 @@ namespace Camera
 		Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
 
 
-		/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
-		{
-			if ((it->first & objMask) == objMask)
-			{
-				for (Entity ent : it->second)
-				{
-					if (!ecs.getBitMask()[ent].test(transID)) continue;
-					Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
-					Components::TagClass* tag = ecs.getComponent<Components::TagClass>(ent);
-
-
-					if (tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
-					{
-						transform->pos_onscreen.x = transform->pos.x + camera->pos.x;
-						transform->pos_onscreen.y = transform->pos.y + camera->pos.y;
-					}
-
-
-				}
-			}
-
-		}*/
 	}
 
 }

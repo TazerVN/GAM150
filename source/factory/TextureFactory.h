@@ -15,6 +15,7 @@ namespace TextureFactory
 		std::vector<AEGfxTexture*> card;
 		std::vector<AEGfxTexture*> floor;
 		std::vector<AEGfxTexture*> character;
+		std::vector<AEGfxTexture*> ui;
 		s8 fontID;
 
 		public:
@@ -24,10 +25,12 @@ namespace TextureFactory
 		AEGfxTexture* getTextureCard(CardTextureID id);
 		AEGfxTexture* getTextureFloor(s8 id);
 		AEGfxTexture* getTextureChar(s8 id);
+		AEGfxTexture* getTextureUI(s8 id);
 		s8 getFontID();
 		void addTextureCard(AEGfxTexture* pTex);
 		void addTextureFloor(AEGfxTexture* pTex);
 		void addTextureChar(AEGfxTexture* pTex);
+		void addTextureUI(AEGfxTexture* pTex);
 		
 	};
 }

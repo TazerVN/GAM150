@@ -12,7 +12,7 @@ namespace UI
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 
-		Entity end_b = ui_button(scene.getECS(), mf, 0.8F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 200, 0.3 * 200, 0, 2,
+		Entity end_b = ui_button_texture(scene.getECS(), mf, tf, 0.7F * AEGfxGetWinMaxX(), -0.65F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 2,
 			// the lambda function
 								 [&scene]
 								 {
@@ -102,7 +102,7 @@ namespace UI
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 
 			hp_child->c_value = hp_parent->c_value / hp_parent->max_value * hp_child->max_value;
-			transform_child->size.x = hp_child->c_value / hp_child->max_value * transform_child->size_col.x;
+			transform_child->size.x = hp_child->c_value / hp_child->max_value * transform_child->size_og.x;
 		}
 
 	}
@@ -125,6 +125,36 @@ namespace UI
 		return id;
 	}
 
+	void button_onHover(ECS::Registry& ecs, Entity id)
+	{
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.2f;
+
+		c->d_color.r = minimum + (1.f - minimum) * lerp;
+		c->d_color.b = minimum + (1.f - minimum) * lerp;
+		c->d_color.g = minimum + (1.f - minimum) * lerp;
+
+	}
+
+
+	void button_offHover(ECS::Registry& ecs, Entity id)
+	{
+		Components::Color* c = ecs.getComponent<Components::Color>(id);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+		c->d_color = c->c_color;
+		timer->seconds = 0.5f;
+
+	}
+
 	Entity UIManager::ui_button(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
 
 	{
@@ -133,13 +163,38 @@ namespace UI
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 0.5, 0.5f, 0.5f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, nullptr, nullptr);	//add input system for grid
+		Components::Input in(AEVK_LBUTTON, true, func, nullptr, nullptr, 10);	//add input system for grid
 		Components::TagClass tag{Components::Tag::UI};	//add input system for grid
+		Components::Timer timer{ 1.f, 0.f, true, true };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, in);
 		ecs.addComponent(id, tag);
+		ecs.addComponent(id, timer);
+
+
+		return id;
+	}
+
+	Entity UIManager::ui_button_texture(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf , f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
+	{
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
+		Components::Texture texture{tf.getTextureUI(0)};
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id]{ button_onHover(ecs, id);}, [&ecs, id] { button_offHover(ecs, id); }, 10);	//add input system for grid
+		Components::TagClass tag{Components::Tag::UI};	//add input system for grid
+		Components::Timer timer{1.f, 0.5f, true, true};
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, texture);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, in);
+		ecs.addComponent(id, tag);
+		ecs.addComponent(id, timer);
 
 		return id;
 	}

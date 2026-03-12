@@ -21,9 +21,14 @@ namespace TextureFactory
 		{
 			AEGfxTextureUnload(pTex);
 		}
+		for (AEGfxTexture* pTex : this->ui)
+		{
+			AEGfxTextureUnload(pTex);
+		}
 	}
 
 	void TextureFactory::textureInit(){
+		//CARDS
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardSample.png"));	//0
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardDisplay.png"));	//1
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash.png"));	//2
@@ -38,12 +43,23 @@ namespace TextureFactory
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_black_hole.png"));
 		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_aura_farm.png"));
 
-
+		//FLOOR
 		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
 
+		//CHAR
 		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy1.png"));
 		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy2.png"));
 		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet.png"));
+
+		//UI
+
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/skillWindow.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/turnCounter.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));
+
+
+		//MIS
 		this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
 	}
 
@@ -60,6 +76,12 @@ namespace TextureFactory
 	{
 		return this->character.at(id);
 	}
+	AEGfxTexture* TextureFactory::getTextureUI(s8 id)
+	{
+		return this->ui.at(id);
+	}
+
+
 
 	void TextureFactory::addTextureCard(AEGfxTexture* pTex)
 	{
@@ -72,6 +94,10 @@ namespace TextureFactory
 	void TextureFactory::addTextureChar(AEGfxTexture* pTex)
 	{
 		this->character.push_back(pTex);
+	}
+	void TextureFactory::addTextureUI(AEGfxTexture* pTex)
+	{
+		this->ui.push_back(pTex);
 	}
 
 	s8 TextureFactory::getFontID(){

@@ -422,7 +422,7 @@ namespace Grid
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
 		c->d_color.b = c->c_color.b;
-		t->seconds = 0;
+		t->seconds = 0.5f;
 
 		if (character != -1)
 		{
@@ -513,7 +513,7 @@ namespace Grid
 			}
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
-		Components::Timer timer{ 2.f , 0.f, true, true};
+		Components::Timer timer{ 1.f , 0.5f, true, true};
 
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);

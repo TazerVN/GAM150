@@ -151,7 +151,7 @@ namespace CardInteraction
 	void CardHand::update_pos(ECS::Registry& ecs, f32 dt)
 	{
 
-		Components::Transform* cardhand_pos = ecs.getComponent<Components::Transform>(this->id);
+		Components::Transform* cardhand_t = ecs.getComponent<Components::Transform>(this->id);
 
 		int i = 0;
 		for (Entity eID : this->curr_hand_display)
@@ -159,10 +159,15 @@ namespace CardInteraction
 			int speed = 500;
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(eID);
 			Components::Input* in = ecs.getComponent<Components::Input>(eID);
-			Components::Transform* transform = ecs.getComponent<Components::Transform>(eID);
+			Components::Transform* card_t = ecs.getComponent<Components::Transform>(eID);
 
-			f32 target_x = cardhand_pos->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_pos->size_col.x - cardhand_pos->size_col.x / 2 + transform->size_col.x / 2;
-			f32 target_y = cardhand_pos->pos_onscreen.y;
+			int max_card = 6;
+			f32 container_width_ratio = curr_hand_display.size() / (f32)max_card >= 1.f ? 1.f : curr_hand_display.size() / (f32)max_card;
+
+			cardhand_t->size.x = container_width_ratio * cardhand_t->size_og.x;
+
+			f32 target_x = cardhand_t->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_t->size.x - cardhand_t->size.x / 2 + card_t->size_og.x/2;
+			f32 target_y = cardhand_t->pos_onscreen.y;
 
 			/*if(transform->pos.x < target_x) transform->pos.x += dt * speed;
 			else transform->pos.x -= dt * speed;
@@ -170,8 +175,9 @@ namespace CardInteraction
 			if (transform->pos.y < target_y) transform->pos.y += dt * speed;
 			else transform->pos.y -= dt * speed;*/
 
-			transform->pos.x = target_x;
-			transform->pos.y = target_y;
+			card_t->pos.x = target_x;
+			card_t->pos.y = target_y;
+			card_t->pos_onscreen = card_t->pos;
 
 
 			i++;
@@ -220,7 +226,7 @@ namespace CardInteraction
 
 			Entity eid = ecs.createEntity();
 
-			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 1, texture, 
+			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 10, texture, 
 				[this, eid]
 				{ 
 					this->activate_card(eid); 
@@ -268,7 +274,6 @@ namespace CardInteraction
 	void CardHand::reset_hand()
 	{
 		this->reset = true;
-		std::cout << "this address: " << this << std::endl;
 
 	}
 
@@ -304,6 +309,8 @@ namespace CardInteraction
 	void card_onHover(ECS::Registry& ecs, Entity id)
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
+		Components::Mesh* m = ecs.getComponent<Components::Mesh>(id);
+		Components::Input* i = ecs.getComponent<Components::Input>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
@@ -311,11 +318,16 @@ namespace CardInteraction
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
+		m->z = 11;
+		i->z = 11;
 
 		c->d_color.r = minimum + (1.f - minimum) * lerp;
 		c->d_color.b = minimum + (1.f - minimum) * lerp;
 		c->d_color.g = minimum + (1.f - minimum) * lerp;
-		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size.y / 4;
+		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size_og.y / 4;
+
+		t->size.y = t->size_og.y * 1.2f;
+		t->size.x = t->size_og.x * 4.f / 3.f * 1.2f;
 	}
 
 
@@ -324,15 +336,21 @@ namespace CardInteraction
 	{
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-
+		Components::Mesh* m = ecs.getComponent<Components::Mesh>(id);
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+
+		Components::Input* i = ecs.getComponent<Components::Input>(id);
+
+		m->z = 10;
+		i->z = 10;
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
 		c->d_color = c->c_color;
-		t->pos_onscreen.x = t->pos.x;
 		t->pos_onscreen.y = t->pos.y + minimum + (1.f - minimum) * lerp * t->size.y / 4;
+		t->size.y = t->size_og.y;
+		t->size.x = t->size_og.x * 4.f/3.f;
 		timer->seconds = 0;
 	}
 

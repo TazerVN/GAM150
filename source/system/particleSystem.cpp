@@ -20,8 +20,8 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 			{
 				if (!ecs.getBitMask()[ent].test(transID)) continue;
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
-				transform->pos_onscreen.y -= dt * AERandFloat() * 10 ;
-				transform->pos_onscreen.x += 0.0f;
+				transform->pos_onscreen.y += dt * AERandFloat() * 10 ;
+				//transform->pos_onscreen.x = 0.0f;
 				Components::Color* color = ecs.getComponent<Components::Color>(ent);
 				//color->d_color.b = 0.2f * AERandFloat();
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
@@ -36,20 +36,12 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 }
 
 
-Entity Particle::ParticleSystem::create_emitter(ECS::Registry& ecs,
-	f32 x, f32 y,
-	f32 spawnRate,
-	f32 lifetime,
-	f32 r, f32 g, f32 b, f32 a)
-{
-	return 0;
-}
 
 //void Particle::ParticleSystem::recycle(Entity e)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z ,f32 velX, f32 velY)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -58,25 +50,43 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 	Components::Color color{ 0.4f - 0.4f * AERandFloat(), 0.7f + 0.3f * AERandFloat(), 1.0f, AERandFloat()};
 	Components::Timer timer { AERandFloat() };
 	Components::Particle particle { 1.0f };
+	Components::Velocity vel{0.f, 0.f};
+
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
 	ecs.addComponent(id, color);
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, particle);
+	ecs.addComponent(id, vel);
+
+
 
 	Particlebuffer.push_back(id);
 
 }
 
-void Particle::ParticleSystem::spawn(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory& mf)
 {
 	int max_count = 200;
 	for(int i = 0; i < max_count; i++)
 	{
-		f32 lhs = -400.0f * AERandFloat(), rhs = 400.0f * AERandFloat();
+		f32 x = -400.0f * AERandFloat(), y = 400.0f * AERandFloat();
 		
 
-		spawn_one(ecs, mf, lhs, rhs, 50.0f, 50.0f, 0.0f, 1);
+		spawn_one(ecs, mf, x, y, 50.0f, 50.0f, 0.0f, 1, 0.0f, 0.0f);
 	}
 
+}
+
+void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf)
+{
+	int max_count = 50;
+	for (int i = 0; i < max_count; i++)
+	{
+		// Generate random velocity here, pass it in
+		f32 velX = (AERandFloat() * 400.f) - 200.f;
+		f32 velY = (AERandFloat() * 400.f) - 200.f;
+
+		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, velX, velY);
+	}
 }

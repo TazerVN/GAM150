@@ -78,7 +78,7 @@ namespace Components
 		AEVec2 pos{ 0.f,0.f };
 		AEVec2 pos_onscreen{ 0.f,0.f };
 		AEVec2 size{ 0,0 };
-		AEVec2 size_col{ 0,0 };
+		AEVec2 size_og{ 0,0 };
 		AEMtx33 mtx{};
 		float rotation{ 0.f };
 	};
@@ -123,6 +123,11 @@ namespace Components
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;
+	};
+
+	struct Velocity
+	{
+		AEVec2 vel{ 0.f,0.f };
 	};
 
 	struct Particle

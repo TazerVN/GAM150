@@ -10,7 +10,8 @@ namespace Camera{
 		Entity camera_id{};
 		public:
 		f32 buffer_x, buffer_y;
-		CameraSystem() = default;
+		f32 buffer_zoom;
+		CameraSystem();
 		void init(ECS::Registry& ecs);
 		void update(ECS::Registry& ecs);
 		Entity id() const;

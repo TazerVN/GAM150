@@ -95,6 +95,7 @@ namespace RenderSystem
 
 			f32 camera_x = cam_t->pos.x;
 			f32 camera_y = cam_t->pos.y;
+			f32 zoom = cam_t->size.x;
 
 			if (ecs.getBitMask()[current_e].test(tagID))
 			{
@@ -103,6 +104,7 @@ namespace RenderSystem
 				{
 					camera_x = 0;
 					camera_y = 0;
+					zoom = 1.f;
 				}
 			}
 
@@ -110,7 +112,10 @@ namespace RenderSystem
 			Components::Color* color = ecs.getComponent<Components::Color>(current_e);
 
 			AEVec2 new_pos;
-			AEVec2Set(&new_pos, transform->pos_onscreen.x - camera_x, transform->pos_onscreen.y - camera_y);
+			AEVec2Set(&new_pos, (transform->pos_onscreen.x - camera_x) * zoom, (transform->pos_onscreen.y - camera_y) * zoom);
+			AEVec2 new_size;
+			AEVec2Set(&new_size, transform->size.x * zoom, transform->size.y * zoom);
+
 
 			if (ecs.getBitMask()[current_e].test(meshID))
 			{
@@ -127,21 +132,21 @@ namespace RenderSystem
 					AEGfxSetTransparency(1.0f);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, new_pos, transform->size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, new_size, &transform->mtx);
 				}
 				else
 				{
 					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, new_pos, transform->size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, new_size, &transform->mtx);
 				}
 			}
 			else if (ecs.getBitMask()[current_e].test(textID))
 			{
 				Components::Text* text = ecs.getComponent<Components::Text>(current_e);
 
-				AEGfxPrint(text->fontID, text->text, new_pos.x, new_pos.y, transform->size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
+				AEGfxPrint(text->fontID, text->text, new_pos.x, new_pos.y, new_size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 			}
 
 		}
