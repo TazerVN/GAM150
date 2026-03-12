@@ -18,6 +18,7 @@
     <ClCompile Include="source\system\CombatSystem.cpp" />
     <ClCompile Include="source\system\EnemyDirector.cpp" />
     <ClCompile Include="source\system\particleSystem.cpp" />
+    <ClCompile Include="source\system\velocitySystem.cpp" />
     <ClCompile Include="source\util\BST.cpp" />
     <ClCompile Include="source\UI\cardInformation.cpp" />
     <ClCompile Include="source\system\PhaseSystem.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="source\system\CombatSystem.h" />
     <ClInclude Include="source\system\EnemyDirector.h" />
     <ClInclude Include="source\system\particleSystem.h" />
+    <ClInclude Include="source\system\velocitySystem.h" />
     <ClInclude Include="source\util\BST.h" />
     <ClInclude Include="source\UI\cardInformation.h" />
     <ClInclude Include="source\system\PhaseSystem.h" />

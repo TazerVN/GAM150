@@ -1,4 +1,4 @@
-#include "particleSystem.h"
+﻿#include "particleSystem.h"
 #include "../ECS/Components.h"
 
 void Particle::ParticleSystem::init(ECS::Registry& ecs, MeshFactory& mf, size_t poolSize)
@@ -20,16 +20,31 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 			{
 				if (!ecs.getBitMask()[ent].test(transID)) continue;
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
-				transform->pos_onscreen.y += dt * AERandFloat() * 10 ;
+				//transform->pos_onscreen.y += dt * 1.0f;
 				//transform->pos_onscreen.x = 0.0f;
 				Components::Color* color = ecs.getComponent<Components::Color>(ent);
 				//color->d_color.b = 0.2f * AERandFloat();
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
+				Components::Particle* particle = ecs.getComponent<Components::Particle>(ent);
 				if (timer->start == false)
 				{
 					ecs.destroyEntity(ent);
 				}
-				
+
+				switch (particle->type) {
+				case Components::ParticleType::Digitalize:
+					transform->pos_onscreen.y += dt * 1.0f;
+					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+					break;
+
+				case Components::ParticleType::Burst:
+					//transform->pos_onscreen.x += dt * 1.0f;
+					//transform->pos_onscreen.y += dt * 1.0f;
+					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+					break;
+
+				}
+
 			}
 		}
 	}
@@ -41,16 +56,18 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z ,f32 velX, f32 velY)
+void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
 	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
-	Components::Color color{ 0.4f - 0.4f * AERandFloat(), 0.7f + 0.3f * AERandFloat(), 1.0f, AERandFloat()};
-	Components::Timer timer { AERandFloat() };
-	Components::Particle particle { 1.0f };
-	Components::Velocity vel{0.f, 0.f};
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_CIRCLE), COLOR, MESH_CIRCLE, z };
+	Components::Color color{ r, g, b, alpha };
+	Components::Timer timer{ AERandFloat() };
+	Components::Particle particle{ type };
+	Components::Velocity vel{ 0.f, 0.f };
+	vel.vel.x = velX;
+	vel.vel.y = velY;
 
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
@@ -67,26 +84,53 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 
 void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory& mf)
 {
-	int max_count = 200;
-	for(int i = 0; i < max_count; i++)
+	int max_count = 100;
+	for (int i = 0; i < max_count; i++)
 	{
-		f32 x = -400.0f * AERandFloat(), y = 400.0f * AERandFloat();
-		
+		//f32 x = -250.0f * AERandFloat(), y = 250.0f * AERandFloat(); // spread position
+		f32 x = -100.0f * AERandFloat(), y = 100.0f * AERandFloat();
 
-		spawn_one(ecs, mf, x, y, 50.0f, 50.0f, 0.0f, 1, 0.0f, 0.0f);
+		f32 r = 0.4f - 0.4f * AERandFloat();
+
+		f32 g1 = 1.0f;
+		f32 g2 = 0.7f + 0.3f * AERandFloat();
+
+		f32 b1 = 0.7f + 0.3f * AERandFloat();
+		f32 b2 = 1.0f;
+
+		f32 alpha_No = 1.0f;
+		f32 alpha_Rand = AERandFloat();
+
+		spawn_one(ecs, mf, x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
+		spawn_one(ecs, mf, x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
+		//spawn_one(ecs, mf, x, y, 35.0f, 50.0f, 0.4f, 10, r, g2, b2, alpha_Rand, 1.0f, 1.0f);
+
+
+
 	}
 
 }
 
 void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf)
 {
-	int max_count = 50;
+	// For testing
+	int   max_count = 500;
+	f32   speed = 200.f;
+	
 	for (int i = 0; i < max_count; i++)
 	{
-		// Generate random velocity here, pass it in
-		f32 velX = (AERandFloat() * 400.f) - 200.f;
-		f32 velY = (AERandFloat() * 400.f) - 200.f;
+		f32 angle = (f32(i) / f32(max_count)) * 2.0f * PI;
 
-		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, velX, velY);
+		// Velocity decided HERE — spawn_one just receives it
+		f32 velX = AECos(angle) * speed;
+		f32 velY = AESin(angle) * speed;
+
+		f32 speedVariation = 0.8f + AERandFloat() * 0.4f;
+		velX *= speedVariation;
+		velY *= speedVariation;
+
+
+
+		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
 	}
 }

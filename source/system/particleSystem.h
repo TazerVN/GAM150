@@ -20,7 +20,7 @@ namespace Particle
 
 		void update(ECS::Registry& ecs, f32 dt);
 
-		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 velX, f32 velY);
+		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
 		void particleDigitize(ECS::Registry& ecs, MeshFactory& mf);
 		/*
@@ -34,6 +34,12 @@ namespace Particle
 		/*
 		* Use in this:
 		* - player or enemy get hit spawn this.
+		*/
+
+		//void particleBullet(ECS::Registry& ecs, MeshFactory& mf);
+		/*
+		* Use in this:
+		* - player is using ranged attack
 		*/
 
 	private:

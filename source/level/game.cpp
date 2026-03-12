@@ -14,6 +14,7 @@
 #include "../level/GameState.h"
 #include "../UI/UI.h"
 #include "../system/particleSystem.h"
+#include "../system/velocitySystem.h"
 
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
@@ -33,6 +34,7 @@ RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
 TimerSystem::TimerSystem TS;
 Particle::ParticleSystem PS;
+VelocitySystem::VelocitySystem VS;
 TransformSystem::TransformSystem TrS;
 Camera::CameraSystem CS;
 
@@ -63,7 +65,8 @@ void game_init()
 
 	ecs.remove_empty_groups();
 	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
-	PS.particleDigitize(ecs, mf);
+	//PS.particleDigitize(ecs, mf);
+	PS.particleBurst(ecs, mf);
 }
 
 void game_update()
@@ -81,11 +84,15 @@ void game_update()
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	scene.update();
 	UIM.update(scene);
+	VS.update(ecs);
 	PS.update(ecs, 0.2);
 	CS.update(ecs);
 	scene.getBattleGrid().update(ecs,CS.id());	//gameboard update
 
 	//==========Object updates===========
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		PS.particleBurst(ecs, mf);
+	}
 
 	//camerax += dt * 100;
 

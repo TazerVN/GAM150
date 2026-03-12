@@ -20,15 +20,18 @@ namespace VelocitySystem
 		{
 			if ((it->first & objMask) == objMask)
 			{
-				Components::Transform* trans = ecs.getComponent<Components::Transform>(ent);
-				Components::Velocity* vel = ecs.getComponent<Components::Velocity>(ent);
+				for (Entity ent : it->second)
+				{
+					Components::Transform* trans = ecs.getComponent<Components::Transform>(ent);
+					Components::Velocity* vel = ecs.getComponent<Components::Velocity>(ent);
 
-				if (!trans || !vel) continue;
+					if (!trans || !vel) continue;
 
-				// Move position by velocity
-				trans->pos.x += vel->vel.x * dt;
-				trans->pos.y += vel->vel.y * dt;
-				trans->pos_onscreen = trans->pos;
+					// Move position by velocity
+					trans->pos.x += vel->vel.x * dt;
+					trans->pos.y += vel->vel.y * dt;
+					trans->pos_onscreen = trans->pos;
+				}
 			}
 		}
 	}

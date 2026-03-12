@@ -17,7 +17,6 @@
     <ClCompile Include="source\system\TargettingSystem.cpp" />
     <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\UI\cardInteraction.cpp" />
-    <ClCompile Include="source\level\level.cpp" />
     <ClCompile Include="source\system\GridSystem.cpp" />
     <ClCompile Include="source\factory\MeshFactory.cpp" />
     <ClCompile Include="source\factory\TextureFactory.cpp" />
@@ -34,6 +33,9 @@
     <ClCompile Include="source\system\CombatSystem.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
     <ClCompile Include="source\system\CardSystem.cpp" />
+    <ClCompile Include="source\level\menu.cpp" />
+    <ClCompile Include="source\level\game.cpp" />
+    <ClCompile Include="source\system\velocitySystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -53,7 +55,6 @@
     <ClInclude Include="source\system\TargettingSystem.h" />
     <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\UI\cardInteraction.h" />
-    <ClInclude Include="source\level\level.h" />
     <ClInclude Include="source\system\GridSystem.h" />
     <ClInclude Include="source\factory\MeshFactory.h" />
     <ClInclude Include="source\factory\TextureFactory.h" />
@@ -70,5 +71,8 @@
     <ClInclude Include="source\system\CameraSystem.h" />
     <ClInclude Include="source\system\CardSystem.h" />
     <ClInclude Include="source\system\CardConstants.h" />
+    <ClInclude Include="source\level\menu.h" />
+    <ClInclude Include="source\level\game.h" />
+    <ClInclude Include="source\system\velocitySystem.h" />
   </ItemGroup>
 </Project>

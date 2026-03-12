@@ -25,6 +25,11 @@ namespace Components
 		CARDS, GRID, ACTOR, UI
 	};
 
+	enum class ParticleType {
+		Digitalize, 
+		Burst
+	};
+
 	struct TagClass{
 		Tag value;
 	};
@@ -130,11 +135,10 @@ namespace Components
 		AEVec2 vel{ 0.f,0.f };
 	};
 
+
 	struct Particle
 	{
-		AEVec2	velocity;
-		f32		fadeSpeed;
-		bool	alive;
+		ParticleType type;
 	};
 
 
