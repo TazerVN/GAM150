@@ -286,6 +286,7 @@ namespace TBS
 
 		Entity cardID = this->draw_card(ecs, player, index);
 
+		std::string name = ecs.getComponent<Components::Name>(cardID)->value;
 		f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 		int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
 
@@ -325,7 +326,7 @@ namespace TBS
 		//run the function related to the card
 		//example 
 
-		//cardSysptr->CardScripts().runCardFunction(cardID,target);
+		 ret = PC_RETURN_TAG::VALID;
 
 		//remove the card that just played inside tbs
 		player_curMana -= card_cost;

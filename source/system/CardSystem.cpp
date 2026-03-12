@@ -1,6 +1,6 @@
 #include "CardSystem.h"
 #include "../util/json_parser.h"
-#include "../system/CombatSystem.h"
+#include "../ECS/Components.h"
 
 //Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, CardType dtype, f32 range, f32 cost)
 //{
@@ -76,47 +76,67 @@ void CardSystem::init_cards(ECS::Registry& ecs)
 		std::cout << "AOE : " << card.aoe << '\n' << std::endl;
 
 		Entity cardECSID = create_card(ecs, card);
-		cards.push_back(cardECSID);
+		cards[card.name] = cardECSID;
 
-		switch (static_cast<CardSystemNames>(card.id))
-		{
-		case CardSystemNames::SLASH:
-		{
-			cardScriptManager.add_Function
-			(
-				CardSystemNames::SLASH, cardECSID, 
-				[&ecs,cardECSID](Entity target)
-				{
-					ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
-					if (!ecs.getBitMask()[cardECSID].test(card_value_ID))
-					{
-						std::cout << "Selected card doesn't have card_data component";
-						return;
-						//return PC_RETURN_TAG::INVALID;
-					}
-					f32 card_damage = ecs.getComponent<Components::Card_Value>(cardECSID)->value;
+		//switch (static_cast<CardSystemNames>(card.id))
+		//{
+		//case CardSystemNames::SLASH:
+		//{
+		//	cardScriptManager.add_Function
+		//	(
+		//		CardSystemNames::SLASH, cardECSID, 
+		//		[&ecs,cardECSID](Entity target)
+		//		{
+		//			ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
+		//			if (!ecs.getBitMask()[cardECSID].test(card_value_ID))
+		//			{
+		//				std::cout << "Selected card doesn't have card_data component" << std::endl;;
+		//				//return;
+		//				//return PC_RETURN_TAG::INVALID;
+		//			}
+		//			f32 card_damage = ecs.getComponent<Components::Card_Value>(cardECSID)->value;
 
-					/*if (Call_AttackSystem(ecs, target, card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
-					{
-
-					}*/
-				}
-			);
-			break;
-		}
-		default:
-			break;
-		}
+		//			std::cout << "Successefully hit the enemy" << std::endl;;
+		//			return Call_AttackSystem(ecs, target, card_damage);
+		//		}
+		//	);
+		//	break;
+		//}
+		//default:
+		//	break;
+		//}
 	}
 };
-Entity& CardSystem::get_card(CardSystemNames card)
-{
-	return cards[static_cast<int>(card)];
-}
 
-CardScriptsManager& CardSystem::CardScripts()
+Entity CardSystem::generate_card_from_bible(ECS::Registry& ecs,std::string key)
 {
-	return cardScriptManager;
+	//if the base key card doesnt exist return
+	if (cards.find(key) == cards.end())
+		return -1;
+
+	Entity id = ecs.createEntity();
+
+	Entity bibleID = cards[key];
+
+
+
+	Components::Name nm{ ecs.getComponent<Components::Name>(bibleID)->value};
+	CardTag cardTag = *(ecs.getComponent<CardTag>(bibleID));
+	Components::Card_Value card_val{ ecs.getComponent<Components::Card_Value>(bibleID)->value,
+									 ecs.getComponent<Components::Card_Value>(bibleID)->type };
+	Components::Targetting_Component targetting{ ecs.getComponent<Components::Targetting_Component>(bibleID)->targetting_type,
+												 ecs.getComponent<Components::Targetting_Component>(bibleID)->range,
+												 ecs.getComponent<Components::Targetting_Component>(bibleID)->aoe };
+	Components::Card_Cost card_cost{ ecs.getComponent<Components::Card_Cost>(bibleID)->value };
+
+
+	ecs.addComponent(id, cardTag);
+	ecs.addComponent(id, nm);
+	ecs.addComponent(id, card_val);
+	ecs.addComponent(id, targetting);
+	ecs.addComponent(id, card_cost);
+
+	return id;
 }
 
 size_t CardSystem::size() const
@@ -124,16 +144,17 @@ size_t CardSystem::size() const
 	return cards.size();
 }
 
-void CardScriptsManager::add_Function(CardSystemNames cardName, Entity cardID,std::function<void(Entity)> function)
+void CardScriptsManager::add_Function(std::string name, Entity cardID,std::function<COMBAT_SYSTEM_RETURN_TAG (Entity)> function)
 {
-	functions[cardName] = function;
+	functions[name] = function;
 }
-CardScriptReturn CardScriptsManager::runCardFunction(CardSystemNames card,Entity target)
+
+CardScriptReturn CardScriptsManager::runCardFunction(std::string card_name, Entity target)
 {
-	auto it = functions.find(card);
+	auto it = functions.find(card_name);
 	if (it != functions.end())
 	{
-		it->second(target);
+		COMBAT_SYSTEM_RETURN_TAG returned = it->second(target);
 		return CardScriptReturn::FunctionRunSuccess;
 	}
 	return CardScriptReturn::FunctionNotFound;

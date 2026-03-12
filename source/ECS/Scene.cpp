@@ -52,8 +52,8 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	{
 		System::add_card_player_deck(*ecs, temp, blackHole);
 	}*/
-	System::add_card_player_deck(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));
-	System::add_card_player_deck(*ecs, temp, cardSys->get_card(CardSystemNames::BLACK_HOLE));
+	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));
+	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Black Hole"));
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
@@ -90,15 +90,15 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 
 	//Add enemy0
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0));
-	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add fire attack
-	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add sword attack
+	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1));
-	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add fire attack
-	System::add_card_player_hand(*ecs, temp, cardSys->get_card(CardSystemNames::SLASH));	//add sword attack
+	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
