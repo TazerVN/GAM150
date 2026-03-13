@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "game.h"
 #include <iostream>
 #include "AEEngine.h"
 #include "../util/GameStateManager.h"

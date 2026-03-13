@@ -1,45 +1,13 @@
 #include "game.h"
-#include "AEEngine.h"
-#include "../util/GameStateManager.h"
-#include "../factory/MeshFactory.h"
-#include "../factory/TextureFactory.h"
-#include "../ECS/gameObject.h"
-#include "../ECS/Scene.h"
-#include "../UI/cardInteraction.h"
-#include "../system/renderSystem.h"
-#include "../system/inputSystem.h"
-#include "../system/transformSystem.h"
-#include "../system/TimerSystem.h"
-#include "../system/CameraSystem.h"
-
-#include "../UI/UI.h"
-#include "../system/particleSystem.h"
-#include "../system/velocitySystem.h"
 
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 
-ECS::Registry ecs;
-MeshFactory mf{};
-
 Scene scene;
-
-CardSystem card_system;
-InputSystem::InputManager IM;
-UI::UIManager UIM;
-TextureFactory::TextureFactory TF;
-//initialized event handler before tbs
-RenderSystem::RenderSystem RM;
 CardInteraction::CardHand card{};
-TimerSystem::TimerSystem TS;
+UI::UIManager UIM;
 Particle::ParticleSystem PS;
-VelocitySystem::VelocitySystem VS;
-TransformSystem::TransformSystem TrS;
-Camera::CameraSystem CS;
-
-static bool triggered = false;
-static Entity attacked_enemy = NULL_INDEX;
 
 void GameState_game_load()
 {
@@ -53,25 +21,23 @@ void GameState_game_init()
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
+	//==========System=============
 	TF.textureInit();
 	mf.MeshFactoryInit();
-
-	//AEGfxSetCamPosition(camerax, cameray);
-
-	card_system.init_cards(ecs);
-	scene.init(ecs, mf,card_system, TF, CS, card);	
-	UIM.init(scene, mf, TF);
 	CS.init(ecs);
+	RM.RenderSystem_init(ecs);
+	card_system.init_cards(ecs);
+	//=============================
 
+
+	//===========Game===============
+	scene.init(ecs, mf, card_system, TF, CS, card);
 	card = CardInteraction::CardHand(ecs, mf,TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS());
-
-	RM.RenderSystem_init(ecs);
-
+	UIM.init(scene, mf, TF);
 	ecs.remove_empty_groups();
 	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
 	//PS.particleDigitize(ecs, mf);
-	PS.particleBurst(ecs, mf);
 }
 
 void GameState_game_update()
@@ -84,28 +50,20 @@ void GameState_game_update()
 	
 	IM.update(ecs, scene.getGBS(), CS.id());
 	TS.update(ecs);
-	//TrS.update(ecs);
-	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
-	scene.update();
-	UIM.update(scene);
-	VS.update(ecs);
-	PS.update(ecs, 0.2);
-	CS.update(ecs);
-	scene.getBattleGrid().update(ecs,CS.id());	//gameboard update
 
-	//==========Object updates===========
+	//==========(Object updates)===========
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		PS.particleBurst(ecs, mf);
 	}
-
-	//camerax += dt * 100;
-
-	//AEGfxSetCamPosition(camerax, cameray);
-
-	/*sprintf(pText,"Camera Pos : %.2f,%.2f",camerax,cameray);
-	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
+	scene.update();
+	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
+	UIM.update(scene);
+	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 
 	//========(Render)====================
+	VS.update(ecs);
+	PS.update(ecs, 0.2);
+	CS.update(ecs);
 	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 }
