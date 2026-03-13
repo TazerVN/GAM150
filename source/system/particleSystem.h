@@ -42,6 +42,8 @@ namespace Particle
 		* - player is using ranged attack
 		*/
 
+		void particleClick(ECS::Registry& ecs, MeshFactory& mf);
+
 	private:
 		std::vector<Entity> Particlebuffer;
 

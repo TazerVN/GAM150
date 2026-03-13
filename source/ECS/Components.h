@@ -27,7 +27,8 @@ namespace Components
 
 	enum class ParticleType {
 		Digitalize, 
-		Burst
+		Burst,
+		Click
 	};
 
 	struct TagClass{
