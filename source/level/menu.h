@@ -1,7 +1,6 @@
 #pragma once
 #include "../factory/MeshFactory.h"
 
-static MeshFactory mf{};
 static bool shouldQuit = false;
 
 struct Button {
