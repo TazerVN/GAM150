@@ -10,6 +10,7 @@
 #include "../system/transformSystem.h"
 #include "../system/TimerSystem.h"
 #include "../system/CameraSystem.h"
+#include "../system/AnimationSystem.h"
 
 #include "../level/GameState.h"
 #include "../UI/UI.h"
@@ -37,6 +38,8 @@ Particle::ParticleSystem PS;
 VelocitySystem::VelocitySystem VS;
 TransformSystem::TransformSystem TrS;
 Camera::CameraSystem CS;
+Animation::AnimationSystem AS;
+
 
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
@@ -67,6 +70,7 @@ void game_init()
 	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
 	//PS.particleDigitize(ecs, mf);
 	PS.particleBurst(ecs, mf);
+	AS.init(ecs);
 }
 
 void game_update()
@@ -102,6 +106,7 @@ void game_update()
 	int suc = sprintf_s(pText, "Camera Pos : %.2f,%.2f", camerax, cameray);*/
 
 	//========(Render)====================
+	AS.update(ecs);
 	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 	AESysFrameEnd();

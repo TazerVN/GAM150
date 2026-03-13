@@ -63,7 +63,7 @@ namespace CardInteraction
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
 		ecs.addComponent(this->id, tag);
-		tbsptr = &tbs;		//Twan i added the pointer to the turnbase for u nig
+		tbsptr = &tbs;		
 	}
 
 	CardHand::CardHand(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height,

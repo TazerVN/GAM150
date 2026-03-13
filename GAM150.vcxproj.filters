@@ -36,6 +36,7 @@
     <ClCompile Include="source\level\menu.cpp" />
     <ClCompile Include="source\level\game.cpp" />
     <ClCompile Include="source\system\velocitySystem.cpp" />
+    <ClCompile Include="source\system\AnimationSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -74,5 +75,6 @@
     <ClInclude Include="source\level\menu.h" />
     <ClInclude Include="source\level\game.h" />
     <ClInclude Include="source\system\velocitySystem.h" />
+    <ClInclude Include="source\system\AnimationSystem.h" />
   </ItemGroup>
 </Project>

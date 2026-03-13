@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\level\menu.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
     <ClCompile Include="source\global.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\system\AnimationSystem.h" />
     <ClInclude Include="source\level\menu.h" />
     <ClInclude Include="source\system\CameraSystem.h" />
     <ClInclude Include="source\system\CardConstants.h" />
