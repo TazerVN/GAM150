@@ -1,5 +1,6 @@
 #include "game.h"
 #include "AEEngine.h"
+#include "../util/GameStateManager.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../ECS/gameObject.h"
@@ -11,7 +12,6 @@
 #include "../system/TimerSystem.h"
 #include "../system/CameraSystem.h"
 
-#include "../level/GameState.h"
 #include "../UI/UI.h"
 #include "../system/particleSystem.h"
 
@@ -39,7 +39,12 @@ Camera::CameraSystem CS;
 static bool triggered = false;
 static Entity attacked_enemy = NULL_INDEX;
 
-void game_init()
+void GameState_game_load()
+{
+
+}
+
+void GameState_game_init()
 {
 //==========(Init)======================
 
@@ -66,14 +71,13 @@ void game_init()
 	PS.particleDigitize(ecs, mf);
 }
 
-void game_update()
+void GameState_game_update()
 {
 	f32 dt = AEFrameRateControllerGetFrameTime();
-	AESysFrameStart();
 	//==============(Logic Update)==============
 
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-		leaveGameState();
+		gGameStateNext = GameStates::GS_MAINMENU;
 	
 	IM.update(ecs, scene.getGBS(), CS.id());
 	TS.update(ecs);
@@ -97,10 +101,14 @@ void game_update()
 	//========(Render)====================
 	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
-	AESysFrameEnd();
 }
-void game_exit()
+void GameState_game_free()
 {
 	mf.MeshFree();
 	AEGfxDestroyFont(pFont);
+}
+
+void GameState_game_unload()
+{
+
 }

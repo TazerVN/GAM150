@@ -6,6 +6,8 @@
 #include "CombatSystem.h"
 #include <iomanip>
 #include "../factory/EntityFactory.h"
+#include "../system/CombatSystem.h"
+
 namespace TBS
 {
 	// round start helper forcing it to start yadda yadda
@@ -46,7 +48,7 @@ namespace TBS
 	}
 
 	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
-		CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
+		CombatNameSpace::CombatSystem& cbs, CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
 	{
 		evsptr = &eventPool;
 		//highlight event
@@ -59,6 +61,7 @@ namespace TBS
 		cardSysptr = &cs;
 		gameBoardptr = &gbp;
 		cardHandptr = &ch;
+		cbsptr = &cbs;
 
 		if (!is_active)
 		{
@@ -170,16 +173,6 @@ namespace TBS
 		selected_card[cur_player] = bol;
 	}
 
-	void TurnBasedSystem::set_targetted_ent(Entity ent)
-	{
-		targetted_entity = ent;
-	}
-
-	void TurnBasedSystem::set_targetted_xy(int x, int y)
-	{
-		targetted_x = x; targetted_y = y;
-	}
-
 	void TurnBasedSystem::next(ECS::Registry & ecs)
 	{
 		if (!is_active) return;
@@ -197,6 +190,7 @@ namespace TBS
 			gbsptr->resetPlayerPhase();
 		}
 
+		gameBoardptr->unselect_card();
 		gameBoardptr->unselect_movement();
 		debug_print(ecs);
 	}
@@ -280,7 +274,7 @@ namespace TBS
 	}
 
 	//returns the status of target being attacked
-	PC_RETURN_TAG TurnBasedSystem::play_card(ECS::Registry& ecs, Entity player,Entity target, int index)
+	PC_RETURN_TAG TurnBasedSystem::play_card(ECS::Registry& ecs, Entity player,Entity target, AEVec2 targetted_pos, int index)
 	{
 		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
@@ -309,9 +303,7 @@ namespace TBS
 		//			std::cout << "Selected card doesn't have card_data component";
 		//			return PC_RETURN_TAG::INVALID;
 		//		}
-
 		//		f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
-
 		//		if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
 		//			ret = PC_RETURN_TAG::DIED;
 		//		else
@@ -325,6 +317,17 @@ namespace TBS
 		
 		//run the function related to the card
 		//example 
+		CardTag* tag = ecs.getComponent<CardTag>(cardID);
+		switch (*tag)
+		{
+		case CardTag::ATTACK:
+		{
+			cbsptr->play_attack_card(ecs,cardID,target,targetted_pos);
+			break;
+		}
+		default:
+			break;
+		}
 
 		 ret = PC_RETURN_TAG::VALID;
 
@@ -340,8 +343,8 @@ namespace TBS
 		//print out info every action
 		std::cout << "======================Turn based Stats======================" << std::endl;
 		//show deck cards
+		std::cout << "Current Actor : " << ecs.getComponent<Components::Name>(current())->value << std::endl;
 		show_deck(ecs);
-		//Entity cur = current();
 		show_hand(ecs);
 		show_discard(ecs);
 		show_stats(ecs);
@@ -427,24 +430,6 @@ namespace TBS
 		std::cout << "--------------------------------" << std::endl;
 	}
 
-	void TurnBasedSystem::check_input(ECS::Registry& ecs)
-	{
-		const std::array<u8, 6> keys = { AEVK_1 ,AEVK_2,AEVK_3,AEVK_4,AEVK_5,AEVK_6 };
-		for (int i = 0; i < keys.size(); ++i)
-		{
-			if (AEInputCheckTriggered(keys[i]))
-			{
-				select_hand_index(static_cast<size_t>(keys[i] - AEVK_0 - 1));
-				
-				break;
-			}
-		}
-		if (AEInputCheckTriggered(AEVK_U))
-		{
-			select_card(ecs);
-		}
-	}
-
 	void TurnBasedSystem::DrawPhase_add_card(ECS::Registry& ecs)
 	{
 		//get random card from the player's deck
@@ -483,226 +468,9 @@ namespace TBS
 		// Check for TBS status
 		if (is_active)
 		{
-			update_GBPhasetriggered();
-			update_GBPhaseUpdate();
+			cbsptr->update_GBPhasetriggered();
+			cbsptr->update_GBPhaseUpdate();
 		}
 		//============================================================
-	}
-
-	void TurnBasedSystem::update_GBPhasetriggered()
-	{
-		//
-		int index = static_cast<int>(gbsptr->getGBPhase());
-		int prev_index = index - 1;
-		if (prev_index < 0) prev_index = 0;
-		bool& triggered = gbsptr->GBPTriggered()[index];
-
-		//check for gameboard phase and react accordingly
-		if (triggered)
-		{
-			switch (gbsptr->getGBPhase())
-			{
-			case PhaseSystem::GBPhase::START_PHASE:
-			{
-				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->GBPTriggered()[index] = false;
-
-				//=============rest shit for player in start phase===============
-
-				Components::TurnBasedStats* stats = ecsptr->getComponent<Components::TurnBasedStats>(playerID);
-				stats->cur_movSpd = stats->max_movSpd;
-				stats->points = stats->maxPoints;
-				stats->shields = 0.f;
-
-				//===============================================================
-
-				gbsptr->GBPActive()[prev_index] = false;
-				gbsptr->GBPActive()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::STANDBY_PHASE:
-			{
-				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->GBPTriggered()[index] = false;
-				gbsptr->GBPActive()[prev_index] = false;
-				gbsptr->GBPActive()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::DRAW_PHASE:
-			{
-				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->GBPTriggered()[index] = false;
-				gbsptr->GBPActive()[prev_index] = false;
-				gbsptr->GBPActive()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::MAIN_PHASE:
-			{
-				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->GBPTriggered()[index] = false;
-				
-				debug_print(*ecsptr);
-
-				gbsptr->GBPActive()[prev_index] = false;
-				gbsptr->GBPActive()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
-			{
-				//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-				gbsptr->GBPTriggered()[index] = false;
-				gbsptr->GBPActive()[prev_index] = false;
-				//===================play card==============================
-
-				gbsptr->GBPActive()[index] = true;
-				//=========================================================
-				break;
-			}
-			default: 
-			{
-				std::cout << "triggered something else";
-				gbsptr->GBPTriggered()[index] = false;
-				gbsptr->GBPActive()[prev_index] = false;
-				gbsptr->GBPActive()[index] = true;
-				break; 
-			}
-			}
-			triggered = false;
-		}
-	}
-
-	void TurnBasedSystem::update_GBPhaseUpdate()
-	{ 
-		size_t index = static_cast<size_t>(gbsptr->getGBPhase());
-		bool& active = gbsptr->GBPActive()[index];
-
-		if (active)
-		{
-			switch (gbsptr->getGBPhase())
-			{
-			case PhaseSystem::GBPhase::START_PHASE:
-			{
-				//std::cout << "Starting" << std::endl;
-				gbsptr->nextGBPhase();
-				index = static_cast<size_t>(gbsptr->getGBPhase());
-				gbsptr->GBPTriggered()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::STANDBY_PHASE:
-			{
-				//std::cout << "Standing By"<< std::endl;
-				gbsptr->nextGBPhase();
-				index = static_cast<size_t>(gbsptr->getGBPhase());
-				gbsptr->GBPTriggered()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::DRAW_PHASE:
-			{
-				//draw until max_hand
-				for (int i = 0; i < DRAW_COUNT; ++i)
-				{
-					DrawPhase_add_card(*ecsptr);
-				}
-				cardHandptr->reset_hand();
-
-				gbsptr->nextGBPhase();
-				index = static_cast<size_t>(gbsptr->getGBPhase());
-				gbsptr->GBPTriggered()[index] = true;
-				break;
-			}
-			case PhaseSystem::GBPhase::MAIN_PHASE:
-			{
-				if (current() == playerID)
-				{
-					switch (gbsptr->getPlayerPhase())
-					{
-					case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
-					{
-						check_input(*ecsptr);
-						break; //break for PLAYER_EXPLORE
-					}
-					default:
-						break;
-					}
-				}
-				//this is break for the GPhase
-				break;
-			}
-			case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
-			{
-				//TWAN Do your animations here
-				
-				
-				//example sample case where animation player can work
-				/*if (update_animation())
-				{
-					play_card_triggered = true;
-				}*/
-
-				//will remove below code once the animation machine is done
-
-				if (gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)
-				{
-					std::cout << "Movement Animating" << std::endl;
-					/*if (AEInputCheckTriggered(AEVK_P))
-					{
-						end_player_resolution();
-					}*/
-					end_player_resolution();
-				}
-				else
-				{
-					if (!play_card_triggered)
-					{
-						std::cout << "Card Animating" << std::endl;
-						/*if (AEInputCheckTriggered(AEVK_P))
-						{
-							play_card_triggered = true;
-						}*/
-						play_card_triggered = true;
-					}
-					if (play_card_triggered)
-					{
-						play_card_triggered = false;
-
-						PC_RETURN_TAG tag = this->play_card(*ecsptr, this->current(), targetted_entity, this->get_selected_cardhand_index());
-						//remove the card that just played inside tbs
-						if (tag == PC_RETURN_TAG::DIED)
-						{
-							//must reset the position on the grid to be null or there will be bugs
-							if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
-							this->remove_participant(*ecsptr, targetted_entity);
-						}
-
-						if (tag != PC_RETURN_TAG::INVALID)
-						{
-							this->set_selected_card(false);
-						}
-
-						end_player_resolution();
-					}
-				}
-				break;
-			}
-			default:
-			{
-				std::cout << "Updating error";
-				break;
-			}
-			}
-		}
-	}
-
-	void TurnBasedSystem::end_player_resolution()
-	{
-		gbsptr->GBPActive()[static_cast<int>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = false;
-		//remove if u want to make the the playerphase not reset when u click on invalid target
-		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-		//gbsptr->debug_print();
-		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-
-		gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-		int i = static_cast<int>(gbsptr->getGBPhase());
-		gbsptr->GBPTriggered()[i] = true;
 	}
 }

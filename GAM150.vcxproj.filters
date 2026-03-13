@@ -5,7 +5,6 @@
     <ClCompile Include="source\ECS\ECSystem.cpp" />
     <ClCompile Include="source\system\inputSystem.cpp" />
     <ClCompile Include="source\ECS\gameObject.cpp" />
-    <ClCompile Include="source\level\GameState.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\system\TurnBasedSystem.cpp" />
     <ClCompile Include="source\util\Pathfinding.cpp" />
@@ -17,7 +16,6 @@
     <ClCompile Include="source\system\TargettingSystem.cpp" />
     <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\UI\cardInteraction.cpp" />
-    <ClCompile Include="source\level\level.cpp" />
     <ClCompile Include="source\system\GridSystem.cpp" />
     <ClCompile Include="source\factory\MeshFactory.cpp" />
     <ClCompile Include="source\factory\TextureFactory.cpp" />
@@ -34,6 +32,9 @@
     <ClCompile Include="source\system\CombatSystem.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
     <ClCompile Include="source\system\CardSystem.cpp" />
+    <ClCompile Include="source\level\menu.cpp" />
+    <ClCompile Include="source\level\game.cpp" />
+    <ClCompile Include="source\util\GameStateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ECS\card.h" />
@@ -41,7 +42,6 @@
     <ClInclude Include="source\ECS\ECSystem.h" />
     <ClInclude Include="source\system\inputSystem.h" />
     <ClInclude Include="source\ECS\gameObject.h" />
-    <ClInclude Include="source\level\GameState.h" />
     <ClInclude Include="source\global.h" />
     <ClInclude Include="source\system\TurnBasedSystem.h" />
     <ClInclude Include="source\util\Pathfinding.h" />
@@ -53,7 +53,6 @@
     <ClInclude Include="source\system\TargettingSystem.h" />
     <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\UI\cardInteraction.h" />
-    <ClInclude Include="source\level\level.h" />
     <ClInclude Include="source\system\GridSystem.h" />
     <ClInclude Include="source\factory\MeshFactory.h" />
     <ClInclude Include="source\factory\TextureFactory.h" />
@@ -70,5 +69,8 @@
     <ClInclude Include="source\system\CameraSystem.h" />
     <ClInclude Include="source\system\CardSystem.h" />
     <ClInclude Include="source\system\CardConstants.h" />
+    <ClInclude Include="source\level\menu.h" />
+    <ClInclude Include="source\level\game.h" />
+    <ClInclude Include="source\util\GameStateManager.h" />
   </ItemGroup>
 </Project>

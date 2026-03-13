@@ -213,7 +213,7 @@
 		"targetting" : "AOE",
 		"card_tag" : "EVENT",
 		"type" : "FORCED_MOVEMENT",
-		"value" : 1.0,
+		"value" : 20.0,
 		"range" : 10.0,
 		"aoe" : 5.0
 	}

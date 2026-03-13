@@ -14,6 +14,5 @@ enum class highlight_tag
 enum class PC_RETURN_TAG
 {
 	INVALID = -1,
-	VALID = 0,
-	DIED = 1
+	VALID = 0
 };

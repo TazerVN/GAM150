@@ -24,13 +24,15 @@ private:
 	EventPool<highlight_tag> eventPool;
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
+	CombatNameSpace::CombatSystem cbs;
+
 	Camera::CameraSystem* cameraSys;
 	CardSystem* cardSys;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 
 public:
-	void init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam , CardInteraction::CardHand& ch);
+	void init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch);
 	void update();
 	void add_entity(Entity e);
 	std::vector<Entity>& entities_store();
@@ -43,6 +45,6 @@ public:
 
 };
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, int range, highlight_tag type);
-void unhighlight_cells(Grid::GameBoard& gb);
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs, int range, highlight_tag type);
+void unhighlight_cells(Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs);
 //AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);
