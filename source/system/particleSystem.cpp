@@ -71,6 +71,10 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 					break;
 
 				case Components::ParticleType::Heal:
+					color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
+					
+					transform->pos_onscreen.x += AESin(timer->seconds * 5.f) * dt * 10.f;
+
 					if (timer->start == false)
 					{
 						ecs.destroyEntity(ent);
@@ -238,10 +242,34 @@ void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactor
 	}
 }
 
-void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
+	int max_count = 15;
+
+	for (int i = 0; i < max_count; i++)
+	{
+		f32 spawnX = x + (AERandFloat() * 40.0f) - 20.0f;
+		f32 spawnY = y + (AERandFloat() * 20.0f) - 10.0f;
+
+		f32 velX = (AERandFloat() * 30.f) - 15.0f;
+		f32 velY = 60.0f + AERandFloat() * 40.0f;
+
+		f32 r = 0.0f;
+		f32 g = 0.7f + 0.3f * AERandFloat();
+		f32 b = 0.2f * AERandFloat();
+		f32 a = 0.8f + 0.2f * AERandFloat();
+
+		spawn_one(ecs, mf, spawnX, spawnY, 8.0f, 0.8f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
+
+	}
+
 }
 
 void Particle::ParticleSystem::particleShield(ECS::Registry& ecs, MeshFactory& mf)
 {
+}
+
+void Particle::ParticleSystem::particleDamage(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+{
+
 }
