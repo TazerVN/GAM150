@@ -26,28 +26,62 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 				//color->d_color.b = 0.2f * AERandFloat();
 				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
 				Components::Particle* particle = ecs.getComponent<Components::Particle>(ent);
-				if (timer->start == false)
-				{
-					ecs.destroyEntity(ent);
-				}
 
 				switch (particle->type) {
 				case Components::ParticleType::Digitalize:
 					transform->pos_onscreen.y += dt * 1.0f;
 					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+					if (timer->start == false)
+					{
+						ecs.destroyEntity(ent);
+					}
 					break;
 
 				case Components::ParticleType::Burst:
 					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+					if (timer->start == false)
+					{
+						ecs.destroyEntity(ent);
+					}
 					break;
 
 				case Components::ParticleType::Click:
+					if (timer->start == false)
+					{
+						ecs.destroyEntity(ent);
+					}
+					break;
+
+				case Components::ParticleType::Datastream:
+					color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
+
+					// When timer ends - it reset but dosent die
+					if (timer->start == false)
+					{
+						f32 halfWidth  = f32(AEGfxGetWindowWidth())  * 0.5f;
+						f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+
+						transform->pos_onscreen.x = halfWidth + AERandFloat() * halfWidth * 2.0f;
+						transform->pos_onscreen.y = halfHeight;
+
+						timer->seconds = 0.0f;
+						timer->start = true;
+						return;
+					}
 					break;
 
 				case Components::ParticleType::Heal:
+					if (timer->start == false)
+					{
+						ecs.destroyEntity(ent);
+					}
 					break;
 
 				case Components::ParticleType::Shield:
+					if (timer->start == false)
+					{
+						ecs.destroyEntity(ent);
+					}
 					break;
 
 				}
@@ -170,6 +204,38 @@ void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf
 
 void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactory& mf)
 {
+	// Screen dimensions
+	f32 screenWidth      = f32(AEGfxGetWindowWidth());
+	f32 screenHeight     = f32(AEGfxGetWindowHeight());
+	f32 halfWidth		 = screenWidth  * 0.5f;
+	f32 halfHeight		 = screenHeight * 0.5f;
+
+	// Set coloumn
+	int coloumnCount = 20, eachColoumn = 5;
+	f32 coloumnSpacing = screenWidth / f32(coloumnCount);
+
+	
+	for (int i = 0; i < coloumnCount; i++)
+	{
+		f32 x = -halfWidth + (i * coloumnSpacing);
+
+		for (int row = 0; row < eachColoumn; row++)
+		{
+			f32 y = -halfHeight + (AERandFloat() * screenHeight);
+
+			f32 streamSpeed = 80.f + AERandFloat() * 120.0f;
+
+			f32 velX = 0.707f * streamSpeed;
+			f32 velY = 0.707f * streamSpeed;
+
+			f32 r = 0.0f;
+			f32 g = 1.0f;
+			f32 b = 1.0f;
+			f32 a = 1.0f;
+
+			spawn_one(ecs, mf, x, y, 8.0f, 20.f, 45.0f, 0, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
+		}
+	}
 }
 
 void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf)
