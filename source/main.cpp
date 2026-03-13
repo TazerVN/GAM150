@@ -17,7 +17,6 @@ Camera::CameraSystem CS;
 RenderSystem::RenderSystem RM;
 CardSystem card_system;
 VelocitySystem::VelocitySystem VS;
-Particle::ParticleSystem PS;
 TransformSystem::TransformSystem TrS;
 TimerSystem::TimerSystem TS;
 Animation::AnimationSystem AS;
@@ -76,7 +75,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AESysDoesWindowExist() == false)
 				gGameStateNext = GameStates::GS_QUIT;
 		}
-		mf.MeshFree();
 		GameStateFree();
 
 		if (gGameStateNext != GameStates::GS_RESTART)
@@ -86,7 +84,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		gGameStateCurr = gGameStateNext;
 	}
 
-
+	mf.MeshFree();
 	// reset the system modules
 	AESysReset();
 	AESysExit();

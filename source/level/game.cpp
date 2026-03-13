@@ -8,7 +8,6 @@ s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 
-
 void GameState_game_load()
 {
 	//==========System=============
@@ -25,7 +24,6 @@ void GameState_game_init()
 
 	LevelMgrInit(LevelStates::LS_COMBAT);
 	LevelStateInit();
-
 	AS.init(ecs);
 }
 
@@ -58,14 +56,12 @@ void GameState_game_update()
 	//========(Render)====================
 	AS.update(ecs);
 	VS.update(ecs);
-	PS.update(ecs, 0.2);
 	CS.update(ecs);
 	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 }
 void GameState_game_free()
 {
-	mf.MeshFree();
 	AEGfxDestroyFont(pFont);
 }
 

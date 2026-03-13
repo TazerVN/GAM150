@@ -9,6 +9,7 @@
 Scene scene;
 CardInteraction::CardHand card{};
 UI::UIManager UIM;
+Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
 {
@@ -38,6 +39,7 @@ void LevelStateCombat_update()
 	scene.update();
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	UIM.update(scene);
+	PS.update(ecs, 0.2);
 	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 }
 void LevelStateCombat_free()

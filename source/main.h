@@ -20,7 +20,6 @@ extern Camera::CameraSystem CS;
 extern RenderSystem::RenderSystem RM;
 extern CardSystem card_system;
 extern VelocitySystem::VelocitySystem VS;
-extern Particle::ParticleSystem PS;
 extern TransformSystem::TransformSystem TrS;
 extern TimerSystem::TimerSystem TS;
 extern Animation::AnimationSystem AS;
