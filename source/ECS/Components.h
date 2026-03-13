@@ -33,7 +33,10 @@ namespace Components
 	enum class ParticleType {
 		Digitalize, 
 		Burst,
-		Click
+		Click,
+		Datastream,
+		Heal,
+		Shield
 	};
 
 	enum class AnimationType : char
