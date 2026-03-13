@@ -38,9 +38,10 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 					break;
 
 				case Components::ParticleType::Burst:
-					//transform->pos_onscreen.x += dt * 1.0f;
-					//transform->pos_onscreen.y += dt * 1.0f;
 					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+					break;
+
+				case Components::ParticleType::Click:
 					break;
 
 				}
@@ -61,7 +62,7 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 	Entity id = ecs.createEntity();
 	//default single particle value
 	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_CIRCLE), COLOR, MESH_CIRCLE, z };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 	Components::Color color{ r, g, b, alpha };
 	Components::Timer timer{ AERandFloat() };
 	Components::Particle particle{ type };
@@ -113,24 +114,50 @@ void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory&
 
 void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf)
 {
-	// For testing
 	int   max_count = 500;
 	f32   speed = 200.f;
 	
 	for (int i = 0; i < max_count; i++)
-	{
+	{	
+		// Distribute particle evenly in full circle
 		f32 angle = (f32(i) / f32(max_count)) * 2.0f * PI;
 
-		// Velocity decided HERE — spawn_one just receives it
+		// Convert angle to velocity direction
 		f32 velX = AECos(angle) * speed;
 		f32 velY = AESin(angle) * speed;
 
+		// random speed variation
 		f32 speedVariation = 0.8f + AERandFloat() * 0.4f;
 		velX *= speedVariation;
 		velY *= speedVariation;
 
 
+		// input
+		spawn_one(ecs, mf, 0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
+	}
+}
 
-		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
+void particleClick(ECS::Registry& ecs, MeshFactory& mf)
+{
+	int   max_count = 10;
+	f32   speed = 80.0f;
+
+	for (int i = 0; i < max_count; i++)
+	{
+		// Distribute particle evenly in full circle
+		f32 angle = (f32(i) / f32(max_count)) * 2.0f * PI;
+
+		// Convert angle to velocity direction
+		f32 velX = AECos(angle) * speed;
+		f32 velY = AESin(angle) * speed;
+
+		// random speed variation
+		f32 speedVariation = 0.8f + AERandFloat() * 0.4f;
+		velX *= speedVariation;
+		velY *= speedVariation;
+
+
+		// input
+		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Click);
 	}
 }

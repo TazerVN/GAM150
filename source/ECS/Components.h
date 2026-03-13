@@ -29,10 +29,11 @@ namespace Components
 		CARDS, GRID, ACTOR, UI
 	};
 
-	enum class ParticleType
-	{
-		Digitalize,
-		Burst
+	
+	enum class ParticleType {
+		Digitalize, 
+		Burst,
+		Click
 	};
 
 	enum class AnimationType : char
