@@ -20,6 +20,7 @@ VelocitySystem::VelocitySystem VS;
 Particle::ParticleSystem PS;
 TransformSystem::TransformSystem TrS;
 TimerSystem::TimerSystem TS;
+Animation::AnimationSystem AS;
 //=======================================================================================
 
 
@@ -75,7 +76,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AESysDoesWindowExist() == false)
 				gGameStateNext = GameStates::GS_QUIT;
 		}
-
+		mf.MeshFree();
 		GameStateFree();
 
 		if (gGameStateNext != GameStates::GS_RESTART)

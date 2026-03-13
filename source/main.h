@@ -10,6 +10,7 @@
 #include "system/CameraSystem.h"
 #include "system/particleSystem.h"
 #include "system/velocitySystem.h"
+#include "system/AnimationSystem.h"
 
 extern ECS::Registry ecs;
 extern MeshFactory mf;
@@ -22,3 +23,4 @@ extern VelocitySystem::VelocitySystem VS;
 extern Particle::ParticleSystem PS;
 extern TransformSystem::TransformSystem TrS;
 extern TimerSystem::TimerSystem TS;
+extern Animation::AnimationSystem AS;

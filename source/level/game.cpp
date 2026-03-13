@@ -1,15 +1,12 @@
 #include "../main.h"
 #include "../util/LevelManager.h"
+#include "../ECS/Scene.h"
+#include "../UI/UI.h"
+#include "../UI/cardInteraction.h"
 
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
-
-Scene scene;
-CardInteraction::CardHand card{};
-UI::UIManager UIM;
-Particle::ParticleSystem PS;
-
 
 
 void GameState_game_load()
@@ -23,18 +20,12 @@ void GameState_game_load()
 
 void GameState_game_init()
 {
+	s32 w_width = AEGfxGetWindowWidth();
+	s32 w_height = AEGfxGetWindowHeight();
+
 	LevelMgrInit(LevelStates::LS_COMBAT);
 	LevelStateInit();
 
-	//===========Game===============
-	scene.init(ecs, mf, card_system, TF, CS, card);
-	card = CardInteraction::CardHand(ecs, mf,TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-		, scene.getGBS());
-	UIM.init(scene, mf, TF);
-	ecs.remove_empty_groups();
-	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
-	//PS.particleDigitize(ecs, mf);
-	PS.particleBurst(ecs, mf);
 	AS.init(ecs);
 }
 

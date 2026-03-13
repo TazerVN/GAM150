@@ -4,6 +4,7 @@
 #include "../UI/cardInteraction.h"
 #include "../ECS/Scene.h"
 #include "../UI/UI.h"
+#include "../system/particleSystem.h"
 
 Scene scene;
 CardInteraction::CardHand card{};
@@ -25,10 +26,7 @@ void LevelStateCombat_init()
 		, scene.getGBS());
 	UIM.init(scene, mf, TF);
 	ecs.remove_empty_groups();
-	//.spawn_one(ecs, mf, 0.0f,0.0f, 5.0f, 5.0f, 0.0f, 10); // spawn one particle
-	//PS.particleDigitize(ecs, mf);
-
-	//initial level state
+	PS.particleBurst(ecs, mf);
 }
 void LevelStateCombat_update()
 {
