@@ -44,6 +44,12 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 				case Components::ParticleType::Click:
 					break;
 
+				case Components::ParticleType::Heal:
+					break;
+
+				case Components::ParticleType::Shield:
+					break;
+
 				}
 
 			}
@@ -163,5 +169,13 @@ void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf
 }
 
 void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactory& mf)
+{
+}
+
+void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf)
+{
+}
+
+void Particle::ParticleSystem::particleShield(ECS::Registry& ecs, MeshFactory& mf)
 {
 }
