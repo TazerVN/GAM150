@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "../factory/EntityFactory.h"
 
-
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(ECS::Registry& ecs,
 	MeshFactory& mf,
@@ -19,7 +18,7 @@ Entity spawnEnemyAndBind(ECS::Registry& ecs,
 }
 
 
-void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 
 {
 	cameraSys = &cam;
@@ -37,11 +36,6 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	temp = System::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
-	//Create Horde
-	Entity horde = ecs->createEntity();
-	ecs->addComponent(horde, Components::Name{ "Horde" });
-	ecs->addComponent(horde, Components::TurnBasedStats{});
-
 	/*for (int i = 0; i < 8; ++i)
 	{
 		System::add_card_player_deck(*ecs, temp, sa);
@@ -52,8 +46,14 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	{
 		System::add_card_player_deck(*ecs, temp, blackHole);
 	}*/
-	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));
-	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Black Hole"));
+	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
+	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
+
+
+	//Create Horde
+	Entity horde = ecs->createEntity();
+	ecs->addComponent(horde, Components::Name{ "Horde" });
+	ecs->addComponent(horde, Components::TurnBasedStats{});
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 

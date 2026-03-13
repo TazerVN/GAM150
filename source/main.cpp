@@ -4,11 +4,27 @@
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
 #include "util/GameStateManager.h"
-#include "level/game.h"
+#include "main.h"
 // ---------------------------------------------------------------------------
 
-// main
 
+//=====================One time declaration of extern values============================= 
+ECS::Registry ecs;
+MeshFactory mf;
+InputSystem::InputManager IM;
+TextureFactory::TextureFactory TF;
+Camera::CameraSystem CS;
+RenderSystem::RenderSystem RM;
+CardSystem card_system;
+VelocitySystem::VelocitySystem VS;
+Particle::ParticleSystem PS;
+TransformSystem::TransformSystem TrS;
+TimerSystem::TimerSystem TS;
+Animation::AnimationSystem AS;
+//=======================================================================================
+
+
+// main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -60,7 +76,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AESysDoesWindowExist() == false)
 				gGameStateNext = GameStates::GS_QUIT;
 		}
-
+		mf.MeshFree();
 		GameStateFree();
 
 		if (gGameStateNext != GameStates::GS_RESTART)

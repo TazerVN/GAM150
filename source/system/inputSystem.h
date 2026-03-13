@@ -23,7 +23,7 @@ namespace InputSystem
 		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();
-		void update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs, Entity id);
+		void update(ECS::Registry& ecs, Entity id);
 	};
 
 

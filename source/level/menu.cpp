@@ -1,9 +1,8 @@
 #include "menu.h"
-#include "game.h"
+#include "../main.h"
 #include <iostream>
 #include "AEEngine.h"
 #include "../util/GameStateManager.h"
-#include "../factory/MeshFactory.h"
 
 // PROXY CODE
 // NEED CLEAN UP
@@ -11,12 +10,12 @@
 void GameStateMainMenu_load()
 {
 	std::cout << "Main menu loaded" << std::endl;
+    TF.textureInit();
+    mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 }
 void GameStateMainMenu_init()
 {
 	std::cout << "Main menu init" << std::endl;
-
-    mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 
     // Load font (second param is font size)
     menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
@@ -58,12 +57,11 @@ void GameStateMainMenu_update()
 void GameStateMainMenu_free()
 {
 	std::cout << "Main menu free" << std::endl;
-    mf.MeshFree();
-    AEGfxDestroyFont(menuFont);
 }
 void GameStateMainMenu_unload()
 {
     std::cout << "Main menu unloaded" << std::endl;
+    AEGfxDestroyFont(menuFont);
 }
 
 bool IsMouseOver(const Button& btn)

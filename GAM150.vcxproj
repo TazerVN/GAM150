@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\level\CombatLevel.cpp" />
     <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\util\GameStateManager.cpp" />
     <ClCompile Include="source\level\menu.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="source\system\TurnBasedSystem.cpp" />
     <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\util\json_parser.cpp" />
+    <ClCompile Include="source\util\LevelManager.cpp" />
     <ClCompile Include="source\util\Pathfinding.cpp" />
     <ClCompile Include="source\system\renderSystem.cpp" />
     <ClCompile Include="source\factory\EntityFactory.cpp" />
@@ -49,6 +51,8 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\level\CombatLevel.h" />
+    <ClInclude Include="source\main.h" />
     <ClInclude Include="source\system\AnimationSystem.h" />
     <ClInclude Include="source\util\GameStateManager.h" />
     <ClInclude Include="source\level\menu.h" />
@@ -77,6 +81,7 @@
     <ClInclude Include="source\system\TurnBasedSystem.h" />
     <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\util\json_parser.h" />
+    <ClInclude Include="source\util\LevelManager.h" />
     <ClInclude Include="source\util\Pathfinding.h" />
     <ClInclude Include="source\system\renderSystem.h" />
     <ClInclude Include="source\factory\EntityFactory.h" />
