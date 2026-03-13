@@ -8,33 +8,61 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <array>
 
 #include "../global.h"
 #include "../factory/MeshFactory.h"
 #include "../system/CardConstants.h"
 
 #define MAX_CARDS 1000
-#define MAX_COMPONENT 20
+#define MAX_COMPONENT 30
 
 constexpr size_t NULL_INDEX = -1;
 constexpr size_t DRAW_COUNT = 6;
 
 namespace Components
 {
-	enum class Tag{
+
+	//========================= ENUM ==============================
+	enum class Tag
+	{
 		CARDS, GRID, ACTOR, UI
 	};
 
+	
 	enum class ParticleType {
 		Digitalize, 
-		Burst
+		Burst,
+		Click,
+		Datastream,
+		Heal,
+		Shield
 	};
 
-	struct TagClass{
+	enum class AnimationType : char
+	{
+		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, NONE, COUNT
+	};
+
+
+	//========================= COMMON ==============================
+	struct Transform
+	{
+		AEVec2 pos{ 0.f,0.f };
+		AEVec2 pos_onscreen{ 0.f,0.f };
+		AEVec2 size{ 0,0 };
+		AEVec2 size_og{ 0,0 };
+		AEMtx33 mtx{};
+		float rotation{ 0.f };
+	};
+
+	struct TagClass
+	{
 		Tag value;
 	};
 
-	struct Text{
+	struct Text
+	{
 		const char* text;
 		s8 fontID;
 		s8 z;
@@ -51,7 +79,8 @@ namespace Components
 		RGBA(f32 r, f32 g, f32 b, f32 a);
 	};
 
-	struct Timer{
+	struct Timer
+	{
 		f32 seconds;
 		f32 max_seconds;
 		bool start;
@@ -60,8 +89,9 @@ namespace Components
 		Timer(f32 max, f32 current = 0, bool start = true, bool reset = false);
 	};
 
-	struct GridCell{
-		s32 x,y;
+	struct GridCell
+	{
+		s32 x, y;
 	};
 
 	struct Switch
@@ -69,24 +99,6 @@ namespace Components
 		bool s;
 	};
 
-	/*struct Transform
-	{
-		AEVec2 pos{ 0.f,0.f };
-		AEVec2 pos_onscreen{ 0.f,0.f };
-		AEVec2 size{ 0,0 };
-		AEVec2 size_col{ 0,0 };
-		AEMtx33 mtx{};
-		float rotation{ 0.f };
-	};*/
-	struct Transform
-	{
-		AEVec2 pos{ 0.f,0.f };
-		AEVec2 pos_onscreen{ 0.f,0.f };
-		AEVec2 size{ 0,0 };
-		AEVec2 size_og{ 0,0 };
-		AEMtx33 mtx{};
-		float rotation{ 0.f };
-	};
 
 	struct Texture
 	{
@@ -120,9 +132,9 @@ namespace Components
 		bool drag;
 		bool col;
 		s8 z;
-		Input(u8 type, bool hover, 
-			  std::function<void()> onClick, 
-			  std::function<void()> onHover, 
+		Input(u8 type, bool hover,
+			  std::function<void()> onClick,
+			  std::function<void()> onHover,
 			  std::function<void()> offHover,
 			  s8 z = 0, bool drag = false, bool col = true);
 		std::function<void()> onClick;
@@ -141,6 +153,16 @@ namespace Components
 		ParticleType type;
 	};
 
+	struct Animation_Actor
+	{
+		public:
+		bool finished;
+		enum AnimationType anim_type;
+		std::array<Entity, static_cast<size_t>(Components::AnimationType::COUNT)> timer_array;
+
+		Animation_Actor(Components::AnimationType type);
+	};
+
 
 	//===========================CARDS=========================================
 
@@ -152,7 +174,7 @@ namespace Components
 	};*/
 	struct Card_Value
 	{
-		f32 value=0.0f;
+		f32 value = 0.0f;
 		CardType type;
 	};
 
@@ -166,8 +188,8 @@ namespace Components
 	struct Targetting_Component
 	{
 		Targetting targetting_type;
-		f32 range=0.0f;
-		f32 aoe=0.0f;
+		f32 range = 0.0f;
+		f32 aoe = 0.0f;
 	};
 
 
@@ -217,10 +239,10 @@ namespace Components
 	struct TurnBasedStats
 	{
 		int maxPoints;			// per-round cap (set when entity created)
-		int points {0};			// current round points (reset at round start)
-		int shields{0};
+		int points{ 0 };			// current round points (reset at round start)
+		int shields{ 0 };
 		f32 ini_movSpd;
-		f32 max_movSpd{ini_movSpd}, cur_movSpd{ max_movSpd };
+		f32 max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 	};
 
 }

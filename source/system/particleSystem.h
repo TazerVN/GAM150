@@ -42,6 +42,17 @@ namespace Particle
 		* - player is using ranged attack
 		*/
 
+		void particleClick(ECS::Registry& ecs, MeshFactory& mf);
+		/*
+		* Click effect
+		*/
+ 
+
+		void particleDataStream(ECS::Registry& ecs, MeshFactory& mf);
+		/*
+		* Parallax Scrolling for Background
+		*/
+
 	private:
 		std::vector<Entity> Particlebuffer;
 

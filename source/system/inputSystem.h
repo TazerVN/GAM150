@@ -28,6 +28,6 @@ namespace InputSystem
 
 
 
-#endif // !InputSystem_H
 
 }
+#endif // !InputSystem_H

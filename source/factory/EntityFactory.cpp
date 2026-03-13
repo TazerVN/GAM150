@@ -8,7 +8,7 @@
 #include "EntityFactory.h"
 
 namespace System {
-	Entity create_actor_spritesheet(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex)
+	Entity create_actor_spritesheet(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -27,7 +27,8 @@ namespace System {
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_SPRITE), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Timer timer{ 1.f };
+		Components::Timer timer{ 1.f, 0.5f, true, true };
+		Components::Animation_Actor aa{ at};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -38,11 +39,12 @@ namespace System {
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, timer);
+		ecs.addComponent(id, aa);
 
 		return id;
 	}
 
-	Entity create_actor_normal(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex)
+	Entity create_actor_normal(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -61,7 +63,8 @@ namespace System {
 		//twan help me add more mesh
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Timer timer{1.f};
+		Components::Timer timer{1.f, 0.5f, true, true};
+		Components::Animation_Actor aa{at};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -72,6 +75,7 @@ namespace System {
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, timer);
+		ecs.addComponent(id, aa);
 
 		return id;
 	}

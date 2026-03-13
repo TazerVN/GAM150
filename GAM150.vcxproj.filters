@@ -38,6 +38,21 @@
     <ClCompile Include="source\system\TimerSystem.cpp" />
     <ClCompile Include="source\level\CombatLevel.cpp" />
     <ClCompile Include="source\util\LevelManager.cpp" />
+    <ClCompile Include="source\system\PhaseSystem.cpp" />
+    <ClCompile Include="source\UI\cardInformation.cpp" />
+    <ClCompile Include="source\util\BST.cpp" />
+    <ClCompile Include="source\global.cpp" />
+    <ClCompile Include="source\system\particleSystem.cpp" />
+    <ClCompile Include="source\system\EnemyDirector.cpp" />
+    <ClCompile Include="source\util\json_parser.cpp" />
+    <ClCompile Include="source\system\CombatSystem.cpp" />
+    <ClCompile Include="source\system\CameraSystem.cpp" />
+    <ClCompile Include="source\system\CardSystem.cpp" />
+    <ClCompile Include="source\level\menu.cpp" />
+    <ClCompile Include="source\level\game.cpp" />
+    <ClCompile Include="source\util\GameStateManager.cpp" />
+    <ClCompile Include="source\system\velocitySystem.cpp" />
+    <ClCompile Include="source\system\AnimationSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -79,5 +94,20 @@
     <ClInclude Include="source\level\CombatLevel.h" />
     <ClInclude Include="source\util\LevelManager.h" />
     <ClInclude Include="source\main.h" />
+    <ClInclude Include="source\system\PhaseSystem.h" />
+    <ClInclude Include="source\UI\cardInformation.h" />
+    <ClInclude Include="source\util\BST.h" />
+    <ClInclude Include="source\system\particleSystem.h" />
+    <ClInclude Include="source\system\EnemyDirector.h" />
+    <ClInclude Include="source\util\json_parser.h" />
+    <ClInclude Include="source\system\CombatSystem.h" />
+    <ClInclude Include="source\system\CameraSystem.h" />
+    <ClInclude Include="source\system\CardSystem.h" />
+    <ClInclude Include="source\system\CardConstants.h" />
+    <ClInclude Include="source\level\menu.h" />
+    <ClInclude Include="source\level\game.h" />
+    <ClInclude Include="source\util\GameStateManager.h" />
+    <ClInclude Include="source\system\velocitySystem.h" />
+    <ClInclude Include="source\system\AnimationSystem.h" />
   </ItemGroup>
 </Project>

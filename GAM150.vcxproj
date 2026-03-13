@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\level\CombatLevel.cpp" />
+    <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\util\GameStateManager.cpp" />
     <ClCompile Include="source\level\menu.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
@@ -52,6 +53,7 @@
   <ItemGroup>
     <ClInclude Include="source\level\CombatLevel.h" />
     <ClInclude Include="source\main.h" />
+    <ClInclude Include="source\system\AnimationSystem.h" />
     <ClInclude Include="source\util\GameStateManager.h" />
     <ClInclude Include="source\level\menu.h" />
     <ClInclude Include="source\system\CameraSystem.h" />

@@ -5,6 +5,11 @@ s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 
+Scene scene;
+CardInteraction::CardHand card{};
+UI::UIManager UIM;
+Particle::ParticleSystem PS;
+
 void GameState_game_load()
 {
 	//==========System=============
@@ -47,6 +52,7 @@ void GameState_game_update()
 	}
 
 	//========(Render)====================
+	AS.update(ecs);
 	VS.update(ecs);
 	PS.update(ecs, 0.2);
 	CS.update(ecs);

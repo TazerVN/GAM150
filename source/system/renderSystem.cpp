@@ -69,7 +69,6 @@ namespace RenderSystem
 
 
 		RenderSystem_init(ecs);
-		//twan's old code
 
 		buffer.sort(renderCMP);
 		Components::Transform* cam_t = ecs.getComponent<Components::Transform>(camera);
