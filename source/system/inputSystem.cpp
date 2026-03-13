@@ -6,7 +6,7 @@ namespace InputSystem
 {
 	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs);
 
-	void InputManager::update(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs, Entity camera_id)
+	void InputManager::update(ECS::Registry& ecs, Entity camera_id)
 	{
 		Components::Transform* cam = ecs.getComponent<Components::Transform>(camera_id);
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
