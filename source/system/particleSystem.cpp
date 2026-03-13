@@ -137,7 +137,7 @@ void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf
 	}
 }
 
-void particleClick(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf)
 {
 	int   max_count = 10;
 	f32   speed = 80.0f;
