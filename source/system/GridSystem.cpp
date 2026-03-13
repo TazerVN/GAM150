@@ -258,20 +258,16 @@ namespace Grid
 							move_select(x, y);
 							return;
 						}
-
-						if (!check_within_range(this->cur, x, y))
+					}
+					else {
+						if (!cbsptr->check_within_range(this->cur, x, y))
 						{
-							std::cout << "Target is outside range" << std::endl;
+							std::cout << "Selected cell is outside range" << std::endl;
 							unselect_card();
-
 							return;
 						}
 
 						trigger_play_card(x, y);
-					}
-					else {
-						std::cout << "Select a valid cell" << std::endl;
-						unselect_card();
 					}
 				}
 				break;
@@ -288,7 +284,7 @@ namespace Grid
 							move_select(x, y);
 							return;
 						}
-						if (!check_within_range(this->cur, x, y))
+						if (!cbsptr->check_within_range(this->cur, x, y))
 						{
 							std::cout << "Target is outside range" << std::endl;
 							unselect_card();
@@ -325,8 +321,8 @@ namespace Grid
 
 	void GameBoard::trigger_play_card(s32 x, s32 y)
 	{
-		tbsptr->set_targetted_ent(pos[x][y]);
-		tbsptr->set_targetted_xy(x, y);
+		cbsptr->set_targetted_ent(pos[x][y]);
+		cbsptr->set_targetted_xy(x, y);
 		gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;
@@ -342,7 +338,7 @@ namespace Grid
 	void GameBoard::move_trigger(s32 const& x, s32 const& y)
 	{
 		//check if it is within movement range 
-		if (!check_within_range(this->cur, x, y))
+		if (!cbsptr->check_within_range(this->cur, x, y))
 		{
 			std::cout << "Outside movement range" << std::endl;
 			unselect_movement();
@@ -457,13 +453,13 @@ namespace Grid
 			{ 
 				cell_onHover(ecs, id, this->pos[x][y]);
 
-				if(!aoe_highlighted_cells.empty())
-					for (AEVec2 a : aoe_highlighted_cells)
+				if(!cbsptr->get_aoe_highlighted_cell().empty())
+					for (AEVec2 a : cbsptr->get_aoe_highlighted_cell())
 					{
 						aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
 
-				aoe_highlighted_cells.clear();
+				cbsptr->get_aoe_highlighted_cell().clear();
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
 				{
@@ -483,22 +479,22 @@ namespace Grid
 							{
 								if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
 								{
-									this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y + j) });
+									cbsptr->get_aoe_highlighted_cell().push_back({f32(x + i) , f32(y + j)});
 									this->aoe_highlight_activate[x + i][y + j] = 1;
 								}
 								if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
 								{
-									this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y - j) });
+									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x - i) , f32(y - j) });
 									this->aoe_highlight_activate[x - i][y - j] = 1;
 								}
 								if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
 								{
-									this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y - j) });
+									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x + i) , f32(y - j) });
 									this->aoe_highlight_activate[x + i][y - j] = 1;
 								}
 								if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
 								{
-									this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y + j) });
+									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x - i) , f32(y + j) });
 									this->aoe_highlight_activate[x - i][y + j] = 1;
 								}
 							}
@@ -525,12 +521,14 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy)
+	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
+		CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbsptr = tbsys;
 		ecsptr = &ecs;
 		evsptr = &evs;
 		gbsptr = &gb;
+		cbsptr = &cbs;
 
 		this->offset.x = ox;
 		this->offset.y = oy;
@@ -696,11 +694,6 @@ namespace Grid
 		return pos;
 	}
 
-	std::vector<AEVec2>& GameBoard::get_highlighted_cell()
-	{
-		return highlighted_cells;
-	}
-
 	std::array<std::array<highlight_tag, MAX_J>, MAX_I>& GameBoard::activate_highlight()
 	{
 		return highlight_activate;
@@ -776,18 +769,6 @@ namespace Grid
 		}
 
 		return temp;
-	}
-
-	bool GameBoard::check_within_range(Entity id, s32 const& x, s32 const& y)
-	{
-		for (AEVec2 ite : highlighted_cells)
-		{
-			if (x == s32(ite.x) && y == s32(ite.y))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	s32 GameBoard::grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)

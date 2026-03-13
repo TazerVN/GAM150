@@ -20,6 +20,7 @@
 //forward declaring tbs so that linker can use it 
 namespace TBS { class TurnBasedSystem; }
 namespace PhaseSystem { class GameBoardState; }
+namespace CombatNameSpace {class CombatSystem;}
 
 namespace Grid
 {
@@ -30,6 +31,7 @@ namespace Grid
 		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
+		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 		
 		Entity cur, prev_cur;
 		bool selected_part = false;
@@ -47,14 +49,12 @@ namespace Grid
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
-		std::vector<AEVec2> highlighted_cells;
-		std::vector<AEVec2> aoe_highlighted_cells;
-
 		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 	public:
 
-		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, AEGfxTexture* pTex, f32 ox, f32 oy);
+		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
+			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
 		
 		void trigger_play_card(s32 x, s32 y);
@@ -69,17 +69,16 @@ namespace Grid
 
 		void update(ECS::Registry& ecs, Entity camera);
 		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
-		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 
+		//getters
+		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
-		std::vector<AEVec2>& get_highlighted_cell();
 
 		bool selected_player() const;
 		void unselect_movement();
 		AEVec2 Get_gridPos(AEVec2 const& pos,Entity camera);
 		AEVec2& Get_CurPart_gridPos();
 
-		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 	};

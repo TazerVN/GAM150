@@ -86,8 +86,6 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	tbsParticipants.push_back(playerID);
 	tbsParticipants.push_back(horde);
 
-	TBSys.init(*ecs, eventPool, BattleGrid, gbs, cs, ch, tbsParticipants);
-
 	//Add enemy0
 	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
 	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
@@ -102,8 +100,9 @@ void Scene::init(ECS::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFact
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
-	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cs, ch ,entities);
-	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, tf.getTextureFloor(0), 0, w_height / 3);
+	cbs.init(*ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
+	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
+	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3);
 
 	
 	//place entitities
@@ -125,7 +124,7 @@ void Scene::update()
 
 	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
 	{
-		unhighlight_cells(BattleGrid);
+		unhighlight_cells(BattleGrid, cbs);
 		eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered = false;
 	}
 
@@ -140,14 +139,14 @@ void Scene::update()
 			Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
 			f32& card_range = ecs->getComponent<Components::Targetting_Component>(card_ID)->range;
 
-			highlight_cells(*ecs, TBSys, BattleGrid, card_range, highlight_type);
+			highlight_cells(*ecs, TBSys, BattleGrid, cbs , card_range, highlight_type);
 
 			break;
 		}
 		case highlight_tag::MOVE_HIGHLIGHT:
 		{
 			f32& range = ecs->getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
-			highlight_cells(*ecs, TBSys, BattleGrid, range, highlight_type);
+			highlight_cells(*ecs, TBSys, BattleGrid, cbs, range, highlight_type);
 		}
 			break;
 		default:
@@ -156,7 +155,6 @@ void Scene::update()
 
 		eventPool.template_pool[HIGHLIGHT_EVENT].triggered = false;
 	}
-
 	//==============================================================
 }
 
@@ -191,7 +189,7 @@ Grid::GameBoard& Scene::getBattleGrid()
 	return BattleGrid;
 }
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb,int range,highlight_tag type)
+void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
 
@@ -206,28 +204,28 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 			{
 				if(gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
 					continue;
-				gb.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
 				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] = type;
 			}
 			if (i + j <= range &&cur_part_pos.x - i >= 0 && cur_part_pos.y - j >= 0)
 			{
 				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
 					continue;
-				gb.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
 				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] = type;
 			}
 			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y - j >= 0)
 			{
 				if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
 					continue;
-				gb.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
 				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] = type;
 			}
 			if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y + j < MAX_J)
 			{
 				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
 					continue;
-				gb.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
 				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] = type;
 			}
 		}
@@ -235,11 +233,11 @@ void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBo
 	//=========================================================================
 }
 
-void unhighlight_cells(Grid::GameBoard& gb)
+void unhighlight_cells(Grid::GameBoard& gb,CombatNameSpace::CombatSystem& cbs)
 {
-	for (AEVec2 a : gb.get_highlighted_cell())
+	for (AEVec2 a : cbs.get_highlighted_cell())
 	{
 		gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;
 	}
-	gb.get_highlighted_cell().clear();
+	cbs.get_highlighted_cell().clear();
 }

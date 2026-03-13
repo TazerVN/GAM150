@@ -3,7 +3,7 @@
 
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
-#include "level/GameState.h"
+#include "util/GameStateManager.h"
 #include "level/game.h"
 // ---------------------------------------------------------------------------
 
@@ -26,7 +26,50 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Changing the window title
 	AESysSetWindowTitle("Yes!");
 
-	SetGameState(game_init,game_update,game_exit);
+	/*SetGameState(game_init,game_update,game_free);*/
+
+
+	GameStateMgrInit(GameStates::GS_MAINMENU);
+
+	while (gGameStateCurr != GameStates::GS_QUIT)
+	{
+		// Reset the system modules
+		AESysReset();
+
+		// If not restarting, load the gamestate
+		if (gGameStateCurr != GameStates::GS_RESTART)
+		{
+			GameStateMgrUpdate();
+			GameStateLoad();
+		}
+		else
+			gGameStateNext = gGameStateCurr = gGameStatePrev;
+
+		// Initialize the gamestate
+		GameStateInit();
+
+		while (gGameStateCurr == gGameStateNext)
+		{
+			AESysFrameStart();
+
+			GameStateUpdate();
+
+			AESysFrameEnd();
+
+			// check if forcing the application to quit
+			if (AESysDoesWindowExist() == false)
+				gGameStateNext = GameStates::GS_QUIT;
+		}
+
+		GameStateFree();
+
+		if (gGameStateNext != GameStates::GS_RESTART)
+			GameStateUnload();
+
+		gGameStatePrev = gGameStateCurr;
+		gGameStateCurr = gGameStateNext;
+	}
+
 
 	// reset the system modules
 	AESysReset();

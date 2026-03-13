@@ -10,6 +10,7 @@
 //forward declaration so that turnbased system have access to gridsystem
 namespace Grid { class GameBoard; };
 namespace CardInteraction { class CardHand; };
+namespace CombatNameSpace { class CombatSystem; };
 
 namespace TBS 
 {
@@ -26,8 +27,7 @@ namespace TBS
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		CardSystem* cardSysptr = nullptr;
 		CardInteraction::CardHand* cardHandptr = nullptr;
-		Entity targetted_entity = -1;
-		int targetted_x{-1}, targetted_y{ -1 };
+		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 
 		// Actors on Borad
 		std::vector<Entity> participants;
@@ -40,7 +40,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
+		void init(ECS::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&, CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
 		void add_participant(ECS::Registry& ecs,Entity parti);
 		void remove_participant(ECS::Registry& ecs, Entity parti);
 		std::vector<Entity>& get_participant();
@@ -52,8 +52,6 @@ namespace TBS
 		//determine if the active participant has selected a card or not
 		bool is_current_selected_card() const;
 		void set_selected_card(bool bol);
-		void set_targetted_ent(Entity ent);
-		void set_targetted_xy(int x , int y);
 		void next(ECS::Registry& ecs);	
 		void end();
 
@@ -77,11 +75,9 @@ namespace TBS
 		void yield_to_player(ECS::Registry& ecs);
 
 		//============Combat=======================
-		bool play_card_triggered{false};
 
-		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player, Entity target, int index);
+		PC_RETURN_TAG play_card(ECS::Registry& ecs, Entity player, Entity target, AEVec2 targetted_pos, int index);
 
-		void check_input(ECS::Registry&);
 		void DrawPhase_add_card(ECS::Registry& ecs);
 		void remove_card(ECS::Registry& ecs, Entity user, int index);
 		void select_hand_index(size_t index);
@@ -92,10 +88,5 @@ namespace TBS
 
 		//===============Update=====================
 		void update(ECS::Registry& ecs);
-
-		void update_GBPhasetriggered();
-		void update_GBPhaseUpdate();
-
-		void end_player_resolution();
 	};
 }

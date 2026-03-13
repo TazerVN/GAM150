@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\AnimationSystem.cpp" />
+    <ClCompile Include="source\util\GameStateManager.cpp" />
     <ClCompile Include="source\level\menu.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
     <ClCompile Include="source\global.cpp" />
@@ -29,7 +30,6 @@
     <ClCompile Include="source\system\inputSystem.cpp" />
     <ClCompile Include="source\level\game.cpp" />
     <ClCompile Include="source\ECS\gameObject.cpp" />
-    <ClCompile Include="source\level\GameState.cpp" />
     <ClCompile Include="source\system\GridSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\factory\MeshFactory.cpp" />
@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\AnimationSystem.h" />
+    <ClInclude Include="source\util\GameStateManager.h" />
     <ClInclude Include="source\level\menu.h" />
     <ClInclude Include="source\system\CameraSystem.h" />
     <ClInclude Include="source\system\CardConstants.h" />
@@ -68,7 +69,6 @@
     <ClInclude Include="source\system\inputSystem.h" />
     <ClInclude Include="source\level\game.h" />
     <ClInclude Include="source\ECS\gameObject.h" />
-    <ClInclude Include="source\level\GameState.h" />
     <ClInclude Include="source\global.h" />
     <ClInclude Include="source\system\GridSystem.h" />
     <ClInclude Include="source\factory\MeshFactory.h" />

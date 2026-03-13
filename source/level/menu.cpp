@@ -1,23 +1,70 @@
 #include "menu.h"
+#include "game.h"
+#include <iostream>
 #include "AEEngine.h"
-#include "GameState.h"
+#include "../util/GameStateManager.h"
 #include "../factory/MeshFactory.h"
 
 // PROXY CODE
 // NEED CLEAN UP
 
-static MeshFactory mf{};
-static bool shouldQuit = false;
+void GameStateMainMenu_load()
+{
+	std::cout << "Main menu loaded" << std::endl;
+}
+void GameStateMainMenu_init()
+{
+	std::cout << "Main menu init" << std::endl;
 
-struct Button {
-    float x, y, width, height;
-    unsigned int color;
-    unsigned int hoverColor;
-};
+    mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 
-static Button playBtn;
-static Button quitBtn;
-static s8 menuFont;
+    // Load font (second param is font size)
+    menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
+
+    playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
+    quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
+
+    shouldQuit = false;
+}
+void GameStateMainMenu_update()
+{
+	if (AEInputCheckTriggered(AEVK_1))
+		gGameStateNext = GameStates::GS_Game;
+	if (AEInputCheckTriggered(AEVK_Q))
+		gGameStateNext = GameStates::GS_QUIT;
+
+    if (AEInputCheckTriggered(AEVK_LBUTTON))
+    {
+        if (IsMouseOver(playBtn)) //leaveGameState();
+        if (IsMouseOver(quitBtn)) shouldQuit = true;
+    }
+
+    /*
+    if (shouldQuit || 0 == AESysDoesWindowExist())
+    {
+        AESysExit();
+        return;
+    }
+    */
+
+    AEGfxSetBackgroundColor(0.1f, 0.1f, 0.2f);
+
+    DrawButton(playBtn);
+    DrawButton(quitBtn);
+
+    //AEGfxPrint(menuFont, "UNTITLED GAME", -0.2f, 0.3f, 1.5f, 1.f, 1.f, 1.f, 1.f);
+
+}
+void GameStateMainMenu_free()
+{
+	std::cout << "Main menu free" << std::endl;
+    mf.MeshFree();
+    AEGfxDestroyFont(menuFont);
+}
+void GameStateMainMenu_unload()
+{
+    std::cout << "Main menu unloaded" << std::endl;
+}
 
 bool IsMouseOver(const Button& btn)
 {
@@ -54,50 +101,4 @@ void DrawButton(const Button& btn)
 
     // Use MeshFactory's rectangle instead of a raw quad
     AEGfxMeshDraw(mf.MeshGet(MESH_RECTANGLE_CENTER), AE_GFX_MDM_TRIANGLES);
-}
-
-void menu_init()
-{
-    mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
-
-    // Load font (second param is font size)
-    menuFont = AEGfxCreateFont("Assets/Fonts/cool.ttf", 72);
-
-    playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
-    quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
-
-    shouldQuit = false;
-}
-
-void menu_update()
-{
-    AESysFrameStart();
-
-    if (AEInputCheckTriggered(AEVK_LBUTTON))
-    {
-        if (IsMouseOver(playBtn)) leaveGameState();
-        if (IsMouseOver(quitBtn)) shouldQuit = true;
-    }
-
-    /*
-    if (shouldQuit || 0 == AESysDoesWindowExist())
-    {
-        AESysExit();
-        return;
-    }
-    */
-
-    AEGfxSetBackgroundColor(0.1f, 0.1f, 0.2f);
-
-    DrawButton(playBtn);
-    DrawButton(quitBtn);
-
-    //AEGfxPrint(menuFont, "UNTITLED GAME", -0.2f, 0.3f, 1.5f, 1.f, 1.f, 1.f, 1.f);
-
-    AESysFrameEnd();
-}
-void menu_exit()
-{
-    mf.MeshFree();
-    AEGfxDestroyFont(menuFont);
 }
