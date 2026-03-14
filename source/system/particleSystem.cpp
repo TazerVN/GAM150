@@ -77,6 +77,38 @@ void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 					}
 					break;
 
+				case Components::ParticleType::Reversestream:
+					if (timer->max_seconds <= 1.0f)
+					{
+						timer->max_seconds = 8.0f + AERandFloat() * 4.0f;
+						timer->reset = true;
+					}
+
+						transform->rotation += dt * 60.f;
+						if (transform->rotation > 360.f) { transform->rotation -= 360.f; }
+
+						f32 t = timer->seconds / timer->max_seconds;
+						if (t < 0.2f)
+							color->d_color.a = (t / 0.2f) * color->c_color.a;
+						else
+							color->d_color.a = (1.0f - t) * color->c_color.a;
+
+						if (timer->seconds <= 0.01f && timer->start == true)
+						{
+							f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+							f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+
+							f32 newX = AERandFloat() * halfWidth;
+							f32 newY = AERandFloat() * halfHeight;
+
+							transform->pos.x = newX;
+							transform->pos.y = newY;
+							transform->pos_onscreen.x = newX;
+							transform->pos_onscreen.y = newY;
+						}
+						break;
+					
+
 				case Components::ParticleType::Heal:
 					color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
 					
@@ -245,7 +277,7 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 			f32 y = -halfHeight + (AERandFloat() * screenHeight);
 
 			f32 width = 4.0f + AERandFloat() * 6.0f;
-			f32 height = 15.0f + AERandFloat() * 15.0f;
+			f32 height = 50.0f + AERandFloat() * 90.0f;
 
 			f32 streamSpeed = 80.f + AERandFloat() * 120.0f;
 
@@ -259,8 +291,42 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 
 			//0.3f + 0.7f * AERandFloat();
 
-			spawn_one(ecs, mf, x, y, width, height, 45.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
+			spawn_one(ecs, mf, x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
 		}
+	}
+}
+
+void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& ecs, MeshFactory& mf)
+{
+	// Screen dimensions
+	f32 screenWidth = f32(AEGfxGetWindowWidth());
+	f32 screenHeight = f32(AEGfxGetWindowHeight());
+	f32 halfWidth = screenWidth * 0.5f;
+	f32 halfHeight = screenHeight * 0.5f;
+
+	int count = 3;
+
+	for (int i = 0; i < count; i++)
+	{
+		// Spawn at top-right area
+		f32 x = AERandFloat() * halfWidth;
+		f32 y = AERandFloat() * halfHeight;
+
+		// Direction — top-right to bottom-left
+		f32 speed = 60.f + AERandFloat() * 40.f;
+		f32 velX = -0.707f * speed;
+		f32 velY = -0.707f * speed;
+
+		// Square size
+		f32 size = 15.f + AERandFloat() * 20.f;
+
+		// Colour — cyan/white
+		f32 r = 0.6f + 0.4f * AERandFloat();
+		f32 g = 0.8f + 0.2f * AERandFloat();
+		f32 b = 1.0f;
+		f32 a = 0.6f + 0.4f * AERandFloat();
+
+		spawn_one(ecs, mf, x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
 	}
 }
 
