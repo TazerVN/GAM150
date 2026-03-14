@@ -23,6 +23,7 @@ void LevelStateCombat_init()
 	UIM.init(scene, mf, TF);
 	ecs.remove_empty_groups();
 	PS.particleClick(ecs, mf);
+	PS.particleDataStream(ecs, mf);
 }
 void LevelStateCombat_update()
 {
