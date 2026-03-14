@@ -52,6 +52,11 @@ namespace Particle
 		* Parallax Scrolling for Background
 		*/
 
+		void particleReverseStream(EntityComponent::Registry& ecs, MeshFactory& mf);
+		/*
+		* Parallax Scrolling for Background
+		*/
+
 		void particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
 		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf);

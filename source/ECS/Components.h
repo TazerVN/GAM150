@@ -32,6 +32,7 @@ namespace Components
 		Burst,
 		Click,
 		Datastream,
+		Reversestream,
 		Heal,
 		Shield,
 		Damage
