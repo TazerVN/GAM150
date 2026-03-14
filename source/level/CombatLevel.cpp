@@ -27,14 +27,14 @@ void LevelStateCombat_init()
 		, scene.getGBS());
 	UIM.init(scene, mf, TF);
 	ecs.remove_empty_groups();
-	PS.particleBurst(ecs, mf);
+	PS.particleClick(ecs, mf);
 }
 void LevelStateCombat_update()
 {
 	f32 dt = AEFrameRateControllerGetFrameTime();
 	//==========(Object updates)===========
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-		PS.particleBurst(ecs, mf);
+		PS.particleClick(ecs, mf);
 	}
 	scene.update();
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);

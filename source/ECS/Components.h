@@ -36,7 +36,8 @@ namespace Components
 		Click,
 		Datastream,
 		Heal,
-		Shield
+		Shield,
+		Damage
 	};
 
 	enum class AnimationType : char

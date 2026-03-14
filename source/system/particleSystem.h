@@ -53,9 +53,11 @@ namespace Particle
 		* Parallax Scrolling for Background
 		*/
 
-		void particleHeal(ECS::Registry& ecs, MeshFactory& mf);
+		void particleHeal(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
 		void particleShield(ECS::Registry& ecs, MeshFactory& mf);
+
+		void particleDamage(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
 
 	private:

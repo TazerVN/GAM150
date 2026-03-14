@@ -183,26 +183,34 @@ void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf
 
 void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf)
 {
-	int   max_count = 10;
-	f32   speed = 80.0f;
+	int   max_count = 6;
+	f32   speed = 40.0f;
 
 	for (int i = 0; i < max_count; i++)
 	{
 		// Distribute particle evenly in full circle
 		f32 angle = (f32(i) / f32(max_count)) * 2.0f * PI;
 
+		f32 r = 0.4f - 0.4f * AERandFloat();
+
+		f32 g = 0.7f + 0.3f * AERandFloat();
+
+		f32 b = 0.8f;
+
+		f32 a = 1.0f;
+
 		// Convert angle to velocity direction
 		f32 velX = AECos(angle) * speed;
 		f32 velY = AESin(angle) * speed;
 
 		// random speed variation
-		f32 speedVariation = 0.8f + AERandFloat() * 0.4f;
+		f32 speedVariation = 0.9f + AERandFloat() * 0.2f;
 		velX *= speedVariation;
 		velY *= speedVariation;
 
 
 		// input
-		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Click);
+		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
 	}
 }
 
