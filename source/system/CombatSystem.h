@@ -43,6 +43,7 @@ namespace CombatNameSpace
 
 		void set_targetted_ent(Entity ent);
 		void set_targetted_xy(int x, int y);
+		void set_play_card_triggered(bool flag);
 
 		void update_GBPhasetriggered();
 		void update_GBPhaseUpdate();

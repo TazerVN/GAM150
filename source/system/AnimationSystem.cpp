@@ -184,7 +184,7 @@ namespace Animation
 							if (melee_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
 							{
 								anim->anim_type = Components::AnimationType::IDLE;
-								cs.end_player_resolution();
+								cs.set_play_card_triggered(true);
 							}
 							break;
 					}

@@ -128,6 +128,11 @@ void CombatNameSpace::CombatSystem::set_targetted_xy(int x, int y)
 	targetted_x = x; targetted_y = y;
 }
 
+void CombatNameSpace::CombatSystem::set_play_card_triggered(bool flag)
+{
+	play_card_triggered = flag;
+}
+
 void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 {
 	//
