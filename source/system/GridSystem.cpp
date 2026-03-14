@@ -270,7 +270,7 @@ namespace Grid
 							return;
 						}
 
-						trigger_play_card(x, y);
+						trigger_play_card(ecs, x, y);
 					}
 				}
 				break;
@@ -294,7 +294,7 @@ namespace Grid
 
 							return;
 						}
-						trigger_play_card(x,y);
+						trigger_play_card(ecs, x,y);
 					}
 					else {
 						std::cout << "Select a valid cell with entity" << std::endl;
@@ -322,13 +322,19 @@ namespace Grid
 		}
 	}
 
-	void GameBoard::trigger_play_card(s32 x, s32 y)
+	void GameBoard::trigger_play_card(EntityComponent::Registry& ecs,s32 x, s32 y)
 	{
 		cbsptr->set_targetted_ent(pos[x][y]);
 		cbsptr->set_targetted_xy(x, y);
 		gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;
+
+		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(playerID);
+		anim->anim_type = Components::AnimationType::ATTACK_MELEE;
+
+
+
 	}
 
 	void GameBoard::unselect_card()

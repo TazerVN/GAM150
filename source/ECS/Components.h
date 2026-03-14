@@ -161,11 +161,13 @@ namespace Components
 	struct Animation_Actor
 	{
 		public:
+		int current_frame;
+		int max_frame;
 		bool finished;
 		AnimationType anim_type;
 		std::array<Entity, static_cast<size_t>(Components::AnimationType::COUNT)> timer_array;
 
-		Animation_Actor(Components::AnimationType type);
+		Animation_Actor(Components::AnimationType type, int current_frame = 0, int max_frame = 0);
 	};
 
 

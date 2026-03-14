@@ -22,7 +22,7 @@ namespace EntityFactory {
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_SPRITE), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Timer timer{ 1.f, 0.5f, true, true };
-		Components::Animation_Actor aa{ at};
+		Components::Animation_Actor aa{ at, 0, 6};
 		Components::AStarResult as{};
 
 		ecs.addComponent(id, nm);

@@ -290,11 +290,11 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 				if (!play_card_triggered)
 				{
 					std::cout << "Card Animating" << std::endl;
-					/*if (AEInputCheckTriggered(AEVK_P))
+					if (AEInputCheckTriggered(AEVK_P))
 					{
 						play_card_triggered = true;
-					}*/
-					play_card_triggered = true;
+					}
+					//play_card_triggered = true;
 				}
 				if (play_card_triggered)
 				{

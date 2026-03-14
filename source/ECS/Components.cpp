@@ -54,8 +54,10 @@ namespace Components
 
 	Components::Texture::Texture(AEGfxTexture* texture, f32 offset_x, f32 offset_y) : texture{ texture }, offset_x{ offset_x }, offset_y{ offset_y } {}
 
-	Animation_Actor::Animation_Actor(Components::AnimationType type) : anim_type{ type }, finished{false}, timer_array{size_t(-1)}
+	Animation_Actor::Animation_Actor(Components::AnimationType type, int current, int max)
+		: anim_type{ type }, finished{ false }, timer_array{ size_t(-1) }, current_frame{ current }, max_frame{ max }
+
 	{
 	}
-	
+
 }

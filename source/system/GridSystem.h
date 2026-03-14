@@ -58,7 +58,7 @@ namespace Grid
 			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
 		
-		void trigger_play_card(s32 x, s32 y);
+		void trigger_play_card(EntityComponent::Registry& ecs, s32 x, s32 y);
 		void unselect_card();
 		void move_trigger(s32 const& x, s32 const& y);
 		void move_select(s32 const& x, s32 const& y);
