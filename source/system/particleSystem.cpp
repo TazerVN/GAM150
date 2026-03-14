@@ -61,12 +61,17 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 						f32 halfWidth  = f32(AEGfxGetWindowWidth())  * 0.5f;
 						f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
 
-						transform->pos_onscreen.x = halfWidth + AERandFloat() * halfWidth * 2.0f;
-						transform->pos_onscreen.y = halfHeight;
+						f32 newX = -halfWidth + AERandFloat() * halfWidth * 2.f;
+						f32 newY = -halfHeight + AERandFloat() * halfHeight * 2.f;
+
+						transform->pos.x = newX;
+						transform->pos.y = newY;
+						transform->pos_onscreen.x = newX;
+						transform->pos_onscreen.y = newY;
 
 						timer->seconds = 0.0f;
 						timer->start = true;
-						return;
+						
 					}
 					break;
 
@@ -105,7 +110,7 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
-	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, rotation };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 	Components::Color color{ r, g, b, alpha };
 	Components::Timer timer{ AERandFloat() };
@@ -235,17 +240,22 @@ void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactor
 		{
 			f32 y = -halfHeight + (AERandFloat() * screenHeight);
 
+			f32 width = 4.0f + AERandFloat() * 6.0f;
+			f32 height = 15.0f + AERandFloat() * 15.0f;
+
 			f32 streamSpeed = 80.f + AERandFloat() * 120.0f;
 
 			f32 velX = 0.707f * streamSpeed;
 			f32 velY = 0.707f * streamSpeed;
 
 			f32 r = 0.0f;
-			f32 g = 1.0f;
-			f32 b = 1.0f;
-			f32 a = 1.0f;
+			f32 g = 0.7f + 0.3f * AERandFloat();
+			f32 b = 0.8f + 0.2f * AERandFloat();
+			f32 a = 1.0;
 
-			spawn_one(ecs, mf, x, y, 8.0f, 20.f, 45.0f, 0, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
+			//0.3f + 0.7f * AERandFloat();
+
+			spawn_one(ecs, mf, x, y, width, height, 45.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
 		}
 	}
 }
