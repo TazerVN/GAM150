@@ -112,12 +112,13 @@ void Particle::ParticleSystem::spawn_one(EntityComponent::Registry& ecs, MeshFac
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
-	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, rotation };
+	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {},  rotation };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 	Components::Color color{ r, g, b, alpha };
 	Components::Timer timer{ AERandFloat() };
 	Components::Particle particle{ type };
 	Components::Velocity vel{ 0.f, 0.f };
+	Components::TagClass tag{ Components::Tag::BACKGROUND};
 	vel.vel.x = velX;
 	vel.vel.y = velY;
 
@@ -127,6 +128,7 @@ void Particle::ParticleSystem::spawn_one(EntityComponent::Registry& ecs, MeshFac
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, particle);
 	ecs.addComponent(id, vel);
+	ecs.addComponent(id, tag);
 
 
 

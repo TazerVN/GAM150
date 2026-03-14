@@ -14,7 +14,7 @@ constexpr int BUFFER_CAPACITY = 100;
 
 namespace RenderSystem
 {
-	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform);
+	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, f32 rotation, AEMtx33* transform);
 
 	bool renderCMP(const std::pair<s8, Entity>& a, const std::pair<s8, Entity>& b)
 	{
@@ -102,7 +102,8 @@ namespace RenderSystem
 			if (ecs.getBitMask()[current_e].test(tagID))
 			{
 				Components::TagClass* tag = ecs.getComponent<Components::TagClass>(current_e);
-				if(tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI)
+				if(tag->value == Components::Tag::CARDS || tag->value == Components::Tag::UI
+				   || tag->value == Components::Tag::BACKGROUND)
 				{
 					camera_x = 0;
 					camera_y = 0;
@@ -134,14 +135,14 @@ namespace RenderSystem
 					AEGfxSetTransparency(1.0f);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, new_pos, new_size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, new_size, transform->rotation ,&transform->mtx);
 				}
 				else
 				{
 					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 					AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 					AEGfxSetColorToMultiply(color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
-					render_mesh(mesh->mesh, new_pos, new_size, &transform->mtx);
+					render_mesh(mesh->mesh, new_pos, new_size, transform->rotation, &transform->mtx);
 				}
 			}
 			else if (ecs.getBitMask()[current_e].test(textID))
@@ -157,13 +158,17 @@ namespace RenderSystem
 
 
 
-	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, AEMtx33* transform)
+	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, f32 rotation , AEMtx33* transform)
 	{
 		AEMtx33 translate;
 		AEMtx33Trans(&translate, pos.x, pos.y);
 		AEMtx33 scale;
 		AEMtx33Scale(&scale, size.x, size.y);
-		AEMtx33Concat(transform, &translate, &scale);
+		AEMtx33 rot;
+		AEMtx33RotDeg(&rot, rotation);
+
+		AEMtx33Concat(transform, &rot, &scale);
+		AEMtx33Concat(transform, &translate, transform);
 		AEGfxSetTransform(transform->m);
 		AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
 	}

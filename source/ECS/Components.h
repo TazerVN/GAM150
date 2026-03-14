@@ -22,7 +22,7 @@ namespace Components
 	//========================= ENUM ==============================
 	enum class Tag
 	{
-		CARDS, GRID, ACTOR, UI
+		CARDS, GRID, ACTOR, UI, BACKGROUND
 	};
 
 

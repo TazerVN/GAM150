@@ -23,6 +23,19 @@ namespace Animation
 		transform->pos_onscreen.y =  transform->pos.y + lerp * minimum * transform->size.y / 6;
 	}
 
+
+	void moving_animation(EntityComponent::Registry& ecs, Entity id, Entity timer_id)
+	{
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
+
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+		transform->pos_onscreen.y = transform->pos.y + lerp * minimum * transform->size.y / 6;
+	}
+
 	void AnimationSystem::init(EntityComponent::Registry& ecs)
 	{
 		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
@@ -70,6 +83,7 @@ namespace Animation
 							idle_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]);
 							break;
 						case Components::AnimationType::MOVING:
+							moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)]);
 							break;
 					}
 				}
