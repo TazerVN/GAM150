@@ -823,7 +823,7 @@ namespace Grid
 		return false;
 	}
 
-	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y)
+	bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
 			return false;
@@ -836,6 +836,7 @@ namespace Grid
 			return false;
 
 		pos[ex][ey] = -1;
+
 		pos[x][y] = e;
 
 		return true;

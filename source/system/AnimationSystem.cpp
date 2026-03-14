@@ -50,11 +50,11 @@ namespace Animation
 		else
 		{
 
-			if (texture->offset_y == 0.f && texture->offset_x == 0.f)
+			if (texture->offset_y >= 0.f && texture->offset_y < (1.f / 6.f))
 			{
 				texture->offset_y = 2.f / 6.f;
 			}
-			else if (texture->offset_y <= 1.f/6.f && texture->offset_x == 0.f)
+			else if (texture->offset_y >= 1.f/6.f && texture->offset_y < (2.f / 6.f))
 			{
 				texture->offset_y = 3.f / 6.f;
 			}
@@ -176,14 +176,14 @@ namespace Animation
 							AEVec2 offset{ gb.GetOffsetPos() };
 							if (moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
-								anim->anim_type = Components::AnimationType::IDLE;
+								anim->anim_type = Components::AnimationType::NONE;
 								cs.end_player_resolution();
 							}
 							break;
 						case Components::AnimationType::ATTACK_MELEE:
 							if (melee_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
 							{
-								anim->anim_type = Components::AnimationType::IDLE;
+								anim->anim_type = Components::AnimationType::NONE;
 								cs.set_play_card_triggered(true);
 							}
 							break;
