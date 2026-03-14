@@ -1,13 +1,12 @@
 #pragma once
 
-#ifndef PARTICLE_SYSTEM_H
-#define PARTICLE_SYSTEM_H
-
-#include "../ECS/ECSystem.h"
-#include "../ECS/Components.h"
 #include "../factory/MeshFactory.h"
+#include "../ECS/ECSystem.h"
+#include "../types.h"
+
 #include "AEEngine.h"
 #include <vector>
+
 
 
 namespace Particle
@@ -16,13 +15,13 @@ namespace Particle
 	{
 	public:
 
-		void init(ECS::Registry& ecs, MeshFactory& mf, size_t poolSize = 256);
+		void init(EntityComponent::Registry& ecs, MeshFactory& mf, size_t poolSize = 256);
 
-		void update(ECS::Registry& ecs, f32 dt);
+		void update(EntityComponent::Registry& ecs, f32 dt);
 
-		void spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
+		void spawn_one(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
-		void particleDigitize(ECS::Registry& ecs, MeshFactory& mf);
+		void particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
 		* Use in this:
 		* - When enemy dies, spawn this particle
@@ -30,7 +29,7 @@ namespace Particle
 		*/
 		
 
-		void particleBurst(ECS::Registry& ecs, MeshFactory& mf);
+		void particleBurst(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
 		* Use in this:
 		* - player or enemy get hit spawn this.
@@ -42,22 +41,22 @@ namespace Particle
 		* - player is using ranged attack
 		*/
 
-		void particleClick(ECS::Registry& ecs, MeshFactory& mf);
+		void particleClick(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
 		* Click effect
 		*/
  
 
-		void particleDataStream(ECS::Registry& ecs, MeshFactory& mf);
+		void particleDataStream(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
 		* Parallax Scrolling for Background
 		*/
 
-		void particleHeal(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+		void particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
-		void particleShield(ECS::Registry& ecs, MeshFactory& mf);
+		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf);
 
-		void particleDamage(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
 
 	private:
@@ -70,4 +69,3 @@ namespace Particle
 	};
 }
 
-#endif

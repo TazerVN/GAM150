@@ -1,10 +1,5 @@
-#include "game.h"
-#include "../main.h"
+#include "pch.h"
 #include "CombatLevel.h"
-#include "../UI/cardInteraction.h"
-#include "../ECS/Scene.h"
-#include "../UI/UI.h"
-#include "../system/particleSystem.h"
 
 Scene scene;
 CardInteraction::CardHand card{};

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EnemyDirector.h"
 
 #include <fstream>
@@ -138,7 +139,7 @@ void EnemyDirector::bindActor(const std::string& actorId, Entity e)
 }
 
 
-void EnemyDirector::update(ECS::Registry& ecs,
+void EnemyDirector::update(EntityComponent::Registry& ecs,
     PhaseSystem::GameBoardState& gbs,
     TBS::TurnBasedSystem& tbs,
     Grid::GameBoard& board,
@@ -149,7 +150,7 @@ void EnemyDirector::update(ECS::Registry& ecs,
     if (timeline_.empty()) return;
 
     Entity cur = tbs.current();
-    if (cur == NULL_INDEX) return;
+    if (cur == Components::NULL_INDEX) return;
 
     // If it is player's turn, reset the latch and do nothing
     if (cur == playerID)
@@ -225,7 +226,7 @@ void EnemyDirector::update(ECS::Registry& ecs,
         std::cout << "[ED] ERROR: guardMax hit while processing timeline.\n";
 }
 
-void EnemyDirector::execMOVE(ECS::Registry& ecs,
+void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
     Grid::GameBoard& board,
     Entity actor,
     Entity playerID,

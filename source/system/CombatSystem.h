@@ -1,6 +1,7 @@
 #pragma once
+
+#include "../types.h"
 #include "../ECS/ECSystem.h"
-#include "../global.h"
 #include "../util/Event.h"
 
 namespace TBS { class TurnBasedSystem; }
@@ -13,7 +14,7 @@ namespace CombatNameSpace
 	class CombatSystem
 	{
 	private:
-		ECS::Registry* ecsptr = nullptr;
+		EntityComponent::Registry* ecsptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TBS::TurnBasedSystem* tbsptr = nullptr;
@@ -29,14 +30,14 @@ namespace CombatNameSpace
 		
 		std::vector<Entity> graveyard;
 	public:
-		void init(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb ,TBS::TurnBasedSystem& tbs,
+		void init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb ,TBS::TurnBasedSystem& tbs,
 					 CardInteraction::CardHand& cardhand,EventPool<highlight_tag>& eventSystem);
 
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::vector<AEVec2>& get_aoe_highlighted_cell();
 		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 
-		void play_attack_card(ECS::Registry& ecs, Entity cardID, Entity target, AEVec2 pos);
+		void play_attack_card(EntityComponent::Registry& ecs, Entity cardID, Entity target, AEVec2 pos);
 		void handle_graveyard();
 
 
@@ -55,4 +56,4 @@ enum class COMBAT_SYSTEM_RETURN_TAG
 	VALID = 0
 };
 
-COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(ECS::Registry& ecs, Entity target, f32 damage);
+COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage);

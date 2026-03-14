@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Pathfinding.h"
 #include <queue>
 #include <limits>
@@ -45,7 +46,7 @@ AStarResult AStar_FindPath_Grid4(
         return out;
 
     const int N = width * height;
-    constexpr int INF = std::numeric_limits<int>::max();
+    constexpr int INF = INT_MAX;
 
     std::vector<int> g(N, INF);
     std::vector<int> parent(N, -1);

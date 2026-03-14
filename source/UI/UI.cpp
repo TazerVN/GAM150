@@ -1,10 +1,6 @@
-#include "../ECS/gameObject.h"
-#include "../ECS/ECSystem.h"
-#include "../ECS/Scene.h"
-#include "../factory/TextureFactory.h"
-#include "../UI/UI.h"
-#include <functional>
-#include "../global.h"
+#include "pch.h"
+#include "UI.h"
+
 
 namespace UI
 {
@@ -40,8 +36,8 @@ namespace UI
 
 	void UIManager::update(Scene& scene)
 	{
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 		{
@@ -83,13 +79,13 @@ namespace UI
 		}
 	}
 
-	void UIManager::health_update(ECS::Registry& ecs)
+	void UIManager::health_update(EntityComponent::Registry& ecs)
 	{
 
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-		ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		//create bitsets
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(transID); objMask.set(hpID);
 
 		for (std::pair<Entity, Entity> p : this->list)
@@ -125,7 +121,7 @@ namespace UI
 		return id;
 	}
 
-	void button_onHover(ECS::Registry& ecs, Entity id)
+	void button_onHover(EntityComponent::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 
@@ -141,7 +137,7 @@ namespace UI
 	}
 
 
-	void button_offHover(ECS::Registry& ecs, Entity id)
+	void button_offHover(EntityComponent::Registry& ecs, Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 
@@ -155,7 +151,7 @@ namespace UI
 
 	}
 
-	Entity UIManager::ui_button(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
+	Entity UIManager::ui_button(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
 
 	{
 		Entity id = ecs.createEntity();
@@ -177,7 +173,7 @@ namespace UI
 		return id;
 	}
 
-	Entity UIManager::ui_button_texture(ECS::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf , f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
+	Entity UIManager::ui_button_texture(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf , f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
 	{
 		Entity id = ecs.createEntity();
 		//default player values

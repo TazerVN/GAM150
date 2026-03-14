@@ -1,37 +1,34 @@
 #pragma once
 
-#ifndef COMPONENT_H
-#define COMPONENT_H
-
-
+#include "../types.h"
 #include "AEEngine.h"
+#include "../system/CardConstants.h"
+
 #include <vector>
 #include <string>
 #include <functional>
 #include <array>
 
-#include "../global.h"
-#include "../factory/MeshFactory.h"
-#include "../system/CardConstants.h"
 
-#define MAX_CARDS 1000
-#define MAX_COMPONENT 30
-
-constexpr size_t NULL_INDEX = -1;
-constexpr size_t DRAW_COUNT = 6;
 
 namespace Components
 {
+	constexpr size_t MAX_CARDS = 1000;
+	constexpr size_t MAX_COMPONENT = 30;
 
+
+	constexpr size_t NULL_INDEX = -1;
+	constexpr size_t DRAW_COUNT = 6;
 	//========================= ENUM ==============================
 	enum class Tag
 	{
 		CARDS, GRID, ACTOR, UI
 	};
 
-	
-	enum class ParticleType {
-		Digitalize, 
+
+	enum class ParticleType
+	{
+		Digitalize,
 		Burst,
 		Click,
 		Datastream,
@@ -247,4 +244,3 @@ namespace Components
 	};
 
 }
-#endif

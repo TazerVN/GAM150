@@ -1,6 +1,10 @@
 #pragma once
+
+#include "../types.h"
+
 #include "AEEngine.h"
 #include "vector"
+
 
 namespace TextureFactory
 {

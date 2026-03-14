@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.h"
+#include "AEEngine.h"
 #include "ECS/Components.h"
 #include "ECS/ECSystem.h"
 
@@ -18,22 +18,4 @@
 #include "system/velocitySystem.h"
 #include "system/AnimationSystem.h"
 #include "system/particleSystem.h"
-#include "system/CardSystem.h"
-
-
-extern size_t playerID;
-
-
-extern EntityComponent::Registry ecs;
-extern TextureFactory::TextureFactory TF;
-extern MeshFactory mf;
-
-
-extern CardSystem card_system;
-extern Timer::TimerSystem TS;
-extern InputSystem::InputManager IM;
-extern Camera::CameraSystem CS;
-extern RenderSystem::RenderSystem RM;
-extern Velocity::VelocitySystem VS;
-extern TransformSystem::TransformSystem TrS;
-extern Animation::AnimationSystem AS;
+#include "global.h"

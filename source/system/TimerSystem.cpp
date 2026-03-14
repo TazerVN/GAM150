@@ -1,13 +1,13 @@
+#include "pch.h"
 #include "TimerSystem.h"
-#include "../ECS/ECSystem.h"
 
-namespace TimerSystem{
+namespace Timer{
 
-void TimerSystem::update(ECS::Registry& ecs)
+void TimerSystem::update(EntityComponent::Registry& ecs)
 {
-	ECS::ComponentTypeID timerID = ECS::getComponentTypeID<Components::Timer>();
+	EntityComponent::ComponentTypeID timerID = EntityComponent::getComponentTypeID<Components::Timer>();
 
-	ECS::ComponentBitMask objMask;
+	EntityComponent::ComponentBitMask objMask;
 	objMask.set(timerID);
 
 

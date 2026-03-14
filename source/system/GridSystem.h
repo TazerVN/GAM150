@@ -1,10 +1,13 @@
 #pragma once
+#include "../types.h"
 #include "AEEngine.h"
+
 #include "../ECS/ECSystem.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../util/Pathfinding.h"   // Cell, AStarResult, AStar_FindPath_Grid4
 #include "../util/Event.h"
+
 
 #include <vector>
 #include <array>
@@ -27,7 +30,7 @@ namespace Grid
 	class GameBoard
 	{
 		private:
-		ECS::Registry* ecsptr = nullptr;
+		EntityComponent::Registry* ecsptr = nullptr;
 		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
@@ -49,26 +52,26 @@ namespace Grid
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
-		Entity create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
+		Entity create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 	public:
 
-		void init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
+		void init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
 			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy);
-		void placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y);
+		void placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
 		
 		void trigger_play_card(s32 x, s32 y);
 		void unselect_card();
 		void move_trigger(s32 const& x, s32 const& y);
 		void move_select(s32 const& x, s32 const& y);
-		void moveEntity(ECS::Registry& ecs ,Entity e, s32 x, s32 y);
+		void moveEntity(EntityComponent::Registry& ecs ,Entity e, s32 x, s32 y);
 
 		// helper functions for CPU - Zejin 
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
 		bool moveEntityAI(Entity e, s32 x, s32 y);
 
-		void update(ECS::Registry& ecs, Entity camera);
-		void updateCell(ECS::Registry& ecs, s32 x, s32 y);
+		void update(EntityComponent::Registry& ecs, Entity camera);
+		void updateCell(EntityComponent::Registry& ecs, s32 x, s32 y);
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();

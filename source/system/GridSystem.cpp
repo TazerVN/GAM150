@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "GridSystem.h"
 #include <utility> // for std::move
 #include "../util/util.h"
@@ -234,7 +236,7 @@ namespace Grid
 	}*/
 
 
-	void GameBoard::updateCell(ECS::Registry& ecs, s32 x, s32 y)
+	void GameBoard::updateCell(EntityComponent::Registry& ecs, s32 x, s32 y)
 	{
 		//if (is_active)
 		//if the current participant ha	s selected card 
@@ -387,7 +389,7 @@ namespace Grid
 			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 		}
 	}
-	void cell_onHover(ECS::Registry& ecs, Entity id, Entity character)
+	void cell_onHover(EntityComponent::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
@@ -410,7 +412,7 @@ namespace Grid
 		}
 	}
 
-	void cell_offHover(ECS::Registry& ecs, Entity id, Entity character)
+	void cell_offHover(EntityComponent::Registry& ecs, Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
@@ -434,7 +436,7 @@ namespace Grid
 	
 
 
-	Entity GameBoard::create_cells(ECS::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
+	Entity GameBoard::create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
 
@@ -521,7 +523,7 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(ECS::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
+	void GameBoard::init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
 		CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbsptr = tbsys;
@@ -547,13 +549,13 @@ namespace Grid
 		}
 	}
 
-	void GameBoard::placeEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
 		this->pos[x][y] = e;
 
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		if (!ecs.getBitMask()[e].test(transID)) return;
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
@@ -564,7 +566,7 @@ namespace Grid
 
 
 		Entity current_cell = this->cells[x][y];
-		ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		EntityComponent::ComponentTypeID colorID = EntityComponent::getComponentTypeID<Components::Color>();
 		if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
@@ -572,7 +574,7 @@ namespace Grid
 		color->d_color.r = 0.5f;
 	}
 
-	void GameBoard::moveEntity(ECS::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::moveEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		int start_i{}, start_j{};
 		//get player's position first
@@ -601,7 +603,7 @@ namespace Grid
 		this->pos[x][y] = e;
 	}
 
-	void GameBoard::update(ECS::Registry& ecs,Entity camera)
+	void GameBoard::update(EntityComponent::Registry& ecs,Entity camera)
 	{
 		if (tbsptr->is_current_selected_card()
 		 && AEInputCheckTriggered(AEVK_RBUTTON))
@@ -623,8 +625,8 @@ namespace Grid
 			for (int j = 0; j < MAX_J; ++j)
 			{
 				//update all cells
-				ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-				ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+				EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+				EntityComponent::ComponentTypeID colorID = EntityComponent::getComponentTypeID<Components::Color>();
 
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
@@ -679,7 +681,7 @@ namespace Grid
 
 				
 				Entity current_cell = this->cells[i][j];
-				colorID = ECS::getComponentTypeID<Components::Color>();
+				colorID = EntityComponent::getComponentTypeID<Components::Color>();
 				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
 				color = ecs.getComponent<Components::Color>(current_cell);

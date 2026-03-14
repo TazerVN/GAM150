@@ -1,12 +1,13 @@
+#pragma once
 
-#ifndef RS
-#define RS
-
+#include "../types.h"
 #include "../factory/MeshFactory.h"
-#include <vector>
-#include <utility>
 #include "../ECS/ECSystem.h"
 #include "../util/BST.h"
+#include <vector>
+#include <utility>
+
+
 
 
 namespace RenderSystem
@@ -19,8 +20,8 @@ namespace RenderSystem
 		std::list<std::pair<s8, Entity>> buffer;
 		public:
 		RenderSystem();
-		void RenderSystem_init(ECS::Registry& ecs);
-		void RM_render(ECS::Registry& ecs, Entity camera);
+		void RenderSystem_init(EntityComponent::Registry& ecs);
+		void RM_render(EntityComponent::Registry& ecs, Entity camera);
 
 	};
 };
@@ -28,4 +29,3 @@ namespace RenderSystem
 
 
 
-#endif // !RS

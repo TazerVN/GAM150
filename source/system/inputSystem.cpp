@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "inputSystem.h"
 #include "../system/PhaseSystem.h"
 #include <algorithm>
@@ -6,7 +7,7 @@ namespace InputSystem
 {
 	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs);
 
-	void InputManager::update(ECS::Registry& ecs, Entity camera_id)
+	void InputManager::update(EntityComponent::Registry& ecs, Entity camera_id)
 	{
 		Components::Transform* cam = ecs.getComponent<Components::Transform>(camera_id);
 		AEInputGetCursorPosition(&this->mousex, &this->mousey);
@@ -17,10 +18,10 @@ namespace InputSystem
 		this->mousex = AEClamp(this->mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 		this->mousey = AEClamp(this->mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
 
-		ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
-		ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
+		EntityComponent::ComponentTypeID iID = EntityComponent::getComponentTypeID<Components::Input>();
+		EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();
 		//create bitsets
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(iID);
 
 
@@ -50,8 +51,8 @@ namespace InputSystem
 			f32 zoom = cam->size.y;
 			Entity e = temp.second;
 
-			ECS::ComponentTypeID iID = ECS::getComponentTypeID<Components::Input>();
-			ECS::ComponentTypeID tID = ECS::getComponentTypeID<Components::Transform>();
+			EntityComponent::ComponentTypeID iID = EntityComponent::getComponentTypeID<Components::Input>();
+			EntityComponent::ComponentTypeID tID = EntityComponent::getComponentTypeID<Components::Transform>();
 
 			if (!ecs.getBitMask()[e].test(tID)) continue;
 			if (!ecs.getBitMask()[e].test(iID)) continue;

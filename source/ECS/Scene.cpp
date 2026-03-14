@@ -1,8 +1,9 @@
+#include "pch.h"
 #include "Scene.h"
-#include "../factory/EntityFactory.h"
+
 
 // STEVEN HERE IS THE HELPER - Zejin
-Entity spawnEnemyAndBind(ECS::Registry& ecs,
+Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
 	MeshFactory& mf,
 	TextureFactory::TextureFactory& tf,
 	EnemyDirector& enemyDirector,
@@ -12,13 +13,13 @@ Entity spawnEnemyAndBind(ECS::Registry& ecs,
 	Entity fa,
 	Entity sa)
 {
-	Entity e = System::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+	Entity e = EntityFactory::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 	enemyDirector.bindActor(actorId, e);
 	return e;
 }
 
 
-void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 
 {
 	cameraSys = &cam;
@@ -33,7 +34,7 @@ void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFacto
 	Entity temp; 
 	
 	//Add player
-	temp = System::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2), Components::AnimationType::NONE);
+	temp = EntityFactory::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
 	/*for (int i = 0; i < 8; ++i)
@@ -46,8 +47,8 @@ void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFacto
 	{
 		System::add_card_player_deck(*ecs, temp, blackHole);
 	}*/
-	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
-	System::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
+	EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
+	EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
 
 
 	//Create Horde
@@ -75,7 +76,7 @@ void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFacto
 		// temporary spawn position logic
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-		temp = System::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+		temp = EntityFactory::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 
 		add_entity(temp);                  // adds to scene/world
 		enemyDirector.bindActor(actorId, temp);
@@ -87,16 +88,16 @@ void Scene::init(ECS::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFacto
 	tbsParticipants.push_back(horde);
 
 	//Add enemy0
-	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
-	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
+	temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
+	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
 	//Add enemy1
-	temp = System::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
-	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	System::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
+	temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
 	add_entity(temp);
 	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
@@ -169,7 +170,7 @@ std::vector<Entity>& Scene::entities_store()
 	return entities;
 }
 
-ECS::Registry& Scene::getECS()
+EntityComponent::Registry& Scene::getECS()
 {
 	return *ecs;
 }
@@ -189,7 +190,7 @@ Grid::GameBoard& Scene::getBattleGrid()
 	return BattleGrid;
 }
 
-void highlight_cells(ECS::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
+void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
 

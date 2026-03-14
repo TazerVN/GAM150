@@ -1,17 +1,12 @@
+#include "pch.h"
 #include "TurnBasedSystem.h"
-#include "../system/GridSystem.h"
-#include "../util/util.h"
-#include "../UI/cardInteraction.h"
-#include "../global.h"
-#include "CombatSystem.h"
 #include <iomanip>
-#include "../factory/EntityFactory.h"
-#include "../system/CombatSystem.h"
+
 
 namespace TBS
 {
 	// round start helper forcing it to start yadda yadda
-	void TurnBasedSystem::round_start(ECS::Registry& ecs)
+	void TurnBasedSystem::round_start(EntityComponent::Registry& ecs)
 	{
 		cur_player = 0;
 		gbsptr->resetGPhase();
@@ -28,7 +23,7 @@ namespace TBS
 		size_t sz = vec.size();
 		while (!vec.empty())
 		{
-			System::remove_card_player(*ecsptr, playerID, 0);	//this is to remove data from ecs
+			EntityFactory::remove_card_player(*ecsptr, playerID, 0);	//this is to remove data from ecs
 			cardHandptr->remove_card(*ecsptr, 0);		//this is for visual side
 		}
 
@@ -42,12 +37,12 @@ namespace TBS
 		std::cout<< std::endl;
 		++cur_round;
 	}
-	void TurnBasedSystem::force_start_if_ready(ECS::Registry& ecs)
+	void TurnBasedSystem::force_start_if_ready(EntityComponent::Registry& ecs)
 	{
 		if (!is_active && participants.size() >= 2) start(ecs);
 	}
 
-	void TurnBasedSystem::init(ECS::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
+	void TurnBasedSystem::init(EntityComponent::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
 		CombatNameSpace::CombatSystem& cbs, CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
 	{
 		evsptr = &eventPool;
@@ -75,9 +70,9 @@ namespace TBS
 		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::START_PHASE)] = true;
 	}
 
-	void TurnBasedSystem::add_participant(ECS::Registry& ecs, Entity parti)
+	void TurnBasedSystem::add_participant(EntityComponent::Registry& ecs, Entity parti)
 	{
-		ECS::ComponentTypeID tbs_id = ECS::getComponentTypeID<Components::TurnBasedStats>();
+		EntityComponent::ComponentTypeID tbs_id = EntityComponent::getComponentTypeID<Components::TurnBasedStats>();
 
 		if (!(ecs.getBitMask()[parti].test(tbs_id)))
 		{
@@ -91,7 +86,7 @@ namespace TBS
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
 	}
 
-	void TurnBasedSystem::remove_participant(ECS::Registry& ecs, Entity parti)
+	void TurnBasedSystem::remove_participant(EntityComponent::Registry& ecs, Entity parti)
 	{
 		for (int i = 0; i < participants.size(); ++i)
 		{
@@ -112,7 +107,7 @@ namespace TBS
 		return participants;
 	}
 
-	void TurnBasedSystem::start(ECS::Registry& ecs)
+	void TurnBasedSystem::start(EntityComponent::Registry& ecs)
 	{
 		//check for edge cases
 		if (participants.empty())
@@ -173,7 +168,7 @@ namespace TBS
 		selected_card[cur_player] = bol;
 	}
 
-	void TurnBasedSystem::next(ECS::Registry & ecs)
+	void TurnBasedSystem::next(EntityComponent::Registry & ecs)
 	{
 		if (!is_active) return;
 
@@ -226,7 +221,7 @@ namespace TBS
 		participant_hand[cur_player] = index;
 	}
 
-	void TurnBasedSystem::select_card(ECS::Registry& ecs)
+	void TurnBasedSystem::select_card(EntityComponent::Registry& ecs)
 	{
 		gameBoardptr->unselect_card();
 		gameBoardptr->unselect_movement();
@@ -235,7 +230,7 @@ namespace TBS
 		Entity current_entt = current();
 		Entity card = draw_card(ecs, current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
 
-		if (card == NULL_INDEX)
+		if (card == Components::NULL_INDEX)
 		{
 			std::cout << "Cannot select invalid index" << std::endl;
 			return;
@@ -249,7 +244,7 @@ namespace TBS
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::ATTACK_HIGHLIGHT;
 
 		//if single target do grid select else aoe select
-		ECS::ComponentTypeID targCompID = ECS::getComponentTypeID<Components::Targetting_Component>();
+		EntityComponent::ComponentTypeID targCompID = EntityComponent::getComponentTypeID<Components::Targetting_Component>();
 		if (!ecs.getBitMask()[card].test(targCompID))
 		{
 			std::cout << "This card does not have targetting" << std::endl;
@@ -266,7 +261,7 @@ namespace TBS
 	}
 
 	//return the cardID inside the hand
-	Entity TurnBasedSystem::draw_card(ECS::Registry& ecs, Entity player, size_t chIndex)
+	Entity TurnBasedSystem::draw_card(EntityComponent::Registry& ecs, Entity player, size_t chIndex)
 	{
 		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
 
@@ -274,7 +269,7 @@ namespace TBS
 	}
 
 	//returns the status of target being attacked
-	PC_RETURN_TAG TurnBasedSystem::play_card(ECS::Registry& ecs, Entity player,Entity target, AEVec2 targetted_pos, int index)
+	PC_RETURN_TAG TurnBasedSystem::play_card(EntityComponent::Registry& ecs, Entity player,Entity target, AEVec2 targetted_pos, int index)
 	{
 		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
@@ -338,7 +333,7 @@ namespace TBS
 	}
 
 	//DEBUG PRINT
-	void TurnBasedSystem::debug_print(ECS::Registry& ecs) const
+	void TurnBasedSystem::debug_print(EntityComponent::Registry& ecs) const
 	{
 		//print out info every action
 		std::cout << "======================Turn based Stats======================" << std::endl;
@@ -352,14 +347,14 @@ namespace TBS
 		std::cout << "============================================================" << std::endl;
 	}
 
-	void TurnBasedSystem::show_HP(ECS::Registry& ecs) const
+	void TurnBasedSystem::show_HP(EntityComponent::Registry& ecs) const
 	{
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
 			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
-			ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 
 			std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
 
@@ -375,7 +370,7 @@ namespace TBS
 		}
 	}
 
-	void TurnBasedSystem::show_deck(ECS::Registry& ecs) const
+	void TurnBasedSystem::show_deck(EntityComponent::Registry& ecs) const
 	{
 		std::cout << "---------Player's Deck---------" << std::endl;
 
@@ -390,7 +385,7 @@ namespace TBS
 		std::cout << "-------------------------------" << std::endl;
 	}
 
-	void TurnBasedSystem::show_hand(ECS::Registry& ecs) const
+	void TurnBasedSystem::show_hand(EntityComponent::Registry& ecs) const
 	{
 		//disolay player hands
 		std::cout << "---------Player's Hand---------" << std::endl;
@@ -405,7 +400,7 @@ namespace TBS
 		std::cout << "------------------------------" << std::endl;
 	}
 
-	void TurnBasedSystem::show_discard(ECS::Registry& ecs) const
+	void TurnBasedSystem::show_discard(EntityComponent::Registry& ecs) const
 	{
 		//disolay player hands
 		std::cout << "---------Player's Discard Piler---------" << std::endl;
@@ -420,7 +415,7 @@ namespace TBS
 		std::cout << "----------------------------------------" << std::endl;
 	}
 
-	void TurnBasedSystem::show_stats(ECS::Registry& ecs) const
+	void TurnBasedSystem::show_stats(EntityComponent::Registry& ecs) const
 	{
 		std::cout << "---------Player's Stats---------" << std::endl;
 		Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
@@ -430,7 +425,7 @@ namespace TBS
 		std::cout << "--------------------------------" << std::endl;
 	}
 
-	void TurnBasedSystem::DrawPhase_add_card(ECS::Registry& ecs)
+	void TurnBasedSystem::DrawPhase_add_card(EntityComponent::Registry& ecs)
 	{
 		//get random card from the player's deck
 		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -449,20 +444,20 @@ namespace TBS
 
 		int index = int(AERandFloat() * deck.size());
 		Entity card = deck[index];
-		System::add_card_player_hand(ecs, playerID, card);	//add a random card
+		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
 		//remove the card afterwards
 		deck.erase(deck.begin() + index);
 	}
 
-	void TurnBasedSystem::remove_card(ECS::Registry& ecs,Entity user,int index)
+	void TurnBasedSystem::remove_card(EntityComponent::Registry& ecs,Entity user,int index)
 	{
-		System::remove_card_player(ecs, user, index);	//this is to remove data from ecs
+		EntityFactory::remove_card_player(ecs, user, index);	//this is to remove data from ecs
 		cardHandptr->remove_card(ecs,index);		//this is for visual side
 	}
 	//=================================Update===========================================
 
 	//Turn based system's update loop
-	void TurnBasedSystem::update(ECS::Registry& ecs)
+	void TurnBasedSystem::update(EntityComponent::Registry& ecs)
 	{
 		// ================= CONSOLE LOG of TBS =================
 		// Check for TBS status

@@ -1,5 +1,6 @@
+#include "pch.h"
 #include "menu.h"
-#include "../main.h"
+#include "../global.h"
 #include <iostream>
 #include "AEEngine.h"
 #include "../util/GameStateManager.h"

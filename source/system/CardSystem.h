@@ -1,11 +1,15 @@
 #pragma once
 
+#include "../types.h"
+
 #include "../ECS/ECSystem.h"
 #include "../system/CombatSystem.h"
 #include "CardConstants.h"
 #include <vector>
 #include <functional>
 #include <unordered_map>
+
+
 
 //forward declarations
 struct JSON_CARD;
@@ -38,28 +42,28 @@ enum class CardScriptReturn
 	FunctionTargetDied
 };
 
-Entity create_card(ECS::Registry& ecs, JSON_CARD const& json_card);
+Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card);
 
 //script manager for those cards that require extra steps
 class CardScriptsManager
 {
-private:
+	private:
 	std::unordered_map<std::string, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)>> functions;
 	//std::map<CardSystemNames, std::function<void(Entity)>> functions;
-public:
+	public:
 	void add_Function(std::string name, Entity cardID, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)> function);
 	CardScriptReturn runCardFunction(std::string card_name, Entity target);
 };
 
 class CardSystem
 {
-private:
-	//std::vector<Entity> cards;
+	private:
+		//std::vector<Entity> cards;
 	std::unordered_map<std::string, Entity> cards;
 	CardScriptsManager cardScriptManager;
-public:
-	void init_cards(ECS::Registry& ecs);
-	Entity generate_card_from_bible(ECS::Registry& ecs,std::string key);
+	public:
+	void init_cards(EntityComponent::Registry& ecs);
+	Entity generate_card_from_bible(EntityComponent::Registry& ecs, std::string key);
 	size_t size() const;
 };
 
@@ -67,3 +71,4 @@ public:
 
 //defense cards
 //world interaction cards
+

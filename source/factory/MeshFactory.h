@@ -1,13 +1,9 @@
 #pragma once
-#ifndef MESH_FACTORY_HEADER
-#define MESH_FACTORY_HEADER
+
+#include "../types.h"
+#include <vector>
 #include "AEEngine.h"
-#include "vector"
 
-
-typedef enum { MESH_CENTER = 0, MESH_CORNER = 1, MESH_SPRITE_SHEET } MESH_POS;
-typedef enum { COLOR = 0, TEXTURE = 1} RENDER_MODE;
-typedef enum { MESH_RECTANGLE_CENTER = 0, MESH_RECTANGLE_CORNER ,MESH_CIRCLE, MESH_LINE, MESH_SPRITE } MESH_TYPE;
 
 class MeshFactory{
 	private:
@@ -26,4 +22,3 @@ AEGfxVertexList* createMesh_triangular_rectangle(MESH_POS mode);
 AEGfxVertexList* createMesh_line();
 
 void mesh_factory_free(AEGfxVertexList* free_target);
-#endif // !MESH_FACTORY_HEADER

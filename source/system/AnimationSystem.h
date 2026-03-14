@@ -1,12 +1,11 @@
 
 #pragma once
 
-#ifndef ANIMATION
-#define ANIMATION
-
-
+#include "../types.h"
 #include "../ECS/Components.h"
 #include "../ECS/ECSystem.h"
+
+
 
 namespace Animation
 {
@@ -15,8 +14,7 @@ namespace Animation
 
 		public:
 		AnimationSystem();
-		void init(ECS::Registry& ecs);
-		void update(ECS::Registry& ecs);
+		void init(EntityComponent::Registry& ecs);
+		void update(EntityComponent::Registry& ecs);
 	};
 };
-#endif

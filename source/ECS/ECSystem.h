@@ -1,4 +1,8 @@
 #pragma once
+
+#include "../types.h"
+#include "../ECS/Components.h"
+
 #include <iostream>
 #include <bitset>
 #include <vector>
@@ -6,15 +10,14 @@
 #include <memory>
 #include <unordered_map>
 #include <queue>
-#include "Components.h"
-#include "../global.h"
 
 //early declaration
 
-namespace ECS
+namespace EntityComponent
 {
+	
 	using ComponentTypeID = size_t;
-	using ComponentBitMask = std::bitset<MAX_COMPONENT>;
+	using ComponentBitMask = std::bitset<Components::MAX_COMPONENT>;
 
 	inline ComponentTypeID getNextComponentTypeID()
 	{
@@ -31,7 +34,7 @@ namespace ECS
 
 	class IComponentStorage
 	{
-	public:
+		public:
 		virtual ~IComponentStorage() = default;
 		virtual void delete_component(Entity e) = 0;
 	};
@@ -39,12 +42,12 @@ namespace ECS
 	template<typename Component>
 	class ComponentStorage : public IComponentStorage
 	{
-	public:
+		public:
 		void add_component(Entity e, Component component)
 		{
 			if (e >= sparse_set.size())
 			{
-				sparse_set.resize(e + 1, NULL_INDEX);
+				sparse_set.resize(e + 1, Components::NULL_INDEX);
 			}
 			sparse_set[e] = dense_set.size();
 			dense_set.push_back(component);
@@ -57,7 +60,7 @@ namespace ECS
 		Component* get_component(Entity e)
 		{
 			size_t index = sparse_set[e];
-			if (index != NULL_INDEX)
+			if (index != Components::NULL_INDEX)
 			{
 				return &dense_set[index];
 			}
@@ -66,14 +69,14 @@ namespace ECS
 		void delete_component(Entity e) override
 		{
 			size_t index = sparse_set[e];
-			if (index == NULL_INDEX) return;	//if no component to delete return
+			if (index == Components::NULL_INDEX) return;	//if no component to delete return
 			//find entity id for back
 			Entity backEntityID = dens2sparse.back();
 
 			std::swap(dense_set[index], dense_set.back());	//swap target index to back
 			std::swap(dens2sparse[index], dens2sparse.back());	//swap target index to back
 
-			sparse_set[e] = NULL_INDEX;
+			sparse_set[e] = Components::NULL_INDEX;
 			if (e != backEntityID)
 			{
 				sparse_set[backEntityID] = index;
@@ -82,15 +85,16 @@ namespace ECS
 			dense_set.pop_back();
 			dens2sparse.pop_back();
 		}
-	private:
+		private:
 		std::vector<Component> dense_set;
 		std::vector<size_t> sparse_set;	//sparse set containing 
 		std::vector<size_t>dens2sparse;	//reference for dense_set to sparse
 	};
 
 	//===============================Registry============================================
-	class Registry {
-	private:
+	class Registry
+	{
+		private:
 		Entity nextEntity = 0;
 		std::vector<ComponentBitMask> entitySignatures;
 		std::unordered_map<ComponentTypeID, std::unique_ptr<IComponentStorage>> componentStorage;
@@ -123,14 +127,15 @@ namespace ECS
 			}
 		}
 
-	public:
+		public:
 
 		std::vector<ComponentBitMask>& getBitMask()
 		{
 			return entitySignatures;
 		}
 
-		size_t sizeEntity(){
+		size_t sizeEntity()
+		{
 			return nextEntity;
 		}
 
@@ -180,7 +185,7 @@ namespace ECS
 				std::cout << "No Base storage is there created one!\n";
 			}
 			//else std::cout << "Base storage is found \n";
-			
+
 			//get storage
 			ComponentStorage<T>* storage = static_cast<ComponentStorage<T>*>(baseStorage.get());
 			storage->add_component(e, component);
@@ -248,7 +253,7 @@ namespace ECS
 			return static_cast<ComponentStorage<T>*>(n->second.get());
 		}
 
-		std::unordered_map<ComponentBitMask,std::vector<Entity>>const& groups()
+		std::unordered_map<ComponentBitMask, std::vector<Entity>>const& groups()
 		{
 			return entityGroups;
 		}
@@ -266,5 +271,6 @@ namespace ECS
 		}
 	};
 };
+
 
 

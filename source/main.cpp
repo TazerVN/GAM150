@@ -1,27 +1,12 @@
 // ---------------------------------------------------------------------------
 // includes
 
+#include "pch.h"
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
+#include "global.h"
 #include "util/GameStateManager.h"
-#include "main.h"
 // ---------------------------------------------------------------------------
-
-
-//=====================One time declaration of extern values============================= 
-ECS::Registry ecs;
-MeshFactory mf;
-InputSystem::InputManager IM;
-TextureFactory::TextureFactory TF;
-Camera::CameraSystem CS;
-RenderSystem::RenderSystem RM;
-CardSystem card_system;
-VelocitySystem::VelocitySystem VS;
-TransformSystem::TransformSystem TrS;
-TimerSystem::TimerSystem TS;
-Animation::AnimationSystem AS;
-//=======================================================================================
-
 
 // main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,

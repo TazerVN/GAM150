@@ -1,18 +1,19 @@
+#include "pch.h"
 #include "velocitySystem.h"
 #include "../ECS/Components.h"
 
-namespace VelocitySystem
+namespace Velocity
 {
-	void VelocitySystem::update(ECS::Registry& ecs)
+	void VelocitySystem::update(EntityComponent::Registry& ecs)
 	{
 		f32 dt = f32(AEFrameRateControllerGetFrameTime());
 
 		// Get component type IDs
-		ECS::ComponentTypeID velocityID = ECS::getComponentTypeID<Components::Velocity>();
-		ECS::ComponentTypeID transformID = ECS::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID velocityID = EntityComponent::getComponentTypeID<Components::Velocity>();
+		EntityComponent::ComponentTypeID transformID = EntityComponent::getComponentTypeID<Components::Transform>();
 
 		// Build bitmask - only process entities that have both
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(velocityID);
 		objMask.set(transformID);
 

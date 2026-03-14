@@ -53,6 +53,7 @@
     <ClCompile Include="source\util\GameStateManager.cpp" />
     <ClCompile Include="source\system\velocitySystem.cpp" />
     <ClCompile Include="source\system\AnimationSystem.cpp" />
+    <ClCompile Include="source\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -93,7 +94,6 @@
     <ClInclude Include="source\system\TimerSystem.h" />
     <ClInclude Include="source\level\CombatLevel.h" />
     <ClInclude Include="source\util\LevelManager.h" />
-    <ClInclude Include="source\main.h" />
     <ClInclude Include="source\system\PhaseSystem.h" />
     <ClInclude Include="source\UI\cardInformation.h" />
     <ClInclude Include="source\util\BST.h" />
@@ -109,5 +109,7 @@
     <ClInclude Include="source\util\GameStateManager.h" />
     <ClInclude Include="source\system\velocitySystem.h" />
     <ClInclude Include="source\system\AnimationSystem.h" />
+    <ClInclude Include="source\pch.h" />
+    <ClInclude Include="source\types.h" />
   </ItemGroup>
 </Project>

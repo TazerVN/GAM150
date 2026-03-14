@@ -1,13 +1,16 @@
 #pragma once
+
+#include "../types.h"
 #include "../ECS/ECSystem.h"
 
-namespace TimerSystem
+
+namespace Timer
 {
 
 	class TimerSystem
 	{
 		public:
-		void update(ECS::Registry&);
+		void update(EntityComponent::Registry&);
 		TimerSystem() = default;
 	};
 

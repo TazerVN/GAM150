@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "CameraSystem.h"
 
 namespace Camera
@@ -7,7 +8,7 @@ namespace Camera
 	{
 	}
 
-	void updateCameraPos(Camera::CameraSystem& cam, ECS::Registry& ecs)
+	void updateCameraPos(Camera::CameraSystem& cam, EntityComponent::Registry& ecs)
 	{
 
 		s32 scroll_buffer{1};
@@ -45,7 +46,7 @@ namespace Camera
 	}
 
 
-	void setOrignalDragPos(Camera::CameraSystem& cam, ECS::Registry& ecs){
+	void setOrignalDragPos(Camera::CameraSystem& cam, EntityComponent::Registry& ecs){
 		if (AEInputCheckTriggered(AEVK_MBUTTON))
 		{
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(cam.id());
@@ -69,7 +70,7 @@ namespace Camera
 
 	}
 
-	void CameraSystem::init(ECS::Registry& ecs)
+	void CameraSystem::init(EntityComponent::Registry& ecs)
 	{
 		this->camera_id = ecs.createEntity();
 		Components::Transform trans{ {0,0}, {0,0} ,{1.f, 1.f}, {AEGfxGetWindowWidth(), AEGfxGetWindowHeight()},0.0f };
@@ -89,11 +90,11 @@ namespace Camera
 
 
 
-	void CameraSystem::update(ECS::Registry& ecs)
+	void CameraSystem::update(EntityComponent::Registry& ecs)
 	{
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-		ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(transID);
 		objMask.set(tagID);
 

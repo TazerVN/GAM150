@@ -1,10 +1,10 @@
+#include "pch.h"
 #include "gameObject.h"
-#include "../system/transformSystem.h"
 #include "ECSystem.h"
 
 namespace GameObject
 {
-	Entity gameobject_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity gameobject_create(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -18,7 +18,7 @@ namespace GameObject
 		return id;
 	}
 
-	Entity gameobject_create(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex)
+	Entity gameobject_create(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex)
 	{
 		Entity id = ecs.createEntity();
 		//default player values

@@ -1,4 +1,6 @@
-#include "../main.h"
+#include "pch.h"
+
+#include "../global.h"
 #include "../util/LevelManager.h"
 #include "../ECS/Scene.h"
 #include "../UI/UI.h"

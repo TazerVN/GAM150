@@ -1,8 +1,10 @@
 #pragma once
+
 #include "AEEngine.h"
 #include <iostream>
 #include <string.h>
 #include <vector>
+
 
 #define MAX_TEXT 1000
 #define MAX_WC 2048

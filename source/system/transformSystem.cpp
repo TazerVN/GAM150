@@ -1,14 +1,15 @@
+#include "pch.h"
 #include "transformSystem.h"
 
 namespace TransformSystem
 {
 
-	void TransformSystem::update(ECS::Registry& ecs)
+	void TransformSystem::update(EntityComponent::Registry& ecs)
 	{
 
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Particle>();
-		ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Particle>();
+		EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(transID);
 		objMask.set(tagID);
 

@@ -1,5 +1,8 @@
 #pragma once
+
+#include <AEEngine.h>
 #include <array>
+
 namespace PhaseSystem{
 	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, PLAYER_RESOLUTION, ENEMY_PHASE, ENEMY_RESOLUTION, UNIN};
 	enum class PlayerPhase{PLAYER_EXPLORE, GRID_SELECT, AOE_GRID_SELECT, PLAYER_ANIMATION, UNIN};

@@ -1,5 +1,7 @@
+#include "pch.h"
+
 #include "Components.h"
-#include "../ECS/ECSystem.h"
+
 #include <iostream>
 
 namespace Components

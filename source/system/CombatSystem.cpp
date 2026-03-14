@@ -1,9 +1,12 @@
+#include "pch.h"
+
 #include "CombatSystem.h"
 #include "../system/TurnBasedSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
 #include "../system/GridSystem.h"
+#include "../global.h"
 
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_highlighted_cell()
 {
@@ -16,7 +19,7 @@ std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_highlighted_cell()
 }
 
 
-void CombatNameSpace::CombatSystem::init(ECS::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
+void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
 	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem)
 {
 	ecsptr = &ecs;
@@ -40,9 +43,9 @@ bool CombatNameSpace::CombatSystem::check_within_range(Entity id, s32 const& x, 
 	return false;
 }
 
-void CombatNameSpace::CombatSystem::play_attack_card(ECS::Registry& ecs, Entity cardID, Entity target, AEVec2 pos)
+void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& ecs, Entity cardID, Entity target, AEVec2 pos)
 {
-	ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
+	EntityComponent::ComponentTypeID card_value_ID = EntityComponent::getComponentTypeID<Components::Card_Value>();
 	if (!ecs.getBitMask()[cardID].test(card_value_ID))
 	{
 		std::cout << "Selected card doesn't have card_data component";
@@ -102,9 +105,9 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 	this->remove_participant(*ecsptr, targetted_entity);*/
 }
 
-COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(ECS::Registry& ecs, Entity target, f32 damage)
+COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage)
 {
-	ECS::ComponentTypeID hpID = ECS::getComponentTypeID<Components::HP>();
+	EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 	//test if card have attack id
 	if (!(ecs.getBitMask()[target].test(hpID))) return COMBAT_SYSTEM_RETURN_TAG::INVALID;
 
@@ -235,7 +238,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		case PhaseSystem::GBPhase::DRAW_PHASE:
 		{
 			//draw until max_hand
-			for (int i = 0; i < DRAW_COUNT; ++i)
+			for (int i = 0; i < Components::DRAW_COUNT; ++i)
 			{
 				tbsptr->DrawPhase_add_card(*ecsptr);
 			}

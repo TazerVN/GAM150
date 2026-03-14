@@ -1,12 +1,12 @@
+#pragma once
 
-#ifndef InputSystem_H
-#define InputSystem_H
-
+#include "../types.h"
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
 #include "../util/util.h"
 #include <vector>
 #include <utility>
+
 
 //forward declarion
 namespace PhaseSystem { class GameBoardState; }
@@ -23,11 +23,10 @@ namespace InputSystem
 		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();
-		void update(ECS::Registry& ecs, Entity id);
+		void update(EntityComponent::Registry& ecs, Entity id);
 	};
 
 
 
 
 }
-#endif // !InputSystem_H

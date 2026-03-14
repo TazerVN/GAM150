@@ -1,6 +1,10 @@
 #pragma once
 
+#include "../types.h"
 #include "../ECS/ECSystem.h"
+#include <AEEngine.h>
+
+
 
 namespace Camera{
 
@@ -12,8 +16,8 @@ namespace Camera{
 		f32 buffer_x, buffer_y;
 		f32 buffer_zoom;
 		CameraSystem();
-		void init(ECS::Registry& ecs);
-		void update(ECS::Registry& ecs);
+		void init(EntityComponent::Registry& ecs);
+		void update(EntityComponent::Registry& ecs);
 		Entity id() const;
 	};
 

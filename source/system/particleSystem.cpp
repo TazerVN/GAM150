@@ -1,15 +1,17 @@
-﻿#include "particleSystem.h"
+﻿#include "pch.h"
+
+#include "particleSystem.h"
 #include "../ECS/Components.h"
 
-void Particle::ParticleSystem::init(ECS::Registry& ecs, MeshFactory& mf, size_t poolSize)
+void Particle::ParticleSystem::init(EntityComponent::Registry& ecs, MeshFactory& mf, size_t poolSize)
 {
 }
-void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
+void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 {
 
-	ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Particle>();
+	EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Particle>();
 	//create bitsets
-	ECS::ComponentBitMask objMask;
+	EntityComponent::ComponentBitMask objMask;
 	objMask.set(transID);
 
 	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
@@ -101,7 +103,7 @@ void Particle::ParticleSystem::update(ECS::Registry& ecs, f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_one(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -127,7 +129,7 @@ void Particle::ParticleSystem::spawn_one(ECS::Registry& ecs, MeshFactory& mf, f3
 
 }
 
-void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 	int max_count = 100;
 	for (int i = 0; i < max_count; i++)
@@ -156,7 +158,7 @@ void Particle::ParticleSystem::particleDigitize(ECS::Registry& ecs, MeshFactory&
 
 }
 
-void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleBurst(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 	int   max_count = 500;
 	f32   speed = 200.f;
@@ -181,7 +183,7 @@ void Particle::ParticleSystem::particleBurst(ECS::Registry& ecs, MeshFactory& mf
 	}
 }
 
-void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 	int   max_count = 6;
 	f32   speed = 40.0f;
@@ -214,7 +216,7 @@ void Particle::ParticleSystem::particleClick(ECS::Registry& ecs, MeshFactory& mf
 	}
 }
 
-void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 	// Screen dimensions
 	f32 screenWidth      = f32(AEGfxGetWindowWidth());
@@ -250,7 +252,7 @@ void Particle::ParticleSystem::particleDataStream(ECS::Registry& ecs, MeshFactor
 	}
 }
 
-void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
 	int max_count = 15;
 
@@ -273,11 +275,11 @@ void Particle::ParticleSystem::particleHeal(ECS::Registry& ecs, MeshFactory& mf,
 
 }
 
-void Particle::ParticleSystem::particleShield(ECS::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 }
 
-void Particle::ParticleSystem::particleDamage(ECS::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+void Particle::ParticleSystem::particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
 
 }

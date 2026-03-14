@@ -1,9 +1,12 @@
+#include "pch.h"
+
 #include "renderSystem.h"
 #include <vector>
 #include <utility>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../system/transformSystem.h"
+
 #include "GridSystem.h"
 #include <algorithm>
 
@@ -21,20 +24,20 @@ namespace RenderSystem
 
 	RenderSystem::RenderSystem(){}
 
-	void RenderSystem::RenderSystem_init(ECS::Registry& ecs)
+	void RenderSystem::RenderSystem_init(EntityComponent::Registry& ecs)
 	{
 
-		ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
-		ECS::ComponentTypeID textureID = ECS::getComponentTypeID<Components::Texture>();
-		ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
+		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
+		EntityComponent::ComponentTypeID textureID = EntityComponent::getComponentTypeID<Components::Texture>();
+		EntityComponent::ComponentTypeID textID = EntityComponent::getComponentTypeID<Components::Text>();
 
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-		ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID colorID = EntityComponent::getComponentTypeID<Components::Color>();
 		//create bitsets
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(transID); objMask.set(meshID); objMask.set(colorID);
 
-		ECS::ComponentBitMask textMask;
+		EntityComponent::ComponentBitMask textMask;
 		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
 
 
@@ -62,7 +65,7 @@ namespace RenderSystem
 
 	}
 
-	void RenderSystem::RM_render(ECS::Registry& ecs, Entity camera)
+	void RenderSystem::RM_render(EntityComponent::Registry& ecs, Entity camera)
 	{
 
 		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
@@ -82,11 +85,11 @@ namespace RenderSystem
 			//int current_e = i;
 
 
-			ECS::ComponentTypeID meshID = ECS::getComponentTypeID<Components::Mesh>();
-			ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
-			ECS::ComponentTypeID textID = ECS::getComponentTypeID<Components::Text>();
-			ECS::ComponentTypeID colorID = ECS::getComponentTypeID<Components::Color>();
-			ECS::ComponentTypeID tagID = ECS::getComponentTypeID<Components::TagClass>();
+			EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
+			EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+			EntityComponent::ComponentTypeID textID = EntityComponent::getComponentTypeID<Components::Text>();
+			EntityComponent::ComponentTypeID colorID = EntityComponent::getComponentTypeID<Components::Color>();
+			EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();
 
 			if (!ecs.getBitMask()[current_e].test(transID)) continue;
 			if (!ecs.getBitMask()[current_e].test(colorID)) continue;

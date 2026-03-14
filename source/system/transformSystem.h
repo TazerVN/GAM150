@@ -1,10 +1,10 @@
-
-#ifndef TransformSystem_H
-#define TransformSystem_H
-
+#pragma once
 
 #include "AEEngine.h"
+
+#include "../types.h"
 #include "../ECS/ECSystem.h"
+
 
 
 
@@ -22,11 +22,10 @@ namespace TransformSystem
 		AEVec2 get_pos(ECSystem::ECS& ecs, ECSystem::Entity& e);
 		AEVec2 get_size(ECSystem::ECS& ecs, ECSystem::Entity& e);
 		f32 get_rotation(ECSystem::ECS& ecs, ECSystem::Entity& e);*/
-		void update(ECS::Registry& ecs);
+		void update(EntityComponent::Registry& ecs);
 	};
 
 }
 
 
 
-#endif // !TransformSystem_H

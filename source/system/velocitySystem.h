@@ -1,18 +1,17 @@
-#ifndef VelocitySystem_H
-#define VelocitySystem_H
+#pragma once
 
+#include "../types.h"
 #include "AEEngine.h"
 #include "../ECS/ECSystem.h"
 
-namespace VelocitySystem
+namespace Velocity
 {
 	class VelocitySystem
 	{
 	public:
-		void update(ECS::Registry& ecs);
+		void update(EntityComponent::Registry& ecs);
 		VelocitySystem() = default;
 	};
 
 }
 
-#endif //VelocitySystem_H

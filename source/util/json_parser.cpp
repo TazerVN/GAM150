@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "json_parser.h"
 #include "../../Extern/rapidjson/document.h"
 #include <fstream>

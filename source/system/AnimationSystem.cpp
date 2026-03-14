@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "AnimationSystem.h"
 
 namespace Animation
@@ -9,7 +11,7 @@ namespace Animation
 	}
 
 
-	void idle_animation(ECS::Registry& ecs, Entity id, Entity timer_id)
+	void idle_animation(EntityComponent::Registry& ecs, Entity id, Entity timer_id)
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
@@ -21,11 +23,11 @@ namespace Animation
 		transform->pos_onscreen.y =  transform->pos.y + lerp * minimum * transform->size.y / 6;
 	}
 
-	void AnimationSystem::init(ECS::Registry& ecs)
+	void AnimationSystem::init(EntityComponent::Registry& ecs)
 	{
-		ECS::ComponentTypeID animID = ECS::getComponentTypeID<Components::Animation_Actor>();
+		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
 		//create bitsets
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(animID);
 
 		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
@@ -46,13 +48,13 @@ namespace Animation
 	}
 
 
-	void AnimationSystem::update(ECS::Registry& ecs)
+	void AnimationSystem::update(EntityComponent::Registry& ecs)
 	{
-		ECS::ComponentTypeID animID = ECS::getComponentTypeID<Components::Animation_Actor>();
-		ECS::ComponentTypeID timerID = ECS::getComponentTypeID<Components::Timer>();
-		ECS::ComponentTypeID transID = ECS::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
+		EntityComponent::ComponentTypeID timerID = EntityComponent::getComponentTypeID<Components::Timer>();
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		//create bitsets
-		ECS::ComponentBitMask objMask;
+		EntityComponent::ComponentBitMask objMask;
 		objMask.set(animID); objMask.set(transID);objMask.set(timerID);
 
 		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)

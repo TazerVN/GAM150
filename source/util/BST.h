@@ -1,6 +1,8 @@
 #pragma once
+
 #include <vector>
 #include <utility>
+
 
 template<typename T, typename W>
 class Node

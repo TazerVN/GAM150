@@ -9,6 +9,7 @@
 #include "../system/TurnBasedSystem.h"
 #include "../system/GridSystem.h"   // GameBoard (Grid::GameBoard)
 
+
 // Loads lines like: "E0 MOVE FRONT" and executes one line per enemy turn.
 // refer to /Assets/Level/TEST_level.txt for script structure
 class EnemyDirector
@@ -24,7 +25,7 @@ public:
 
     // Called once per frame in Scene::update
     // Execute one horde chunk until a STOP line is reached
-    void update(ECS::Registry& ecs,
+    void update(EntityComponent::Registry& ecs,
         PhaseSystem::GameBoardState& gbs,
         TBS::TurnBasedSystem& tbs,
         Grid::GameBoard& board,
@@ -53,7 +54,7 @@ private:
     // ============== Command executors =============
 
     // Move Entity
-    void execMOVE(ECS::Registry& ecs,
+    void execMOVE(EntityComponent::Registry& ecs,
         Grid::GameBoard& board,
         Entity actor,
         Entity playerID,

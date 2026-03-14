@@ -1,4 +1,6 @@
 #pragma once
+
+
 enum class LevelStates
 {
 	LS_COMBAT = 0,

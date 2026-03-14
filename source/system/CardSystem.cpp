@@ -1,6 +1,10 @@
+#include "pch.h"
+
 #include "CardSystem.h"
 #include "../util/json_parser.h"
 #include "../ECS/Components.h"
+#include "../global.h"
+
 
 //Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, CardType dtype, f32 range, f32 cost)
 //{
@@ -42,7 +46,7 @@
 //	return id;
 //}
 
-Entity create_card(ECS::Registry& ecs, JSON_CARD const& json_card)
+Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 {
 	Entity id = ecs.createEntity();
 	Components::Name nm{ json_card.name };
@@ -60,7 +64,7 @@ Entity create_card(ECS::Registry& ecs, JSON_CARD const& json_card)
 	return id;
 }
 
-void CardSystem::init_cards(ECS::Registry& ecs)
+void CardSystem::init_cards(EntityComponent::Registry& ecs)
 {
 	std::vector<JSON_CARD> vec;
 	JSON_RET ret = parse_data(vec, "../../Assets/cards/cards.json");
@@ -108,7 +112,7 @@ void CardSystem::init_cards(ECS::Registry& ecs)
 	}
 };
 
-Entity CardSystem::generate_card_from_bible(ECS::Registry& ecs,std::string key)
+Entity CardSystem::generate_card_from_bible(EntityComponent::Registry& ecs,std::string key)
 {
 	//if the base key card doesnt exist return
 	if (cards.find(key) == cards.end())
