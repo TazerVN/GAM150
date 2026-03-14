@@ -279,11 +279,11 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 			if (gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)
 			{
 				std::cout << "Movement Animating" << std::endl;
-				/*if (AEInputCheckTriggered(AEVK_P))
+				if (AEInputCheckTriggered(AEVK_P))
 				{
 					end_player_resolution();
-				}*/
-				end_player_resolution();
+				}
+				//end_player_resolution();
 			}
 			else //else the previous player phase is grid select or aoe grid select
 			{

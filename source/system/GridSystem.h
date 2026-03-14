@@ -47,8 +47,6 @@ namespace Grid
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		std::array<std::array<bool, MAX_J>, MAX_I> activate;
 
-		std::vector<Cell> path;
-
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
@@ -81,6 +79,7 @@ namespace Grid
 		void unselect_movement();
 		AEVec2 Get_gridPos(AEVec2 const& pos,Entity camera);
 		AEVec2& Get_CurPart_gridPos();
+		AEVec2 GetOffsetPos();
 
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);

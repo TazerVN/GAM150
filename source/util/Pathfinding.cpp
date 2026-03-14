@@ -21,18 +21,18 @@ struct NodeRecGreater
     }
 };
 
-static inline int HeuristicManhattan(Cell a, Cell b)
+static inline int HeuristicManhattan(Components::GridCell a, Components::GridCell b)
 {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-AStarResult AStar_FindPath_Grid4(
+Components::AStarResult AStar_FindPath_Grid4(
     int width, int height,
-    const uint8_t* walkable,
-    Cell start, Cell goal
+    const uint8_t* walkable,   // 1 = walkable, 0 = blocked, size = width*height
+    Components::GridCell start, Components::GridCell goal
 )
 {
-    AStarResult out;
+    Components::AStarResult out;
 
     auto inBounds = [&](int x, int y)
         {
@@ -93,7 +93,7 @@ AStarResult AStar_FindPath_Grid4(
                 g[nid] = tentativeG;
                 parent[nid] = cur.id;
 
-                Cell nc{ nx, ny };
+                Components::GridCell nc{ nx, ny };
                 int f = tentativeG + HeuristicManhattan(nc, goal);
                 open.push({ nid, f, tentativeG });
             }

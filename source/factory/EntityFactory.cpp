@@ -23,6 +23,7 @@ namespace EntityFactory {
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Timer timer{ 1.f, 0.5f, true, true };
 		Components::Animation_Actor aa{ at};
+		Components::AStarResult as{};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -34,6 +35,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, timer);
 		ecs.addComponent(id, aa);
+		ecs.addComponent(id, as);
 
 		return id;
 	}

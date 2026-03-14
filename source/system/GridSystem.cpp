@@ -7,6 +7,7 @@
 #include "../system/PhaseSystem.h"
 #include "../util/Pathfinding.h"
 #include "../global.h"
+#include "../ECS/Components.h"
 
 float offset = 1.0f;
 
@@ -545,6 +546,7 @@ namespace Grid
 				this->pos[i][j] = -1;
 				this->activate[i][j] = false;
 				this->highlight_activate[i][j] = highlight_tag::UNHIGHLIGHTED;
+				walkable[j * MAX_I + i] = 1;
 			}
 		}
 	}
@@ -594,11 +596,25 @@ namespace Grid
 				}
 			}
 		}
-		Cell s{ start_i, start_j };
-		Cell g{ x,  y };
 
-		AStarResult res = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g);
-		this->path = res.path;
+		EntityComponent::ComponentTypeID astarID = EntityComponent::getComponentTypeID<Components::AStarResult>();
+		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
+
+		if (ecs.getBitMask()[e].test(astarID)){
+
+			Components::GridCell s{ start_i, start_j };
+			Components::GridCell g{ x,  y };
+
+			Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
+			astar->path = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g).path;
+		}
+
+		if (ecs.getBitMask()[e].test(animID))
+		{
+			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
+			anim->anim_type = Components::AnimationType::MOVING;
+			
+		}
 
 		this->pos[x][y] = e;
 	}
@@ -677,8 +693,6 @@ namespace Grid
 				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos.y = transform->size.y / 3 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
 				transform->pos_onscreen = transform->pos;*/
-
-
 
 				
 				Entity current_cell = this->cells[i][j];
@@ -772,6 +786,11 @@ namespace Grid
 		}
 
 		return temp;
+	}
+
+	AEVec2 GameBoard::GetOffsetPos()
+	{
+		return this->offset;
 	}
 
 	s32 GameBoard::grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)

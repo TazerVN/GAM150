@@ -190,6 +190,11 @@ Grid::GameBoard& Scene::getBattleGrid()
 	return BattleGrid;
 }
 
+CombatNameSpace::CombatSystem& Scene::getCombatSystem()
+{
+	return cbs;
+}
+
 void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================

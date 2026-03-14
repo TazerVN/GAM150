@@ -56,7 +56,6 @@ void GameState_game_update()
 	}
 
 	//========(Render)====================
-	AS.update(ecs);
 	VS.update(ecs);
 	CS.update(ecs);
 	RM.RM_render(ecs, CS.id());

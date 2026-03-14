@@ -49,6 +49,7 @@ public:
 	PhaseSystem::GameBoardState& getGBS();
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
+	CombatNameSpace::CombatSystem& getCombatSystem();
 
 };
 

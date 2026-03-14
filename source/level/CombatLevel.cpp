@@ -37,6 +37,7 @@ void LevelStateCombat_update()
 	UIM.update(scene);
 	PS.update(ecs, 0.2);
 	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+	AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
 }
 void LevelStateCombat_free()
 {

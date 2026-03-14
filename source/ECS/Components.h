@@ -90,7 +90,14 @@ namespace Components
 	struct GridCell
 	{
 		s32 x, y;
+		bool operator==(const GridCell& o) const { return x == o.x && y == o.y; }
 	};
+
+	struct AStarResult
+	{
+		std::list<GridCell> path; // includes start and goal if found
+	};
+
 
 	struct Switch
 	{
@@ -155,7 +162,7 @@ namespace Components
 	{
 		public:
 		bool finished;
-		enum AnimationType anim_type;
+		AnimationType anim_type;
 		std::array<Entity, static_cast<size_t>(Components::AnimationType::COUNT)> timer_array;
 
 		Animation_Actor(Components::AnimationType type);
