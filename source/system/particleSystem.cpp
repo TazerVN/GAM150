@@ -315,18 +315,18 @@ void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& 
 		f32 y = AERandFloat() * halfHeight;
 
 		// Direction — top-right to bottom-left
-		f32 speed = 60.f + AERandFloat() * 40.f;
+		f32 speed = 500.f + AERandFloat() * 400.f;
 		f32 velX = -0.707f * speed;
 		f32 velY = -0.707f * speed;
 
 		// Square size
-		f32 size = 15.f + AERandFloat() * 20.f;
+		f32 size = 30.f + AERandFloat() * 35.f;
 
 		// Colour — cyan/white
-		f32 r = 0.6f + 0.4f * AERandFloat();
-		f32 g = 0.8f + 0.2f * AERandFloat();
-		f32 b = 1.0f;
-		f32 a = 0.6f + 0.4f * AERandFloat();
+		f32 r = 0.0;
+		f32 g = 1.0f;
+		f32 b = 0.8f + 0.2f * AERandFloat();
+		f32 a = 1.0f;
 
 		spawn_one(ecs, mf, x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
 	}

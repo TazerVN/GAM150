@@ -24,6 +24,7 @@ void LevelStateCombat_init()
 	ecs.remove_empty_groups();
 	//PS.particleClick(ecs, mf, x, y);
 	PS.particleDataStream(ecs, mf);
+	PS.particleReverseStream(ecs, mf);
 }
 void LevelStateCombat_update()
 {
