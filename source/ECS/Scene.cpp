@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Scene.h"
-
+#include <ctime> // for randomiser -Zejin (FOR NOW...)
+#include <cstdlib> // randomiser part 2
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
@@ -19,9 +20,12 @@ Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
 }
 
 
+
+
 void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
 
 {
+	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	cameraSys = &cam;
 	cardSys = &cs;
 
@@ -109,9 +113,27 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		s32 x = s32(AERandFloat() * f32(MAX_I));
-		s32 y = s32(AERandFloat() * f32(MAX_J));
-		BattleGrid.placeEntity(*ecs, entities[i], x, y);
+		s32 x = 0;
+		s32 y = 0;
+
+		const int maxAttempts = 100;
+		int attempts = 0;
+
+		do
+		{
+			x = std::rand() % MAX_I;
+			y = std::rand() % MAX_J;
+			++attempts;
+		} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
+
+		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+		{
+			BattleGrid.placeEntity(*ecs, entities[i], x, y);
+		}
+		else
+		{
+			std::cout << "[Scene] Failed to place entity " << entities[i] << " on empty tile.\n";
+		}
 	}
 
 
