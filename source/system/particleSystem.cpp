@@ -224,7 +224,7 @@ void Particle::ParticleSystem::particleBurst(EntityComponent::Registry& ecs, Mes
 	}
 }
 
-void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
 	int   max_count = 6;
 	f32   speed = 40.0f;
@@ -240,7 +240,7 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 
 		f32 b = 0.8f;
 
-		f32 a = 1.0f;
+		f32 a = AERandFloat();
 
 		// Convert angle to velocity direction
 		f32 velX = AECos(angle) * speed;
@@ -253,7 +253,7 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 
 
 		// input
-		spawn_one(ecs, mf, 0.f, 0.f, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
+		spawn_one(ecs, mf, x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
 	}
 }
 

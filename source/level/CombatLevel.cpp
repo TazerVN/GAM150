@@ -22,7 +22,7 @@ void LevelStateCombat_init()
 		, scene.getGBS());
 	UIM.init(scene, mf, TF);
 	ecs.remove_empty_groups();
-	PS.particleClick(ecs, mf);
+	//PS.particleClick(ecs, mf, x, y);
 	PS.particleDataStream(ecs, mf);
 }
 void LevelStateCombat_update()
@@ -30,7 +30,13 @@ void LevelStateCombat_update()
 	f32 dt = AEFrameRateControllerGetFrameTime();
 	//==========(Object updates)===========
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-		PS.particleClick(ecs, mf);
+
+		s32 mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX,&mouseY);
+
+		f32 worldX = f32(mouseX) - (f32(AEGfxGetWindowWidth()) * 0.5f);
+		f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
+		PS.particleClick(ecs, mf, worldX, worldY);
 	}
 	scene.update();
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);

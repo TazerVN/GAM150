@@ -41,7 +41,7 @@ namespace Particle
 		* - player is using ranged attack
 		*/
 
-		void particleClick(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleClick(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 		/*
 		* Click effect
 		*/
