@@ -87,19 +87,19 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	tbsParticipants.push_back(playerID);
 	tbsParticipants.push_back(horde);
 
-	//Add enemy0
-	temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
-	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
-	add_entity(temp);
-	enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
+	////Add enemy0
+	//temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
+	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
+	//add_entity(temp);
+	//enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
 
-	//Add enemy1
-	temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
-	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
-	add_entity(temp);
-	enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
+	////Add enemy1
+	//temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
+	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
+	//add_entity(temp);
+	//enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
 	cbs.init(*ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
 	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
