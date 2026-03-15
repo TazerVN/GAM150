@@ -39,6 +39,12 @@ void LevelStateCombat_update()
 		f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
 		PS.particleClick(ecs, mf, worldX, worldY);
 	}
+
+	if (AEInputCheckTriggered(AEVK_H)) // test particle
+	{
+
+		PS.particleHeal(ecs, mf, 0.0f, 0.0f);
+	}
 	scene.update();
 	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 	UIM.update(scene);

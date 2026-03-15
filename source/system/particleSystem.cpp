@@ -349,7 +349,7 @@ void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, Mesh
 		f32 b = 0.2f * AERandFloat();
 		f32 a = 0.8f + 0.2f * AERandFloat();
 
-		spawn_one(ecs, mf, spawnX, spawnY, 8.0f, 0.8f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
+		spawn_one(ecs, mf, spawnX, spawnY, 4.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
 
 	}
 
