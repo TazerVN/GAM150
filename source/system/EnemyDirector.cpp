@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "EnemyDirector.h"
+#include "../system/CombatSystem.h" // for attack
+#include "../util/Pathfinding.h"    // for A*
 
 #include <fstream>
 #include <sstream>
@@ -152,14 +154,14 @@ void EnemyDirector::update(EntityComponent::Registry& ecs,
     Entity cur = tbs.current();
     if (cur == Components::NULL_INDEX) return;
 
-    // If it is player's turn, reset the latch and do nothing
+    // If it is player's turn reset the latch and do nothing
     if (cur == playerID)
     {
         hordeTurnConsumed_ = false;
         return;
     }
 
-    // If we already processed this enemy turn, do nothing
+    // If processed this enemy turn, do nothing
     if (hordeTurnConsumed_)
         return;
 
@@ -214,6 +216,10 @@ void EnemyDirector::update(EntityComponent::Registry& ecs,
         {
             execMOVE(ecs, board, actor, playerID, cmd);
         }
+        else if (cmd[1] == "ATTACK")
+        {
+            execATTACK(ecs, board, actor, playerID, cmd);
+        }
         else
         {
             std::cout << "[ED] unknown verb: " << cmd[1] << "\n";
@@ -232,7 +238,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
     Entity playerID,
     const Tokens& t)
 {
-    // Supported:
+    // Supported CMDs:
     // E0 MOVE FRONT
     // E1 MOVE IN_RANGE PLAYER 2
     if (t.size() < 3) return;
@@ -268,7 +274,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
         return std::abs(x1 - x2) + std::abs(y1 - y2);
         };
 
-    // Helper: pick an empty adjacent tile to the player (best for this enemy)
+    //
     auto pickAdjacentToPlayer = [&]() -> std::pair<int, int>
         {
             int bestX = -1, bestY = -1;
@@ -286,31 +292,92 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
             return { bestX, bestY };
         };
 
-    // FRONT: move 1 step toward an empty tile adjacent to player
     if (t[2] == "FRONT")
     {
+        int steps = 1;
+        if (t.size() >= 4)
+        {
+            try
+            {
+                steps = std::stoi(t[3]);
+                if (steps < 1) steps = 1;
+            }
+            catch (...)
+            {
+                steps = 1;
+            }
+        }
+
+        // refresh positions
+        if (!board.findEntityCell(actor, ax, ay)) return;
+        if (!board.findEntityCell(playerID, px, py)) return;
+
+        // find the best empty tile adjacent to player
         auto target = pickAdjacentToPlayer();
         int tx = target.first;
         int ty = target.second;
 
-        if (tx < 0) return; // player surrounded
-
-        int bestNx = ax, bestNy = ay;
-        int bestD = manhattan(ax, ay, tx, ty);
-
-        for (auto& d : dirs)
+        if (tx < 0)
         {
-            int nx = ax + d[0], ny = ay + d[1];
-            if (!inBounds(nx, ny)) continue;
-            if (pos[nx][ny] != -1) continue;
-
-            int nd = manhattan(nx, ny, tx, ty);
-            if (nd < bestD) { bestD = nd; bestNx = nx; bestNy = ny; }
+            std::cout << "[ED] FRONT no adjacent empty tile near player.\n";
+            return; // player surrounded
         }
 
-        if (bestNx != ax || bestNy != ay)
-            board.moveEntityAI(ecs, actor, bestNx, bestNy);
+        // already standing at the chosen front tile
+        if (ax == tx && ay == ty)
+        {
+            std::cout << "[ED] FRONT already in best front position.\n";
+            return;
+        }
 
+        // build walkable grid for A*
+        std::vector<uint8_t> walkable(MAX_I * MAX_J, 1);
+
+        for (int y = 0; y < MAX_J; ++y)
+        {
+            for (int x = 0; x < MAX_I; ++x)
+            {
+                Entity ent = pos[x][y];
+                if (ent != Components::NULL_INDEX && ent != actor)
+                {
+                    walkable[y * MAX_I + x] = 0;
+                }
+            }
+        }
+
+        Components::GridCell start{ ax, ay };
+        Components::GridCell goal{ tx, ty };
+
+        Components::AStarResult result =
+            AStar_FindPath_Grid4(MAX_I, MAX_J, walkable.data(), start, goal);
+
+        if (result.path.empty())
+        {
+            std::cout << "[ED] FRONT no path found.\n";
+            return;
+        }
+
+        // path includes start cell, so next move begins at index 1
+        int maxMoves = std::min<int>(steps, static_cast<int>(result.path.size()) - 1);
+
+        auto itPath = result.path.begin();
+        ++itPath; // skip start cell
+
+        for (int moved = 0; moved < maxMoves && itPath != result.path.end(); ++moved, ++itPath)
+        {
+            int nx = itPath->x;
+            int ny = itPath->y;
+
+            bool ok = board.moveEntityAI(ecs, actor, nx, ny);
+            if (!ok)
+            {
+                std::cout << "[ED] FRONT moveEntityAI failed at "
+                    << nx << "," << ny << "\n";
+                return;
+            }
+        }
+
+        std::cout << "[ED] FRONT path moved " << maxMoves << " step(s).\n";
         return;
     }
 
@@ -345,32 +412,31 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
         return;
     }
 
-    // MOVE RIGHT: +x
     if (t[2] == "RIGHT")
     {
         tryStep(ax + 1, ay);
         return;
     }
-    // MOVE LEFT: -x
+
     if (t[2] == "LEFT")
     {
         tryStep(ax - 1, ay);
         return;
     }
-    // MOVE UP: -y (depending on your grid, flip if needed)
+
     if (t[2] == "UP")
     {
         tryStep(ax, ay - 1);
         return;
     }
-    // MOVE DOWN: +y
+
     if (t[2] == "DOWN")
     {
         tryStep(ax, ay + 1);
         return;
     }
 
-    // MOVE BACK: 1 step away from player
+    // Disengage
     if (t[2] == "BACK")
     {
         int bestNx = ax, bestNy = ay;
@@ -393,4 +459,71 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
     }
 
     std::cout << "[EnemyDirector] MOVE args not recognized.\n";
+}
+
+void EnemyDirector::execATTACK(EntityComponent::Registry& ecs,
+    Grid::GameBoard& board,
+    Entity actor,
+    Entity playerID,
+    const Tokens& t)
+{
+    if (t.size() < 3)
+    {
+        std::cout << "[ED] ATTACK missing damage value.\n";
+        return;
+    }
+
+    s32 ax, ay, px, py;
+    if (!board.findEntityCell(actor, ax, ay))
+    {
+        std::cout << "[ED] ATTACK could not find actor on board.\n";
+        return;
+    }
+
+    if (!board.findEntityCell(playerID, px, py))
+    {
+        std::cout << "[ED] ATTACK could not find player on board.\n";
+        return;
+    }
+
+    int damage = 0;
+    try
+    {
+        damage = std::stoi(t[2]);
+    }
+    catch (...)
+    {
+        std::cout << "[ED] ATTACK invalid damage value: " << t[2] << "\n";
+        return;
+    }
+
+    auto manhattan = [](int x1, int y1, int x2, int y2)
+        {
+            return std::abs(x1 - x2) + std::abs(y1 - y2);
+        };
+
+    int dist = manhattan(ax, ay, px, py);
+    const int attackRange = 2;
+
+    if (dist <= attackRange)
+    {
+        COMBAT_SYSTEM_RETURN_TAG result =
+            Call_AttackSystem(ecs, playerID, static_cast<f32>(damage));
+
+        if (result == COMBAT_SYSTEM_RETURN_TAG::VALID)
+        {
+            std::cout << "[ED] ATTACK success: actor " << actor
+                << " dealt " << damage
+                << " to player at range " << dist << "\n";
+        }
+        else
+        {
+            std::cout << "[ED] ATTACK failed: player cannot take damage.\n";
+        }
+    }
+    else
+    {
+        std::cout << "[ED] ATTACK skipped: player out of range. Dist="
+            << dist << " Range=" << attackRange << "\n";
+    }
 }

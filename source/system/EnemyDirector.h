@@ -60,5 +60,13 @@ private:
         Entity playerID,
         const Tokens& t);
 
+    // Entity Attacks
+    void execATTACK(EntityComponent::Registry& ecs,
+        Grid::GameBoard& board,
+        Entity actor,
+        Entity playerID,
+        const Tokens& t);
+
     // More to come!!!
+    // Cast soon >>>>> 
 };

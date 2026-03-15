@@ -823,7 +823,7 @@ namespace Grid
 		return false;
 	}
 
-	bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
+	/*bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
 			return false;
@@ -838,6 +838,36 @@ namespace Grid
 		pos[ex][ey] = -1;
 
 		pos[x][y] = e;
+
+		return true;
+	}*/
+	//temporary fix so enemies could folow the tile they are meant to follow.
+	bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
+	{
+		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+			return false;
+
+		if (pos[x][y] != -1)
+			return false;
+
+		s32 ex, ey;
+		if (!findEntityCell(e, ex, ey))
+			return false;
+
+		pos[ex][ey] = -1;
+		pos[x][y] = e;
+
+		EntityComponent::ComponentTypeID transID =
+			EntityComponent::getComponentTypeID<Components::Transform>();
+
+		if (ecs.getBitMask()[e].test(transID))
+		{
+			Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+
+			transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
+			transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
+			transform->pos_onscreen = transform->pos;
+		}
 
 		return true;
 	}
