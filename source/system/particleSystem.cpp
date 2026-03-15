@@ -78,6 +78,7 @@ void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 					break;
 
 				case Components::ParticleType::Reversestream:
+				{
 					if (timer->max_seconds <= 1.0f)
 					{
 						timer->max_seconds = 8.0f + AERandFloat() * 4.0f;
@@ -107,6 +108,7 @@ void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 							transform->pos_onscreen.y = newY;
 						}
 						break;
+				}
 					
 
 				case Components::ParticleType::Heal:
