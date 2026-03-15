@@ -36,8 +36,10 @@ void GameStateMainMenu_update()
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
         if (IsMouseOver(playBtn)) //leaveGameState();
+            gGameStateNext = GameStates::GS_Game;
         if (IsMouseOver(quitBtn)) shouldQuit = true;
     }
+    
 
     /*
     if (shouldQuit || 0 == AESysDoesWindowExist())
@@ -52,7 +54,7 @@ void GameStateMainMenu_update()
     DrawButton(playBtn);
     DrawButton(quitBtn);
 
-    //AEGfxPrint(menuFont, "UNTITLED GAME", -0.2f, 0.3f, 1.5f, 1.f, 1.f, 1.f, 1.f);
+    AEGfxPrint(menuFont, "Code Fighter XQC", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
 
 }
 void GameStateMainMenu_free()
