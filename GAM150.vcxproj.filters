@@ -54,6 +54,7 @@
     <ClCompile Include="source\system\velocitySystem.cpp" />
     <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\pch.cpp" />
+    <ClCompile Include="source\system\CardResolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -111,5 +112,6 @@
     <ClInclude Include="source\system\AnimationSystem.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\types.h" />
+    <ClInclude Include="source\system\CardResolver.h" />
   </ItemGroup>
 </Project>

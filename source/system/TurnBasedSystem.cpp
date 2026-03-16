@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TurnBasedSystem.h"
 #include <iomanip>
+#include "../system/CardResolver.h"
 
 
 namespace TBS
@@ -277,10 +278,12 @@ namespace TBS
 		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
 		Entity cardID = this->draw_card(ecs, player, index);
+		if (cardID == Components::NULL_INDEX) // Added a guard 
+			return PC_RETURN_TAG::INVALID;
 
 		std::string name = ecs.getComponent<Components::Name>(cardID)->value;
 		
-		CardTag* tag = ecs.getComponent<CardTag>(cardID);
+		/*CardTag* tag = ecs.getComponent<CardTag>(cardID);
 		switch (*tag)
 		{
 		case CardTag::ATTACK:
@@ -292,15 +295,37 @@ namespace TBS
 			break;
 		}
 
-		 ret = PC_RETURN_TAG::VALID;
+		 ret = PC_RETURN_TAG::VALID;*/
 
 		//remove the card that just played inside tbs
 		 f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 		 int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
 
-		player_curMana -= card_cost;
-		remove_card(ecs,player,index);
-		return ret;
+		 if (card_cost > player_curMana) // Added a not enough mana condition
+		 {
+			 std::cout << "Not enough mana!!" << std::endl;
+			 return PC_RETURN_TAG::INVALID;
+		 }
+
+		 ret = CardResolver::resolve(
+			 ecs,
+			 *cbsptr,
+			 *gameBoardptr,
+			 *this,
+			 player,
+			 cardID,
+			 target,
+			 targetted_pos
+		 );
+
+		 // Made it a guard for you Steven - Zejin
+		 if (ret == PC_RETURN_TAG::VALID)
+		 {
+			 player_curMana -= card_cost;
+			 remove_card(ecs, player, index);
+		 }
+
+		 return ret;
 	}
 
 	//DEBUG PRINT
