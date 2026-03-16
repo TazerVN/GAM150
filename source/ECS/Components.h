@@ -33,6 +33,7 @@ namespace Components
 		Click,
 		Datastream,
 		Reversestream,
+		Noise,
 		Heal,
 		Shield,
 		Damage
