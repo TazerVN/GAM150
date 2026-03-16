@@ -252,8 +252,7 @@ namespace Grid
 			{
 				if (tbsptr->is_current_selected_card())
 				{
-					//if the card is selected and the selected pos has entity
-					if (pos[x][y] != -1)
+					if (cbsptr->check_within_range(this->cur, x, y))
 					{
 						if (pos[x][y] == tbsptr->current())
 						{
@@ -262,16 +261,13 @@ namespace Grid
 							return;
 						}
 					}
-					else {
-						if (!cbsptr->check_within_range(this->cur, x, y))
-						{
-							std::cout << "Selected cell is outside range" << std::endl;
-							unselect_card();
-							return;
-						}
-
-						trigger_play_card(ecs, x, y);
+					else
+					{
+						std::cout << "Selected cell is outside range" << std::endl;
+						unselect_card();
+						return;
 					}
+					trigger_play_card(ecs, x, y);
 				}
 				break;
 			}
@@ -462,13 +458,14 @@ namespace Grid
 			{ 
 				cell_onHover(ecs, id, this->pos[x][y]);
 
-				if(!cbsptr->get_aoe_highlighted_cell().empty())
+				if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::PLAYER_RESOLUTION)
+				{
 					for (AEVec2 a : cbsptr->get_aoe_highlighted_cell())
 					{
 						aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
-
-				cbsptr->get_aoe_highlighted_cell().clear();
+					cbsptr->get_aoe_highlighted_cell().clear();
+				}
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
 				{

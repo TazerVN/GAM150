@@ -73,7 +73,6 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 	}
 	case Targetting::AOE:
 	{
-		int i = 0;
 		for (AEVec2 pos : aoe_highlighted_cells)
 		{
 			Entity& ent = gbptr->get_pos()[pos.x][pos.y];
@@ -295,11 +294,6 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 				if (!play_card_triggered)
 				{
 					std::cout << "Card Animating" << std::endl;
-					if (AEInputCheckTriggered(AEVK_P))
-					{
-						play_card_triggered = true;
-					}
-					//play_card_triggered = true;
 				}
 				if (play_card_triggered)
 				{

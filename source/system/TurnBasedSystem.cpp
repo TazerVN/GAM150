@@ -276,42 +276,7 @@ namespace TBS
 		Entity cardID = this->draw_card(ecs, player, index);
 
 		std::string name = ecs.getComponent<Components::Name>(cardID)->value;
-		f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
-		int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
-
-		if (card_cost > player_curMana)
-		{
-			std::cout << "Not enough mana!!" << std::endl;
-			return PC_RETURN_TAG::INVALID;
-		}
-
-		//if (target != NULL_INDEX)
-		//{
-		//	Components::CardTag* tag = ecs.getComponent<Components::CardTag>(cardID);
-		//	switch (*tag)
-		//	{
-		//	case Components::CardTag::ATTACK:
-		//	{
-		//		ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
-		//		if (!ecs.getBitMask()[cardID].test(card_value_ID))
-		//		{
-		//			std::cout << "Selected card doesn't have card_data component";
-		//			return PC_RETURN_TAG::INVALID;
-		//		}
-		//		f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
-		//		if (Call_AttackSystem(ecs,target,card_damage) == COMBAT_SYSTEM_RETURN_TAG::DIED)
-		//			ret = PC_RETURN_TAG::DIED;
-		//		else
-		//			ret = PC_RETURN_TAG::VALID;
-		//		break;
-		//	}
-		//	default:
-		//		break;
-		//	}
-		//}
 		
-		//run the function related to the card
-		//example 
 		CardTag* tag = ecs.getComponent<CardTag>(cardID);
 		switch (*tag)
 		{
@@ -327,6 +292,9 @@ namespace TBS
 		 ret = PC_RETURN_TAG::VALID;
 
 		//remove the card that just played inside tbs
+		 f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
+		 int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
+
 		player_curMana -= card_cost;
 		remove_card(ecs,player,index);
 		return ret;

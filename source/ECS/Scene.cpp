@@ -41,18 +41,14 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	temp = EntityFactory::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	add_entity(temp);
-	/*for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
-		System::add_card_player_deck(*ecs, temp, sa);
-		System::add_card_player_deck(*ecs, temp, fa);
+		EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
 	}
-	System::add_card_player_deck(*ecs, temp, ss);*/
-	/*for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
-		System::add_card_player_deck(*ecs, temp, blackHole);
-	}*/
-	EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
-	EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
+		EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
+	}
 
 
 	//Create Horde

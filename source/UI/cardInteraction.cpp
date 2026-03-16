@@ -92,8 +92,6 @@ namespace CardInteraction
 		{
 			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
 			{
-
-
 				if (tbs.get_selected_cardhand_index() == i)
 				{
 					card_onClick(ecs, this->curr_hand_display[i]);
@@ -111,9 +109,21 @@ namespace CardInteraction
 				//	tbsptr->select_hand_index(i);
 				//	tbsptr->select_card(ecs);
 				//}
+				this->activate[i] = false;
+				Entity cardID = tbsptr->draw_card(ecs, playerID, i);
+				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
+				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
+				
+				std::cout << "Checking for card mana. card name : " << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
+				std::cout << "Card Mana : " << card_cost << std::endl;
+
+				if (card_cost > player_curMana)
+				{
+					std::cout << "Not enough mana!!" << std::endl;
+					return;
+				}
 				tbsptr->select_hand_index(i);
 				tbsptr->select_card(ecs);
-				this->activate[i] = false;
 			}
 
 
