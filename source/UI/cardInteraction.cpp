@@ -291,9 +291,15 @@ namespace CardInteraction
 		gbptr = nullptr;
 		tfptr = nullptr;
 
+		for (Entity i : curr_hand_display)
+		{
+			ecs.destroyEntity(i);
+		}
 		curr_hand_display.clear();
 		curr_card_id.clear();
 		activate.clear();
+
+		ecs.destroyEntity(id);
 
 	}
 

@@ -13,8 +13,7 @@
 void GameStateMainMenu_load()
 {
 	std::cout << "Main menu loaded" << std::endl;
-    TF.textureInit();
-    mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
+    
 }
 void GameStateMainMenu_init()
 {
