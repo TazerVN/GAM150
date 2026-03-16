@@ -18,6 +18,10 @@ void LevelStateCombat_init()
 	s32 w_height = AEGfxGetWindowHeight();
 
 	//===========Game===============
+	//load in player deck
+	ecs.getComponent<Components::Card_Storage>(playerID)->init();
+
+
 	scene.init(ecs, mf, card_system, TF, CS, card);
 	card = CardInteraction::CardHand(ecs, mf, TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS());
@@ -59,6 +63,8 @@ void LevelStateCombat_update()
 void LevelStateCombat_free()
 {
 	scene.scene_free();
+	card.card_interaction_free();
+	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 }
 void LevelStateCombat_unload()
 {

@@ -9,7 +9,7 @@ namespace Components
 
 	void Components::Card_Storage::add_card_to_deck(Entity cardID)
 	{
-		data_deck.push_back(cardID);
+		original_draw_pile.push_back(cardID);
 	}
 
 	void Components::Card_Storage::add_card_to_hand(Entity cardID)
@@ -28,8 +28,20 @@ namespace Components
 		if (data_discard_pile.empty()) { std::cout << "Discard Pile Empty" << std::endl; return; }
 		for (Entity card : data_discard_pile)
 		{
-			data_deck.push_back(card);
+			data_draw_pile.push_back(card);
 		}
+		data_discard_pile.clear();
+	}
+
+	void Components::Card_Storage::init()
+	{
+		data_draw_pile = original_draw_pile;
+	}
+
+	void Components::Card_Storage::free()
+	{
+		data_draw_pile.clear();
+		data_card_hand.clear();
 		data_discard_pile.clear();
 	}
 

@@ -107,7 +107,7 @@ void Scene::update()
 			std::cout<< "WIN!!!!" << std::endl;
 			TBSys.active() = false;
 			
-			gLevelStateNext == LevelStates::LS_QUIT;
+			gLevelStateNext = LevelStates::LS_QUIT;
 		}
 		cbs.update();
 		enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);

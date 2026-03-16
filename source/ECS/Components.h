@@ -229,12 +229,17 @@ namespace Components
 	class Card_Storage
 	{
 		public:
-		void add_card_to_deck(Entity cardID);
-		void add_card_to_hand(Entity cardID);
-		void remove_card_from_hand(int index);
+		void add_card_to_deck(Entity cardID);	//add to original pile
+		void add_card_to_hand(Entity cardID);	//add card from copied data draw pile to hand
+		void remove_card_from_hand(int index);	//remove card from hand to discardpile
 		void reshuffle_discard2deck();
+		void init();
+		void free();
 
-		std::vector<size_t> data_deck;
+
+		std::vector<size_t> original_draw_pile;
+
+		std::vector<size_t> data_draw_pile;
 		std::vector<size_t> data_card_hand;
 		std::vector<size_t> data_discard_pile;
 	};

@@ -8,6 +8,8 @@
 #include "util/GameStateManager.h"
 // ---------------------------------------------------------------------------
 
+void load_Sys_Comp();
+
 // main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -27,6 +29,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysSetWindowTitle("Yes!");
 
 	/*SetGameState(game_init,game_update,game_free);*/
+
+	load_Sys_Comp();
 
 	GameStateMgrInit(GameStates::GS_MAINMENU);
 
@@ -72,4 +76,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 	AESysExit();
+}
+
+
+void load_Sys_Comp()
+{
+	TF.textureInit();
+	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
+	//==========System=============
+	CS.init(ecs);
+	RM.RenderSystem_init(ecs);
+	card_system.init_cards(ecs);
+
+	Entity temp;
+
+	//Add player
+	temp = EntityFactory::create_actor_spritesheet(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(2), Components::AnimationType::NONE);
+	playerID = temp;//important must set the playerID !!!!!!!!!!!
+	for (int i = 0; i < 8; ++i)
+	{
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Slash"));
+	}
+	for (int i = 0; i < 3; ++i)
+	{
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Black Hole"));
+	}
+	//=============================
 }

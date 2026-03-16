@@ -346,10 +346,10 @@ namespace TBS
 		std::cout << "---------Player's Deck---------" << std::endl;
 
 		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		size_t sz = playerStorage->data_deck.size();
+		size_t sz = playerStorage->data_draw_pile.size();
 		for (size_t i = 0; i < sz; ++i)
 		{
-			Entity cardID = playerStorage->data_deck[i];
+			Entity cardID = playerStorage->data_draw_pile[i];
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
 			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
@@ -400,24 +400,24 @@ namespace TBS
 	{
 		//get random card from the player's deck
 		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
-		std::vector<size_t>& deck = storage->data_deck;
+		std::vector<size_t>& drawPile = storage->data_draw_pile;
 
-		if (deck.empty())
+		if (drawPile.empty())
 		{
 			storage->reshuffle_discard2deck();
 
-			if (deck.empty())
+			if (drawPile.empty())
 			{
 				std::cout << "Error" << std::endl;
 				return;
 			}
 		}
 
-		int index = int(AERandFloat() * deck.size());
-		Entity card = deck[index];
+		int index = int(AERandFloat() * drawPile.size());
+		Entity card = drawPile[index];
 		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
 		//remove the card afterwards
-		deck.erase(deck.begin() + index);
+		drawPile.erase(drawPile.begin() + index);
 	}
 
 	void TurnBasedSystem::remove_card(EntityComponent::Registry& ecs,Entity user,int index)
