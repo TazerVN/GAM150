@@ -4,6 +4,8 @@
 #include <iostream>
 #include "AEEngine.h"
 #include "../util/GameStateManager.h"
+#include "../system/particleSystem.h"
+
 
 // PROXY CODE
 // NEED CLEAN UP
@@ -54,7 +56,7 @@ void GameStateMainMenu_update()
     DrawButton(playBtn);
     DrawButton(quitBtn);
 
-    AEGfxPrint(menuFont, "Code Fighter XQC", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
+    AEGfxPrint(menuFont, "Beyond the Nexus", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
 
 }
 void GameStateMainMenu_free()
