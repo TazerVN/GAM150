@@ -54,14 +54,22 @@ namespace TextureFactory
 
 		//UI
 
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/binButton.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/deckButton.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaEmpty.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaholderElement.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaOne.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaTwo.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/skillWindow.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/turnCounter.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/moveButton.png"));
 
 
 		//MIS
-		this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
+		//this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
+		this->fontID = AEGfxCreateFont("../../Assets/font/TahomaBd.ttf", 64.F);
 	}
 
 
