@@ -149,7 +149,7 @@ namespace RenderSystem
 			{
 				Components::Text* text = ecs.getComponent<Components::Text>(current_e);
 
-				AEGfxPrint(text->fontID, text->text, new_pos.x, new_pos.y, new_size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
+				AEGfxPrint(text->fontID, text->text, new_pos.x/AEGfxGetWinMaxX(), new_pos.y/AEGfxGetWinMaxY(), new_size.x, color->d_color.r, color->d_color.g, color->d_color.b, color->d_color.a);
 			}
 
 		}
