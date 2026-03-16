@@ -66,11 +66,12 @@ namespace CardInteraction
 		void activate_card(Entity e);
 		void remove_card(EntityComponent::Registry&, int);
 		void reset_hand();
+
+		void card_interaction_free();
 	};
 
 
 	Entity selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> fp);
 	Entity selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp);
 	void selectableCard_delete(EntityComponent::Registry& ecs, Entity entity);
-
 }

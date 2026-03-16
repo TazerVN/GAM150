@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include <ctime> // for randomiser -Zejin (FOR NOW...)
 #include <cstdlib> // randomiser part 2
+#include "../util/LevelManager.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
@@ -34,39 +35,15 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 	//must init appoint ecs first
 	ecs = &ECS;
-	//add cards to the player
-	Entity temp; 
-	
-	//Add player
-	temp = EntityFactory::create_actor_spritesheet(*ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, tf.getTextureChar(2), Components::AnimationType::NONE);
-	playerID = temp;//important must set the playerID !!!!!!!!!!!
-	add_entity(temp);
-	for (int i = 0; i < 8; ++i)
-	{
-		EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Slash"));
-	}
-	for (int i = 0; i < 3; ++i)
-	{
-		EntityFactory::add_card_player_deck(*ecs, temp, cardSys->generate_card_from_bible(*ecs, "Black Hole"));
-	}
 
-
+	//add player to the scene
+	add_entity(playerID);
 	//Create Horde
 	Entity horde = ecs->createEntity();
 	ecs->addComponent(horde, Components::Name{ "Horde" });
 	ecs->addComponent(horde, Components::TurnBasedStats{});
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
-
-	//Holt shit the enemy script is so cool VVV
-
-	////Add enemy0
-	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E0", "Enemy0", { 100.f, 100.f }, fa, sa);
-	//add_entity(temp);
-
-	////Add enemy1
-	//temp = spawnEnemyAndBind(*ecs, mf, tf, enemyDirector, "E1", "Enemy1", { 200.f, 100.f }, fa, sa);
-	//add_entity(temp);
 
 	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
 	{
@@ -76,7 +53,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 		// temporary spawn position logic
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-		temp = EntityFactory::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+		Entity temp = EntityFactory::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 
 		add_entity(temp);                  // adds to scene/world
 		enemyDirector.bindActor(actorId, temp);
@@ -86,20 +63,6 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	std::vector<Entity> tbsParticipants;
 	tbsParticipants.push_back(playerID);
 	tbsParticipants.push_back(horde);
-
-	////Add enemy0
-	//temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy0", 100.f, tf.getTextureChar(0), Components::AnimationType::IDLE);
-	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
-	//add_entity(temp);
-	//enemyDirector.bindActor("E0", temp);		// enemy now bound as E0
-
-	////Add enemy1
-	//temp = EntityFactory::create_actor_normal(*ecs, mf, { 100.f,100.f }, { 192.0f,192.0f }, "Enemy", 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
-	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add fire attack
-	//EntityFactory::add_card_player_hand(*ecs, temp, cardSys->generate_card_from_bible(*ecs,"Slash"));	//add sword attack
-	//add_entity(temp);
-	//enemyDirector.bindActor("E1", temp);		// enemy now bound as E1
 
 	cbs.init(*ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
 	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
@@ -137,8 +100,18 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 void Scene::update()
 {
-	TBSys.update(*ecs);
-	enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
+	if (TBSys.active())
+	{
+		if (TBSys.update())
+		{
+			std::cout<< "WIN!!!!" << std::endl;
+			TBSys.active() = false;
+			
+			gLevelStateNext == LevelStates::LS_QUIT;
+		}
+		cbs.update();
+		enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
+	}
 	//==================Handle Events===============================
 
 	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)

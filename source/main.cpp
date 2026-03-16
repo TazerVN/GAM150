@@ -28,7 +28,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	/*SetGameState(game_init,game_update,game_free);*/
 
-
 	GameStateMgrInit(GameStates::GS_MAINMENU);
 
 	while (gGameStateCurr != GameStates::GS_QUIT)

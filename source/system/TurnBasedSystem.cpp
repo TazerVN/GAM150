@@ -97,7 +97,6 @@ namespace TBS
 				/*std::cout << "Participant size :" << participants.size() << std::endl;
 				std::cout << "Paricipant hand size : " << participant_hand.size() << std::endl;*/
 				ecs.destroyEntity(parti);
-
 			}
 		}
 	}
@@ -201,7 +200,12 @@ namespace TBS
 		std::cout << "[DBG] TBS end() CALLED\n";
 	}
 
-	bool TurnBasedSystem::active()
+	bool& TurnBasedSystem::active()
+	{
+		return is_active;
+	}
+
+	bool TurnBasedSystem::active() const
 	{
 		return is_active;
 	}
@@ -257,7 +261,6 @@ namespace TBS
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 		else 
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::AOE_GRID_SELECT);
-		//gbsptr->debug_print();
 	}
 
 	//return the cardID inside the hand
@@ -422,18 +425,27 @@ namespace TBS
 		EntityFactory::remove_card_player(ecs, user, index);	//this is to remove data from ecs
 		cardHandptr->remove_card(ecs,index);		//this is for visual side
 	}
-	//=================================Update===========================================
 
-	//Turn based system's update loop
-	void TurnBasedSystem::update(EntityComponent::Registry& ecs)
+	bool TurnBasedSystem::update() const
 	{
-		// ================= CONSOLE LOG of TBS =================
-		// Check for TBS status
-		if (is_active)
-		{
-			cbsptr->update_GBPhasetriggered();
-			cbsptr->update_GBPhaseUpdate();
-		}
-		//============================================================
+		return (participants.size() == 1 && participants[0] == playerID);
+	}
+	void TurnBasedSystem::tbs_free()
+	{
+		cur_player = -1;
+		is_active = false;
+		cur_round = 0;
+
+		ecsptr = nullptr;
+		evsptr = nullptr;
+		gameBoardptr = nullptr;
+		gbsptr = nullptr;
+		cardSysptr = nullptr;
+		cardHandptr = nullptr;
+		cbsptr = nullptr;
+		
+		participants.clear();
+		participant_hand.clear();
+		selected_card.clear();
 	}
 }

@@ -12,10 +12,6 @@
 #include <iostream>
 #include "AEEngine.h"
 
-
-
-
-
 //forward declaration so that turnbased system have access to gridsystem
 namespace Grid { class GameBoard; };
 namespace CardInteraction { class CardHand; };
@@ -64,7 +60,8 @@ namespace TBS
 		void next(EntityComponent::Registry& ecs);	
 		void end();
 
-		bool active();
+		bool& active();
+		bool active() const;
 		std::vector<int>& hand();
 		size_t round();
 		//============Turn Control=============
@@ -95,7 +92,7 @@ namespace TBS
 		//draw the card of the player
 		Entity draw_card(EntityComponent::Registry& ecs, Entity player, size_t chIndex);
 
-		//===============Update=====================
-		void update(EntityComponent::Registry& ecs);
+		bool update() const;
+		void tbs_free();
 	};
 }

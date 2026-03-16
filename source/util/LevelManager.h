@@ -10,6 +10,8 @@ enum class LevelStates
 	LS_NUM
 };
 
+extern bool init_triggered;
+
 extern LevelStates gLevelStateInit;
 extern LevelStates gLevelStateCurr;
 extern LevelStates gLevelStatePrev;

@@ -4,6 +4,8 @@
 #include "../level/CombatLevel.h"
 #include <iostream>
 
+bool init_triggered = true;
+
 LevelStates gLevelStateInit;
 LevelStates gLevelStateCurr;
 LevelStates gLevelStatePrev;

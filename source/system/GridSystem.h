@@ -30,6 +30,8 @@ namespace Grid
 	class GameBoard
 	{
 		private:
+		std::vector<Entity> cells_entity_id;
+
 		EntityComponent::Registry* ecsptr = nullptr;
 		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
@@ -49,6 +51,8 @@ namespace Grid
 
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
+
+		std::vector<AEVec2> aoe_highlighted_cells;
 
 		Entity create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
@@ -74,6 +78,7 @@ namespace Grid
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
+		std::array<std::array<int, MAX_J>, MAX_I>& activate_aoe_highlight();
 
 		bool selected_player() const;
 		void unselect_movement();
@@ -83,6 +88,8 @@ namespace Grid
 
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
+
+		void gameboard_free();
 	};
 	
 	//class Grid

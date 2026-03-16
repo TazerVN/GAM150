@@ -23,4 +23,5 @@ class EventPool
 {
 public:
 	std::vector<EventTemplate<T>> template_pool;
+	void free();
 };

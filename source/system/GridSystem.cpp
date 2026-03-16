@@ -460,11 +460,11 @@ namespace Grid
 
 				if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::PLAYER_RESOLUTION)
 				{
-					for (AEVec2 a : cbsptr->get_aoe_highlighted_cell())
+					for (AEVec2 a : cbsptr->get_aoe_selected_cell())
 					{
 						aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
-					cbsptr->get_aoe_highlighted_cell().clear();
+					cbsptr->get_aoe_selected_cell().clear();
 				}
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
@@ -485,22 +485,30 @@ namespace Grid
 							{
 								if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
 								{
-									cbsptr->get_aoe_highlighted_cell().push_back({f32(x + i) , f32(y + j)});
+									if (this->aoe_highlight_activate[x + i][y + j])
+										continue;
+									cbsptr->get_aoe_selected_cell().push_back({f32(x + i) , f32(y + j)});
 									this->aoe_highlight_activate[x + i][y + j] = 1;
 								}
 								if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
 								{
-									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x - i) , f32(y - j) });
+									if (this->aoe_highlight_activate[x - i][y - j])
+										continue;
+									cbsptr->get_aoe_selected_cell().push_back({ f32(x - i) , f32(y - j) });
 									this->aoe_highlight_activate[x - i][y - j] = 1;
 								}
 								if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
 								{
-									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x + i) , f32(y - j) });
+									if (this->aoe_highlight_activate[x + i][y - j])
+										continue;
+									cbsptr->get_aoe_selected_cell().push_back({ f32(x + i) , f32(y - j) });
 									this->aoe_highlight_activate[x + i][y - j] = 1;
 								}
 								if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
 								{
-									cbsptr->get_aoe_highlighted_cell().push_back({ f32(x - i) , f32(y + j) });
+									if (this->aoe_highlight_activate[x - i][y + j])
+										continue;
+									cbsptr->get_aoe_selected_cell().push_back({ f32(x - i) , f32(y + j) });
 									this->aoe_highlight_activate[x - i][y + j] = 1;
 								}
 							}
@@ -524,6 +532,8 @@ namespace Grid
 		ecs.addComponent(id, gc);
 		ecs.addComponent(id, in);
 		ecs.addComponent(id, timer);
+
+		cells_entity_id.push_back(id);
 
 		return id;
 	}
@@ -719,6 +729,11 @@ namespace Grid
 		return highlight_activate;
 	}
 
+	std::array<std::array<int, MAX_J>, MAX_I>& GameBoard::activate_aoe_highlight()
+	{
+		return aoe_highlight_activate;
+	}
+
 	bool GameBoard::selected_player() const
 	{
 		return selected_part;
@@ -820,6 +835,25 @@ namespace Grid
 		return false;
 	}
 
+	void  GameBoard::gameboard_free()
+	{
+		for (Entity a : cells_entity_id)
+		{
+			ecs.destroyEntity(a);
+		}
+		cells_entity_id.clear();
+		for (int i = 0; i < MAX_I; ++i)
+		{
+			for (int j = 0; j < MAX_J; ++j)
+			{
+				if (pos[i][j] != -1 && pos[i][j] != playerID)
+				{
+					ecs.destroyEntity(pos[i][j]);
+				}
+			}
+		}
+		aoe_highlighted_cells.clear();
+	}
 	/*bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)

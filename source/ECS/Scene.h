@@ -44,6 +44,17 @@ public:
 	void add_entity(Entity e);
 	std::vector<Entity>& entities_store();
 
+	void scene_free()
+	{
+		TBSys.tbs_free();
+		BattleGrid.gameboard_free();
+		cameraSys = nullptr;
+		cardSys = nullptr;
+
+		entities.clear();
+		next_entity = 0;
+	}
+
 	//GETTER
 	EntityComponent::Registry& getECS();
 	PhaseSystem::GameBoardState& getGBS();

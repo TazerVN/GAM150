@@ -283,6 +283,19 @@ namespace CardInteraction
 
 	}
 
+	void CardHand::card_interaction_free()
+	{
+		tbsptr = nullptr;
+		gbsptr = nullptr;
+		mfptr = nullptr;
+		gbptr = nullptr;
+		tfptr = nullptr;
+
+		curr_hand_display.clear();
+		curr_card_id.clear();
+		activate.clear();
+
+	}
 
 	void card_onClick(EntityComponent::Registry& ecs, Entity id)
 	{
@@ -413,9 +426,6 @@ namespace CardInteraction
 		ecs.destroyEntity(entity);
 
 	}
-
-
-
 
 
 	void fun()

@@ -3,6 +3,7 @@
 #include "../types.h"
 #include "../ECS/ECSystem.h"
 #include "../util/Event.h"
+#include <utility>
 
 namespace TBS { class TurnBasedSystem; }
 namespace PhaseSystem {class GameBoardState;}
@@ -26,15 +27,15 @@ namespace CombatNameSpace
 		bool play_card_triggered{ false };
 
 		std::vector<AEVec2> highlighted_cells;
-		std::vector<AEVec2> aoe_highlighted_cells;
+		std::vector<AEVec2> aoe_selected_cells;
 		
-		std::vector<Entity> graveyard;
+		std::vector<std::pair<AEVec2, Entity>> graveyard;
 	public:
 		void init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb ,TBS::TurnBasedSystem& tbs,
 					 CardInteraction::CardHand& cardhand,EventPool<highlight_tag>& eventSystem);
 
 		std::vector<AEVec2>& get_highlighted_cell();
-		std::vector<AEVec2>& get_aoe_highlighted_cell();
+		std::vector<AEVec2>& get_aoe_selected_cell();
 		bool check_within_range(Entity id, s32 const& x, s32 const& y);
 
 		void play_attack_card(EntityComponent::Registry& ecs, Entity cardID, Entity target, AEVec2 pos);
@@ -45,6 +46,8 @@ namespace CombatNameSpace
 		void set_targetted_xy(int x, int y);
 		void set_play_card_triggered(bool flag);
 
+
+		void update();
 		void update_GBPhasetriggered();
 		void update_GBPhaseUpdate();
 		void end_player_resolution();

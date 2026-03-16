@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CombatLevel.h"
+#include "../util/LevelManager.h"
 
 Scene scene;
 CardInteraction::CardHand card{};
@@ -21,10 +22,11 @@ void LevelStateCombat_init()
 	card = CardInteraction::CardHand(ecs, mf, TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS());
 	UIM.init(scene, mf, TF);
-	ecs.remove_empty_groups();
 	//PS.particleClick(ecs, mf, x, y);
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
+	AS.init(ecs);
+	ecs.remove_empty_groups();
 }
 void LevelStateCombat_update()
 {
@@ -51,10 +53,12 @@ void LevelStateCombat_update()
 	PS.update(ecs, 0.2);
 	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 	AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
+
+	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;
 }
 void LevelStateCombat_free()
 {
-
+	scene.scene_free();
 }
 void LevelStateCombat_unload()
 {

@@ -13,9 +13,9 @@ std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_highlighted_cell()
 	return highlighted_cells;
 }
 
-std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_highlighted_cell()
+std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_selected_cell()
 {
-	return aoe_highlighted_cells;
+	return aoe_selected_cells;
 }
 
 
@@ -60,20 +60,20 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 
 		if (Call_AttackSystem(ecs, target, card_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 		{
-			std::cout << "Cnnot damage the entity" << std::endl;
+			std::cout << "Cannot damage the entity" << std::endl;
 		}
 
 		//if died push to graveyard;
 		f32 targetHp = ecs.getComponent<Components::HP>(target)->c_value;
 		if (targetHp <= 0.f)
 		{
-			graveyard.push_back(target);
+			graveyard.push_back({pos, target});
 		}
 		break;
 	}
 	case Targetting::AOE:
 	{
-		for (AEVec2 pos : aoe_highlighted_cells)
+		for (AEVec2 pos : aoe_selected_cells)
 		{
 			Entity& ent = gbptr->get_pos()[pos.x][pos.y];
 			if (ent != -1 && ent != tbsptr->current())
@@ -87,10 +87,17 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
 				if (targetHp <= 0.f)
 				{
-					graveyard.push_back(ent);
+					graveyard.push_back({ pos,ent });
+
 				}
 			}
 		}	
+		for (AEVec2 a : aoe_selected_cells)
+		{
+			gbptr->activate_aoe_highlight()[int(a.x)][int(a.y)] = 0;
+		}
+		aoe_selected_cells.clear();
+		break;
 	}
 	default:
 		break;
@@ -102,6 +109,17 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 	//must reset the position on the grid to be null or there will be bugs
 	/*if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
 	this->remove_participant(*ecsptr, targetted_entity);*/
+	if (!graveyard.empty())
+	{
+		for (std::pair<AEVec2, Entity> gra : graveyard)
+		{
+			AEVec2& targetPos = gra.first;
+
+			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
+			tbsptr->remove_participant(*ecsptr, gra.second);
+		}
+		graveyard.clear();
+	}
 }
 
 COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage)
@@ -130,6 +148,14 @@ void CombatNameSpace::CombatSystem::set_targetted_xy(int x, int y)
 void CombatNameSpace::CombatSystem::set_play_card_triggered(bool flag)
 {
 	play_card_triggered = flag;
+}
+
+void CombatNameSpace::CombatSystem::update()
+{
+	update_GBPhasetriggered();
+	update_GBPhaseUpdate();
+
+	handle_graveyard();
 }
 
 void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
@@ -184,6 +210,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
 			gbsptr->GBPTriggered()[index] = false;
 
+			if(tbsptr->active())
 			tbsptr->debug_print(*ecsptr);
 
 			gbsptr->GBPActive()[prev_index] = false;
