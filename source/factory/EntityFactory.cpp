@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "EntityFactory.h"
+#include <functional>
 
 namespace EntityFactory {
 	Entity create_actor_spritesheet(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
@@ -74,6 +75,34 @@ namespace EntityFactory {
 		ecs.addComponent(id, aa);
 
 		return id;
+	}
+
+	Entity InteractableNode::create_interactable_node(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, AEGfxTexture* pTex,Components::AnimationType at, std::function<void()>func)
+	{
+		Entity id = ecs.createEntity();
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Texture texture{ pTex, 0.0f, 0.0f };
+		Components::Transform trans{ pos,pos,size, size,0.f };
+		Components::Input input{ AEVK_LBUTTON, false,func,[]{},[] {},30 };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, input);
+		ecs.addComponent(id, texture);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, trans);
+
+		this->nodes.push_back(id);
+		return id;
+	}
+
+	void InteractableNode::free()
+	{
+		for (Entity node : nodes)
+		{
+			ecs.destroyEntity(node);
+		}
+		nodes.clear();
 	}
 
 	void add_card_player_hand(EntityComponent::Registry& ecs, Entity user, Entity cardID)

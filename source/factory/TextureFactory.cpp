@@ -26,6 +26,10 @@ namespace TextureFactory
 		{
 			AEGfxTextureUnload(pTex);
 		}
+		for (AEGfxTexture* pTex : this->others)
+		{
+			AEGfxTextureUnload(pTex);
+		}
 	}
 
 	void TextureFactory::textureInit(){
@@ -66,7 +70,10 @@ namespace TextureFactory
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/moveButton.png"));
 
-
+		//Others
+		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Rock.png"));
+		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Combat.png"));
+		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Encounter.png"));
 		//MIS
 		//this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
 		this->fontID = AEGfxCreateFont("../../Assets/font/TahomaBd.ttf", 64.F);
@@ -89,7 +96,10 @@ namespace TextureFactory
 	{
 		return this->ui.at(id);
 	}
-
+	AEGfxTexture* TextureFactory::getTextureOthers(s8 id)
+	{
+		return this->others.at(id);
+	}
 
 
 	void TextureFactory::addTextureCard(AEGfxTexture* pTex)
@@ -108,7 +118,10 @@ namespace TextureFactory
 	{
 		this->ui.push_back(pTex);
 	}
-
+	void TextureFactory::addTextureOthers(AEGfxTexture* pTex)
+	{
+		this->others.push_back(pTex);
+	}
 	s8 TextureFactory::getFontID(){
 		return this->fontID;
 	}

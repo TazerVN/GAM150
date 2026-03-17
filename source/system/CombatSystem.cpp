@@ -154,7 +154,6 @@ void CombatNameSpace::CombatSystem::update()
 {
 	update_GBPhasetriggered();
 	update_GBPhaseUpdate();
-
 	handle_graveyard();
 }
 
@@ -310,11 +309,6 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 			if (gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)
 			{
 				std::cout << "Movement Animating" << std::endl;
-				if (AEInputCheckTriggered(AEVK_P))
-				{
-					end_player_resolution();
-				}
-				//end_player_resolution();
 			}
 			else //else the previous player phase is grid select or aoe grid select
 			{
@@ -328,14 +322,6 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 
 					PC_RETURN_TAG tag = tbsptr->play_card(*ecsptr, tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
 					, tbsptr->get_selected_cardhand_index());
-
-					////remove the card that just played inside tbs
-					//if (tag == PC_RETURN_TAG::DIED)
-					//{
-					//	//must reset the position on the grid to be null or there will be bugs
-					//	if (targetted_x != -1 && targetted_y != -1) gameBoardptr->get_pos()[targetted_x][targetted_y] = -1;
-					//	this->remove_participant(*ecsptr, targetted_entity);
-					//}
 
 					if (tag != PC_RETURN_TAG::INVALID)
 					{

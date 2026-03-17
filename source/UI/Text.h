@@ -25,4 +25,14 @@ namespace Text
 
 		friend PopUpText& operator<<(PopUpText&, const char* text);
 	};
+
+	class NameTag
+	{
+	private:
+		std::vector<std::pair<Entity, Entity>> nametag;
+	public:
+		void create_static_nametag(Entity parent, const char* a);
+		void update();
+		void name_tag_free();
+	};
 }

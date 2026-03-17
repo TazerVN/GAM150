@@ -4,7 +4,7 @@
 #include <array>
 
 namespace PhaseSystem{
-	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, PLAYER_RESOLUTION, ENEMY_PHASE, ENEMY_RESOLUTION, UNIN};
+	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, PLAYER_RESOLUTION, ENEMY_PHASE, ENEMY_RESOLUTION, WIN , UNIN};
 	enum class PlayerPhase{PLAYER_EXPLORE, GRID_SELECT, AOE_GRID_SELECT, PLAYER_ANIMATION, UNIN};
 
 	constexpr size_t GBPhaseCount = static_cast<size_t>(GBPhase::UNIN);
@@ -21,7 +21,6 @@ namespace PhaseSystem{
 
 		static std::array<bool, GBPhaseCount> GBPhaseTriggered;
 		static std::array<bool, GBPhaseCount> GBPhaseActive;
-		static std::array<bool, PlayerPhaseCount> PlayerPhaseTriggered;
 
 		GBPhase prev_GBPhase;
 		PlayerPhase prev_PlayerPhase;
@@ -45,11 +44,8 @@ namespace PhaseSystem{
 
 		std::array<bool, GBPhaseCount>& GBPTriggered();
 		std::array<bool, GBPhaseCount>& GBPActive();
-		std::array<bool, PlayerPhaseCount>& PlayerPTriggered();
 
 		void debug_print();
-
-		void update();
 	};
 	
 

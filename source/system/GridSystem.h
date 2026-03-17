@@ -37,7 +37,8 @@ namespace Grid
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
 		CombatNameSpace::CombatSystem* cbsptr = nullptr;
-		
+		bool* win = nullptr;
+
 		Entity cur, prev_cur;
 		bool selected_part = false;
 		s32 cur_x, cur_y, prev_x, prev_y;
@@ -59,7 +60,7 @@ namespace Grid
 	public:
 
 		void init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
-			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy);
+			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
 		void placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
 		
 		void trigger_play_card(EntityComponent::Registry& ecs, s32 x, s32 y);

@@ -8,24 +8,24 @@ namespace UI
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 		//end turn button
-		Entity end_b = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
+		Entity end_b = ui_button_texture(ecs, mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
 			// the lambda function
 										 [&scene]
 										 {
 											 if (scene.getGBS().getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
-											 scene.getTBS().next(scene.getECS());
+											 scene.getTBS().next(ecs);
 										 }
 		);
 		//buttons
-		Entity pause_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, nullptr);
+		Entity pause_button = ui_button_texture(ecs, mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, nullptr);
 
-		Entity deck_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(1), -0.9F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity deck_button = ui_button_texture(ecs, mf, tf.getTextureUI(1), -0.9F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
-		Entity turn_board = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
+		Entity turn_board = ui_blank_texture(ecs, mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
-		Entity turn_text = ui_text(scene.getECS(), mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
+		Entity turn_text = ui_text(ecs, mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
 
-		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity bin_button = ui_button_texture(ecs, mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
 		this->current_ui.push_back(end_b);
 		this->current_ui.push_back(pause_button);
@@ -37,8 +37,8 @@ namespace UI
 		//health bar
 		for (Entity e : scene.entities_store())
 		{
-			Entity health = ui_hp_bar(scene.getECS(), mf, -50, 100, 100, 10, 0, 6);
-			Entity blank = ui_blank(scene.getECS(), mf, -50, 100, 100, 10, 0, 5);
+			Entity health = ui_hp_bar(ecs, mf, -50, 100, 100, 10, 0, 6);
+			Entity blank = ui_blank(ecs, mf, -50, 100, 100, 10, 0, 5);
 			std::pair<Entity, Entity> hp{ e, health };
 			std::pair<Entity, Entity> hp_blank{ e, blank };
 			this->actor_children_list.push_back(hp);
@@ -46,8 +46,8 @@ namespace UI
 
 			if(e == playerID)
 			{
-				Entity stamina = ui_stamina_bar(scene.getECS(), mf, 40, -20, 70, 8, 90, 6);
-				Entity blank_s = ui_blank(scene.getECS(), mf, 40, -20, 70, 8, 90, 5);
+				Entity stamina = ui_stamina_bar(ecs, mf, 40, -20, 70, 8, 90, 6);
+				Entity blank_s = ui_blank(ecs, mf, 40, -20, 70, 8, 90, 5);
 
 				std::pair<Entity, Entity> stam{ e, stamina };
 				std::pair<Entity, Entity> stam_b{ e, blank_s };
@@ -59,12 +59,12 @@ namespace UI
 		//mana bar
 		f32 x = 0.50f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
-		Entity mana_bar = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(4), x, y, 302, 82, 0, 31);
+		Entity mana_bar = ui_blank_texture(ecs, mf, tf.getTextureUI(4), x, y, 302, 82, 0, 31);
 		for(int i = 0; i < 5; i++)
 		{
 			Components::TurnBasedStats stats{ 0,0,0,0 };
-			scene.getECS().addComponent(mana_bar, stats);
-			Entity mana_empty = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 30);
+			ecs.addComponent(mana_bar, stats);
+			Entity mana_empty = ui_blank_texture(ecs, mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 30);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->children_list.push_back(mana);
 		}
@@ -87,33 +87,33 @@ namespace UI
 				for (int j = 0; j < scene.getTBS().get_participant().size(); j++)
 				{
 					Entity participant = scene.getTBS().get_participant()[j];
-					if (!scene.getECS().getBitMask()[this->actor_children_list[i].first].test(hpID)) continue;
+					if (!ecs.getBitMask()[this->actor_children_list[i].first].test(hpID)) continue;
 					else if (participant == this->actor_children_list[i].first) exist = true;
 				}
 				if (exist == false)
 				{
-					scene.getECS().destroyEntity(this->actor_children_list[i].second);
+					ecs.destroyEntity(this->actor_children_list[i].second);
 					this->actor_children_list[i] = this->actor_children_list[this->actor_children_list.size() - 1];
 					this->actor_children_list.pop_back();
 				}
 			}
 		}
-		this->health_update(scene.getECS());
-		this->stamina_update(scene.getECS());
+		this->health_update(ecs);
+		this->stamina_update(ecs);
 		this->mana_update(scene);
 
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
 
-			if (!scene.getECS().getBitMask()[p.first].test(transID)) continue;
-			if (!scene.getECS().getBitMask()[p.first].test(meshID)) continue;
-			if (!scene.getECS().getBitMask()[p.second].test(transID)) continue;
-			if (!scene.getECS().getBitMask()[p.second].test(meshID)) continue;
+			if (!ecs.getBitMask()[p.first].test(transID)) continue;
+			if (!ecs.getBitMask()[p.first].test(meshID)) continue;
+			if (!ecs.getBitMask()[p.second].test(transID)) continue;
+			if (!ecs.getBitMask()[p.second].test(meshID)) continue;
 
-			Components::Transform* parent_t = scene.getECS().getComponent<Components::Transform>(p.first);
-			Components::Mesh* parent_m = scene.getECS().getComponent<Components::Mesh>(p.first);
-			Components::Transform* child_t = scene.getECS().getComponent<Components::Transform>(p.second);
-			Components::Mesh* child_m = scene.getECS().getComponent<Components::Mesh>(p.second);
+			Components::Transform* parent_t = ecs.getComponent<Components::Transform>(p.first);
+			Components::Mesh* parent_m = ecs.getComponent<Components::Mesh>(p.first);
+			Components::Transform* child_t = ecs.getComponent<Components::Transform>(p.second);
+			Components::Mesh* child_m = ecs.getComponent<Components::Mesh>(p.second);
 
 			child_t->pos_onscreen.x = parent_t->pos_onscreen.x + child_t->pos.x;
 			child_t->pos_onscreen.y = parent_t->pos_onscreen.y + child_t->pos.y;
@@ -124,11 +124,11 @@ namespace UI
 		for (std::pair<Entity, Entity> p : this->children_list)
 		{
 
-			if (!scene.getECS().getBitMask()[p.first].test(transID)) continue;
-			if (!scene.getECS().getBitMask()[p.second].test(transID)) continue;
+			if (!ecs.getBitMask()[p.first].test(transID)) continue;
+			if (!ecs.getBitMask()[p.second].test(transID)) continue;
 
-			Components::Transform* parent = scene.getECS().getComponent<Components::Transform>(p.first);
-			Components::Transform* child = scene.getECS().getComponent<Components::Transform>(p.second);
+			Components::Transform* parent = ecs.getComponent<Components::Transform>(p.first);
+			Components::Transform* child = ecs.getComponent<Components::Transform>(p.second);
 
 			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;

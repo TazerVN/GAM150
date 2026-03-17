@@ -3,6 +3,8 @@
 #include <ctime> // for randomiser -Zejin (FOR NOW...)
 #include <cstdlib> // randomiser part 2
 #include "../util/LevelManager.h"
+#include "factory/EntityFactory.h"
+#include "../system/InteractableConstants.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
@@ -33,15 +35,12 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
-	//must init appoint ecs first
-	ecs = &ECS;
-
 	//add player to the scene
 	add_entity(playerID);
 	//Create Horde
-	Entity horde = ecs->createEntity();
-	ecs->addComponent(horde, Components::Name{ "Horde" });
-	ecs->addComponent(horde, Components::TurnBasedStats{});
+	Entity horde = ecs.createEntity();
+	ecs.addComponent(horde, Components::Name{ "Horde" });
+	ecs.addComponent(horde, Components::TurnBasedStats{});
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
@@ -53,7 +52,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 		// temporary spawn position logic
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-		Entity temp = EntityFactory::create_actor_normal(*ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 
 		add_entity(temp);                  // adds to scene/world
 		enemyDirector.bindActor(actorId, temp);
@@ -64,9 +63,14 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	tbsParticipants.push_back(playerID);
 	tbsParticipants.push_back(horde);
 
-	cbs.init(*ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
-	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
-	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3);
+	cbs.init(ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
+	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
+	BattleGrid.init(ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3,_win);
+
+	gbs.resetGPhase();
+	gbs.resetPlayerPhase();
+
+	nameTags.create_static_nametag(playerID, "Player");
 
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -86,7 +90,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
 		{
-			BattleGrid.placeEntity(*ecs, entities[i], x, y);
+			BattleGrid.placeEntity(ecs, entities[i], x, y);
 		}
 		else
 		{
@@ -99,19 +103,30 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 void Scene::update()
 {
+	nameTags.update();
 	if (TBSys.active())
 	{
 		if (TBSys.update())
 		{
 			std::cout<< "WIN!!!!" << std::endl;
 			TBSys.active() = false;
-			
-			gLevelStateNext = LevelStates::LS_QUIT;
+			_win = true;
+
+			Entity combatNode = -1;
+			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), Components::AnimationType::NONE, 
+				[&combatNode]{goToCombat(&combatNode); });
+			BattleGrid.placeEntity(ecs,combatNode,0,0);
 		}
 
 		cbs.update();
-		enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
+		enemyDirector.update(ecs, gbs, TBSys, BattleGrid, playerID);
 	}
+
+	if (gbs.getGBPhase() == PhaseSystem::GBPhase::WIN)
+	{
+		std::cout << "Here" << std::endl;
+	}
+
 	//==================Handle Events===============================
 
 	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
@@ -128,17 +143,17 @@ void Scene::update()
 		{
 		case highlight_tag::ATTACK_HIGHLIGHT: 
 		{
-			Entity card_ID = TBSys.draw_card(*ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
-			f32& card_range = ecs->getComponent<Components::Targetting_Component>(card_ID)->range;
+			Entity card_ID = TBSys.draw_card(ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
+			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
-			highlight_cells(*ecs, TBSys, BattleGrid, cbs , card_range, highlight_type);
+			highlight_cells(ecs, TBSys, BattleGrid, cbs , card_range, highlight_type);
 
 			break;
 		}
 		case highlight_tag::MOVE_HIGHLIGHT:
 		{
-			f32& range = ecs->getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
-			highlight_cells(*ecs, TBSys, BattleGrid, cbs, range, highlight_type);
+			f32& range = ecs.getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
+			highlight_cells(ecs, TBSys, BattleGrid, cbs, range, highlight_type);
 		}
 			break;
 		default:
@@ -161,9 +176,15 @@ std::vector<Entity>& Scene::entities_store()
 	return entities;
 }
 
-EntityComponent::Registry& Scene::getECS()
+void Scene::scene_free()
 {
-	return *ecs;
+	TBSys.tbs_free();
+	BattleGrid.gameboard_free();
+	cameraSys = nullptr;
+	cardSys = nullptr;
+	entities.clear();
+	next_entity = 0;
+	nameTags.name_tag_free();
 }
 
 PhaseSystem::GameBoardState& Scene::getGBS(){
@@ -186,6 +207,10 @@ CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 	return cbs;
 }
 
+bool Scene::win()const
+{
+	return _win;
+}
 void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================

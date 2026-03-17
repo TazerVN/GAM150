@@ -95,8 +95,7 @@ namespace TBS
 			{
 				participants.erase(participants.begin() + i);	//remove the target from turn system
 				participant_hand.erase(participant_hand.begin() + i);
-				/*std::cout << "Participant size :" << participants.size() << std::endl;
-				std::cout << "Paricipant hand size : " << participant_hand.size() << std::endl;*/
+				selected_card.erase(selected_card.begin() + i);
 				ecs.destroyEntity(parti);
 			}
 		}
@@ -146,7 +145,7 @@ namespace TBS
 	{
 		// If called unsafely, avoid crashing; return 0-ish
 		// (If your Entity type is not integer-like, tell me and we’ll adjust.)
-		if (!is_active || participants.empty() || cur_player >= participants.size())
+		if (participants.empty() || cur_player >= participants.size())
 			return static_cast<Entity>(-1);
 
 		return participants[cur_player];
