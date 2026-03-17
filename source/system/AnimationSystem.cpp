@@ -75,6 +75,7 @@ namespace Animation
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
 		Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(id);
 		Components::Texture* texture = ecs.getComponent<Components::Texture>(id);
+		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(id);
 
 		timer->start = true;
 		bool flag = false;
@@ -106,6 +107,7 @@ namespace Animation
 
 			transform->pos_onscreen.x = transform->pos.x + (destination_x - transform->pos.x) * lerp;
 			transform->pos_onscreen.y = transform->pos.y + (destination_y - transform->pos.y) * lerp;
+			mesh->z = current.x + 2;
 	
 		}
 		else
