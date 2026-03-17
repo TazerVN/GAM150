@@ -17,7 +17,7 @@ namespace Camera
 		if(scroll_buffer != 0.0f)
 		{
 			cam.buffer_zoom += scroll_buffer/10.f;
-			std::cout << scroll_buffer;
+			cam.buffer_zoom = AEClamp(cam.buffer_zoom,0.2f, 3.f );
 		}
 		
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(cam.id());

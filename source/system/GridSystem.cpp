@@ -569,15 +569,18 @@ namespace Grid
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
 		this->pos[x][y] = e;
+		this->walkable[x * MAX_J + y] = 0;
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		if (!ecs.getBitMask()[e].test(transID)) return;
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
 
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
 		transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
 		transform->pos_onscreen = transform->pos;
+		mesh->z = x + 2;
 
 
 		Entity current_cell = this->cells[x][y];
@@ -630,6 +633,7 @@ namespace Grid
 		}
 
 		this->pos[x][y] = e;
+
 	}
 
 	void GameBoard::update(EntityComponent::Registry& ecs,Entity camera)
@@ -894,10 +898,12 @@ namespace Grid
 		if (ecs.getBitMask()[e].test(transID))
 		{
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
 
 			transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
 			transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
 			transform->pos_onscreen = transform->pos;
+			mesh->z = x + 2;
 		}
 
 		return true;

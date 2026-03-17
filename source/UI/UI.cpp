@@ -16,8 +16,6 @@ namespace UI
 											 scene.getTBS().next(scene.getECS());
 										 }
 		);
-		Entity end_t = ui_text(scene.getECS(), mf, tf, 0, 0, 1.f, 0, 0, 20, "End Turn");
-
 		//buttons
 		Entity pause_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 20, nullptr);
 
@@ -29,6 +27,12 @@ namespace UI
 
 		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 20, nullptr);
 
+		this->current_ui.push_back(end_b);
+		this->current_ui.push_back(pause_button);
+		this->current_ui.push_back(deck_button);
+		this->current_ui.push_back(turn_board);
+		this->current_ui.push_back(turn_text);
+		this->current_ui.push_back(bin_button);
 
 		//health bar
 		for (Entity e : scene.entities_store())
@@ -64,15 +68,13 @@ namespace UI
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->children_list.push_back(mana);
 		}
-
-
-		std::pair<Entity, Entity> end_turn{ end_b, end_t };
-		this->actor_children_list.push_back(end_turn);
+		this->current_ui.push_back(mana_bar);
 	}
 
 	void UIManager::update(Scene& scene)
 	{
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
@@ -104,13 +106,18 @@ namespace UI
 		{
 
 			if (!scene.getECS().getBitMask()[p.first].test(transID)) continue;
+			if (!scene.getECS().getBitMask()[p.first].test(meshID)) continue;
 			if (!scene.getECS().getBitMask()[p.second].test(transID)) continue;
+			if (!scene.getECS().getBitMask()[p.second].test(meshID)) continue;
 
-			Components::Transform* parent = scene.getECS().getComponent<Components::Transform>(p.first);
-			Components::Transform* child = scene.getECS().getComponent<Components::Transform>(p.second);
+			Components::Transform* parent_t = scene.getECS().getComponent<Components::Transform>(p.first);
+			Components::Mesh* parent_m = scene.getECS().getComponent<Components::Mesh>(p.first);
+			Components::Transform* child_t = scene.getECS().getComponent<Components::Transform>(p.second);
+			Components::Mesh* child_m = scene.getECS().getComponent<Components::Mesh>(p.second);
 
-			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
-			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
+			child_t->pos_onscreen.x = parent_t->pos_onscreen.x + child_t->pos.x;
+			child_t->pos_onscreen.y = parent_t->pos_onscreen.y + child_t->pos.y;
+			child_m->z = parent_m->z + 10;
 
 		}
 
@@ -127,6 +134,28 @@ namespace UI
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
 
 		}
+	}
+
+	void UIManager::free(EntityComponent::Registry& ecs)
+	{
+		for(std::pair<Entity, Entity> p : this->actor_children_list)
+		{
+			ecs.destroyEntity(p.second);
+		}
+		this->actor_children_list.clear();
+
+		for (std::pair<Entity, Entity> p : this->children_list)
+		{
+			ecs.destroyEntity(p.second);
+		}
+		this->children_list.clear();
+
+		for (Entity p : this->current_ui)
+		{
+			ecs.destroyEntity(p);
+		}
+		this->current_ui.clear();
+
 	}
 
 	void UIManager::health_update(EntityComponent::Registry& ecs)

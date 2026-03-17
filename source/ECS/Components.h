@@ -114,6 +114,14 @@ namespace Components
 		Texture(AEGfxTexture* texture, f32 offset_x = 0, f32 offset_y = 0);
 	};
 
+
+	/*
+	* Z buffer:
+		0: true background
+		1: grid
+		2 - 15: on grid stuff
+		20 - 30: UI
+	*/
 	struct Mesh
 	{
 		bool on;
