@@ -15,7 +15,7 @@ class CardDisplay
 	CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
 	CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs);
 	CardDisplay() = default;
-	void update(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs);
+	void update(EntityComponent::Registry& ecs);
 
 };
 

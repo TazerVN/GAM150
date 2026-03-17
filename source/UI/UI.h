@@ -18,8 +18,9 @@ namespace UI
 	{
 		private:
 		std::vector<std::pair<Entity, Entity>> actor_children_list;
-		std::vector<std::pair<Entity, Entity>> children_list;
+		std::vector<std::pair<Entity, Entity>> mana_children_list;
 		std::vector<Entity> current_ui;
+		bool card_info_exist;
 		void health_update(EntityComponent::Registry&);
 		void stamina_update(EntityComponent::Registry&);
 		void mana_update(Scene& scene);
@@ -29,6 +30,7 @@ namespace UI
 		void init(Scene& scene, MeshFactory& mf,  TextureFactory::TextureFactory& tf);
 		void free(EntityComponent::Registry& ecs);
 
+
 		Entity ui_hp_bar(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 		Entity ui_stamina_bar(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 		Entity ui_button(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func);
@@ -37,6 +39,8 @@ namespace UI
 		Entity ui_anchor(EntityComponent::Registry& ecs, f32 x, f32 y, f32 width, f32 height, f32 rotation);
 		Entity ui_blank(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
 		Entity ui_blank_texture(EntityComponent::Registry& ecs, MeshFactory& mf, AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z);
+		/*void ui_cardInformation(EntityComponent::Registry& ecs, Entity Id);
+		void remove_cardInformation();*/
 	};
 
 }

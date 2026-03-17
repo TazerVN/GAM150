@@ -12,6 +12,7 @@
 #include "../System/TurnBasedSystem.h"
 #include "../system/GridSystem.h"
 #include "../system/PhaseSystem.h"
+#include "../UI/UI.h"
 #include "../global.h"
 
 
@@ -36,6 +37,7 @@ namespace CardInteraction
 	void card_offHover(EntityComponent::Registry& ecs, Entity id);
 	void card_onClick(EntityComponent::Registry& ecs, Entity id);
 	void card_offClick(EntityComponent::Registry& ecs, Entity id);
+
 	class CardHand
 	{
 	private:
@@ -51,12 +53,14 @@ namespace CardInteraction
 		MeshFactory* mfptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TextureFactory::TextureFactory* tfptr = nullptr;
+		UI::UIManager* uimptr = nullptr;
+
 
 	public:
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, 
-			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs);
+			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, UI::UIManager& UIM);
 
 		CardHand();
 

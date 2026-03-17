@@ -61,7 +61,7 @@ namespace CardInteraction
 	}
 
 	CardHand::CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height,
-					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
+					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, UI::UIManager& UIM)
 		: CardHand()
 	{
 		this->reset = true;
@@ -77,6 +77,7 @@ namespace CardInteraction
 		gbptr = &gb;
 		mfptr = &mf;
 		tfptr = &tf;
+		uimptr= &UIM;
 	}
 
 	void CardHand::update_logic(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)
@@ -343,8 +344,8 @@ namespace CardInteraction
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
-		m->z = 11;
-		i->z = 11;
+		m->z = 31;
+		i->z = 31;
 
 		c->d_color.r = minimum + (1.f - minimum) * lerp;
 		c->d_color.b = minimum + (1.f - minimum) * lerp;

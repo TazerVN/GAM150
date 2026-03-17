@@ -22,6 +22,9 @@ namespace Text
 		PopUpText() = default;
 		void init(EntityComponent::Registry* ecs, Entity pos);
 		void update();
+		void free();
+		Entity get() const;
+		void set(Entity id);
 
 		friend PopUpText& operator<<(PopUpText&, const char* text);
 	};

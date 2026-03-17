@@ -7,7 +7,7 @@ namespace UI
 
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
-		//end turn button
+		//========================================== buttons ======================================
 		Entity end_b = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
 			// the lambda function
 										 [&scene]
@@ -16,16 +16,16 @@ namespace UI
 											 scene.getTBS().next(scene.getECS());
 										 }
 		);
-		//buttons
 		Entity pause_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, nullptr);
 
-		Entity deck_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(1), -0.9F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity deck_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		
 
 		Entity turn_board = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
 		Entity turn_text = ui_text(scene.getECS(), mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
 
-		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
 		this->current_ui.push_back(end_b);
 		this->current_ui.push_back(pause_button);
@@ -34,7 +34,7 @@ namespace UI
 		this->current_ui.push_back(turn_text);
 		this->current_ui.push_back(bin_button);
 
-		//health bar
+		//========================================== health/stamina bar ======================================
 		for (Entity e : scene.entities_store())
 		{
 			Entity health = ui_hp_bar(scene.getECS(), mf, -50, 100, 100, 10, 0, 6);
@@ -56,8 +56,8 @@ namespace UI
 			}
 		}
 
-		//mana bar
-		f32 x = 0.50f * AEGfxGetWinMaxX();
+		//========================================== mana bar ======================================
+		f32 x = 0.55f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
 		Entity mana_bar = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(4), x, y, 302, 82, 0, 31);
 		for(int i = 0; i < 5; i++)
@@ -66,7 +66,7 @@ namespace UI
 			scene.getECS().addComponent(mana_bar, stats);
 			Entity mana_empty = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 30);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
-			this->children_list.push_back(mana);
+			this->mana_children_list.push_back(mana);
 		}
 		this->current_ui.push_back(mana_bar);
 	}
@@ -121,7 +121,7 @@ namespace UI
 
 		}
 
-		for (std::pair<Entity, Entity> p : this->children_list)
+		for (std::pair<Entity, Entity> p : this->mana_children_list)
 		{
 
 			if (!scene.getECS().getBitMask()[p.first].test(transID)) continue;
@@ -134,7 +134,52 @@ namespace UI
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
 
 		}
+
+		for(Entity p : this->current_ui)
+		{
+		}
+
 	}
+
+	/*void UIManager::ui_cardInformation(EntityComponent::Registry& ecs, Entity id)
+	{
+		if(card_info_exist == false){
+			Entity cardInformation = ui_blank_texture(ecs, mf, TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 379, 458, 0, 30);
+
+			Components::Timer timer{1.f, 0.f};
+			ecs.addComponent(cardInformation, timer);
+
+			this->current_ui.push_back(cardInformation);
+
+			card_info_exist = true;
+
+			EntityComponent::ComponentTypeID nameID = EntityComponent::getComponentTypeID<Components::Name>();
+			EntityComponent::ComponentTypeID costID = EntityComponent::getComponentTypeID<Components::Card_Cost>();
+			EntityComponent::ComponentTypeID damageID = EntityComponent::getComponentTypeID<Components::Card_Value>();
+			if(!ecs.getBitMask()[id].test(nameID)) return;
+			if(!ecs.getBitMask()[id].test(costID)) return;
+			if(!ecs.getBitMask()[id].test(damageID)) return;
+
+			auto name = ecs.getComponent<Components::Name>(id);
+			auto cost = ecs.getComponent<Components::Card_Cost>(id);
+			auto damage = ecs.getComponent<Components::Card_Value>(id);
+
+			auto parent_t = ecs.getComponent<Components::Transform>(cardInformation);
+
+			Entity cardName = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y, 0.5f, 0.5f, 0, 31, name->value.c_str());
+			Entity cardCost = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y - 50.f, 0.5f, 0.5f, 0, 31, std::to_string(cost->value).c_str());
+			Entity cardDamage = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y - 100.f, 0.5f, 0.5f, 0, 31, std::to_string(damage->value).c_str());
+
+			std::pair<Entity, Entity> p_n{cardInformation, cardName};
+			std::pair<Entity, Entity> p_c{cardInformation, cardCost};
+			std::pair<Entity, Entity> p_d{cardInformation, cardDamage};
+			this->mana_children_list.push_back(p_n);
+			this->mana_children_list.push_back(p_c);
+			this->mana_children_list.push_back(p_d);
+		}
+	}*/
+
+	
 
 	void UIManager::free(EntityComponent::Registry& ecs)
 	{
@@ -144,11 +189,11 @@ namespace UI
 		}
 		this->actor_children_list.clear();
 
-		for (std::pair<Entity, Entity> p : this->children_list)
+		for (std::pair<Entity, Entity> p : this->mana_children_list)
 		{
 			ecs.destroyEntity(p.second);
 		}
-		this->children_list.clear();
+		this->mana_children_list.clear();
 
 		for (Entity p : this->current_ui)
 		{
@@ -217,7 +262,7 @@ namespace UI
 		EntityComponent::ComponentBitMask objMask;
 		objMask.set(transID); objMask.set(staID);
 
-		std::pair<Entity, Entity> p = this->children_list[0];
+		std::pair<Entity, Entity> p = this->mana_children_list[0];
 		Components::TurnBasedStats* sta_parent = ecs.getComponent<Components::TurnBasedStats>(p.first);
 		Components::TurnBasedStats* player_stats = ecs.getComponent<Components::TurnBasedStats>(playerID);
 		sta_parent->maxPoints = player_stats->maxPoints;
@@ -228,23 +273,23 @@ namespace UI
 
 		if(scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::DRAW_PHASE)
 		{
-			while (this->children_list.size() > empty_blocks_for_display)
+			while (this->mana_children_list.size() > empty_blocks_for_display)
 			{
-				ecs.destroyEntity(this->children_list[(this->children_list.size() - 1)].second);
-				this->children_list.pop_back();
+				ecs.destroyEntity(this->mana_children_list[(this->mana_children_list.size() - 1)].second);
+				this->mana_children_list.pop_back();
 			}
 		}
-		while(this->children_list.size() - empty_blocks_for_display < sta_parent->points)
+		while(this->mana_children_list.size() - empty_blocks_for_display < sta_parent->points)
 		{
 			Entity mana = ui_blank_texture(ecs, mf, TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, 31);
 			std::pair<Entity, Entity> mana_p{ p.first , mana };
-			this->children_list.push_back(mana_p);
+			this->mana_children_list.push_back(mana_p);
 			i++;
 		}
-		while(this->children_list.size() - empty_blocks_for_display > sta_parent->points)
+		while(this->mana_children_list.size() - empty_blocks_for_display > sta_parent->points)
 		{
-			ecs.destroyEntity(this->children_list[(this->children_list.size() - 1)].second);
-			this->children_list.pop_back();
+			ecs.destroyEntity(this->mana_children_list[(this->mana_children_list.size() - 1)].second);
+			this->mana_children_list.pop_back();
 		}
 	}
 
