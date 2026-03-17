@@ -8,7 +8,7 @@ namespace UI
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
 		//end turn button
-		Entity end_b = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 20,
+		Entity end_b = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
 			// the lambda function
 										 [&scene]
 										 {
@@ -17,15 +17,15 @@ namespace UI
 										 }
 		);
 		//buttons
-		Entity pause_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 20, nullptr);
+		Entity pause_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, nullptr);
 
-		Entity deck_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(1), -0.9F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 20, nullptr);
+		Entity deck_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(1), -0.9F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
-		Entity turn_board = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 20);
+		Entity turn_board = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
-		Entity turn_text = ui_text(scene.getECS(), mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 21, "Turn 1");
+		Entity turn_text = ui_text(scene.getECS(), mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
 
-		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 20, nullptr);
+		Entity bin_button = ui_button_texture(scene.getECS(), mf, tf.getTextureUI(0), 0.8F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
 		this->current_ui.push_back(end_b);
 		this->current_ui.push_back(pause_button);
@@ -59,12 +59,12 @@ namespace UI
 		//mana bar
 		f32 x = 0.50f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
-		Entity mana_bar = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(4), x, y, 302, 82, 0, 21);
+		Entity mana_bar = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(4), x, y, 302, 82, 0, 31);
 		for(int i = 0; i < 5; i++)
 		{
 			Components::TurnBasedStats stats{ 0,0,0,0 };
 			scene.getECS().addComponent(mana_bar, stats);
-			Entity mana_empty = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 20);
+			Entity mana_empty = ui_blank_texture(scene.getECS(), mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 30);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->children_list.push_back(mana);
 		}
@@ -236,7 +236,7 @@ namespace UI
 		}
 		while(this->children_list.size() - empty_blocks_for_display < sta_parent->points)
 		{
-			Entity mana = ui_blank_texture(ecs, mf, TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, 20);
+			Entity mana = ui_blank_texture(ecs, mf, TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, 31);
 			std::pair<Entity, Entity> mana_p{ p.first , mana };
 			this->children_list.push_back(mana_p);
 			i++;

@@ -4,6 +4,7 @@ size_t playerID;
 
 
 //=====================One time declaration of extern values============================= 
+
 EntityComponent::Registry ecs;
 MeshFactory mf;
 TextureFactory::TextureFactory TF;
@@ -17,4 +18,6 @@ Velocity::VelocitySystem VS;
 TransformSystem::TransformSystem TrS;
 Timer::TimerSystem TS;
 Animation::AnimationSystem AS;
+Text::PopUpText PUT;
+
 //=======================================================================================

@@ -30,6 +30,7 @@ void LevelStateCombat_init()
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
+	PUT.init(&ecs, playerID);
 	ecs.remove_empty_groups();
 }
 void LevelStateCombat_update()
@@ -56,6 +57,7 @@ void LevelStateCombat_update()
 	UIM.update(scene);
 	PS.update(ecs, 0.2);
 	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+	PUT.update();
 	AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
 
 	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;

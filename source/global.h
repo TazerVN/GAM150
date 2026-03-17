@@ -19,6 +19,7 @@
 #include "system/AnimationSystem.h"
 #include "system/particleSystem.h"
 #include "system/CardSystem.h"
+#include "UI/Text.h"
 
 
 extern size_t playerID;
@@ -37,3 +38,4 @@ extern RenderSystem::RenderSystem RM;
 extern Velocity::VelocitySystem VS;
 extern TransformSystem::TransformSystem TrS;
 extern Animation::AnimationSystem AS;
+extern Text::PopUpText PUT;
