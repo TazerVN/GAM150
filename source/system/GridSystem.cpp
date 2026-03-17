@@ -343,11 +343,7 @@ namespace Grid
 	void GameBoard::move_trigger(s32 const& x, s32 const& y)
 	{
 		//check if it is within movement range 
-<<<<<<< HEAD
-		if (!cbsptr->check_within_range(x, y))
-=======
 		if (ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd == 0)
->>>>>>> 70c6bfa1a61c0e5b8bb061d5b7e36c4ae1469c8d
 		{
 			PUT << "Out of stamina";
 			unselect_movement();
@@ -355,7 +351,7 @@ namespace Grid
 		}
 		else
 		{
-			if (!cbsptr->check_within_range(this->cur, x, y))
+			if (!cbsptr->check_within_range(x, y))
 			{
 				std::cout << "Outside movement range" << std::endl;
 				PUT << "Outside range";
