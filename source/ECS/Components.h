@@ -63,10 +63,10 @@ namespace Components
 
 	struct Text
 	{
-		const char* text;
+		std::string text;
 		s8 fontID;
 		s8 z;
-		Text(const char*, s8, s8);
+		Text(std::string, s8, s8);
 	};
 
 

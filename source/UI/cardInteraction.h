@@ -44,6 +44,7 @@ namespace CardInteraction
 		std::vector<Entity> curr_hand_display{};
 		std::vector<Entity> curr_card_id{};
 		std::vector<bool> activate;
+		std::vector<Entity> mana_id{};
 		Entity id;
 		bool reset;
 

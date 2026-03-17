@@ -7,6 +7,7 @@ namespace CardInteraction
 	void fun();//forward declaration for testing
 	void fu(Entity e);//forward declaration for testing
 	void selectableCard_delete(EntityComponent::Registry& ecs, Entity entity);
+	Entity electableCard_mana(EntityComponent::Registry& ecs, Entity card, s32 cost);
 
 	void hand_onHover(EntityComponent::Registry& ecs, Entity id)
 	{
@@ -140,9 +141,14 @@ namespace CardInteraction
 			{
 				selectableCard_delete(ecs, this->curr_hand_display[index]);
 			}
+			for (int index = 0; index < mana_id.size(); index++)
+			{
+				selectableCard_delete(ecs, this->mana_id[index]);
+			}
 			curr_hand_display.clear();
 			curr_card_id.clear();
 			activate.clear();
+			mana_id.clear();
 
 			this->generateCards(ecs, tbs);
 			this->reset = false;
@@ -161,15 +167,15 @@ namespace CardInteraction
 		Components::Transform* cardhand_t = ecs.getComponent<Components::Transform>(this->id);
 
 		int i = 0;
+		int max_card = 6;
+		f32 container_width_ratio = curr_hand_display.size() / (f32)max_card >= 1.f ? 1.f : curr_hand_display.size() / (f32)max_card;
+
 		for (Entity eID : this->curr_hand_display)
 		{
-			int speed = 500;
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(eID);
 			Components::Input* in = ecs.getComponent<Components::Input>(eID);
 			Components::Transform* card_t = ecs.getComponent<Components::Transform>(eID);
 
-			int max_card = 6;
-			f32 container_width_ratio = curr_hand_display.size() / (f32)max_card >= 1.f ? 1.f : curr_hand_display.size() / (f32)max_card;
 
 			cardhand_t->size.x = container_width_ratio * cardhand_t->size_og.x;
 
@@ -185,8 +191,28 @@ namespace CardInteraction
 			card_t->pos.x = target_x;
 			card_t->pos.y = target_y;
 			card_t->pos_onscreen = card_t->pos;
+			i++;
+		}
+		i = 0;
+		for (Entity eID : this->mana_id)
+		{
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(eID);
+			Components::Transform* mana_t = ecs.getComponent<Components::Transform>(eID);
 
 
+
+			f32 target_x = cardhand_t->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_t->size.x - cardhand_t->size.x / 2 + mana_t->size_og.x / 2;
+			f32 target_y = cardhand_t->pos_onscreen.y;
+
+			/*if(transform->pos.x < target_x) transform->pos.x += dt * speed;
+			else transform->pos.x -= dt * speed;
+
+			if (transform->pos.y < target_y) transform->pos.y += dt * speed;
+			else transform->pos.y -= dt * speed;*/
+
+			mana_t->pos.x = target_x - 5.f;
+			mana_t->pos.y = target_y + 95.f;
+			mana_t->pos_onscreen = mana_t->pos;
 			i++;
 		}
 	}
@@ -209,6 +235,7 @@ namespace CardInteraction
 
 			Components::Name* name = ecs.getComponent<Components::Name>(cs->data_card_hand.at(i));
 			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cs->data_card_hand.at(i));
+			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cs->data_card_hand.at(i));
 
 			AEGfxTexture* texture = nullptr;
 
@@ -226,6 +253,7 @@ namespace CardInteraction
 					break;
 				case (CardType::FORCED_MOVEMENT):
 					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
+					break;
 				default:
 					texture = tfptr->getTextureCard(TextureFactory::C_SAMPLE);
 					break;
@@ -239,6 +267,9 @@ namespace CardInteraction
 					this->activate_card(eid); 
 				}
 			));
+			this->mana_id.push_back(electableCard_mana(ecs, eid, static_cast<s32>(c->value)));
+
+			
 		}
 	}
 
@@ -256,9 +287,11 @@ namespace CardInteraction
 	void CardHand::remove_card(EntityComponent::Registry& ecs, int index)
 	{
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
+		selectableCard_delete(ecs, this->mana_id[index]);
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
 		this->curr_card_id.erase(this->curr_card_id.begin() + index);
 		this->activate.erase(this->activate.begin() + index);
+		this->mana_id.erase(this->mana_id.begin() + index);
 
 
 		/*int j = 0;
@@ -296,9 +329,15 @@ namespace CardInteraction
 		{
 			ecs.destroyEntity(i);
 		}
+		for (Entity i : mana_id)
+		{
+			ecs.destroyEntity(i);
+		}
 		curr_hand_display.clear();
 		curr_card_id.clear();
 		activate.clear();
+		mana_id.clear();
+		
 
 		ecs.destroyEntity(id);
 
@@ -424,6 +463,27 @@ namespace CardInteraction
 
 
 
+		return id;
+	}
+
+	Entity electableCard_mana(EntityComponent::Registry& ecs, Entity card, s32 cost)
+	{
+		auto t = ecs.getComponent<Components::Transform>(card);
+
+		f32 x = t->pos.x - 50.f;
+		f32 y = t->pos.y + 50.f;
+	
+		Entity id = ecs.createEntity();
+	
+		Components::Transform trans{ {x,y}, {x,y} ,{0.5f, 0.3f} , {0.5f, 0.3f},0.0f };
+
+		Components::Text text{std::to_string(cost), TF.getFontID(), 31};
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, text);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, tag);
 		return id;
 	}
 
