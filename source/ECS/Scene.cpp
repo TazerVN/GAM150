@@ -68,7 +68,6 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	TBSys.init(*ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
 	BattleGrid.init(*ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3);
 
-	
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
@@ -109,6 +108,7 @@ void Scene::update()
 			
 			gLevelStateNext = LevelStates::LS_QUIT;
 		}
+
 		cbs.update();
 		enemyDirector.update(*ecs, gbs, TBSys, BattleGrid, playerID);
 	}

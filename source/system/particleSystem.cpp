@@ -9,10 +9,10 @@ void Particle::ParticleSystem::init(EntityComponent::Registry& ecs, MeshFactory&
 void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 {
 
-	EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Particle>();
+	EntityComponent::ComponentTypeID particleID = EntityComponent::getComponentTypeID<Components::Particle>();
 	//create bitsets
 	EntityComponent::ComponentBitMask objMask;
-	objMask.set(transID);
+	objMask.set(particleID);
 
 	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 	{
@@ -20,7 +20,7 @@ void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
 		{
 			for (Entity ent : it->second)
 			{
-				if (!ecs.getBitMask()[ent].test(transID)) continue;
+				if (!ecs.getBitMask()[ent].test(particleID)) continue;
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
 				//transform->pos_onscreen.y += dt * 1.0f;
 				//transform->pos_onscreen.x = 0.0f;
@@ -362,4 +362,25 @@ void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, Me
 void Particle::ParticleSystem::particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
 
+}
+
+void Particle::ParticleSystem::particle_system_free()
+{
+	EntityComponent::ComponentTypeID particleID = EntityComponent::getComponentTypeID<Components::Particle>();
+	//create bitsets
+	EntityComponent::ComponentBitMask objMask;
+	objMask.set(particleID);
+
+	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+	{
+		if ((it->first & objMask) == objMask)
+		{
+			for (Entity ent : it->second)
+			{
+				if (!ecs.getBitMask()[ent].test(particleID)) continue;
+				ecs.destroyEntity(ent);
+			}
+		}
+	}
+	Particlebuffer.clear();
 }

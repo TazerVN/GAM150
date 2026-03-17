@@ -63,14 +63,10 @@ namespace Particle
 
 		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
+		void particle_system_free();
 
 	private:
 		std::vector<Entity> Particlebuffer;
-
-		//Entity acquire(ECS::Registry& ecs);
-		//void   recycle(Entity e);
-
-		
 	};
 }
 

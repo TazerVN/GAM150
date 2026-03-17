@@ -31,7 +31,7 @@ void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSy
 }
 
 
-bool CombatNameSpace::CombatSystem::check_within_range(Entity id, s32 const& x, s32 const& y)
+bool CombatNameSpace::CombatSystem::check_within_range(s32 const& x, s32 const& y)
 {
 	for (AEVec2 ite : highlighted_cells)
 	{

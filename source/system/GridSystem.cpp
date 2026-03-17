@@ -252,7 +252,7 @@ namespace Grid
 			{
 				if (tbsptr->is_current_selected_card())
 				{
-					if (cbsptr->check_within_range(this->cur, x, y))
+					if (cbsptr->check_within_range(x, y))
 					{
 						if (pos[x][y] == tbsptr->current())
 						{
@@ -283,7 +283,7 @@ namespace Grid
 							move_select(x, y);
 							return;
 						}
-						if (!cbsptr->check_within_range(this->cur, x, y))
+						if (!cbsptr->check_within_range(x, y))
 						{
 							std::cout << "Target is outside range" << std::endl;
 							unselect_card();
@@ -304,6 +304,7 @@ namespace Grid
 				//check if an empty cell is clicked
 				if (selected_part && this->cur != -1) 
 				{
+					
 					move_trigger(x,y);
 				}
 				//check if the grid cell with entity is clicked
@@ -328,9 +329,6 @@ namespace Grid
 
 		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(playerID);
 		anim->anim_type = Components::AnimationType::ATTACK_MELEE;
-
-
-
 	}
 
 	void GameBoard::unselect_card()
@@ -343,7 +341,7 @@ namespace Grid
 	void GameBoard::move_trigger(s32 const& x, s32 const& y)
 	{
 		//check if it is within movement range 
-		if (!cbsptr->check_within_range(this->cur, x, y))
+		if (!cbsptr->check_within_range(x, y))
 		{
 			std::cout << "Outside movement range" << std::endl;
 			unselect_movement();
@@ -356,10 +354,7 @@ namespace Grid
 			unselect_movement();
 			return;
 		}
-
-	
-		//trigger animation
-
+		walkable[cur_x * MAX_J + cur_y] = 1;
 		//move the entity
 		this->moveEntity(*ecsptr, this->cur, x, y);
 		unselect_movement();
@@ -569,6 +564,7 @@ namespace Grid
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
 		this->pos[x][y] = e;
+		this->walkable[x * MAX_J + y] = 0;
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		if (!ecs.getBitMask()[e].test(transID)) return;
@@ -630,6 +626,7 @@ namespace Grid
 		}
 
 		this->pos[x][y] = e;
+		this->walkable[x * MAX_J + y] = 0;
 	}
 
 	void GameBoard::update(EntityComponent::Registry& ecs,Entity camera)
@@ -886,7 +883,10 @@ namespace Grid
 			return false;
 
 		pos[ex][ey] = -1;
+		walkable[ex * MAX_J + ey] = 1;
+
 		pos[x][y] = e;
+		walkable[x * MAX_J + y] = 0;
 
 		EntityComponent::ComponentTypeID transID =
 			EntityComponent::getComponentTypeID<Components::Transform>();

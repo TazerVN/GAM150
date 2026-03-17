@@ -50,7 +50,6 @@ public:
 		BattleGrid.gameboard_free();
 		cameraSys = nullptr;
 		cardSys = nullptr;
-
 		entities.clear();
 		next_entity = 0;
 	}

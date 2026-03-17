@@ -36,7 +36,7 @@ namespace CombatNameSpace
 
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::vector<AEVec2>& get_aoe_selected_cell();
-		bool check_within_range(Entity id, s32 const& x, s32 const& y);
+		bool check_within_range(s32 const& x, s32 const& y);
 
 		void play_attack_card(EntityComponent::Registry& ecs, Entity cardID, Entity target, AEVec2 pos);
 		void handle_graveyard();

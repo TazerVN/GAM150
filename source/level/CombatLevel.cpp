@@ -26,7 +26,6 @@ void LevelStateCombat_init()
 	card = CardInteraction::CardHand(ecs, mf, TF, -1 * w_width / 8, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS());
 	UIM.init(scene, mf, TF);
-	//PS.particleClick(ecs, mf, x, y);
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
@@ -65,6 +64,7 @@ void LevelStateCombat_free()
 	scene.scene_free();
 	card.card_interaction_free();
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
+	PS.particle_system_free();
 }
 void LevelStateCombat_unload()
 {
