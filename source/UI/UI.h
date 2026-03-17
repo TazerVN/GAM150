@@ -1,15 +1,14 @@
 #pragma once
 
 #include "../types.h"
-#include "AEEngine.h"
 #include "../ECS/ECSystem.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../system/renderSystem.h"
-#include "../system/GridSystem.h"
 #include "../ECS/Scene.h"
 
 #include <functional>
+#include "AEEngine.h"
 #include <vector>
 
 namespace UI

@@ -6,14 +6,13 @@
 
 #include "../types.h"
 
-#include "../system/transformSystem.h"
+//#include "../system/transformSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-#include "../System/TurnBasedSystem.h"
-#include "../system/GridSystem.h"
-#include "../system/PhaseSystem.h"
+//#include "../System/TurnBasedSystem.h"
+//#include "../system/GridSystem.h"
+//#include "../system/PhaseSystem.h"
 #include "../UI/UI.h"
-#include "../global.h"
 
 
 #include <iostream>
@@ -31,6 +30,7 @@
 namespace PhaseSystem { class GameBoardState; }
 namespace TBS { class TurnBasedSystem; }
 namespace Grid { class GameBoard; }
+
 namespace CardInteraction
 {
 	void card_onHover(EntityComponent::Registry& ecs, Entity id);

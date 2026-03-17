@@ -4,12 +4,11 @@
 
 namespace PhaseSystem
 {
-	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "PLAYER_RESOLUTION", "ENEMY_PHASE", "ENEMY_RESOLUTION", "UNIN" };
+	const char* GBPhaseNames[] = { "START_PHASE", "STANDBY_PHASE", "DRAW_PHASE", "MAIN_PHASE", "PLAYER_RESOLUTION", "ENEMY_PHASE", "ENEMY_RESOLUTION","WIN", "UNIN" };
 	const char* PlayerPhaseNames[] = { "PLAYER_EXPLORE", "GRID_SELECT", "AOE_GRID_SELECT", "PLAYER_ANIMATION" ,"UNIN"};
 
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseTriggered{};
 	std::array<bool, GBPhaseCount> GameBoardState::GBPhaseActive{};
-	std::array<bool, PlayerPhaseCount> GameBoardState::PlayerPhaseTriggered{};
 
 	GBPhase& operator++(GBPhase& gbp)
 	{
@@ -138,10 +137,6 @@ namespace PhaseSystem
 	{
 		return this->GBPhaseActive;
 	}
-	std::array<bool, PlayerPhaseCount>& GameBoardState::PlayerPTriggered()
-	{
-		return this->PlayerPhaseTriggered;
-	}
 
 	void GameBoardState::debug_print()
 	{
@@ -151,5 +146,8 @@ namespace PhaseSystem
 		std::cout << "===================================================" << std::endl;
 	}
 
-
+	void free()
+	{
+		
+	}
 }

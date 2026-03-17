@@ -41,7 +41,7 @@ namespace Text
 
 	void PopUpText::free()
 	{
-		for(Entity s : this->current)
+		for (Entity s : this->current)
 		{
 			this->ecs->destroyEntity(s);
 		}
@@ -95,5 +95,53 @@ namespace Text
 				}
 			}
 		}
+	}
+
+
+
+	void NameTag::create_static_nametag(Entity parent, const char* a)
+	{
+		Entity id = ecs.createEntity();
+
+		Components::Transform trans{ {0, 0}, {0,0} ,{0.3f, 0.5f} , {0.3f, 0.5f} ,0.0f };
+		Components::Text text{ a, TF.getFontID(), 25 };
+		Components::Color color{ 1.0f, 0.0f, 0.0f ,1.0f };
+		Components::Timer time{ 2.f, 0.f };
+		Components::Velocity vel{ 0.f, 1.f };
+
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, text);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, time);
+		ecs.addComponent(id, vel);
+
+		nametag.push_back({ id, parent });
+	}
+	void NameTag::update()
+	{
+		for (std::pair<Entity, Entity> text : nametag)
+		{
+			Entity cur = text.first;
+			Entity parent = text.second;
+
+			Components::Transform* parent_pos = ecs.getComponent<Components::Transform>(parent);
+
+			f32 x = parent_pos->pos.x - 64.f;
+			f32 y = parent_pos->pos.y + 32.f;
+			f32 psx = parent_pos->pos_onscreen.x - 64.f;
+			f32 psy = parent_pos->pos_onscreen.y + 32.f;
+			ecs.getComponent<Components::Transform>(cur)->pos.x = x;
+			ecs.getComponent<Components::Transform>(cur)->pos.y = y;
+			ecs.getComponent<Components::Transform>(cur)->pos_onscreen.x = psx;
+			ecs.getComponent<Components::Transform>(cur)->pos_onscreen.y = psy;
+		}
+	}
+	void NameTag::name_tag_free()
+	{
+		for (std::pair<Entity, Entity> a : nametag)
+		{
+			ecs.destroyEntity(a.first);
+		}
+		nametag.clear();
 	}
 }

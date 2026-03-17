@@ -6,8 +6,8 @@
 #include "../system/CardSystem.h"
 #include "../ECS/Components.h"
 #include "../util/Event.h"
-#include "../system/PhaseSystem.h"
-#include "../UI/cardInteraction.h"
+//#include "../system/PhaseSystem.h"
+//#include "../UI/cardInteraction.h"
 #include <vector>
 #include <iostream>
 #include "AEEngine.h"
@@ -16,6 +16,7 @@
 namespace Grid { class GameBoard; };
 namespace CardInteraction { class CardHand; };
 namespace CombatNameSpace { class CombatSystem; };
+namespace PhaseSystem { class GameBoardState; }
 
 namespace TBS 
 {
