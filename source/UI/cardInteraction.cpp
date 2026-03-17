@@ -120,6 +120,7 @@ namespace CardInteraction
 				if (card_cost > player_curMana)
 				{
 					std::cout << "Not enough mana!!" << std::endl;
+					PUT << "Not enough mana!!";
 					return;
 				}
 				tbsptr->select_hand_index(i);
@@ -132,7 +133,6 @@ namespace CardInteraction
 
 		if (this->reset == true)
 		{
-			std::cout << "cardhand address: " << this << std::endl;
 
 			//clear the data
 			for (int index = 0; index < curr_hand_display.size(); index++)
@@ -232,7 +232,7 @@ namespace CardInteraction
 
 			Entity eid = ecs.createEntity();
 
-			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 10, texture, 
+			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 30, texture, 
 				[this, eid]
 				{ 
 					this->activate_card(eid); 
@@ -366,8 +366,8 @@ namespace CardInteraction
 
 		Components::Input* i = ecs.getComponent<Components::Input>(id);
 
-		m->z = 10;
-		i->z = 10;
+		m->z = 30;
+		i->z = 30;
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
@@ -385,7 +385,7 @@ namespace CardInteraction
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 30);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
 		Components::Timer timer{ 0.5f, 0.f, true, true };
@@ -407,7 +407,7 @@ namespace CardInteraction
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
-		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 10);
+		Components::Input input(AEVK_LBUTTON, true, fp, [id, &ecs] { card_onHover(ecs, id); }, [id, &ecs] { card_offHover(ecs, id); }, 30);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
 		Components::Timer timer{ 0.5f, 0.f, true, true };
