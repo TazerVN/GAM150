@@ -5,7 +5,82 @@
 #include "../ECS/Components.h"
 #include "../global.h"
 
+// Helpers
+static int get_category_from_id(int id) { return id / 1000; }
+static int get_family_from_id(int id) { return (id / 100) % 10; }
+static int get_targetting_from_id(int id) { return (id / 10) % 10; }
 
+static CardTag decode_card_tag(int id)
+{
+	switch (get_category_from_id(id))
+	{
+	case 1: return CardTag::ATTACK;
+	case 2: return CardTag::DEFENSE;
+	case 3: return CardTag::ITEM;
+	case 4: return CardTag::EVENT;
+	default: return CardTag::ITEM;
+	}
+}
+
+static Targetting decode_targetting(int id)
+{
+	switch (get_targetting_from_id(id))
+	{
+	case 0: return Targetting::SELF;
+	case 1: return Targetting::SINGLE_TARGET;
+	case 2: return Targetting::AOE;
+	case 3: return Targetting::LINE;
+	default: return Targetting::SELF;
+	}
+}
+
+static CardType decode_card_type(int id)
+{
+	int category = get_category_from_id(id);
+	int family = get_family_from_id(id);
+
+	switch (category)
+	{
+	case 1:
+		switch (family)
+		{
+		case 0: return CardType::SLASHING;
+		case 1: return CardType::PIERCING;
+		case 2: return CardType::PIERCING;
+		case 3: return CardType::FIRE;
+		default: return CardType::SLASHING;
+		}
+
+	case 2:
+		switch (family)
+		{
+		case 0: return CardType::SHIELDING;
+		case 1: return CardType::DAMAGE_REDUCTION;
+		default: return CardType::SHIELDING;
+		}
+
+	case 3:
+		switch (family)
+		{
+		case 0: return CardType::HEALING;
+		case 1: return CardType::PP_BUFF;
+		case 2: return CardType::MOV_BUFF;
+		case 3: return CardType::ATK_BUFF;
+		case 4: return CardType::DRAWING_CARD;
+		default: return CardType::HEALING;
+		}
+
+	case 4:
+		switch (family)
+		{
+		case 0: return CardType::FORCED_MOVEMENT;
+		case 1: return CardType::FORCED_MOVEMENT;
+		default: return CardType::FORCED_MOVEMENT;
+		}
+	}
+
+	return CardType::SLASHING;
+}
 //Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, CardType dtype, f32 range, f32 cost)
 //{
 //	Targetting targetting_type =Targetting::SINGLE_TARGET;
@@ -50,11 +125,13 @@ Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 {
 	Entity id = ecs.createEntity();
 	Components::Name nm{ json_card.name };
-	CardTag cardTag = json_card.card_tag;
-	Components::Card_Value card_val{ json_card.value,json_card.card_type };
-	Components::Targetting_Component targetting{ json_card.targetting,json_card.range,json_card.aoe};
+	CardTag cardTag = decode_card_tag(json_card.id);
+	Components::Card_Value card_val{ json_card.value, decode_card_type(json_card.id) };
+	Components::Targetting_Component targetting{ decode_targetting(json_card.id), json_card.range, json_card.aoe };
 	Components::Card_Cost card_cost{ json_card.cost };
+	Components::Card_ID cid{ json_card.id };
 	
+	ecs.addComponent(id, cid);
 	ecs.addComponent(id, cardTag);
 	ecs.addComponent(id, nm);
 	ecs.addComponent(id, card_val);
@@ -72,10 +149,9 @@ void CardSystem::init_cards(EntityComponent::Registry& ecs)
 	for (JSON_CARD card : vec)
 	{
 		std::cout << "Name : " << card.name.c_str() << std::endl;
+		std::cout << "ID : " << card.id << std::endl;
 		std::cout << "Cost : " << card.cost << std::endl;
-		std::cout << "Targetting : " << static_cast<int>(card.targetting) << std::endl;
-		std::cout << "Card Tag : " << static_cast<int>(card.card_tag) << std::endl;
-		std::cout << "Type : " << static_cast<int>(card.card_type) << std::endl;
+		//std::cout << "Type : " << static_cast<int>(card.card_type) << std::endl;
 		std::cout << "Value : " << card.value << std::endl;
 		std::cout << "AOE : " << card.aoe << '\n' << std::endl;
 
@@ -133,6 +209,9 @@ Entity CardSystem::generate_card_from_bible(EntityComponent::Registry& ecs,std::
 												 ecs.getComponent<Components::Targetting_Component>(bibleID)->aoe };
 	Components::Card_Cost card_cost{ ecs.getComponent<Components::Card_Cost>(bibleID)->value };
 
+	Components::Card_ID cid{ ecs.getComponent<Components::Card_ID>(bibleID)->value };
+
+	ecs.addComponent(id, cid);
 
 	ecs.addComponent(id, cardTag);
 	ecs.addComponent(id, nm);
