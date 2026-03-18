@@ -208,23 +208,29 @@ namespace UI
 	void UIManager::health_update(EntityComponent::Registry& ecs)
 	{
 
-		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
-		//create bitsets
-		EntityComponent::ComponentBitMask objMask;
-		objMask.set(transID); objMask.set(hpID);
+		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
 			if (!ecs.getBitMask()[p.first].test(hpID)) continue;
 			if (!ecs.getBitMask()[p.second].test(hpID)) continue;
-			Components::HP* hp_parent = ecs.getComponent<Components::HP>(p.first);
+			if (!ecs.getBitMask()[p.second].test(transID)) continue;
 
+			Components::HP* hp_parent = ecs.getComponent<Components::HP>(p.first);
 			Components::HP* hp_child = ecs.getComponent<Components::HP>(p.second);
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 
-			hp_child->c_value = hp_parent->c_value / hp_parent->max_value * hp_child->max_value;
-			transform_child->size.x = hp_child->c_value / hp_child->max_value * transform_child->size_og.x;
+			if (!hp_parent || !hp_child || !transform_child) continue;
+			if (hp_parent->max_value <= 0.0f || hp_child->max_value <= 0.0f) continue;
+
+			float ratio = hp_parent->c_value / hp_parent->max_value;
+
+			if (ratio < 0.0f) ratio = 0.0f;
+			if (ratio > 1.0f) ratio = 1.0f;
+
+			hp_child->c_value = ratio * hp_child->max_value;
+			transform_child->size.x = ratio * transform_child->size_og.x;
 		}
 
 	}

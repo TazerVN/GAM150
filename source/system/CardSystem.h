@@ -3,6 +3,7 @@
 #include "../types.h"
 
 #include "../ECS/ECSystem.h"
+#include "../ECS/Components.h"
 #include "../system/CombatSystem.h"
 #include "CardConstants.h"
 #include <vector>

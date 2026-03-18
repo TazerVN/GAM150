@@ -271,4 +271,10 @@ namespace Components
 		f32 max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 	};
 
+	// Fetch ID values
+	struct Card_ID
+	{
+		int value;
+	};
+
 }

@@ -1,220 +1,170 @@
 [
-	{ 
-		"id"  : 0,
+	{
+		"id": 1010,
 		"name": "Slash",
 		"cost": 1.0,
-		"targetting": "SINGLE_TARGET",
-		"card_tag": "ATK",
-		"type": "SLASHING",
 		"value": 5.0,
 		"range": 1.0
 	},
 	{
-		"id"  : 1,
-		"name" : "Slash+",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "SLASHING",
-		"value" : 9.0,
-		"range" : 1.0
+		"id": 1011,
+		"name": "Slash+",
+		"cost": 1.0,
+		"value": 9.0,
+		"range": 1.0
 	},
 	{
-		"id"  : 2,
-		"name" : "Shoot",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "PIERCING",
-		"value" : 5.0,
-		"range" : 10.0
+		"id": 1110,
+		"name": "Shoot",
+		"cost": 1.0,
+		"value": 5.0,
+		"range": 10.0
 	},
 	{
-		"id"  : 3,
-		"name" : "Shoot+",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "PIERCING",
-		"value" : 9.0,
-		"range" : 10.0
+		"id": 1111,
+		"name": "Shoot+",
+		"cost": 1.0,
+		"value": 9.0,
+		"range": 10.0
 	},
 	{
-		"id"  : 4,
-		"name" : "Firebolt",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "FIRE",
-		"value" : 7.0,
-		"range" : 10.0
+		"id": 1320,
+		"name": "Firebolt",
+		"cost": 1.0,
+		"value": 7.0,
+		"range": 10.0,
+		"aoe": 1.0
 	},
 	{
-		"id"  : 5,
-		"name" : "Step Slash",
-		"cost" : 1.0,
-		"targetting" : "LINE",
-		"card_tag" : "ATK",
-		"type" : "SLASHING",
-		"value" : 7.0,
-		"range" : 3.0
+		"id": 1030,
+		"name": "Step Slash",
+		"cost": 1.0,
+		"value": 7.0,
+		"range": 3.0
 	},
 	{
-		"id"  : 6,
-		"name" : "Disk Detonate",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "FIRE",
-		"value" : 7.0,
-		"range" : 3.0
+		"id": 1310,
+		"name": "Disk Detonate",
+		"cost": 1.0,
+		"value": 7.0,
+		"range": 3.0
 	},
 	{
-		"id"  : 7,
-		"name" : "Snipe",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGET",
-		"card_tag" : "ATK",
-		"type" : "PIERCING",
-		"value" : 10.0,
-		"range" : 99.0
-	},
-
-
-	{
-		"id"  : 8,
-		"name" : "Barrier",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "DEF",
-		"type" : "SHIELDING",
-		"value" : 10.0
-	},
-	{
-		"id"  : 9,
-		"name" : "Barrier+",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "DEF",
-		"type" : "SHIELDING",
-		"value" : 10.0
-	},
-	{
-		"id"  : 10,
-		"name" : "DMG Cut",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "DEF",
-		"type" : "DAMAGE_REDUCTION",
-		"value" : 0.5
-	},
-	{
-		"id"  : 11,
-		"name" : "Aura Farm",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "DEF",
-		"type" : "DAMAGE_REDUCTION",
-		"value" : 1.0
-	},
-
-	
-	{
-		"id"  : 12,
-		"name" : "Recovery",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "HEALING",
-		"value" : 3.0
-	},
-	{
-		"id"  : 13,
-		"name" : "Recovery+",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "HEALING",
-		"value" : 6.0
-	},
-	{
-		"id"  : 14,
-		"name" : "Recovery++",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "HEALING",
-		"value" : 9.0
-	},
-	{
-		"id"  : 15,
-		"name" : "PP up",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "PP_BUFF",
-		"value" : 2.0
-	},
-	{
-		"id"  : 16,
-		"name" : "STR Disk",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "ATK_BUFF",
-		"value" : 2.0
-	},
-	{
-		"id"  : 17,
-		"name" : "Swift foot",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "MOV_BUFF",
-		"value" : 1.0
+		"id": 1210,
+		"name": "Snipe",
+		"cost": 1.0,
+		"value": 10.0,
+		"range": 99.0
 	},
 
 	{
-		"id"  : 18,
-		"name" : "Data Draw",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "DRAWING_CARD",
-		"value" : 2.0
+		"id": 1230,
+		"name": "Turn bash",
+		"cost": -1.0,
+		"value": -1.0,
+		"range": -1.0
 	},
 
 	{
-		"id"  : 19,
-		"name" : "Rand Generate",
-		"cost" : 1.0,
-		"targetting" : "SELF",
-		"card_tag" : "ITEM",
-		"type" : "DRAWING_CARD",
-		"value" : 1.0
+		"id": 2000,
+		"name": "Barrier",
+		"cost": 1.0,
+		"value": 10.0
+	},
+	{
+		"id": 2001,
+		"name": "Barrier+",
+		"cost": 1.0,
+		"value": 10.0
+	},
+	{
+		"id": 2100,
+		"name": "DMG Cut",
+		"cost": 1.0,
+		"value": 0.5
+	},
+	{
+		"id": 2101,
+		"name": "Aura Farm",
+		"cost": 1.0,
+		"value": 1.0
+	},
+	{
+		"id": 2102,
+		"name": "Mana Wall",
+		"cost": -1.0,
+		"value": -1.0
 	},
 
 	{
-		"id"  : 20,
-		"name" : "Gust of Wind",
-		"cost" : 1.0,
-		"targetting" : "SINGLE_TARGETt",
-		"card_tag" : "EVENT",
-		"type" : "FORCED_MOVEMENT",
-		"value" : 6.0,
-		"range" : 10.0,
-		"aoe" : 5.0
+		"id": 3000,
+		"name": "Recovery",
+		"cost": 1.0,
+		"value": 3.0
+	},
+	{
+		"id": 3001,
+		"name": "Recovery+",
+		"cost": 1.0,
+		"value": 6.0
+	},
+	{
+		"id": 3002,
+		"name": "Recovery++",
+		"cost": 1.0,
+		"value": 9.0
+	},
+	{
+		"id": 3100,
+		"name": "PP up",
+		"cost": 1.0,
+		"value": 2.0
+	},
+	{
+		"id": 3300,
+		"name": "STR Disk",
+		"cost": 1.0,
+		"value": 2.0
+	},
+	{
+		"id": 3200,
+		"name": "Swift foot",
+		"cost": 1.0,
+		"value": 1.0
+	},
+	{
+		"id": 3400,
+		"name": "Data Draw",
+		"cost": 1.0,
+		"value": 2.0
+	},
+	{
+		"id": 3401,
+		"name": "Salvage",
+		"cost": -1.0,
+		"value": -1.0
+	},
+	{
+		"id": 3402,
+		"name": "Rand Generate",
+		"cost": 1.0,
+		"value": 1.0
 	},
 
 	{
-		"id"  : 21,
-		"name" : "Black Hole",
-		"cost" : 3.0,
-		"targetting" : "AOE",
-		"card_tag" : "EVENT",
-		"type" : "FORCED_MOVEMENT",
-		"value" : 100.0,
-		"range" : 10.0,
-		"aoe" : 7.0
+		"id": 4110,
+		"name": "Gust of Wind",
+		"cost": 1.0,
+		"value": 6.0,
+		"range": 10.0,
+		"aoe": 5.0
+	},
+	{
+		"id": 4020,
+		"name": "Black Hole",
+		"cost": 5.0,
+		"value": 100.0,
+		"range": 10.0,
+		"aoe": 7.0
 	}
 ]

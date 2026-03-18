@@ -14,15 +14,12 @@ enum class JSON_RET
 
 struct JSON_CARD
 {
-	int id;
+	int id = -1;
 	std::string name;
-	float cost;
-	Targetting targetting;
-	CardTag card_tag;
-	CardType card_type;
-	float value;
-	float range;
-	float aoe;
+	float cost = 0.0f;
+	float value = 0.0f;
+	float range = 0.0f;
+	float aoe = 0.0f;
 };
 
 JSON_RET parse_data(std::vector<JSON_CARD>& vec,char const* str);
