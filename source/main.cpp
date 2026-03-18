@@ -93,10 +93,12 @@ void load_Sys_Comp()
 	//Add player
 	temp = EntityFactory::create_actor_spritesheet(ecs, mf, { 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(2), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Slash"));
 	}
+	EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "PP up"));
+	EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Aura Farm"));
 	for (int i = 0; i < 3; ++i)
 	{
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Black Hole"));

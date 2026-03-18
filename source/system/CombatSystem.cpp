@@ -88,7 +88,6 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 				if (targetHp <= 0.f)
 				{
 					graveyard.push_back({ pos,ent });
-
 				}
 			}
 		}	
@@ -116,7 +115,7 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 			AEVec2& targetPos = gra.first;
 
 			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
-			tbsptr->remove_participant(*ecsptr, gra.second);
+			ecs.destroyEntity(gra.second);
 		}
 		graveyard.clear();
 	}

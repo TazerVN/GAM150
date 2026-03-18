@@ -88,16 +88,16 @@ namespace TBS
 
 	void TurnBasedSystem::remove_participant(EntityComponent::Registry& ecs, Entity parti)
 	{
-		for (int i = 0; i < participants.size(); ++i)
-		{
-			if (participants[i] == parti)
-			{
-				participants.erase(participants.begin() + i);	//remove the target from turn system
-				participant_hand.erase(participant_hand.begin() + i);
-				selected_card.erase(selected_card.begin() + i);
-				ecs.destroyEntity(parti);
-			}
-		}
+		//for (int i = 0; i < participants.size(); ++i)
+		//{
+		//	if (participants[i] == parti)
+		//	{
+		//		participants.erase(participants.begin() + i);	//remove the target from turn system
+		//		participant_hand.erase(participant_hand.begin() + i);
+		//		selected_card.erase(selected_card.begin() + i);
+		//		ecs.destroyEntity(parti);
+		//	}
+		//}
 	}
 
 	std::vector<Entity>& TurnBasedSystem::get_participant()

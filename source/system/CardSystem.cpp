@@ -48,7 +48,7 @@ static CardType decode_card_type(int id)
 		case 1: return CardType::PIERCING;
 		case 2: return CardType::PIERCING;
 		case 3: return CardType::FIRE;
-		default: return CardType::SLASHING;
+		default: return CardType::COUNT;
 		}
 
 	case 2:
@@ -56,7 +56,7 @@ static CardType decode_card_type(int id)
 		{
 		case 0: return CardType::SHIELDING;
 		case 1: return CardType::DAMAGE_REDUCTION;
-		default: return CardType::SHIELDING;
+		default: return CardType::COUNT;
 		}
 
 	case 3:
@@ -67,7 +67,7 @@ static CardType decode_card_type(int id)
 		case 2: return CardType::MOV_BUFF;
 		case 3: return CardType::ATK_BUFF;
 		case 4: return CardType::DRAWING_CARD;
-		default: return CardType::HEALING;
+		default: return CardType::COUNT;
 		}
 
 	case 4:

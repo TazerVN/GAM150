@@ -108,7 +108,27 @@ void Scene::update()
 	}
 	if (AEInputCheckTriggered(AEVK_RSHIFT))
 	{
-		TBSys.debug_print(ecs);
+		//TBSys.debug_print(ecs);
+
+		for (size_t i = 0; i < entities.size(); ++i)
+		{
+			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
+			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
+			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
+
+			std::string name = ecs.getComponent<Components::Name>(entities[i])->value;
+
+			if (ecs.getBitMask()[entities[i]].test(hpID))
+			{
+				f32 HP = ecs.getComponent<Components::HP>(entities[i])->c_value;
+				std::cout << name << "'s HP : " << HP << " | " << std::endl;
+			}
+			else
+			{
+				std::cout << name << " (no HP)" << std::endl;
+			}
+		}
 	}
 	if (AEInputCheckTriggered(AEVK_UP))
 	{

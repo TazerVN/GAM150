@@ -254,6 +254,9 @@ namespace CardInteraction
 				case (CardType::FORCED_MOVEMENT):
 					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
 					break;
+				case (CardType::DAMAGE_REDUCTION):
+					texture = tfptr->getTextureCard(TextureFactory::C_AURAFARM);
+					break;
 				default:
 					texture = tfptr->getTextureCard(TextureFactory::C_SAMPLE);
 					break;
