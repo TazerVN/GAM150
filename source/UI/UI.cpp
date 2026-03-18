@@ -88,6 +88,7 @@ namespace UI
 				for (int j = 0; j < scene.getTBS().get_participant().size(); j++)
 				{
 					Entity participant = scene.getTBS().get_participant()[j];
+					Entity participant = scene.entities_store()[j];
 					if (!ecs.getBitMask()[this->actor_children_list[i].first].test(hpID)) continue;
 					else if (participant == this->actor_children_list[i].first) exist = true;
 				}
