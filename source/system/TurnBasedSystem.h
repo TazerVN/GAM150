@@ -46,7 +46,8 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(EntityComponent::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&, CardSystem&, CardInteraction::CardHand& ,std::vector<Entity>&);
+		void init(EntityComponent::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
+			, CardSystem&, CardInteraction::CardHand& ,Entity);
 		void add_participant(EntityComponent::Registry& ecs,Entity parti);
 		void remove_participant(EntityComponent::Registry& ecs, Entity parti);
 		std::vector<Entity>& get_participant();

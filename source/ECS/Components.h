@@ -22,7 +22,7 @@ namespace Components
 	//========================= ENUM ==============================
 	enum class Tag
 	{
-		CARDS, GRID, ACTOR, UI, BACKGROUND
+		CARDS, GRID, ACTOR, UI, BACKGROUND, OTHERS
 	};
 
 
@@ -180,6 +180,10 @@ namespace Components
 		Animation_Actor(Components::AnimationType type, int current_frame = 0, int max_frame = 0);
 	};
 
+	enum class VictoryNodeTag
+	{
+		COMBAT,BOSS
+	};
 
 	//===========================CARDS=========================================
 

@@ -17,6 +17,10 @@ namespace Grid
 		//if (is_active)
 		//if the current participant ha	s selected card 
 				//and selected on the empty cell then return
+		prev_x = cur_x;
+		prev_y = cur_y;
+		cur_x = x;
+		cur_y = y;
 
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE 
 			|| gbsptr->getGBPhase() == PhaseSystem::GBPhase::WIN)) return;
@@ -165,16 +169,19 @@ namespace Grid
 
 		this->unselect_card();
 
-		if (this->activate[x][y] == false)
+		this->cur = this->pos[x][y];
+		selected_part = true;
+		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
+		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
+
+		/*if (this->activate[x][y] == false)
 		{
 			this->activate[x][y] = true;
 			this->cur = this->pos[x][y];
-			this->cur_x = x;
-			this->cur_y = y;
 			selected_part = true;
 			evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
 			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
-		}
+		}*/
 	}
 	void cell_onHover(EntityComponent::Registry& ecs, Entity id, Entity character)
 	{
@@ -342,7 +349,7 @@ namespace Grid
 
 				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
-				this->activate[i][j] = false;
+				//this->activate[i][j] = false;
 				this->highlight_activate[i][j] = highlight_tag::UNHIGHLIGHTED;
 				walkable[j * MAX_I + i] = 1;
 			}
@@ -379,7 +386,7 @@ namespace Grid
 
 	void GameBoard::moveEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
-		int start_i{}, start_j{};
+		int start_i{-1}, start_j{-1};
 		//get player's position first
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -389,16 +396,16 @@ namespace Grid
 				{
 					start_i = i;
 					start_j = j;
-					this->pos[i][j] = -1;
-
-					int dist = grid_dist_manhattan(i, j, x, y);
-
-					if (!*win)
-					{
-						ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
-					}
+					break;
 				}
 			}
+			if (start_i != -1 && start_j != -1) break;
+		}
+		int dist = grid_dist_manhattan(start_i, start_j, x, y);
+
+		if (!*win)
+		{
+			ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 		}
 
 		EntityComponent::ComponentTypeID astarID = EntityComponent::getComponentTypeID<Components::AStarResult>();
@@ -421,6 +428,7 @@ namespace Grid
 
 		}
 
+		this->pos[start_i][start_j] = -1;
 		this->pos[x][y] = e;
 		this->walkable[x * MAX_J + y] = 0;
 	}
@@ -481,7 +489,7 @@ namespace Grid
 					color->d_color.b -= 0.8f;
 				}
 
-				//update entity cell
+				//======================update entity cell=====================================
 				if (this->pos[i][j] == -1)
 				{
 					continue;
@@ -537,9 +545,7 @@ namespace Grid
 		if (!selected_part) return;
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 		selected_part = false;
-		this->activate[this->cur_x][this->cur_y] = false;
-		this->cur_x = -1;
-		this->cur_y = -1;
+		//this->activate[this->cur_x][this->cur_y] = false;
 		this->cur = -1;
 	}
 
@@ -626,6 +632,15 @@ namespace Grid
 					return true;
 				}
 		return false;
+	}
+
+	void GameBoard::debug_print()
+	{
+		std::cout << "===BattleGrid===" << std::endl;
+		std::cout << "Movement Selected : " << selected_part << std::endl;
+		std::cout << "Previous Pos : " << prev_x << ',' << prev_y << std::endl;
+		std::cout << "Current Pos : " << cur_x << ',' << cur_y << std::endl;
+		std::cout << "================" << std::endl;
 	}
 
 	void  GameBoard::gameboard_free()

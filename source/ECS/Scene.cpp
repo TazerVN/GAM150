@@ -4,7 +4,6 @@
 #include <cstdlib> // randomiser part 2
 #include "../util/LevelManager.h"
 #include "factory/EntityFactory.h"
-#include "../system/InteractableConstants.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
@@ -36,7 +35,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	s32 w_height = AEGfxGetWindowHeight();
 
 	//add player to the scene
-	add_entity(playerID);
+	add_entity_to_scene(playerID);
 	//Create Horde
 	Entity horde = ecs.createEntity();
 	ecs.addComponent(horde, Components::Name{ "Horde" });
@@ -54,7 +53,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 
-		add_entity(temp);                  // adds to scene/world
+		add_entity_to_scene(temp);                  // adds to scene/world
 		enemyDirector.bindActor(actorId, temp);
 	}
 
@@ -64,7 +63,7 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	tbsParticipants.push_back(horde);
 
 	cbs.init(ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
-	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,entities);
+	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,horde);
 	BattleGrid.init(ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3,_win);
 
 	gbs.resetGPhase();
@@ -103,6 +102,18 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 void Scene::update()
 {
+	if (AEInputCheckTriggered(AEVK_BACKSLASH))
+	{
+		BattleGrid.debug_print();
+	}
+	if (AEInputCheckTriggered(AEVK_RSHIFT))
+	{
+		TBSys.debug_print(ecs);
+	}
+	if (AEInputCheckTriggered(AEVK_UP))
+	{
+		gbs.debug_print();
+	}
 	nameTags.update();
 	if (TBSys.active())
 	{
@@ -112,9 +123,13 @@ void Scene::update()
 			TBSys.active() = false;
 			_win = true;
 
-			Entity combatNode = -1;
-			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), Components::AnimationType::NONE, 
-				[&combatNode]{goToCombat(&combatNode); });
+			//set player's win speed
+			Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
+			player->cur_movSpd = player->ini_movSpd;
+
+			Entity combatNode;
+			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), 
+				Components::AnimationType::NONE,Components::VictoryNodeTag::BOSS);
 			BattleGrid.placeEntity(ecs,combatNode,0,0);
 		}
 
@@ -165,7 +180,7 @@ void Scene::update()
 	//==============================================================
 }
 
-void Scene::add_entity(Entity e)
+void Scene::add_entity_to_scene(Entity e)
 {
 	next_entity++;
 	entities.push_back(e);
