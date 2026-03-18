@@ -295,6 +295,11 @@ namespace CardInteraction
 
 	}
 
+	Entity CardHand::getID() const
+	{
+		return this->id;
+	}
+
 	void CardHand::card_interaction_free()
 	{
 		tbsptr = nullptr;

@@ -22,20 +22,24 @@ namespace Text
 
 		Components::Transform* pos = ecs->getComponent<Components::Transform>(this->pos);
 
-		f32 x = pos->pos_onscreen.x - 64.f;
-		f32 y = pos->pos_onscreen.y + 32.f;
+		/*f32 x = pos->pos_onscreen.x - 64.f;
+		f32 y = pos->pos_onscreen.y + 32.f;*/
+		f32 x = pos->pos_onscreen.x - 200.f;
+		f32 y = pos->pos_onscreen.y + 150.f;
 
-		Components::Transform trans{ {x, y}, {x,y} ,{0.3f, 0.5f} , {0.3f, 0.5f} ,0.0f };
+		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
 		Components::Text text{ a, TF.getFontID(), 25 };
-		Components::Color color{ 1.0f, 0.0f, 0.0f ,1.0f };
+		Components::Color color{ 1.0f, 0.2f, 0.2f ,1.0f };
 		Components::Timer time{ 2.f, 0.f };
 		Components::Velocity vel{ 0.f, 1.f };
+		Components::TagClass tag{Components::Tag::UI};
 
 		ecs->addComponent(id, trans);
 		ecs->addComponent(id, text);
 		ecs->addComponent(id, color);
 		ecs->addComponent(id, time);
 		ecs->addComponent(id, vel);
+		ecs->addComponent(id, tag);
 		return id;
 	}
 

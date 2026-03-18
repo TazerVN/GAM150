@@ -70,6 +70,7 @@ namespace CardInteraction
 		void activate_card(Entity e);
 		void remove_card(EntityComponent::Registry&, int);
 		void reset_hand();
+		Entity getID() const;
 
 		void card_interaction_free();
 	};

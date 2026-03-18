@@ -30,7 +30,7 @@ void LevelStateCombat_init()
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
-	PUT.init(&ecs, playerID);
+	PUT.init(&ecs, card.getID());
 	ecs.remove_empty_groups();
 }
 void LevelStateCombat_update()
