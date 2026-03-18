@@ -39,33 +39,33 @@ namespace UI
 		for (Entity e : scene.entities_store())
 		{
 			Entity health = ui_hp_bar(ecs, mf, -50, 100, 100, 10, 0, 6);
-			Entity blank = ui_blank(ecs, mf, -50, 100, 100, 10, 0, 5);
+			Entity blank = ui_blank(ecs, mf, -50, 100, 100, 10, 0, 6);
 			std::pair<Entity, Entity> hp{ e, health };
 			std::pair<Entity, Entity> hp_blank{ e, blank };
-			this->actor_children_list.push_back(hp);
 			this->actor_children_list.push_back(hp_blank);
+			this->actor_children_list.push_back(hp);
 
-			if(e == playerID)
+			if (e == playerID)
 			{
 				Entity stamina = ui_stamina_bar(ecs, mf, 40, -20, 70, 8, 90, 6);
-				Entity blank_s = ui_blank(ecs, mf, 40, -20, 70, 8, 90, 5);
+				Entity blank_s = ui_blank(ecs, mf, 40, -20, 70, 8, 90, 6);
 
 				std::pair<Entity, Entity> stam{ e, stamina };
 				std::pair<Entity, Entity> stam_b{ e, blank_s };
-				this->actor_children_list.push_back(stam);
 				this->actor_children_list.push_back(stam_b);
+				this->actor_children_list.push_back(stam);
 			}
 		}
 
 		//========================================== mana bar ======================================
 		f32 x = 0.55f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
-		Entity mana_bar = ui_blank_texture(ecs, mf, tf.getTextureUI(4), x, y, 302, 82, 0, 31);
-		for(int i = 0; i < 5; i++)
+		Entity mana_bar = ui_blank_texture(ecs, mf, tf.getTextureUI(4), x, y, 302, 82, 0, 32);
+		for (int i = 0; i < 5; i++)
 		{
 			Components::TurnBasedStats stats{ 0,0,0,0 };
 			ecs.addComponent(mana_bar, stats);
-			Entity mana_empty = ui_blank_texture(ecs, mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f , 49, 55, 0, 30);
+			Entity mana_empty = ui_blank_texture(ecs, mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f, 49, 55, 0, 30);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->mana_children_list.push_back(mana);
 		}
@@ -77,6 +77,7 @@ namespace UI
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
+		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 		{
@@ -84,24 +85,27 @@ namespace UI
 			int i = 0;
 			for (; i < this->actor_children_list.size(); i++)
 			{
+				Entity parent_ui = this->actor_children_list[i].first;
 				bool exist = false;
-				for (int j = 0; j < scene.getTBS().get_participant().size(); j++)
+
+				Entity goon = scene.getTBS().get_participant()[1];
+				Entity player = playerID;
+
+				if (parent_ui == playerID) continue;
+
+				if (ecs.getBitMask()[goon].test(hordeID))
 				{
-					Entity participant = scene.entities_store()[j];
-					if (!ecs.getBitMask()[this->actor_children_list[i].first].test(hpID)) continue;
-					else if (participant == this->actor_children_list[i].first) exist = true;
+					auto horde = ecs.getComponent<Components::Horde_Tag>(goon);
+					auto find = std::find(horde->goons.begin(), horde->goons.end(), parent_ui);
+					if (find != horde->goons.end()) continue;
 				}
-				if (exist == false)
-				{
-					ecs.destroyEntity(this->actor_children_list[i].second);
-					this->actor_children_list[i] = this->actor_children_list[this->actor_children_list.size() - 1];
-					this->actor_children_list.pop_back();
-				}
+
+
+				ecs.destroyEntity(this->actor_children_list[i].second);
+				this->actor_children_list[i] = this->actor_children_list[this->actor_children_list.size() - 1];
+				this->actor_children_list.pop_back();
 			}
 		}
-		this->health_update(ecs);
-		this->stamina_update(ecs);
-		this->mana_update(scene);
 
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
@@ -122,6 +126,10 @@ namespace UI
 
 		}
 
+		this->health_update(ecs);
+		this->stamina_update(ecs);
+		this->mana_update(scene);
+
 		for (std::pair<Entity, Entity> p : this->mana_children_list)
 		{
 
@@ -136,9 +144,7 @@ namespace UI
 
 		}
 
-		for(Entity p : this->current_ui)
-		{
-		}
+
 
 	}
 
@@ -180,11 +186,11 @@ namespace UI
 		}
 	}*/
 
-	
+
 
 	void UIManager::free(EntityComponent::Registry& ecs)
 	{
-		for(std::pair<Entity, Entity> p : this->actor_children_list)
+		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
 			ecs.destroyEntity(p.second);
 		}
@@ -217,19 +223,21 @@ namespace UI
 			if (!ecs.getBitMask()[p.second].test(transID)) continue;
 
 			Components::HP* hp_parent = ecs.getComponent<Components::HP>(p.first);
+
 			Components::HP* hp_child = ecs.getComponent<Components::HP>(p.second);
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
+			Components::Mesh* mesh_parent = ecs.getComponent<Components::Mesh>(p.first);
+			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
-			if (!hp_parent || !hp_child || !transform_child) continue;
-			if (hp_parent->max_value <= 0.0f || hp_child->max_value <= 0.0f) continue;
+			//if (!hp_parent || !hp_child || !transform_child) continue;
+			//if (hp_parent->max_value <= 0.0f || hp_child->max_value <= 0.0f) continue;
 
 			float ratio = hp_parent->c_value / hp_parent->max_value;
 
-			if (ratio < 0.0f) ratio = 0.0f;
-			if (ratio > 1.0f) ratio = 1.0f;
-
+			ratio = AEClamp(ratio, 0.0f, 1.f);
 			hp_child->c_value = ratio * hp_child->max_value;
 			transform_child->size.x = ratio * transform_child->size_og.x;
+			mesh_child->z = mesh_parent->z + 11;
 		}
 
 	}
@@ -249,13 +257,16 @@ namespace UI
 			if (!ecs.getBitMask()[p.first].test(staID)) continue;
 			if (!ecs.getBitMask()[p.second].test(staID)) continue;
 			Components::TurnBasedStats* sta_parent = ecs.getComponent<Components::TurnBasedStats>(p.first);
+			Components::Mesh* mesh_parent = ecs.getComponent<Components::Mesh>(p.first);
+
 
 			Components::TurnBasedStats* sta_child = ecs.getComponent<Components::TurnBasedStats>(p.second);
-
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
+			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
 			sta_child->cur_movSpd = sta_parent->cur_movSpd / sta_parent->max_movSpd * sta_child->max_movSpd;
 			transform_child->size.x = sta_child->cur_movSpd / sta_child->max_movSpd * transform_child->size_og.x;
+			mesh_child->z = mesh_parent->z + 11;
 		}
 
 	}
@@ -278,7 +289,7 @@ namespace UI
 		int empty_blocks_for_display = 5;
 		int i = 0;
 
-		if(scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::DRAW_PHASE)
+		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::DRAW_PHASE)
 		{
 			while (this->mana_children_list.size() > empty_blocks_for_display)
 			{
@@ -286,14 +297,14 @@ namespace UI
 				this->mana_children_list.pop_back();
 			}
 		}
-		while(this->mana_children_list.size() - empty_blocks_for_display < sta_parent->points)
+		while (this->mana_children_list.size() - empty_blocks_for_display < sta_parent->points)
 		{
 			Entity mana = ui_blank_texture(ecs, mf, TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, 31);
 			std::pair<Entity, Entity> mana_p{ p.first , mana };
 			this->mana_children_list.push_back(mana_p);
 			i++;
 		}
-		while(this->mana_children_list.size() - empty_blocks_for_display > sta_parent->points)
+		while (this->mana_children_list.size() - empty_blocks_for_display > sta_parent->points)
 		{
 			ecs.destroyEntity(this->mana_children_list[(this->mana_children_list.size() - 1)].second);
 			this->mana_children_list.pop_back();
@@ -327,7 +338,7 @@ namespace UI
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},{}, rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
 		Components::Color color{ 0.0f, 0.8f, 1.0f ,1.0f };
-		Components::TurnBasedStats stats{0,0,0, 100};
+		Components::TurnBasedStats stats{ 0,0,0, 100 };
 		ecs.addComponent(id, stats);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -376,7 +387,7 @@ namespace UI
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 0.5, 0.5f, 0.5f ,1.0f };
 		Components::Input in(AEVK_LBUTTON, true, func, nullptr, nullptr, 10);	//add input system for grid
-		Components::TagClass tag{Components::Tag::UI};	//add input system for grid
+		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.f, true, true };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -395,11 +406,11 @@ namespace UI
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
-		Components::Texture tex{texture};
+		Components::Texture tex{ texture };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id]{ button_onHover(ecs, id);}, [&ecs, id] { button_offHover(ecs, id); }, 10);	//add input system for grid
-		Components::TagClass tag{Components::Tag::UI};	//add input system for grid
-		Components::Timer timer{1.f, 0.5f, true, true};
+		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] { button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, 10);	//add input system for grid
+		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
+		Components::Timer timer{ 1.f, 0.5f, true, true };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, tex);
@@ -455,7 +466,7 @@ namespace UI
 		return id;
 	}
 
-	Entity UIManager::ui_blank_texture(EntityComponent::Registry& ecs, MeshFactory& mf, AEGfxTexture* texture,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity UIManager::ui_blank_texture(EntityComponent::Registry& ecs, MeshFactory& mf, AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
