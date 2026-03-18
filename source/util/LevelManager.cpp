@@ -47,6 +47,15 @@ void LevelMgrUpdate()
 		LevelStateUnload = LevelStateCombat_unload;
 		break;
 	}
+	case LevelStates::LS_ENCOUNTER:
+	{
+		LevelStateLoad = LevelStateCombat_load;
+		LevelStateInit = LevelStateCombat_init;
+		LevelStateUpdate = LevelStateCombat_update;
+		LevelStateFree = LevelStateCombat_free;
+		LevelStateUnload = LevelStateCombat_unload;
+		break;
+	}
 	default:
 		std::cout << "invalid state!!" << std::endl;;
 	}

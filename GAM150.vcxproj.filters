@@ -55,7 +55,7 @@
     <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\pch.cpp" />
     <ClCompile Include="source\system\CardResolver.cpp" />
-    <ClCompile Include="source\system\InteractableConstants.cpp" />
+    <ClCompile Include="source\level\EncounterLevel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -114,6 +114,6 @@
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\types.h" />
     <ClInclude Include="source\system\CardResolver.h" />
-    <ClInclude Include="source\system\InteractableConstants.h" />
+    <ClInclude Include="source\level\EncounterLevel.h" />
   </ItemGroup>
 </Project>

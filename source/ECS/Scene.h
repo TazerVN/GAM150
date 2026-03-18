@@ -52,7 +52,7 @@ private:
 public:
 	void init(EntityComponent::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch);
 	void update();
-	void add_entity(Entity e);
+	void add_entity_to_scene(Entity e);
 	std::vector<Entity>& entities_store();
 
 	void scene_free();

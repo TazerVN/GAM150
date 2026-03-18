@@ -9,6 +9,7 @@
 #include "factory/EntityFactory.h"
 
 #include "util/GameStateManager.h"
+#include "util/LevelManager.h"
 #include "UI/Text.h"
 
 #include "system/renderSystem.h"

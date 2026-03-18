@@ -9,7 +9,7 @@
 
 
 #include <AEEngine.h>
-
+namespace Grid { class GameBoard; }
 namespace EntityFactory
 {
 	Entity create_actor_spritesheet(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at);
@@ -24,9 +24,16 @@ namespace EntityFactory
 	class InteractableNode
 	{
 	private:
+		Grid::GameBoard* gbptr;
 		std::vector<Entity> nodes;
 	public:
-		Entity create_interactable_node(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, AEGfxTexture* pTex, Components::AnimationType at, std::function<void()>func);
+		void init(Grid::GameBoard& gb);
+		Entity create_interactable_node(EntityComponent::Registry&, MeshFactory&, AEVec2, AEVec2, AEGfxTexture*,
+			Components::AnimationType, Components::VictoryNodeTag);
+		void update();
 		void free();
+
+		void goToCombat();
+		void goToBoss();
 	};
 }

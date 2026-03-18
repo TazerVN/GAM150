@@ -45,7 +45,7 @@ namespace TBS
 	}
 
 	void TurnBasedSystem::init(EntityComponent::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
-		CombatNameSpace::CombatSystem& cbs, CardSystem& cs, CardInteraction::CardHand& ch, std::vector<Entity>& entities)
+		CombatNameSpace::CombatSystem& cbs, CardSystem& cs, CardInteraction::CardHand& ch, Entity horde)
 	{
 		evsptr = &eventPool;
 		//highlight event
@@ -59,13 +59,11 @@ namespace TBS
 		gameBoardptr = &gbp;
 		cardHandptr = &ch;
 		cbsptr = &cbs;
-
+	
 		if (!is_active)
 		{
-			for (size_t i = 0; i < entities.size(); ++i)
-			{
-				add_participant(ecs, entities[i]);
-			}
+			add_participant(ecs, playerID);
+			add_participant(ecs, horde);
 			force_start_if_ready(ecs);
 		}
 

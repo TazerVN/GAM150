@@ -41,14 +41,13 @@ namespace Grid
 
 		Entity cur, prev_cur;
 		bool selected_part = false;
-		s32 cur_x, cur_y, prev_x, prev_y;
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
 
 		uint8_t walkable[MAX_I * MAX_J]{};
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
-		std::array<std::array<bool, MAX_J>, MAX_I> activate;
+		//std::array<std::array<bool, MAX_J>, MAX_I> activate;
 
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
@@ -58,6 +57,7 @@ namespace Grid
 		Entity create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 	public:
+		s32 cur_x, cur_y, prev_x, prev_y;
 
 		void init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
 			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
@@ -89,6 +89,8 @@ namespace Grid
 
 		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
 		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
+
+		void debug_print();
 
 		void gameboard_free();
 	};

@@ -281,20 +281,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		}
 		case PhaseSystem::GBPhase::MAIN_PHASE:
 		{
-			if (tbsptr->current() == playerID)
-			{
-				switch (gbsptr->getPlayerPhase())
-				{
-				case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
-				{
-	
-				}
-				default:
-					break;
-				}
-			}
-			//this is break for the GPhase
-			break;
+			break; 
 		}
 		case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 		{
