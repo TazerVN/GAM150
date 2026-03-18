@@ -80,8 +80,10 @@ namespace Animation
 		timer->start = true;
 		bool flag = false;
 
+		std::cout << "Move Animating !! timer: " << timer->start << " flag : " << flag << std::endl;
 		if (!astar->path.empty())
 		{
+			std::cout << "AStar is not empty!" << flag << std::endl;
 			Components::GridCell current = astar->path.front();
 
 			if (timer->seconds >= timer->max_seconds)
@@ -112,8 +114,10 @@ namespace Animation
 		}
 		else
 		{
+			std::cout << "Movement Animation before Finished!! timer: " << timer->start << " flag : " << flag << std::endl;
 			flag = true;
 			timer->start = false;
+			std::cout << "Movement Animation Finished!! timer: " << timer->start << " flag : " << flag << std::endl;
 		}
 
 		return flag;
@@ -179,7 +183,7 @@ namespace Animation
 							if (moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
-								cs.end_player_resolution();
+								//cs.end_player_resolution();
 							}
 							break;
 						case Components::AnimationType::ATTACK_MELEE:

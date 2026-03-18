@@ -12,7 +12,7 @@ float offset = 1.0f;
 
 namespace Grid
 {
-	void GameBoard::updateCell(EntityComponent::Registry& ecs, s32 x, s32 y)
+	void GameBoard::updateCell(s32 x, s32 y)
 	{
 		//if (is_active)
 		//if the current participant ha	s selected card 
@@ -22,8 +22,7 @@ namespace Grid
 		cur_x = x;
 		cur_y = y;
 
-		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE 
-			|| gbsptr->getGBPhase() == PhaseSystem::GBPhase::WIN)) return;
+		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 		if (tbsptr->current() != playerID) return;
 
 		switch (gbsptr->getPlayerPhase())
@@ -87,7 +86,6 @@ namespace Grid
 				//check if an empty cell is clicked
 				if (selected_part && this->cur != -1)
 				{
-
 					move_trigger(x,y);
 				}
 				//check if the grid cell with entity is clicked
@@ -140,14 +138,10 @@ namespace Grid
 			unselect_movement();
 			return;
 		}
-		walkable[cur_x * MAX_J + cur_y] = 1;
+		walkable[cur_y * MAX_I + cur_x] = 1;
 		//move the entity
 		this->moveEntity(*ecsptr, this->cur, x, y);
 		unselect_movement();
-
-		gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
-		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
-		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;
 
 		tbsptr->show_stats(*ecsptr);
 	}
@@ -183,7 +177,7 @@ namespace Grid
 			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 		}*/
 	}
-	void cell_onHover(EntityComponent::Registry& ecs, Entity id, Entity character)
+	void cell_onHover(Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
@@ -206,7 +200,7 @@ namespace Grid
 		}
 	}
 
-	void cell_offHover(EntityComponent::Registry& ecs, Entity id, Entity character)
+	void cell_offHover( Entity id, Entity character)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
@@ -230,7 +224,7 @@ namespace Grid
 
 
 
-	Entity GameBoard::create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
+	Entity GameBoard::create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
 
@@ -241,13 +235,13 @@ namespace Grid
 		Components::Input in
 		(
 			AEVK_LBUTTON, true,
-			[x, y, this, &ecs]
+			[x, y, this]
 			{
-				this->updateCell(ecs, x, y);
+				this->updateCell(x, y);
 			},
-			[x, y, id, &ecs, this]
+			[x, y, id, this]
 			{
-				cell_onHover(ecs, id, this->pos[x][y]);
+				cell_onHover(id, this->pos[x][y]);
 
 				if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::PLAYER_RESOLUTION)
 				{
@@ -308,9 +302,9 @@ namespace Grid
 					}
 				}
 			},
-			[x, y, id, &ecs, this]
+			[x, y, id, this]
 			{
-				cell_offHover(ecs, id, this->pos[x][y]);
+				cell_offHover(id, this->pos[x][y]);
 			}
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
@@ -328,7 +322,7 @@ namespace Grid
 
 		return id;
 	}
-	void GameBoard::init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
+	void GameBoard::init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
 		CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win)
 	{
 		tbsptr = tbsys;
@@ -347,7 +341,7 @@ namespace Grid
 				f32 x = this->offset.x + (i - j) * CELL_WIDTH / 2; /*+ offset*//*if offset is required*/
 				f32 y = this->offset.y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
 
-				cells[i][j] = create_cells(ecs, mf, { x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
+				cells[i][j] = create_cells({ x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
 				//this->activate[i][j] = false;
 				this->highlight_activate[i][j] = highlight_tag::UNHIGHLIGHTED;
@@ -361,7 +355,7 @@ namespace Grid
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
 		this->pos[x][y] = e;
-		this->walkable[x * MAX_J + y] = 0;
+		this->walkable[y * MAX_I + x] = 0;
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		if (!ecs.getBitMask()[e].test(transID)) return;
@@ -403,15 +397,10 @@ namespace Grid
 		}
 		int dist = grid_dist_manhattan(start_i, start_j, x, y);
 
-		if (!*win)
-		{
-			ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
-		}
-
 		EntityComponent::ComponentTypeID astarID = EntityComponent::getComponentTypeID<Components::AStarResult>();
 		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
 
-		if (ecs.getBitMask()[e].test(astarID))
+		if (ecs.getBitMask()[e].test(astarID) && ecs.getBitMask()[e].test(animID))
 		{
 
 			Components::GridCell s{ start_i, start_j };
@@ -419,18 +408,30 @@ namespace Grid
 
 			Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
 			astar->path = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g).path;
+
+			if(!astar->path.empty())
+			{ 
+				Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
+				anim->anim_type = Components::AnimationType::MOVING;
+
+				this->pos[start_i][start_j] = -1;
+				this->walkable[start_j * MAX_I + start_i] = 1;
+				this->pos[x][y] = e;
+				this->walkable[y * MAX_I + x] = 0;
+
+				if (!*win)
+				{
+					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
+				}
+			}
+			else
+			{
+				std::cout << "Cant find path!!" << std::endl;
+			}
 		}
-
-		if (ecs.getBitMask()[e].test(animID))
-		{
-			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
-			anim->anim_type = Components::AnimationType::MOVING;
-
-		}
-
-		this->pos[start_i][start_j] = -1;
-		this->pos[x][y] = e;
-		this->walkable[x * MAX_J + y] = 0;
+		/*gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
+		gbsptr->GBPActive()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;*/
 	}
 
 	void GameBoard::update(EntityComponent::Registry& ecs, Entity camera)
@@ -490,32 +491,50 @@ namespace Grid
 				}
 
 				//======================update entity cell=====================================
-				if (this->pos[i][j] == -1)
+				if (this->pos[i][j] != -1)
 				{
-					continue;
+					Entity e = this->pos[i][j];
+
+					if (!ecs.getBitMask()[e].test(transID)) return;
+					if (!ecs.getBitMask()[e].test(colorID)) return;
+
+					transform = ecs.getComponent<Components::Transform>(e);
+					color = ecs.getComponent<Components::Color>(e);
+
+					Entity current_cell = this->cells[i][j];
+					colorID = EntityComponent::getComponentTypeID<Components::Color>();
+					if (!ecs.getBitMask()[current_cell].test(colorID)) return;
+
+					color = ecs.getComponent<Components::Color>(current_cell);
+					color->d_color.g = color->d_color.g - 0.4f;
+					color->d_color.r = color->d_color.r - 0.4f;
 				}
 
-				Entity e = this->pos[i][j];
+				if (this->in_walkable_debug && this->walkable[j * MAX_I + i])
+				{
+					color->d_color.r = 0.f;
+					color->d_color.g = 1.f;
+					color->d_color.b = 0.f;
+				}
+				if (this->in_walkable_debug && !this->walkable[j * MAX_I + i])
+				{
+					color->d_color.r = 1.f;
+					color->d_color.g = 0.f;
+					color->d_color.b = 0.f;
+				}
 
-				if (!ecs.getBitMask()[e].test(transID)) return;
-				if (!ecs.getBitMask()[e].test(colorID)) return;
-
-				transform = ecs.getComponent<Components::Transform>(e);
-				color = ecs.getComponent<Components::Color>(e);
-
-				/*transform->pos.x = this->offset.x + (i - j) * CELL_WIDTH / 2;
-				transform->pos.y = transform->size.y / 2 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
-				transform->pos.y = transform->size.y / 3 + this->offset.y - (i + j) * CELL_HEIGHT / 4;
-				transform->pos_onscreen = transform->pos;*/
-
-
-				Entity current_cell = this->cells[i][j];
-				colorID = EntityComponent::getComponentTypeID<Components::Color>();
-				if (!ecs.getBitMask()[current_cell].test(colorID)) return;
-
-				color = ecs.getComponent<Components::Color>(current_cell);
-				color->d_color.g = color->d_color.g - 0.4f;
-				color->d_color.r = color->d_color.r - 0.4f;
+				if (this->in_pos_debug && this->pos[i][j] != -1)
+				{
+					color->d_color.r = 0.f;
+					color->d_color.g = 1.f;
+					color->d_color.b = 0.f;
+				}
+				if (this->in_pos_debug && this->pos[i][j] == -1)
+				{
+					color->d_color.r = 1.f;
+					color->d_color.g = 0.f;
+					color->d_color.b = 0.f;
+				}
 			}
 		}
 	}
@@ -663,25 +682,7 @@ namespace Grid
 		aoe_highlighted_cells.clear();
 		win = nullptr;
 	}
-	/*bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
-	{
-		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
-			return false;
-
-		if (pos[x][y] != -1)
-			return false;
-
-		s32 ex, ey;
-		if (!findEntityCell(e, ex, ey))
-			return false;
-
-		pos[ex][ey] = -1;
-
-		pos[x][y] = e;
-
-		return true;
-	}*/
-	//temporary fix so enemies could folow the tile they are meant to follow.
+	
 	bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
@@ -695,10 +696,10 @@ namespace Grid
 			return false;
 
 		pos[ex][ey] = -1;
-		walkable[ex * MAX_J + ey] = 1;
+		walkable[ey * MAX_I + ex] = 1;
 
 		pos[x][y] = e;
-		walkable[x * MAX_J + y] = 0;
+		walkable[y * MAX_I + x] = 0;
 
 		EntityComponent::ComponentTypeID transID =
 			EntityComponent::getComponentTypeID<Components::Transform>();

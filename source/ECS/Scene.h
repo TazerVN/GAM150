@@ -39,8 +39,9 @@ private:
 	TBS::TurnBasedSystem TBSys;
 	Grid::GameBoard BattleGrid;
 	CombatNameSpace::CombatSystem cbs;
-	Text::NameTag nameTags;
+	//Text::NameTag nameTags;
 	EntityFactory::InteractableNode iNodes;
+
 
 	Camera::CameraSystem* cameraSys;
 	CardSystem* cardSys;

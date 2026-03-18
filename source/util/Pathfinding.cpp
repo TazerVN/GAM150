@@ -42,7 +42,7 @@ Components::AStarResult AStar_FindPath_Grid4(
     if (!inBounds(start.x, start.y) || !inBounds(goal.x, goal.y))
         return out;
 
-    if (!walkable[Id(start.x, start.y, width)] || !walkable[Id(goal.x, goal.y, width)])
+    if (/*!walkable[Id(start.x, start.y, width)] || */!walkable[Id(goal.x, goal.y, width)])
         return out;
 
     const int N = width * height;
@@ -112,3 +112,102 @@ Components::AStarResult AStar_FindPath_Grid4(
     std::reverse(out.path.begin(), out.path.end());
     return out;
 }
+
+
+//column major
+//Components::AStarResult AStar_FindPath_Grid4(
+//    int width, int height,
+//    const uint8_t* walkable,   // 1 = walkable, 0 = blocked, size = width*height
+//    Components::GridCell start, Components::GridCell goal
+//)
+//{
+//    Components::AStarResult out;
+//
+//    auto inBounds = [&](int x, int y)
+//        {
+//            return x >= 0 && x < width && y >= 0 && y < height;
+//        };
+//
+//    if (!inBounds(start.x, start.y) || !inBounds(goal.x, goal.y))
+//    {
+//        std::cout << "Not in bounds" << std::endl;
+//        return out;
+//    }
+//
+//
+//    if (/*!walkable[Id(start.x, start.y, height)] || */!walkable[Id(goal.x, goal.y, height)])
+//    {
+//        std::cout << "start and end is not walkable" << std::endl;
+//        return out;
+//    }
+//
+//    const int N = width * height;
+//    constexpr int INF = INT_MAX;
+//
+//    std::vector<int> g(N, INF);
+//    std::vector<int> parent(N, -1);
+//    std::vector<uint8_t> closed(N, 0);
+//
+//    std::priority_queue<NodeRec, std::vector<NodeRec>, NodeRecGreater> open;
+//
+//    const int startId = Id(start.x, start.y, height);
+//    const int goalId = Id(goal.x, goal.y, height);
+//
+//    g[startId] = 0;
+//    open.push({ startId, HeuristicManhattan(start, goal), 0 });
+//
+//    const int dx[4] = { 1,-1, 0, 0 };
+//    const int dy[4] = { 0, 0, 1,-1 };
+//
+//    while (!open.empty())
+//    {
+//        NodeRec cur = open.top();
+//        open.pop();
+//
+//        if (closed[cur.id]) continue;
+//        closed[cur.id] = 1;
+//
+//        if (cur.id == goalId) break;
+//
+//        int cx = cur.id / height;
+//        int cy = cur.id % height;
+//
+//        for (int k = 0; k < 4; ++k)
+//        {
+//            int nx = cx + dx[k];
+//            int ny = cy + dy[k];
+//            if (!inBounds(nx, ny)) continue;
+//
+//            int nid = Id(nx, ny, height);
+//            if (!walkable[nid]) continue;
+//            if (closed[nid]) continue;
+//
+//            // uniform cost (1 per move)
+//            int tentativeG = g[cur.id] + 1;
+//            if (tentativeG < g[nid])
+//            {
+//                g[nid] = tentativeG;
+//                parent[nid] = cur.id;
+//
+//                Components::GridCell nc{ nx, ny };
+//                int f = tentativeG + HeuristicManhattan(nc, goal);
+//                open.push({ nid, f, tentativeG });
+//            }
+//        }
+//    }
+//
+//    if (parent[goalId] == -1 && goalId != startId)
+//    {
+//        std::cout << "Astar no path" << std::endl;
+//        return out; // no path
+//    }
+//
+//    // reconstruct
+//    for (int at = goalId; at != -1; at = parent[at])
+//    {
+//        out.path.push_back({ at % height, at / height });
+//        if (at == startId) break;
+//    }
+//    std::reverse(out.path.begin(), out.path.end());
+//    return out;
+//}

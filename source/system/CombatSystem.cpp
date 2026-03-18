@@ -22,7 +22,6 @@ std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_selected_cell()
 void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
 	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem)
 {
-	ecsptr = &ecs;
 	gbsptr = &gbs;
 	gbptr = &gb;
 	tbsptr = &tbs;
@@ -110,11 +109,18 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 	this->remove_participant(*ecsptr, targetted_entity);*/
 	if (!graveyard.empty())
 	{
+		Components::Horde_Tag* goons = ecs.getComponent<Components::Horde_Tag>(tbsptr->get_participant()[1]);
 		for (std::pair<AEVec2, Entity> gra : graveyard)
 		{
 			AEVec2& targetPos = gra.first;
 
 			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
+			
+			if (goons->alive())
+			{
+				goons->remove_goon(gra.second);
+			}
+			gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
 			ecs.destroyEntity(gra.second);
 		}
 		graveyard.clear();
@@ -176,7 +182,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 
 			//=============rest shit for player in start phase===============
 
-			Components::TurnBasedStats* stats = ecsptr->getComponent<Components::TurnBasedStats>(playerID);
+			Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(playerID);
 			stats->cur_movSpd = stats->max_movSpd;
 			stats->points = stats->maxPoints;
 			stats->shields = 0.f;
@@ -209,21 +215,10 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			gbsptr->GBPTriggered()[index] = false;
 
 			if(tbsptr->active())
-			tbsptr->debug_print(*ecsptr);
+			tbsptr->debug_print(ecs);
 
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
-			break;
-		}
-		case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
-		{
-			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
-			gbsptr->GBPTriggered()[index] = false;
-			gbsptr->GBPActive()[prev_index] = false;
-			//===================play card==============================
-
-			gbsptr->GBPActive()[index] = true;
-			//=========================================================
 			break;
 		}
 		default:
@@ -269,7 +264,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 			//draw until max_hand
 			for (int i = 0; i < Components::DRAW_COUNT; ++i)
 			{
-				tbsptr->DrawPhase_add_card(*ecsptr);
+				tbsptr->DrawPhase_add_card(ecs);
 			}
 			cardHandptr->reset_hand();
 
@@ -284,19 +279,8 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		}
 		case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 		{
-			//example sample case where animation player can work
-			/*if (update_animation())
-			{
-				play_card_triggered = true;
-			}*/
-
-			//will remove below code once the animation machine is done
-
-			if (gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)
-			{
-				std::cout << "Movement Animating" << std::endl;
-			}
-			else //else the previous player phase is grid select or aoe grid select
+			if((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION && gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT) ||
+				(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION && gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
 			{
 				if (!play_card_triggered)
 				{
@@ -306,7 +290,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 				{
 					play_card_triggered = false;
 
-					PC_RETURN_TAG tag = tbsptr->play_card(*ecsptr, tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
+					PC_RETURN_TAG tag = tbsptr->play_card(ecs, tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
 					, tbsptr->get_selected_cardhand_index());
 
 					if (tag != PC_RETURN_TAG::INVALID)

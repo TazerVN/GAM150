@@ -18,7 +18,7 @@
 #define CELL_HEIGHT 128
 
 #define MAX_I 15
-#define MAX_J 15
+#define MAX_J 20
 
 //forward declaring tbs so that linker can use it 
 namespace TBS { class TurnBasedSystem; }
@@ -44,8 +44,6 @@ namespace Grid
 		AEVec2 offset;
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
-
-		uint8_t walkable[MAX_I * MAX_J]{};
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		//std::array<std::array<bool, MAX_J>, MAX_I> activate;
 
@@ -54,12 +52,16 @@ namespace Grid
 
 		std::vector<AEVec2> aoe_highlighted_cells;
 
-		Entity create_cells(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
+		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
 
 	public:
-		s32 cur_x, cur_y, prev_x, prev_y;
+		bool in_walkable_debug = false;
+		bool in_pos_debug = false;
 
-		void init(EntityComponent::Registry& ecs, MeshFactory& mf, TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
+		s32 cur_x, cur_y, prev_x, prev_y;
+		uint8_t walkable[MAX_I * MAX_J]{};
+
+		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
 			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
 		void placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
 		
@@ -74,7 +76,7 @@ namespace Grid
 		bool moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
-		void updateCell(EntityComponent::Registry& ecs, s32 x, s32 y);
+		void updateCell(s32 x, s32 y);
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();

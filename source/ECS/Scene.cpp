@@ -40,6 +40,8 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	Entity horde = ecs.createEntity();
 	ecs.addComponent(horde, Components::Name{ "Horde" });
 	ecs.addComponent(horde, Components::TurnBasedStats{});
+	ecs.addComponent(horde, Components::Horde_Tag{});
+	
 	
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 
@@ -54,22 +56,18 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
 
 		add_entity_to_scene(temp);                  // adds to scene/world
+		ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);
 		enemyDirector.bindActor(actorId, temp);
 	}
 
-	//New Vector for TBS
-	std::vector<Entity> tbsParticipants;
-	tbsParticipants.push_back(playerID);
-	tbsParticipants.push_back(horde);
-
 	cbs.init(ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
 	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,horde);
-	BattleGrid.init(ecs, mf, &TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3,_win);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3,_win);
 
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
-	nameTags.create_static_nametag(playerID, "Player");
+	//nameTags.create_static_nametag(playerID, "Player");
 
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -102,39 +100,29 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 
 void Scene::update()
 {
+	if (AEInputCheckTriggered(AEVK_F1))
+	{
+		BattleGrid.in_walkable_debug = !BattleGrid.in_walkable_debug;
+	}
+
+	if (AEInputCheckTriggered(AEVK_F2))
+	{
+		BattleGrid.in_pos_debug = !BattleGrid.in_pos_debug;
+	}
+
 	if (AEInputCheckTriggered(AEVK_BACKSLASH))
 	{
 		BattleGrid.debug_print();
 	}
 	if (AEInputCheckTriggered(AEVK_RSHIFT))
 	{
-		//TBSys.debug_print(ecs);
-
-		for (size_t i = 0; i < entities.size(); ++i)
-		{
-			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
-			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
-			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
-
-			std::string name = ecs.getComponent<Components::Name>(entities[i])->value;
-
-			if (ecs.getBitMask()[entities[i]].test(hpID))
-			{
-				f32 HP = ecs.getComponent<Components::HP>(entities[i])->c_value;
-				std::cout << name << "'s HP : " << HP << " | " << std::endl;
-			}
-			else
-			{
-				std::cout << name << " (no HP)" << std::endl;
-			}
-		}
+		TBSys.debug_print(ecs);
 	}
 	if (AEInputCheckTriggered(AEVK_UP))
 	{
 		gbs.debug_print();
 	}
-	nameTags.update();
+	//nameTags.update();
 	if (TBSys.active())
 	{
 		if (TBSys.update())
@@ -147,19 +135,19 @@ void Scene::update()
 			Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
 			player->cur_movSpd = player->ini_movSpd;
 
-			Entity combatNode;
-			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), 
+			Entity BossNode;
+			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), 
 				Components::AnimationType::NONE,Components::VictoryNodeTag::BOSS);
+
+			Entity combatNode;
+			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
+				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 			BattleGrid.placeEntity(ecs,combatNode,0,0);
+			BattleGrid.placeEntity(ecs, BossNode, MAX_I - 1, MAX_J - 1);
 		}
 
 		cbs.update();
 		enemyDirector.update(ecs, gbs, TBSys, BattleGrid, playerID);
-	}
-
-	if (gbs.getGBPhase() == PhaseSystem::GBPhase::WIN)
-	{
-		std::cout << "Here" << std::endl;
 	}
 
 	//==================Handle Events===============================
@@ -219,7 +207,7 @@ void Scene::scene_free()
 	cardSys = nullptr;
 	entities.clear();
 	next_entity = 0;
-	nameTags.name_tag_free();
+	//nameTags.name_tag_free();
 }
 
 PhaseSystem::GameBoardState& Scene::getGBS(){

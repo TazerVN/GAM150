@@ -277,4 +277,11 @@ namespace Components
 		int value;
 	};
 
+	struct Horde_Tag
+	{
+		std::vector<Entity>goons;
+		void remove_goon(Entity);
+		bool alive() const;
+	};
+
 }

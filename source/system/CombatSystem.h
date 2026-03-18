@@ -15,7 +15,7 @@ namespace CombatNameSpace
 	class CombatSystem
 	{
 	private:
-		EntityComponent::Registry* ecsptr = nullptr;
+		Entity horde;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TBS::TurnBasedSystem* tbsptr = nullptr;

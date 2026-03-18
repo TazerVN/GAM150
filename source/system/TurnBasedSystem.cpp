@@ -349,6 +349,7 @@ namespace TBS
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
 			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
 			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
+			EntityComponent::ComponentTypeID hordeTagID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 			std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
 
@@ -359,7 +360,20 @@ namespace TBS
 			}
 			else
 			{
-				std::cout << name << " (no HP)" << std::endl;
+				if (ecs.getBitMask()[participants[i]].test(hordeTagID))
+				{
+					std::vector<Entity> goons = ecs.getComponent<Components::Horde_Tag>(participants[i])->goons;
+					for (Entity goon : goons)
+					{
+						std::string gname = ecs.getComponent<Components::Name>(goon)->value;
+						f32 HP = ecs.getComponent<Components::HP>(goon)->c_value;
+						std::cout << gname << "'s HP : " << HP << " | " << std::endl;
+					}
+				}
+				else
+				{
+					std::cout << name << " (no HP)" << std::endl;
+				}
 			}
 		}
 	}
@@ -451,7 +465,7 @@ namespace TBS
 
 	bool TurnBasedSystem::update() const
 	{
-		return (participants.size() == 1 && participants[0] == playerID);
+		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());
 	}
 	void TurnBasedSystem::tbs_free()
 	{
