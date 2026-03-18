@@ -33,18 +33,17 @@ namespace Grid { class GameBoard; }
 
 namespace CardInteraction
 {
-	void card_onHover(EntityComponent::Registry& ecs, Entity id);
-	void card_offHover(EntityComponent::Registry& ecs, Entity id);
-	void card_onClick(EntityComponent::Registry& ecs, Entity id);
-	void card_offClick(EntityComponent::Registry& ecs, Entity id);
+	void card_onHover(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
+	void card_offHover(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
+	void card_onClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
+	void card_offClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
 
 	class CardHand
 	{
 	private:
-		std::vector<Entity> curr_hand_display{};
+		std::vector<std::pair<Entity, Entity>> curr_hand_display{};
 		std::vector<Entity> curr_card_id{};
 		std::vector<bool> activate;
-		std::vector<Entity> mana_id{};
 		Entity id;
 		bool reset;
 
@@ -76,7 +75,6 @@ namespace CardInteraction
 	};
 
 
-	Entity selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> fp);
-	Entity selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp);
-	void selectableCard_delete(EntityComponent::Registry& ecs, Entity entity);
+	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp, s32 cost);
+	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity, Entity> entity);
 }
