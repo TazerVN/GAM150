@@ -84,6 +84,7 @@ namespace CardInteraction
 	void CardHand::update_logic(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)
 	{
 		//guard against gbsptr being null
+		this->update_pos(ecs, dt);
 		if (gbsptr == nullptr) return;
 		//if not within main phase return
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
@@ -152,7 +153,6 @@ namespace CardInteraction
 			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
 			in->onClick = [this] { this->reset_hand(); };*/
 		}
-		this->update_pos(ecs, dt);
 
 	}
 
@@ -337,12 +337,11 @@ namespace CardInteraction
 		c1->d_color.r = c1->c_color.r - minimum + (1.f - minimum) * lerp;
 		c1->d_color.b = c1->c_color.b - minimum + (1.f - minimum) * lerp;
 		c1->d_color.g = c1->c_color.g - minimum + (1.f - minimum) * lerp;
-		t1->pos_onscreen.y = t1->pos.y + lerp * minimum * t1->size.y/6;
+		//t1->pos_onscreen.y = t1->pos.y + lerp * minimum * t1->size.y/6;
 
 		c2->d_color.r = c2->c_color.r - minimum + (1.f - minimum) * lerp;
 		c2->d_color.b = c2->c_color.b - minimum + (1.f - minimum) * lerp;
 		c2->d_color.g = c2->c_color.g - minimum + (1.f - minimum) * lerp;
-		t2->pos_onscreen.y = t2->pos.y + lerp * minimum * t2->size.y/6;
 	}
 
 	void card_offClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id)
