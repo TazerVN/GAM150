@@ -58,10 +58,10 @@ namespace TextureFactory
 
 		//UI
 
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/binButton.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/deckButton.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaEmpty.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/binButton.png"));         //0
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/deckButton.png"));        //1
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));     //2
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaEmpty.png"));         //3
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaholderElement.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaOne.png"));
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaTwo.png"));
