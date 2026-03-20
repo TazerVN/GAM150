@@ -163,7 +163,7 @@
 		"id": 1020,
 		"name": "Black Hole",
 		"cost": 5.0,
-		"value": 100.0,
+		"value": 20.0,
 		"range": 10.0,
 		"aoe": 7.0
 	}

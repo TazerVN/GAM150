@@ -6,6 +6,9 @@
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
 #include "../system/GridSystem.h"
+#include "system/CardResolver.h"
+#include <set>
+#include <utility>
 #include "../global.h"
 
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_highlighted_cell()
@@ -80,7 +83,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 				std::cout << "Hit Entity :" << ent << std::endl;
 				if (Call_AttackSystem(ecs, ent, card_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 				{
-					std::cout << "Cnnot damage the entity" << std::endl;
+					std::cout << "Cannot damage the entity" << std::endl;
 				}
 				//if died push to graveyard;
 				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
@@ -159,6 +162,26 @@ void CombatNameSpace::CombatSystem::update()
 {
 	update_GBPhasetriggered();
 	update_GBPhaseUpdate();
+
+
+	if (play_card_triggered)
+	{
+		play_card_triggered = false;
+
+		PC_RETURN_TAG tag = this->play_card(tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
+		, tbsptr->get_selected_cardhand_index());
+
+		if (tag != PC_RETURN_TAG::INVALID)
+		{
+			std::cout << "Played an invalid cardtype" << std::endl;
+			tbsptr->set_selected_card(false);
+		}
+
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+	}
+
 	handle_graveyard();
 }
 
@@ -277,9 +300,9 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		{
 			break; 
 		}
-		case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
+		/*case PhaseSystem::GBPhase::PLAYER_RESOLUTION:
 		{
-			if((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION && gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT) ||
+			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION && gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT) ||
 				(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION && gbsptr->getPrevPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
 			{
 				if (!play_card_triggered)
@@ -290,7 +313,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 				{
 					play_card_triggered = false;
 
-					PC_RETURN_TAG tag = tbsptr->play_card(ecs, tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
+					PC_RETURN_TAG tag = tbsptr->play_card(tbsptr->current(), targetted_entity, { f32(targetted_x),f32(targetted_y) }
 					, tbsptr->get_selected_cardhand_index());
 
 					if (tag != PC_RETURN_TAG::INVALID)
@@ -302,7 +325,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 				}
 			}
 			break;
-		}
+		}*/
 		default:
 		{
 			std::cout << "Updating error";
@@ -310,6 +333,103 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		}
 		}
 	}
+}
+
+//returns the status of target being attacked
+PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity target, AEVec2 targetted_pos, int index)
+{
+	PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
+
+	Entity cardID = tbsptr->draw_card(player, index);
+	if (cardID == Components::NULL_INDEX) // Added a guard 
+		return PC_RETURN_TAG::INVALID;
+
+	Components::Targetting_Component* targetting = ecs.getComponent<Components::Targetting_Component>(cardID);
+
+	f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(cardID)->aoe;
+
+	if (!aoe_selected_cells.empty()) aoe_selected_cells.clear();
+	s32 x = gbptr->cur_x; s32 y = gbptr->cur_y;
+
+	std::set<std::pair<int, int>> selected;
+
+	for (int i = -aoe_range; i <= aoe_range; ++i)
+	{
+		for (int j = -aoe_range; j <= aoe_range; ++j)
+		{
+			if (std::abs(i) + std::abs(j) > aoe_range) continue;
+
+			int cx = x + i;
+			int cy = y + j;
+
+			if (cx >= 0 && cx < MAX_I && cy >= 0 && cy < MAX_J)
+				selected.insert({ cx, cy });
+		}
+	}
+
+	for (auto& [cx, cy] : selected)
+		this->aoe_selected_cells.push_back({ f32(cx), f32(cy) });
+
+	/*for (int i = 0; i <= aoe_range; ++i)
+	{
+		for (int j = 0; j <= aoe_range; ++j)
+		{
+			if (i + j > aoe_range) continue;
+
+			if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
+			{
+				this->aoe_selected_cells.push_back({ f32(x + i) , f32(y + j) });
+			}
+			if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
+			{
+				this->aoe_selected_cells.push_back({ f32(x - i) , f32(y - j) });
+			}
+			if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
+			{
+				this->aoe_selected_cells.push_back({ f32(x + i) , f32(y - j) });
+			}
+			if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
+			{
+				this->aoe_selected_cells.push_back({ f32(x - i) , f32(y + j) });
+			}
+		}
+	}*/
+
+	//remove the card that just played inside tbs
+	f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
+	int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
+
+	if (card_cost > player_curMana) // Added a not enough mana condition
+	{
+		std::cout << "Not enough mana!!" << std::endl;
+		return PC_RETURN_TAG::INVALID;
+	}
+
+	ret = CardResolver::resolve(
+		ecs,
+		*this,
+		*gbptr,
+		*tbsptr,
+		player,
+		cardID,
+		target,
+		targetted_pos
+	);
+
+	// Made it a guard for you Steven - Zejin
+	if (ret == PC_RETURN_TAG::VALID)
+	{
+		player_curMana -= card_cost;
+		this->remove_card(ecs, player, index);
+	}
+
+	return ret;
+}
+
+void CombatNameSpace::CombatSystem::remove_card(EntityComponent::Registry& ecs, Entity user, int index)
+{
+	EntityFactory::remove_card_player(ecs, user, index);	//this is to remove data from ecs
+	cardHandptr->remove_card(ecs, index);		//this is for visual side
 }
 
 void CombatNameSpace::CombatSystem::end_player_resolution()

@@ -78,21 +78,14 @@ namespace TBS
 		void show_discard(EntityComponent::Registry& ecs) const;
 		void show_stats(EntityComponent::Registry& ecs) const;
 
-
-		void next_enemy_or_player(EntityComponent::Registry& ecs);	// For Enemy CPU
-		void yield_to_player(EntityComponent::Registry& ecs);
-
 		//============Combat=======================
-
-		PC_RETURN_TAG play_card(EntityComponent::Registry& ecs, Entity player, Entity target, AEVec2 targetted_pos, int index);
-
+	
 		void DrawPhase_add_card(EntityComponent::Registry& ecs);
-		void remove_card(EntityComponent::Registry& ecs, Entity user, int index);
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
 		void select_card(EntityComponent::Registry& ecs);
-		//draw the card of the player
-		Entity draw_card(EntityComponent::Registry& ecs, Entity player, size_t chIndex);
+		//return the cardID inside the hand
+		Entity draw_card(Entity player, size_t chIndex);
 
 		bool update() const;
 		void tbs_free();

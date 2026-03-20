@@ -46,6 +46,10 @@ namespace CombatNameSpace
 		void set_targetted_xy(int x, int y);
 		void set_play_card_triggered(bool flag);
 
+		//draw the card of the player
+		//Entity draw_card(Entity player, size_t chIndex);
+		PC_RETURN_TAG play_card(Entity player, Entity target, AEVec2 targetted_pos, int index);
+		void remove_card(EntityComponent::Registry& ecs, Entity user, int index);
 
 		void update();
 		void update_GBPhasetriggered();

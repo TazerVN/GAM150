@@ -181,8 +181,13 @@ namespace TBS
 		if (current() == playerID)
 		{
 			gbsptr->resetPlayerPhase();
+			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
 		}
-
+		else
+		{
+			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::ENEMY_PHASE);
+		}
+		
 		gameBoardptr->unselect_card();
 		gameBoardptr->unselect_movement();
 		debug_print(ecs);
@@ -231,7 +236,7 @@ namespace TBS
 		int index = get_selected_cardhand_index();
 
 		Entity current_entt = current();
-		Entity card = draw_card(ecs, current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
+		Entity card = this->draw_card(current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
 
 		if (card == Components::NULL_INDEX)
 		{
@@ -239,7 +244,6 @@ namespace TBS
 			return;
 		}
 
-		std::cout << "Attacking with " << ecs.getComponent<Components::Name>(card)->value << std::endl;
 		std::cout << "Select Enemy to use card on" << std::endl;
 		set_selected_card(true);	//set current participant's selected card to true
 
@@ -256,76 +260,18 @@ namespace TBS
 
 		Components::Targetting_Component* targComp = ecs.getComponent<Components::Targetting_Component>(card);
 		
-		if(targComp->targetting_type == Targetting::SINGLE_TARGET)
-			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
-		else 
+		if(targComp->targetting_type == Targetting::AOE)
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::AOE_GRID_SELECT);
+		else 
+			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 	}
-
+	
 	//return the cardID inside the hand
-	Entity TurnBasedSystem::draw_card(EntityComponent::Registry& ecs, Entity player, size_t chIndex)
+	Entity TurnBasedSystem::draw_card(Entity player, size_t chIndex)
 	{
 		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
-
 		return player_storage->data_card_hand[chIndex];
 	}
-
-	//returns the status of target being attacked
-	PC_RETURN_TAG TurnBasedSystem::play_card(EntityComponent::Registry& ecs, Entity player,Entity target, AEVec2 targetted_pos, int index)
-	{
-		PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
-
-		Entity cardID = this->draw_card(ecs, player, index);
-		if (cardID == Components::NULL_INDEX) // Added a guard 
-			return PC_RETURN_TAG::INVALID;
-
-		std::string name = ecs.getComponent<Components::Name>(cardID)->value;
-		
-		/*CardTag* tag = ecs.getComponent<CardTag>(cardID);
-		switch (*tag)
-		{
-		case CardTag::ATTACK:
-		{
-			cbsptr->play_attack_card(ecs,cardID,target,targetted_pos);
-			break;
-		}
-		default:
-			break;
-		}
-
-		 ret = PC_RETURN_TAG::VALID;*/
-
-		//remove the card that just played inside tbs
-		 f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
-		 int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
-
-		 if (card_cost > player_curMana) // Added a not enough mana condition
-		 {
-			 std::cout << "Not enough mana!!" << std::endl;
-			 return PC_RETURN_TAG::INVALID;
-		 }
-
-		 ret = CardResolver::resolve(
-			 ecs,
-			 *cbsptr,
-			 *gameBoardptr,
-			 *this,
-			 player,
-			 cardID,
-			 target,
-			 targetted_pos
-		 );
-
-		 // Made it a guard for you Steven - Zejin
-		 if (ret == PC_RETURN_TAG::VALID)
-		 {
-			 player_curMana -= card_cost;
-			 remove_card(ecs, player, index);
-		 }
-
-		 return ret;
-	}
-
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(EntityComponent::Registry& ecs) const
 	{
@@ -455,12 +401,6 @@ namespace TBS
 		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
 		//remove the card afterwards
 		drawPile.erase(drawPile.begin() + index);
-	}
-
-	void TurnBasedSystem::remove_card(EntityComponent::Registry& ecs,Entity user,int index)
-	{
-		EntityFactory::remove_card_player(ecs, user, index);	//this is to remove data from ecs
-		cardHandptr->remove_card(ecs,index);		//this is for visual side
 	}
 
 	bool TurnBasedSystem::update() const

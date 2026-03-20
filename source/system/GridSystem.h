@@ -48,8 +48,8 @@ namespace Grid
 		//std::array<std::array<bool, MAX_J>, MAX_I> activate;
 
 		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
-		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 
+		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 		std::vector<AEVec2> aoe_highlighted_cells;
 
 		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
@@ -77,6 +77,7 @@ namespace Grid
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
 		void updateCell(s32 x, s32 y);
+		void func_aoe_hightlight_cells(s32 x , s32 y);
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();

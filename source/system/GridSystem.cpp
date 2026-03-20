@@ -55,10 +55,15 @@ namespace Grid
 			{
 				if (tbsptr->is_current_selected_card())
 				{
+					Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
+					Targetting targettingType = ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type;
+
+					std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
 					if (pos[x][y] != -1)
 					{
-						if (pos[x][y] == tbsptr->current())
+						if (targettingType!= Targetting::SELF && pos[x][y] == tbsptr->current())
 						{
+							std::cout << "Selected Player initializing Movement" << std::endl;
 							unselect_card();
 							move_select(x, y);
 							return;
@@ -84,7 +89,7 @@ namespace Grid
 			case PhaseSystem::PlayerPhase::PLAYER_EXPLORE:
 			{
 				//check if an empty cell is clicked
-				if (selected_part && this->cur != -1)
+				if (selected_part)
 				{
 					move_trigger(x,y);
 				}
@@ -106,7 +111,7 @@ namespace Grid
 		cbsptr->set_targetted_xy(x, y);
 		gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
-		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;
+		/*gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;*/
 
 		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(playerID);
 		anim->anim_type = Components::AnimationType::ATTACK_MELEE;
@@ -245,61 +250,16 @@ namespace Grid
 
 				if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::PLAYER_RESOLUTION)
 				{
-					for (AEVec2 a : cbsptr->get_aoe_selected_cell())
+					for (AEVec2 a :this->aoe_highlighted_cells)
 					{
 						aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
-					cbsptr->get_aoe_selected_cell().clear();
+					this->aoe_highlighted_cells.clear();
 				}
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
 				{
-					Entity card_ID = tbsptr->draw_card(ecs, tbsptr->current(), tbsptr->get_selected_cardhand_index());
-					f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
-					f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
-
-					AEVec2 cur_part_pos = Get_CurPart_gridPos();
-
-					int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
-
-					if (rng <= range)
-					{
-						for (int i = 0; i <= aoe_range; ++i)
-						{
-							for (int j = 0; j <= aoe_range; ++j)
-							{
-								if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
-								{
-									if (this->aoe_highlight_activate[x + i][y + j])
-										continue;
-									cbsptr->get_aoe_selected_cell().push_back({ f32(x + i) , f32(y + j) });
-									this->aoe_highlight_activate[x + i][y + j] = 1;
-								}
-								if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
-								{
-									if (this->aoe_highlight_activate[x - i][y - j])
-										continue;
-									cbsptr->get_aoe_selected_cell().push_back({ f32(x - i) , f32(y - j) });
-									this->aoe_highlight_activate[x - i][y - j] = 1;
-								}
-								if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
-								{
-									if (this->aoe_highlight_activate[x + i][y - j])
-										continue;
-									cbsptr->get_aoe_selected_cell().push_back({ f32(x + i) , f32(y - j) });
-									this->aoe_highlight_activate[x + i][y - j] = 1;
-								}
-								if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
-								{
-									if (this->aoe_highlight_activate[x - i][y + j])
-										continue;
-									cbsptr->get_aoe_selected_cell().push_back({ f32(x - i) , f32(y + j) });
-									this->aoe_highlight_activate[x - i][y + j] = 1;
-								}
-							}
-						}
-						this->aoe_highlight_activate[x][y] = 2;
-					}
+					this->func_aoe_hightlight_cells(x, y);
 				}
 			},
 			[x, y, id, this]
@@ -564,8 +524,6 @@ namespace Grid
 		if (!selected_part) return;
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 		selected_part = false;
-		//this->activate[this->cur_x][this->cur_y] = false;
-		this->cur = -1;
 	}
 
 	AEVec2 GameBoard::Get_gridPos(AEVec2 const& pos, Entity camera)
@@ -716,6 +674,56 @@ namespace Grid
 		}
 
 		return true;
+	}
+
+	void GameBoard::func_aoe_hightlight_cells(s32 x, s32 y)
+	{
+		Entity card_ID = tbsptr->draw_card(tbsptr->current(), tbsptr->get_selected_cardhand_index());
+		f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
+		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
+
+		AEVec2 cur_part_pos = Get_CurPart_gridPos();
+
+		int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
+
+		if (rng <= range)
+		{
+			for (int i = 0; i <= aoe_range; ++i)
+			{
+				for (int j = 0; j <= aoe_range; ++j)
+				{
+					if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
+					{
+						if (this->aoe_highlight_activate[x + i][y + j])
+							continue;
+						this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y + j) });
+						this->aoe_highlight_activate[x + i][y + j] = 1;
+					}
+					if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
+					{
+						if (this->aoe_highlight_activate[x - i][y - j])
+							continue;
+						this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y - j) });
+						this->aoe_highlight_activate[x - i][y - j] = 1;
+					}
+					if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
+					{
+						if (this->aoe_highlight_activate[x + i][y - j])
+							continue;
+						this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y - j) });
+						this->aoe_highlight_activate[x + i][y - j] = 1;
+					}
+					if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
+					{
+						if (this->aoe_highlight_activate[x - i][y + j])
+							continue;
+						this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y + j) });
+						this->aoe_highlight_activate[x - i][y + j] = 1;
+					}
+				}
+			}
+			this->aoe_highlight_activate[x][y] = 2;
+		}
 	}
 
 }

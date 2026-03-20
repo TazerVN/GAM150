@@ -183,7 +183,6 @@ namespace Animation
 							if (moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
-								//cs.end_player_resolution();
 							}
 							break;
 						case Components::AnimationType::ATTACK_MELEE:

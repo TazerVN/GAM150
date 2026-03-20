@@ -112,7 +112,7 @@ namespace CardInteraction
 				//	tbsptr->select_card(ecs);
 				//}
 				this->activate[i] = false;
-				Entity cardID = tbsptr->draw_card(ecs, playerID, i);
+				Entity cardID = tbsptr->draw_card(playerID, i);
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
 				

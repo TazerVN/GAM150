@@ -166,7 +166,7 @@ void Scene::update()
 		{
 		case highlight_tag::ATTACK_HIGHLIGHT: 
 		{
-			Entity card_ID = TBSys.draw_card(ecs, TBSys.current(), TBSys.get_selected_cardhand_index());
+			Entity card_ID = TBSys.draw_card(TBSys.current(), TBSys.get_selected_cardhand_index());
 			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
 			highlight_cells(ecs, TBSys, BattleGrid, cbs , card_range, highlight_type);
@@ -244,7 +244,7 @@ void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, 
 	{
 		for (int j = 0; j <= range; ++j)
 		{
-			if (i + j == 0) continue;
+			//if (i + j == 0) continue;
 			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J)
 			{
 				if(gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
