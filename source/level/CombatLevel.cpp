@@ -2,6 +2,7 @@
 #include "../UI/cardInteraction.h"
 #include "CombatLevel.h"
 #include "../util/LevelManager.h"
+#include "../UI/UI.h"
 
 Scene scene;
 UI::UIManager UIM;
@@ -46,17 +47,26 @@ void LevelStateCombat_update()
 		PS.particleClick(ecs, mf, worldX, worldY);
 	}
 
-	if (AEInputCheckTriggered(AEVK_H)) // test particle
+	if (!UIM.getPauseMenu().isOn())
 	{
+		UIM.getPauseMenu().free(ecs);
+		if (AEInputCheckTriggered(AEVK_H)) // test particle
+		{
 
-		PS.particleHeal(ecs, mf, 0.0f, 0.0f);
+			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
+		}
+		scene.update();
+		PS.update(ecs, 0.2);
+		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+		UIM.update(scene, dt);
+		PUT.update();
+		AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
 	}
-	scene.update();
-	PS.update(ecs, 0.2);
-	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
-	UIM.update(scene, dt);
-	PUT.update();
-	AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
+	else if(!UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
+	{
+		PauseMenu& p = UIM.getPauseMenu();
+		p = PauseMenu(ecs, mf, 50);
+	}
 
 	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;
 }

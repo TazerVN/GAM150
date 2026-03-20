@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\UI\PauseMenu.cpp" />
     <ClCompile Include="source\level\EncounterLevel.cpp" />
     <ClCompile Include="source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -55,8 +56,10 @@
     <ClCompile Include="source\util\util.cpp" />
     <ClCompile Include="source\ECS\Scene.cpp" />
     <ClCompile Include="source\system\TimerSystem.cpp" />
+    <ClCompile Include="source\UI\UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\UI\PauseMenu.h" />
     <ClInclude Include="source\level\EncounterLevel.h" />
     <ClInclude Include="source\pch.h" />
     <ClInclude Include="source\level\CombatLevel.h" />
@@ -100,6 +103,7 @@
     <ClInclude Include="source\ECS\Scene.h" />
     <ClInclude Include="source\system\TimerSystem.h" />
     <ClInclude Include="source\types.h" />
+    <ClInclude Include="source\UI\UIObject.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

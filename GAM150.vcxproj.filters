@@ -56,6 +56,8 @@
     <ClCompile Include="source\pch.cpp" />
     <ClCompile Include="source\system\CardResolver.cpp" />
     <ClCompile Include="source\level\EncounterLevel.cpp" />
+    <ClCompile Include="source\UI\PauseMenu.cpp" />
+    <ClCompile Include="source\UI\UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -115,5 +117,7 @@
     <ClInclude Include="source\types.h" />
     <ClInclude Include="source\system\CardResolver.h" />
     <ClInclude Include="source\level\EncounterLevel.h" />
+    <ClInclude Include="source\UI\PauseMenu.h" />
+    <ClInclude Include="source\UI\UIObject.h" />
   </ItemGroup>
 </Project>
