@@ -9,11 +9,17 @@
 class CardDisplay
 {
 	private:
-	Entity id, name, description;
+	Entity current_card_id;
+	struct Info
+	{
+		Entity name;
+		Entity cost;
+		Entity description;
+	};
+	Info text;
+	bool on;
 
 	public:
-	CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex);
-	CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, AEGfxTexture* pTex, TBS::TurnBasedSystem& tbs);
 	CardDisplay() = default;
 	void update(EntityComponent::Registry& ecs);
 

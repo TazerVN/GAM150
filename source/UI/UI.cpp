@@ -7,6 +7,15 @@ namespace UI
 
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
+		//hand
+		s32 w_width = AEGfxGetWindowWidth();
+		s32 w_height = AEGfxGetWindowHeight();
+
+		hand = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
+										 , scene.getGBS());
+
+
+
 		//========================================== buttons ======================================
 		//end turn button
 		Entity end_b = ui_button_texture(ecs, mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
@@ -72,12 +81,14 @@ namespace UI
 		this->current_ui.push_back(mana_bar);
 	}
 
-	void UIManager::update(Scene& scene)
+	void UIManager::update(Scene& scene, f32 dt)
 	{
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
+
+		hand.update_logic(ecs, scene.getTBS(), mf, TF, dt);
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 		{
@@ -186,10 +197,20 @@ namespace UI
 		}
 	}*/
 
+	CardInteraction::CardHand& UIManager::getCardHand()
+	{
+		return this->hand;
+	}
+	CardDisplay& UIManager::getCardDisplay()
+	{
+		return this->info;
+	}
 
 
 	void UIManager::free(EntityComponent::Registry& ecs)
 	{
+		hand.card_interaction_free();
+
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
 			ecs.destroyEntity(p.second);

@@ -4,7 +4,6 @@
 #include "../util/LevelManager.h"
 
 Scene scene;
-CardInteraction::CardHand card{};
 UI::UIManager UIM;
 Particle::ParticleSystem PS;
 
@@ -23,14 +22,14 @@ void LevelStateCombat_init()
 	ecs.getComponent<Components::Card_Storage>(playerID)->init();
 
 
-	scene.init(ecs, mf, card_system, TF, CS, card);
-	card = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-		, scene.getGBS(), UIM);
+	scene.init(ecs, mf, card_system, TF, CS, UIM.getCardHand());
+	/*card = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
+		, scene.getGBS(), UIM);*/
 	UIM.init(scene, mf, TF);
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
-	PUT.init(&ecs, card.getID());
+	PUT.init(&ecs, UIM.getCardHand().getID());
 	ecs.remove_empty_groups();
 }
 void LevelStateCombat_update()
@@ -53,8 +52,7 @@ void LevelStateCombat_update()
 		PS.particleHeal(ecs, mf, 0.0f, 0.0f);
 	}
 	scene.update();
-	card.update_logic(ecs, scene.getTBS(), mf, TF, dt);
-	UIM.update(scene);
+	UIM.update(scene, dt);
 	PS.update(ecs, 0.2);
 	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 	PUT.update();
@@ -65,7 +63,7 @@ void LevelStateCombat_update()
 void LevelStateCombat_free()
 {
 	scene.scene_free();
-	card.card_interaction_free();
+	UIM.free(ecs);
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
 }

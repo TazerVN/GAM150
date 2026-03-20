@@ -62,7 +62,7 @@ namespace CardInteraction
 	}
 
 	CardHand::CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height,
-					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, UI::UIManager& UIM)
+					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
 		: CardHand()
 	{
 		this->reset = true;
@@ -78,7 +78,6 @@ namespace CardInteraction
 		gbptr = &gb;
 		mfptr = &mf;
 		tfptr = &tf;
-		uimptr= &UIM;
 	}
 
 	void CardHand::update_logic(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)

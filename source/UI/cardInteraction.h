@@ -9,10 +9,10 @@
 //#include "../system/transformSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-//#include "../System/TurnBasedSystem.h"
-//#include "../system/GridSystem.h"
-//#include "../system/PhaseSystem.h"
-#include "../UI/UI.h"
+#include "../System/TurnBasedSystem.h"
+#include "../system/GridSystem.h"
+#include "../system/PhaseSystem.h"
+//#include "../UI/UI.h"
 
 
 #include <iostream>
@@ -47,20 +47,20 @@ namespace CardInteraction
 		Entity id;
 		bool reset;
 
+
 		TBS::TurnBasedSystem* tbsptr = nullptr;
 		
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		MeshFactory* mfptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TextureFactory::TextureFactory* tfptr = nullptr;
-		UI::UIManager* uimptr = nullptr;
 
 
 	public:
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, 
-			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, UI::UIManager& UIM);
+			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs);
 
 		CardHand();
 
