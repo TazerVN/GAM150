@@ -20,4 +20,6 @@
 #include "system/velocitySystem.h"
 #include "system/AnimationSystem.h"
 #include "system/particleSystem.h"
+#include "system/GridSystem.h"
+#include "system/CombatSystem.h"
 #include "global.h"
