@@ -13,6 +13,7 @@
 #include "../system/GridSystem.h"
 #include "../system/PhaseSystem.h"
 //#include "../UI/UI.h"
+#include "../UI/cardInformation.h"
 
 
 #include <iostream>
@@ -33,8 +34,9 @@ namespace Grid { class GameBoard; }
 
 namespace CardInteraction
 {
-	void card_onHover(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
-	void card_offHover(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
+
+	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data);
+	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id);
 	void card_onClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
 	void card_offClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
 
@@ -54,13 +56,14 @@ namespace CardInteraction
 		MeshFactory* mfptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TextureFactory::TextureFactory* tfptr = nullptr;
+		CardInformation::CardDisplay* cdptr = nullptr;
 
 
 	public:
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
 		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, 
-			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs);
+			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd);
 
 		CardHand();
 
@@ -75,7 +78,9 @@ namespace CardInteraction
 		void card_interaction_free();
 	};
 
-
-	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp, s32 cost);
+	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf,
+													f32 x, f32 y, f32 width, f32 height, 
+													f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp, 
+													s32 cost, CardInformation::CardDisplay& cd, Entity card_data);
 	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity, Entity> entity);
 }

@@ -4,6 +4,9 @@
 
 namespace UI
 {
+	UIManager::UIManager() : actor_children_list{}, mana_children_list{}, current_ui{}
+	{
+	}
 
 	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
 	{
@@ -12,8 +15,7 @@ namespace UI
 		s32 w_height = AEGfxGetWindowHeight();
 
 		hand = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-										 , scene.getGBS());
-
+										 , scene.getGBS(), info);
 
 
 		//========================================== buttons ======================================
@@ -83,12 +85,23 @@ namespace UI
 
 	void UIManager::update(Scene& scene, f32 dt)
 	{
+
+		if(this->info.isOn() && !this->info.isCreated())
+		{
+			info = CardInformation::CardDisplay(ecs, mf, -0.75F * AEGfxGetWinMaxX(), 0.50F * AEGfxGetWinMaxY(), 379, 458, 30);
+		}
+		else if(!this->info.isOn() && this->info.isCreated())
+		{
+			info.free(ecs);
+		}
+
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 		hand.update_logic(ecs, scene.getTBS(), mf, TF, dt);
+		info.update(ecs);
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 		{
@@ -201,7 +214,7 @@ namespace UI
 	{
 		return this->hand;
 	}
-	CardDisplay& UIManager::getCardDisplay()
+	CardInformation::CardDisplay& UIManager::getCardDisplay()
 	{
 		return this->info;
 	}
@@ -210,6 +223,7 @@ namespace UI
 	void UIManager::free(EntityComponent::Registry& ecs)
 	{
 		hand.card_interaction_free();
+		info.free(ecs);
 
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{
