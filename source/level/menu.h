@@ -1,5 +1,6 @@
 #pragma once
 #include "AEEngine.h"
+#include "../system/particleSystem.h"
 
 static bool shouldQuit = false;
 static AEGfxTexture* bgTexture = nullptr;
