@@ -2,6 +2,7 @@
 #include "AEEngine.h"
 
 static bool shouldQuit = false;
+static AEGfxTexture* bgTexture = nullptr;
 
 struct Button {
     float x, y, width, height;
@@ -21,3 +22,4 @@ void GameStateMainMenu_unload();
 
 bool IsMouseOver(const Button& btn);
 void DrawButton(const Button& btn);
+
