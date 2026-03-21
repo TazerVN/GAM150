@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../factory/MeshFactory.h"
+
 #include "../ECS/ECSystem.h"
+#include "../factory/MeshFactory.h"
 #include "../types.h"
 
 #include "AEEngine.h"
@@ -20,6 +21,8 @@ namespace Particle
 		void update(f32 dt);
 
 		void spawn_one(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
+
+		void spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
 		void particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
@@ -62,6 +65,10 @@ namespace Particle
 		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf);
 
 		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+
+		void particleDataFlow(EntityComponent::Registry& ecs, MeshFactory& mf);
+
+		void particleDataBubble(EntityComponent::Registry& ecs, MeshFactory& mf);
 
 		void particle_system_free();
 
