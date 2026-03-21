@@ -410,12 +410,46 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
 COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage)
 {
 	EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
+
+	// Check in enity have hp
+	Components::HP* hp = ecs.getComponent<Components::HP>(target);
+	if (!hp)
+		return COMBAT_SYSTEM_RETURN_TAG::INVALID;
+
 	//test if card have attack id
-	if (!(ecs.getBitMask()[target].test(hpID))) return COMBAT_SYSTEM_RETURN_TAG::INVALID;
+	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(target);
 
-	//if the have components then reduce the HP amount
-	ecs.getComponent<Components::HP>(target)->c_value -= damage;
+	// Aura Farm: ignore all damage
+	if (stats && stats->invincible)
+	{
+		std::cout << "[Combat] Target " << target << " is invincible. Damage ignored.\n";
+		return COMBAT_SYSTEM_RETURN_TAG::VALID;
+	}
 
+	// Shield absorbs damage first
+	if (stats && stats->shields > 0)
+	{
+		if (stats->shields >= damage)
+		{
+			stats->shields -= damage;
+			damage = 0.0f;
+		}
+		else
+		{
+			damage -= stats->shields;
+			stats->shields = 0.0f;
+		}
+	}
+
+	// Leftover damage hits HP
+	hp->c_value -= damage;
+
+	std::cout << "[Combat] Target: " << target;
+	if (stats)
+	{
+		std::cout << " | Shield After: " << stats->shields;
+	}
+	std::cout << " | HP After: " << hp->c_value << '\n';
 
 	return COMBAT_SYSTEM_RETURN_TAG::VALID;
 }
@@ -485,7 +519,8 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(playerID);
 			stats->cur_movSpd = stats->max_movSpd;
 			stats->points = stats->maxPoints;
-			stats->shields = 0.f;
+			//stats->shields = 0.f;
+			stats->invincible = false;
 
 			//===============================================================
 

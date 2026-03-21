@@ -285,6 +285,7 @@ namespace Components
 		int atkBuffHitsLeft{ 0 };	// hits left for atk buff
 		int atkBuffStacks{ 0 };		// stacks left ofr atk buff MAX 3
 		f32 atkMultiplier{ 1.0f };	// multiplier
+		bool invincible{ false };	// MARK?!?!?!
 		f32 ini_movSpd;
 		f32 max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 	};

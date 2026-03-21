@@ -18,6 +18,7 @@ namespace EntityFactory {
 			0,	//atkhits left
 			0,	//atkbuff stacks left
 			1.f,	//ATK Multiplier
+			false,	//invincibility flag
 			7.f};	//movement spd
 		//=====================Render==========================
 		Components::Texture texture{pTex, 0.0f, 0.0f};

@@ -86,12 +86,12 @@ namespace CardResolver
 			switch (family)
 			{
 			case 0: // Shield
-				stats->shields += value->value;
+				stats->shields += static_cast<int>(value->value);
 				return PC_RETURN_TAG::VALID;
 
 			case 1: // Aura Farm
-				// TODO: implement proper reduction/invincibility stat when your team adds it
-				std::cout << "[CardResolver] Defense family 1 not fully implemented yet.\n";
+				stats->invincible = true;
+				std::cout << "[CardResolver] Aura Farm applied. Invincible for next enemy phase.\n";
 				return PC_RETURN_TAG::VALID;
 
 			default:
