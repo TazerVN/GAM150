@@ -6,7 +6,7 @@
 
 Scene scene;
 UI::UIManager UIM;
-Particle::ParticleSystem PS;
+//Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
 {
