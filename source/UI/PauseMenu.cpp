@@ -3,7 +3,7 @@
 #include "../UI/UIObject.h"
 #include "AEEngine.h"
 
-PauseMenu::PauseMenu(EntityComponent::Registry& ecs, MeshFactory& mf, s32 z) 
+PauseMenu::PauseMenu(s32 z) 
 	: on{ false }, created{false}, dim {}, continue_button{}, restart_button{}, leave_button{}
 {
 	Components::TagClass tag{ Components::Tag::UI };
@@ -31,13 +31,13 @@ PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)
 	return *this;
 }
 
-void PauseMenu::update(EntityComponent::Registry& ecs)
+void PauseMenu::update()
 {
 	//auto button = ecs.getComponent<Components::Input>(this->continue_button);
 	//button->onClick = [this]{ this->on; };
 }
 
-void PauseMenu::free(EntityComponent::Registry& ecs)
+void PauseMenu::free()
 {
 	if(this->dim != 0){
 		ecs.destroyEntity(this->dim);

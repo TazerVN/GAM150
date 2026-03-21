@@ -8,8 +8,6 @@
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
-	MeshFactory& mf,
-	TextureFactory::TextureFactory& tf,
 	EnemyDirector& enemyDirector,
 	const std::string& actorId,
 	const char* name,
@@ -17,7 +15,7 @@ Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
 	Entity fa,
 	Entity sa)
 {
-	Entity e = EntityFactory::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+	Entity e = EntityFactory::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
 	enemyDirector.bindActor(actorId, e);
 	return e;
 }
@@ -92,7 +90,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
 		{
-			BattleGrid.placeEntity(ecs, entities[i], x, y);
+			BattleGrid.placeEntity(entities[i], x, y);
 		}
 		else
 		{
@@ -156,12 +154,12 @@ void Scene::update()
 			Entity combatNode;
 			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
-			BattleGrid.placeEntity(ecs, combatNode, 0, 0);
-			BattleGrid.placeEntity(ecs, BossNode, MAX_I - 1, MAX_J - 1);
+			BattleGrid.placeEntity(combatNode, 0, 0);
+			BattleGrid.placeEntity(BossNode, MAX_I - 1, MAX_J - 1);
 		}
 
 		cbs.update();
-		enemyDirector.update(ecs, gbs, TBSys, BattleGrid, playerID);
+		enemyDirector.update(gbs, TBSys, BattleGrid);
 	}
 
 	//==================Handle Events===============================
@@ -220,6 +218,7 @@ void Scene::scene_free()
 	cameraSys = nullptr;
 	entities.clear();
 	next_entity = 0;
+	_win = false;
 	//nameTags.name_tag_free();
 }
 

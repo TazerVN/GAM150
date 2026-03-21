@@ -141,11 +141,9 @@ void EnemyDirector::bindActor(const std::string& actorId, Entity e)
 }
 
 
-void EnemyDirector::update(EntityComponent::Registry& ecs,
-    PhaseSystem::GameBoardState& gbs,
+void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     TBS::TurnBasedSystem& tbs,
-    Grid::GameBoard& board,
-    Entity playerID)
+    Grid::GameBoard& board)
 {
     (void)gbs;
 

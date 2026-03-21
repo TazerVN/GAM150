@@ -31,7 +31,7 @@ namespace CardInformation
 		CardDisplay(const CardDisplay& rhs);
 		CardDisplay& operator=(const CardDisplay& rhs);
 		CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, s32 z);
-		void update(EntityComponent::Registry& ecs);
+		void update();
 
 		bool isOn();
 		bool isCreated();

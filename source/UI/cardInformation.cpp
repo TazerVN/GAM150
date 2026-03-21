@@ -83,7 +83,7 @@ namespace CardInformation
 		text.free();
 
 	}
-	void CardDisplay::update(EntityComponent::Registry& ecs)
+	void CardDisplay::update()
 	{
 		if(this->current_card_id != 0 && this->created && this->on)
 		{

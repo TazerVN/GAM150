@@ -42,6 +42,15 @@ void Components::Card_Storage::free()
 	data_discard_pile.clear();
 }
 
+void Components::Card_Storage::reset()
+{
+	for (Entity card : original_draw_pile)
+	{
+		ecs.destroyEntity(card);
+	}
+	original_draw_pile.clear();
+}
+
 Components::Input::Input(u8 type, bool hover,
 	std::function<void()> onClick,
 	std::function<void()> onHover,

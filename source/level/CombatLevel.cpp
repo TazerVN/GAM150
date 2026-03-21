@@ -67,7 +67,7 @@ void LevelStateCombat_update()
 
 	if (!scene.getTBS().player_died && !UIM.getPauseMenu().isOn())
 	{
-		UIM.getPauseMenu().free(ecs);
+		UIM.getPauseMenu().free();
 		if (AEInputCheckTriggered(AEVK_H)) // test particle
 		{
 			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
@@ -81,7 +81,7 @@ void LevelStateCombat_update()
 	else if(!scene.getTBS().player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
 		PauseMenu& p = UIM.getPauseMenu();
-		p = PauseMenu(ecs, mf, 50);
+		p = PauseMenu(50);
 	}
 
 	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;

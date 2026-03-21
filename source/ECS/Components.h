@@ -259,6 +259,7 @@ namespace Components
 		void reshuffle_discard2deck();
 		void init();
 		void free();
+		void reset();
 
 
 		std::vector<size_t> original_draw_pile;

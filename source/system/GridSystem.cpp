@@ -74,7 +74,7 @@ namespace Grid
 						unselect_card();
 						return;
 					}
-					trigger_play_card(ecs, x, y);
+					trigger_play_card(x, y);
 				}
 				break;
 			}
@@ -103,7 +103,7 @@ namespace Grid
 
 							return;
 						}
-						trigger_play_card(ecs, x, y);
+						trigger_play_card(x, y);
 					}
 					else
 					{
@@ -132,7 +132,7 @@ namespace Grid
 		}
 	}
 
-	void GameBoard::trigger_play_card(EntityComponent::Registry& ecs, s32 x, s32 y)
+	void GameBoard::trigger_play_card(s32 x, s32 y)
 	{
 		cbsptr->set_targetted_ent(pos[x][y]);
 		cbsptr->set_targetted_xy(x, y);
@@ -172,7 +172,7 @@ namespace Grid
 		}
 		walkable[cur_y * MAX_I + cur_x] = 1;
 		//move the entity
-		this->moveEntity(*ecsptr, this->cur, x, y);
+		this->moveEntity(this->cur, x, y);
 		unselect_movement();
 
 		tbsptr->show_stats(*ecsptr);
@@ -338,7 +338,7 @@ namespace Grid
 		}
 	}
 
-	void GameBoard::placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::placeEntity(Entity e, s32 x, s32 y)
 	{
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
@@ -366,7 +366,7 @@ namespace Grid
 		color->d_color.r = 0.5f;
 	}
 
-	void GameBoard::moveEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
+	void GameBoard::moveEntity(Entity e, s32 x, s32 y)
 	{
 		int start_i{-1}, start_j{-1};
 		//get player's position first
@@ -552,38 +552,6 @@ namespace Grid
 		if (!selected_part) return;
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 		selected_part = false;
-	}
-
-	AEVec2 GameBoard::Get_gridPos(AEVec2 const& pos, Entity camera)
-	{
-		// 2. AE screen space: origin is CENTER of screen, Y flips upward
-		f32 winW = (f32)AEGfxGetWindowWidth();
-		f32 winH = (f32)AEGfxGetWindowHeight();
-
-		f32 screenX = (f32)pos.x - winW * 0.5f;
-		f32 screenY = -(f32)pos.y + winH * 0.5f;   // flip Y
-		// 3. Add camera offset to get world position
-		Components::Transform* cam = ecsptr->getComponent<Components::Transform>(camera);
-		f32 worldX = screenX + cam->pos.x;
-		f32 worldY = screenY + cam->pos.y;
-
-		// 4. Inverse isometric formula
-		// forward: worldX = offset.x + (i - j) * CELL_WIDTH  / 2
-		//          worldY = offset.y - (i + j) * CELL_HEIGHT / 4
-		f32 sx = worldX - this->offset.x;
-		f32 sy = worldY - this->offset.y;
-
-		f32 diff = 2.0f * sx / CELL_WIDTH;    // i - j
-		f32 sum = -4.0f * sy / CELL_HEIGHT;   // i + j
-
-		f32 i = (sum + diff) / 2.0f;
-		f32 j = (sum - diff) / 2.0f;
-
-		// 5. Clamp to grid bounds
-		i = AEClamp(std::round(i), 0, MAX_I - 1);
-		j = AEClamp(std::round(j), 0, MAX_J - 1);
-
-		return { f32(math_absolute(i)), f32(math_absolute(j)) };
 	}
 
 	//returns the grid position of the current participant

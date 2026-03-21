@@ -60,9 +60,9 @@ namespace CardInteraction
 
 
 	public:
-		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height);
-		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
-		CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf ,f32 x, f32 y, f32 width, f32 height, 
+		CardHand(f32 x, f32 y, f32 width, f32 height);
+		CardHand(f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
+		CardHand(f32 x, f32 y, f32 width, f32 height, 
 			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd);
 
 		CardHand();

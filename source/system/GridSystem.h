@@ -63,13 +63,13 @@ namespace Grid
 
 		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
 			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
-		void placeEntity(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y);
+		void placeEntity(Entity e, s32 x, s32 y);
 		
-		void trigger_play_card(EntityComponent::Registry& ecs, s32 x, s32 y);
+		void trigger_play_card(s32 x, s32 y);
 		void unselect_card();
 		void move_trigger(s32 const& x, s32 const& y);
 		void move_select(s32 const& x, s32 const& y);
-		void moveEntity(EntityComponent::Registry& ecs ,Entity e, s32 x, s32 y);
+		void moveEntity(Entity e, s32 x, s32 y);
 
 		// helper functions for CPU - Zejin 
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
@@ -86,7 +86,6 @@ namespace Grid
 
 		bool selected_player() const;
 		void unselect_movement();
-		AEVec2 Get_gridPos(AEVec2 const& pos,Entity camera);
 		AEVec2& Get_CurPart_gridPos();
 		AEVec2 GetOffsetPos();
 

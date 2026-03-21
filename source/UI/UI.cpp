@@ -15,7 +15,7 @@ namespace UI
 		s32 w_width = AEGfxGetWindowWidth();
 		s32 w_height = AEGfxGetWindowHeight();
 
-		hand = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
+		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 										 , scene.getGBS(), info);
 
 
@@ -102,7 +102,7 @@ namespace UI
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 		hand.update_logic(scene.getTBS(),dt);
-		info.update(ecs);
+		info.update();
 		vicSelect.update();
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
@@ -234,7 +234,7 @@ namespace UI
 	{
 		hand.card_interaction_free();
 		info.free(ecs);
-		pause.free(ecs);
+		pause.free();
 
 		for (std::pair<Entity, Entity> p : this->actor_children_list)
 		{

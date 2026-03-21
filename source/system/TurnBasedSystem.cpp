@@ -405,7 +405,7 @@ namespace TBS
 
 	bool TurnBasedSystem::update()
 	{
-		if (this->player_died)
+		if (!this->player_died)
 		{
 			float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
 			if (cur_Hp <= 0.f)
@@ -416,6 +416,7 @@ namespace TBS
 				Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
 				player->cur_movSpd = player->ini_movSpd;
 				ecs.getComponent<Components::Card_Storage>(playerID)->free();
+				ecs.getComponent<Components::Card_Storage>(playerID)->reset();
 			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());

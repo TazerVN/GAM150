@@ -37,7 +37,7 @@ namespace CardInteraction
 	}
 
 
-	CardHand::CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height) : CardHand()
+	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height) : CardHand()
 	{
 		Entity id;
 		this->reset = true;
@@ -50,7 +50,7 @@ namespace CardInteraction
 		ecs.addComponent(this->id, trans);
 	}
 
-	CardHand::CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs) : CardHand()
+	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs) : CardHand()
 	{
 		this->reset = true;
 		this->id = ecs.createEntity();
@@ -63,14 +63,14 @@ namespace CardInteraction
 		tbsptr = &tbs;		
 	}
 
-	CardHand::CardHand(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height,
+	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height,
 					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd)
 		: CardHand()
 	{
 		this->reset = true;
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id, &ecs] { hand_onHover(ecs, id); }, [id = this->id, &ecs, &cd] { hand_offHover(ecs, cd, id); });
+		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id] { hand_onHover(ecs, id); }, [id = this->id, &cd] { hand_offHover(ecs, cd, id); });
 		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
@@ -79,7 +79,7 @@ namespace CardInteraction
 		gbsptr = &gbs;
 		gbptr = &gb;
 		mfptr = &mf;
-		tfptr = &tf;
+		tfptr = &TF;
 		cdptr = &cd;
 	}
 

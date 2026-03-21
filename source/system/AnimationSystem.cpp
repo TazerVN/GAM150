@@ -11,7 +11,7 @@ namespace Animation
 	}
 
 
-	void idle_animation(EntityComponent::Registry& ecs, Entity id, Entity timer_id)
+	void idle_animation(Entity id, Entity timer_id)
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
@@ -24,7 +24,7 @@ namespace Animation
 
 	}
 
-	bool melee_animation(EntityComponent::Registry& ecs, Entity id, Entity timer_id)
+	bool melee_animation(Entity id, Entity timer_id)
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 
@@ -68,7 +68,7 @@ namespace Animation
 	}
 
 
-	bool moving_animation(EntityComponent::Registry& ecs, Entity id, Entity timer_id, f32 offset_x, f32 offset_y)
+	bool moving_animation(Entity id, Entity timer_id, f32 offset_x, f32 offset_y)
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
@@ -171,18 +171,18 @@ namespace Animation
 					switch (anim->anim_type)
 					{
 						case Components::AnimationType::IDLE:
-							idle_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]);
+							idle_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]);
 							break;
 						case Components::AnimationType::MOVING:
 							AEVec2 offset{ gb.GetOffsetPos() };
-							if (moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
+							if (moving_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
 								gbs.set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 							}
 							break;
 						case Components::AnimationType::ATTACK_MELEE:
-							if (melee_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
+							if (melee_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
 								cs.set_play_card_triggered(true);

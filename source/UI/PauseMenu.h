@@ -13,10 +13,10 @@ class PauseMenu
 
 	public:
 	PauseMenu() = default;
-	PauseMenu(EntityComponent::Registry& ecs, MeshFactory& mf, s32 z);
+	PauseMenu(s32 z);
 	PauseMenu& operator=(const PauseMenu& rhs);
-	void update(EntityComponent::Registry& ecs);
-	void free(EntityComponent::Registry& ecs);
+	void update();
+	void free();
 	bool isOn();
 	bool isCreated();
 	void setStateOn(bool flag);

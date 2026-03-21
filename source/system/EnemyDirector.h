@@ -25,11 +25,9 @@ public:
 
     // Called once per frame in Scene::update
     // Execute one horde chunk until a STOP line is reached
-    void update(EntityComponent::Registry& ecs,
-        PhaseSystem::GameBoardState& gbs,
+    void update(PhaseSystem::GameBoardState& gbs,
         TBS::TurnBasedSystem& tbs,
-        Grid::GameBoard& board,
-        Entity playerID);
+        Grid::GameBoard& board);
 
     // Number of enemies to spawn for this level
     int getSpawnCount() const;
