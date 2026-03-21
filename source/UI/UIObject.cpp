@@ -75,8 +75,8 @@ namespace UIO
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
-		Components::Color color{ 0.5, 0.5f, 0.5f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] { button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, 10);	//add input system for grid
+		Components::Color color{ 0.1f, 0.3f, 0.5f ,1.0f };
+		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] { button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, z);	//add input system for grid
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.f, true, true };
 		ecs.addComponent(id, trans);
@@ -142,12 +142,26 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_blank(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
+	Entity ui_blank_solid_corner(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {}, rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
+		Components::Color color{ r, g, b, a };
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+
+		return id;
+	}
+
+	Entity ui_blank_solid_center(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
+	{
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {}, rotation };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ r, g, b, a };
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);

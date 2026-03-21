@@ -72,9 +72,12 @@ void LevelStateCombat_update()
 		{
 			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
 		}
+		VS.update(ecs);
 		scene.update();
 		PS.update(0.2);
 		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+		//RENDER
+		CS.update();
 		UIM.update(scene, dt);
 		AS.update(ecs, scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
 	}

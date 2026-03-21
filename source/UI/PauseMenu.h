@@ -4,10 +4,17 @@
 class PauseMenu
 {
 	private:
+	struct TextButton
+	{
+		Entity text{};
+		Entity button{};
+		void free();
+	};
+
 	Entity dim;
-	Entity continue_button;
-	Entity restart_button;
-	Entity leave_button;
+	TextButton continue_button;
+	TextButton restart_button;
+	TextButton leave_button;
 	bool on{false};
 	bool created{false};
 

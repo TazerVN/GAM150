@@ -51,7 +51,7 @@ namespace UI
 		for (Entity e : scene.entities_store())
 		{
 			Entity health = UIO::ui_hp_bar(ecs, mf, -50, 100, 100, 10, 0, 6);
-			Entity blank = UIO::ui_blank(ecs, mf, -50, 100, 100, 10, 0, 6, 0.0f, 0.0f, 0.0f, 1.0f);
+			Entity blank = UIO::ui_blank_solid_corner(ecs, mf, -50, 100, 100, 10, 0, 6, 0.0f, 0.0f, 0.0f, 1.0f);
 			std::pair<Entity, Entity> hp{ e, health };
 			std::pair<Entity, Entity> hp_blank{ e, blank };
 			this->actor_children_list.push_back(hp_blank);
@@ -60,7 +60,7 @@ namespace UI
 			if (e == playerID)
 			{
 				Entity stamina = UIO::ui_stamina_bar(ecs, mf, 40, -20, 70, 8, 90, 6);
-				Entity blank_s = UIO::ui_blank(ecs, mf, 40, -20, 70, 8, 90, 6, 0.0f, 0.0f, 0.0f, 1.0f);
+				Entity blank_s = UIO::ui_blank_solid_corner(ecs, mf, 40, -20, 70, 8, 90, 6, 0.0f, 0.0f, 0.0f, 1.0f);
 
 				std::pair<Entity, Entity> stam{ e, stamina };
 				std::pair<Entity, Entity> stam_b{ e, blank_s };

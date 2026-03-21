@@ -394,7 +394,7 @@ namespace CardInteraction
 		c2->d_color.b = minimum + (1.f - minimum) * lerp;
 		c2->d_color.g = minimum + (1.f - minimum) * lerp;
 
-		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t2->size_og.y / 4;
+		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
 		t2->size.x = t2->size_og.x * 4.f / 3.f;
 
 	}
@@ -432,7 +432,7 @@ namespace CardInteraction
 		t1->size.x = t1->size_og.x * 4.f/3.f;
 
 		c2->d_color = c2->c_color;
-		t2->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
+		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
 		t2->size.y = t2->size_og.y;
 		t2->size.x = t2->size_og.x;
 
@@ -471,13 +471,16 @@ namespace CardInteraction
 
 	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost)
 	{
-		f32 x = pos_x - width;
-		f32 y = pos_y + height*2;
+		f32 x = pos_x - width * 0.40f;
+		f32 y = pos_y + height* 0.36f;
+
+		/*card_t_m->pos.x = target_x - card_t_c->size.x * 0.40f;
+		card_t_m->pos.y = target_y + card_t_c->size.y * 0.36f;*/
+		//card_t_m->pos_onscreen = card_t_m->pos;
 	
 		Entity id = ecs.createEntity();
 	
 		Components::Transform trans{ {x,y}, {x,y} ,{0.5f, 0.3f} , {0.5f, 0.3f},0.0f };
-
 		Components::Text text{std::to_string(cost), TF.getFontID(), 31};
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid

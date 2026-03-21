@@ -75,8 +75,6 @@ void GameState_game_update()
 	}
 
 	//========(Render)====================
-	VS.update(ecs);
-	CS.update();
 	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 }

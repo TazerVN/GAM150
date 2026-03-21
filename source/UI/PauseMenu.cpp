@@ -7,14 +7,28 @@ PauseMenu::PauseMenu(s32 z)
 	: on{ false }, created{false}, dim {}, continue_button{}, restart_button{}, leave_button{}
 {
 	Components::TagClass tag{ Components::Tag::UI };
-	this->dim = UIO::ui_blank(ecs, mf, -AEGfxGetWindowWidth() /2.f, AEGfxGetWindowHeight()/2.f, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, z, 0.0f, 0.0f, 0.0f, 0.2f);
-	this->continue_button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY()/ 3.f, 300.f, 100.f, 0, z + 1, nullptr );
-	this->restart_button = UIO::ui_button(ecs, mf, 0, 0, 300.f, 100.f, 0, z + 1, nullptr);
-	this->leave_button = UIO::ui_button(ecs, mf, 0, -AEGfxGetWinMaxY() / 3.f, 300.f, 100.f, 0, z + 1, nullptr);
+	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40};
+
+	this->dim = UIO::ui_blank_solid_center(ecs, mf, 0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+
+	this->continue_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr );
+	this->continue_button.text = UIO::ui_text(ecs, mf, TF, -70.f, AEGfxGetWinMaxY() * 0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Continue" );
+	
+	this->restart_button.button = UIO::ui_button(ecs, mf, 0, 0, 300.f, 100.f, 0, z + 1, nullptr);
+	this->restart_button.text = UIO::ui_text(ecs, mf, TF, -60.f, -10.f, 0.5f, 100.f, 0, z + 1, "Restart");
+
+	this->leave_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * -0.50f, 300.f, 100.f, 0, z, nullptr);
+	this->leave_button.text = UIO::ui_text(ecs, mf, TF, -40.f, AEGfxGetWinMaxY() * -0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Exit");
+
+
 	ecs.addComponent(this->dim, tag);
-	ecs.addComponent(this->continue_button, tag);
-	ecs.addComponent(this->restart_button, tag);
-	ecs.addComponent(this->leave_button, tag);
+	ecs.addComponent(this->dim, in);
+	ecs.addComponent(this->continue_button.button, tag);
+	ecs.addComponent(this->continue_button.text, tag);
+	ecs.addComponent(this->restart_button.button, tag);
+	ecs.addComponent(this->restart_button.text, tag);
+	ecs.addComponent(this->leave_button.button, tag);
+	ecs.addComponent(this->leave_button.text, tag);
 }
 
 PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)
@@ -25,8 +39,15 @@ PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)
 	this->leave_button = rhs.leave_button;
 	this->created = true;
 
-	auto button = ecs.getComponent<Components::Input>(this->continue_button);
-	button->onClick = [this] { this->on = false; };
+	auto button_c = ecs.getComponent<Components::Input>(this->continue_button.button);
+	button_c->onClick = [this] { this->on = false; };
+
+	auto button_r = ecs.getComponent<Components::Input>(this->restart_button.button);
+	button_r->onClick = [this] {
+		this->on = false;
+		};
+
+
 
 	return *this;
 }
@@ -43,19 +64,11 @@ void PauseMenu::free()
 		ecs.destroyEntity(this->dim);
 		this->dim = 0;
 	}
-	if(this->continue_button != 0){
-		ecs.destroyEntity(this->continue_button);
-		this->continue_button = 0;
-	}
-	if(this->restart_button != 0){
-		ecs.destroyEntity(this->restart_button);
-		this->restart_button = 0;
-	}
-	if(this->leave_button != 0){
-		ecs.destroyEntity(this->leave_button);
-		this->leave_button = 0;
-	}
+	this->continue_button.free();
+	this->restart_button.free();
+	this->leave_button.free();
 	this->created = false;
+		
 }
 bool PauseMenu::isOn()
 {
@@ -75,3 +88,19 @@ void PauseMenu::setStateCreate(bool flag)
 {
 	created = flag;
 }
+void PauseMenu::TextButton::free()
+{
+	if(this->button != 0)
+	{
+		ecs.destroyEntity(this->button);
+		this->button = 0;
+	}
+	if (this->text != 0)
+	{
+		ecs.destroyEntity(this->text);
+		this->text = 0;
+	}
+
+}
+
+

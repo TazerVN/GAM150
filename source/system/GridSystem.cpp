@@ -293,7 +293,7 @@ namespace Grid
 			[x, y, id, this]
 			{
 				cell_offHover(id, this->pos[x][y]);
-			}
+			},1
 		);	//add input system for grid
 		Components::GridCell gc{ x,y };
 		Components::Timer timer{ 1.f , 0.5f, true, true };
