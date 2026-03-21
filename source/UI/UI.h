@@ -9,6 +9,7 @@
 #include "../UI/cardInformation.h"
 #include "../UI/cardInteraction.h"
 #include "../UI/PauseMenu.h"
+#include "../UI/Victory_Select.h"
 
 #include <functional>
 #include "AEEngine.h"
@@ -29,19 +30,21 @@ namespace UI
 		
 		//Pause
 		PauseMenu pause;
+		Victory_Select vicSelect;
 
-		void health_update(EntityComponent::Registry&);
-		void stamina_update(EntityComponent::Registry&);
+		void health_update();
+		void stamina_update();
 		void mana_update(Scene& scene);
 		public:
 		UIManager();
 		void update(Scene& scene, f32 dt);
-		void init(Scene& scene, MeshFactory& mf,  TextureFactory::TextureFactory& tf);
+		void init(Scene& scene);
 		void free(EntityComponent::Registry& ecs);
 
 		CardInteraction::CardHand& getCardHand();
 		CardInformation::CardDisplay& getCardDisplay();
 		PauseMenu& getPauseMenu();
+		Victory_Select& getVictoryMenu();
 
 		/*void ui_cardInformation(EntityComponent::Registry& ecs, Entity Id);
 		void remove_cardInformation();*/

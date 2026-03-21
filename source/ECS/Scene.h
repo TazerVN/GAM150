@@ -23,6 +23,7 @@ namespace CombatNameSpace { class CombatSystem; }
 namespace Text { class NameTag; }
 namespace EntityFactory { class InteractableNode; }
 namespace Camera { class CameraSystem; }
+namespace UI { class UIManager; }
 class CardSystem;
 class EnemyDirector;
 
@@ -42,16 +43,15 @@ private:
 	//Text::NameTag nameTags;
 	EntityFactory::InteractableNode iNodes;
 
-
 	Camera::CameraSystem* cameraSys;
-	CardSystem* cardSys;
+	UI::UIManager* UIptr;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 
 	bool _win = false;
 
 public:
-	void init(EntityComponent::Registry& ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch);
+	void init(Camera::CameraSystem&, UI::UIManager&);
 	void update();
 	void add_entity_to_scene(Entity e);
 	std::vector<Entity>& entities_store();

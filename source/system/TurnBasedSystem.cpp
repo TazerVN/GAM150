@@ -405,14 +405,17 @@ namespace TBS
 
 	bool TurnBasedSystem::update()
 	{
-		if (!this->player_died)
+		if (this->player_died)
 		{
 			float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
 			if (cur_Hp <= 0.f)
 			{
 				this->player_died = true;
-				ecs.getComponent<Components::Card_Storage>(playerID)->free();
 				new_Start = true;
+				//set player's win speed
+				Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
+				player->cur_movSpd = player->ini_movSpd;
+				ecs.getComponent<Components::Card_Storage>(playerID)->free();
 			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());

@@ -6,6 +6,7 @@ bool new_Start;
 //=====================One time declaration of extern values============================= 
 
 EntityComponent::Registry ecs;
+CardSystem card_system;
 MeshFactory mf;
 TextureFactory::TextureFactory TF;
 
@@ -13,7 +14,6 @@ TextureFactory::TextureFactory TF;
 InputSystem::InputManager IM;
 Camera::CameraSystem CS;
 RenderSystem::RenderSystem RM;
-CardSystem card_system;
 Velocity::VelocitySystem VS;
 TransformSystem::TransformSystem TrS;
 Timer::TimerSystem TS;

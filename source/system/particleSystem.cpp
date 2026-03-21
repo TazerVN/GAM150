@@ -3,7 +3,7 @@
 #include "particleSystem.h"
 #include "../ECS/Components.h"
 
-void Particle::ParticleSystem::init(EntityComponent::Registry& ecs, MeshFactory& mf, size_t poolSize)
+void Particle::ParticleSystem::init(size_t poolSize)
 {
 }
 void Particle::ParticleSystem::update(f32 dt)
@@ -142,7 +142,7 @@ void Particle::ParticleSystem::update(f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_one(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -189,8 +189,8 @@ void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, 
 		f32 alpha_No = 1.0f;
 		f32 alpha_Rand = AERandFloat();
 
-		spawn_one(ecs, mf, x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
-		spawn_one(ecs, mf, x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
+		spawn_one(x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
+		spawn_one(x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
 		//spawn_one(ecs, mf, x, y, 35.0f, 50.0f, 0.4f, 10, r, g2, b2, alpha_Rand, 1.0f, 1.0f);
 
 
@@ -199,7 +199,7 @@ void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, 
 
 }
 
-void Particle::ParticleSystem::particleBurst(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleBurst()
 {
 	int   max_count = 500;
 	f32   speed = 200.f;
@@ -220,7 +220,7 @@ void Particle::ParticleSystem::particleBurst(EntityComponent::Registry& ecs, Mes
 
 
 		// input
-		spawn_one(ecs, mf, 0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
+		spawn_one(0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
 	}
 }
 
@@ -253,7 +253,7 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 
 
 		// input
-		spawn_one(ecs, mf, x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
+		spawn_one(x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
 	}
 }
 
@@ -293,7 +293,7 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 
 			//0.3f + 0.7f * AERandFloat();
 
-			spawn_one(ecs, mf, x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
+			spawn_one(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
 		}
 	}
 }
@@ -328,7 +328,7 @@ void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 1.0f;
 
-		spawn_one(ecs, mf, x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
+		spawn_one(x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
 	}
 }
 
@@ -349,7 +349,7 @@ void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, Mesh
 		f32 b = 0.2f * AERandFloat();
 		f32 a = 0.8f + 0.2f * AERandFloat();
 
-		spawn_one(ecs, mf, spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
+		spawn_one(spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
 
 	}
 

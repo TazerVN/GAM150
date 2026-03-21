@@ -34,19 +34,31 @@ namespace TextureFactory
 
 	void TextureFactory::textureInit(){
 		//CARDS
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardSample.png"));	//0
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardDisplay.png"));	//1
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash.png"));	//2
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash+.png"));	//3
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier.png"));	//4
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier+.png"));	//5
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_firebolt.png"));	//6
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_gust_of_wind.png"));	//7
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_shoot.png"));	//8
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_shoot+.png"));	//9
-
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_black_hole.png"));
-		this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_aura_farm.png"));
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardSample.png"));	//0
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/cardDisplay.png"));	//1
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash.png"));	//2
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_slash+.png"));	//3
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier.png"));	//4
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_barrier+.png"));	//5
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_firebolt.png"));	//6
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_gust_of_wind.png"));	//7
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_shoot.png"));	//8
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_shoot+.png"));	//9
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_black_hole.png"));
+		//this->addTextureCard(AEGfxTextureLoad("../../Assets/cards/card_aura_farm.png"));
+		for (Entity card : card_system.cards_vec)
+		{
+			std::string tex = "../../Assets/cards/";
+			std::string loc = ecs.getComponent<Components::card_image>(card)->location;
+			tex += loc;
+			if (card_texture_map.find(loc) == card_texture_map.end())
+			{
+				AEGfxTexture * ptex = AEGfxTextureLoad(tex.c_str());
+				card_texture_map[loc] = ptex;
+				this->addTextureCard(ptex);
+			}
+		}
+		
 
 		//FLOOR
 		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
@@ -121,6 +133,10 @@ namespace TextureFactory
 	void TextureFactory::addTextureOthers(AEGfxTexture* pTex)
 	{
 		this->others.push_back(pTex);
+	}
+	AEGfxTexture* TextureFactory::getTextureFromCardMap(std::string key)
+	{
+		return this->card_texture_map[key];
 	}
 	s8 TextureFactory::getFontID(){
 		return this->fontID;

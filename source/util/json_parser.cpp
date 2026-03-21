@@ -39,6 +39,7 @@ JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
 		temp_card.value = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.0f;
 		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetFloat() : 0.0f;
 		temp_card.aoe = (arr[i].HasMember("aoe")) ? arr[i]["aoe"].GetFloat() : 0.0f;
+		temp_card.card_image = (arr[i].HasMember("png")) ? arr[i]["png"].GetString() : "NULL";
 
 		vec.push_back(temp_card);
 	}

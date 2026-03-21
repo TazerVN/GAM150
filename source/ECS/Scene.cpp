@@ -4,6 +4,7 @@
 #include <cstdlib> // randomiser part 2
 #include "../util/LevelManager.h"
 #include "factory/EntityFactory.h"
+#include "../UI/UI.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
@@ -24,12 +25,12 @@ Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
 
 
 
-void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, TextureFactory::TextureFactory& tf, Camera::CameraSystem& cam, CardInteraction::CardHand& ch)
+void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	cameraSys = &cam;
-	cardSys = &cs;
+	UIptr = &_UI;
 
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
@@ -42,8 +43,12 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 	ecs.addComponent(horde, Components::TurnBasedStats{});
 	ecs.addComponent(horde, Components::Horde_Tag{});
 	
-	
+	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+	st->max_movSpd = st->ini_movSpd;
+	st->cur_movSpd = st->max_movSpd;
+
 	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
+
 
 	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
 	{
@@ -53,16 +58,16 @@ void Scene::init(EntityComponent::Registry&ECS,MeshFactory& mf, CardSystem& cs, 
 		// temporary spawn position logic
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, tf.getTextureChar(1), Components::AnimationType::IDLE);
+		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
 
 		add_entity_to_scene(temp);                  // adds to scene/world
 		ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);
 		enemyDirector.bindActor(actorId, temp);
 	}
 
-	cbs.init(ecs, gbs, BattleGrid ,TBSys, ch, eventPool);
-	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, cs, ch ,horde);
-	BattleGrid.init(&TBSys, eventPool, gbs, cbs, tf.getTextureFloor(0), 0, w_height / 3,_win);
+	cbs.init(ecs, gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool);
+	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, TF.getTextureFloor(0), 0, w_height / 3,_win);
 
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
@@ -118,6 +123,15 @@ void Scene::update()
 	{
 		TBSys.debug_print(ecs);
 	}
+	if (AEInputCheckTriggered(AEVK_EQUAL))
+	{
+		/*for (Entity card : ecs.getComponent<Components::Card_Storage>(playerID)->original_draw_pile)
+		{
+			
+		}*/
+		std::cout << "Original Deck size : " << ecs.getComponent<Components::Card_Storage>(playerID)->original_draw_pile.size() 
+			<< std::endl;
+	}
 	if (AEInputCheckTriggered(AEVK_UP))
 	{
 		gbs.debug_print();
@@ -131,9 +145,9 @@ void Scene::update()
 			TBSys.active() = false;
 			_win = true;
 
-			//set player's win speed
-			Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
-			player->cur_movSpd = player->ini_movSpd;
+			ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100.f;
+			ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
+			UIptr->getVictoryMenu().on = true;
 
 			Entity BossNode;
 			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
@@ -204,7 +218,6 @@ void Scene::scene_free()
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
-	cardSys = nullptr;
 	entities.clear();
 	next_entity = 0;
 	//nameTags.name_tag_free();

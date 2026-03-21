@@ -9,7 +9,7 @@ namespace UI
 	{
 	}
 
-	void UIManager::init(Scene& scene, MeshFactory& mf, TextureFactory::TextureFactory& tf)
+	void UIManager::init(Scene& scene)
 	{
 		//hand
 		s32 w_width = AEGfxGetWindowWidth();
@@ -21,7 +21,7 @@ namespace UI
 
 		//========================================== buttons ======================================
 		//end turn button
-		Entity end_b = UIO::ui_button_texture(ecs, mf, tf.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
+		Entity end_b = UIO::ui_button_texture(ecs, mf, TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
 			// the lambda function
 										 [&scene]
 										 {
@@ -30,15 +30,15 @@ namespace UI
 										 }
 		);
 
-		Entity pause_button = UIO::ui_button_texture(ecs, mf, tf.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, [this]{ this->pause.setStateOn(true);});
+		Entity pause_button = UIO::ui_button_texture(ecs, mf, TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, [this]{ this->pause.setStateOn(true);});
 
-		Entity deck_button = UIO::ui_button_texture(ecs, mf, tf.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity deck_button = UIO::ui_button_texture(ecs, mf, TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
-		Entity turn_board = UIO::ui_blank_texture(ecs, mf, tf.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
+		Entity turn_board = UIO::ui_blank_texture(ecs, mf, TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
-		Entity turn_text = UIO::ui_text(ecs, mf, tf, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
+		Entity turn_text = UIO::ui_text(ecs, mf, TF, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
 
-		Entity bin_button = UIO::ui_button_texture(ecs, mf, tf.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity bin_button = UIO::ui_button_texture(ecs, mf, TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
 		this->current_ui.push_back(end_b);
 		this->current_ui.push_back(pause_button);
@@ -72,12 +72,12 @@ namespace UI
 		//========================================== mana bar ======================================
 		f32 x = 0.55f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
-		Entity mana_bar = UIO::ui_blank_texture(ecs, mf, tf.getTextureUI(4), x, y, 302, 82, 0, 32);
+		Entity mana_bar = UIO::ui_blank_texture(ecs, mf, TF.getTextureUI(4), x, y, 302, 82, 0, 32);
 		for (int i = 0; i < 5; i++)
 		{
 			Components::TurnBasedStats stats{ 0,0,0,0 };
 			ecs.addComponent(mana_bar, stats);
-			Entity mana_empty = UIO::ui_blank_texture(ecs, mf, tf.getTextureUI(3), i * 40 - 40.f, 20.f, 49, 55, 0, 30);
+			Entity mana_empty = UIO::ui_blank_texture(ecs, mf, TF.getTextureUI(3), i * 40 - 40.f, 20.f, 49, 55, 0, 30);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->mana_children_list.push_back(mana);
 		}
@@ -101,8 +101,9 @@ namespace UI
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
-		hand.update_logic(ecs, scene.getTBS(), mf, TF, dt);
+		hand.update_logic(scene.getTBS(),dt);
 		info.update(ecs);
+		vicSelect.update();
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 		{
@@ -151,8 +152,8 @@ namespace UI
 
 		}
 
-		this->health_update(ecs);
-		this->stamina_update(ecs);
+		this->health_update();
+		this->stamina_update();
 		this->mana_update(scene);
 
 		for (std::pair<Entity, Entity> p : this->mana_children_list)
@@ -224,7 +225,10 @@ namespace UI
 		return pause;
 	}
 
-
+	Victory_Select& UIManager::getVictoryMenu()
+	{
+		return vicSelect;
+	}
 
 	void UIManager::free(EntityComponent::Registry& ecs)
 	{
@@ -252,7 +256,7 @@ namespace UI
 
 	}
 
-	void UIManager::health_update(EntityComponent::Registry& ecs)
+	void UIManager::health_update()
 	{
 
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
@@ -285,7 +289,7 @@ namespace UI
 	}
 
 
-	void UIManager::stamina_update(EntityComponent::Registry& ecs)
+	void UIManager::stamina_update()
 	{
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();

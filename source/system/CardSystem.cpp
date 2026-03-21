@@ -130,6 +130,7 @@ Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 	Components::Targetting_Component targetting{ decode_targetting(json_card.id), json_card.range, json_card.aoe };
 	Components::Card_Cost card_cost{ json_card.cost };
 	Components::Card_ID cid{ json_card.id };
+	Components::card_image cimg{ json_card.card_image };
 	
 	ecs.addComponent(id, cid);
 	ecs.addComponent(id, cardTag);
@@ -137,11 +138,12 @@ Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 	ecs.addComponent(id, card_val);
 	ecs.addComponent(id, targetting);
 	ecs.addComponent(id, card_cost);
+	ecs.addComponent(id, cimg);
 
 	return id;
 }
 
-void CardSystem::init_cards(EntityComponent::Registry& ecs)
+void CardSystem::init_cards()
 {
 	std::vector<JSON_CARD> vec;
 	JSON_RET ret = parse_card_data(vec, "../../Assets/cards/cards.json");
@@ -153,54 +155,53 @@ void CardSystem::init_cards(EntityComponent::Registry& ecs)
 		std::cout << "Cost : " << card.cost << std::endl;
 		//std::cout << "Type : " << static_cast<int>(card.card_type) << std::endl;
 		std::cout << "Value : " << card.value << std::endl;
-		std::cout << "AOE : " << card.aoe << '\n' << std::endl;
-
+		std::cout << "AOE : " << card.aoe << std::endl;
+		std::cout << "Card Image : " << card.card_image << '\n' << std::endl;
 		Entity cardECSID = create_card(ecs, card);
-		cards[card.name] = cardECSID;
-
-		//switch (static_cast<CardSystemNames>(card.id))
-		//{
-		//case CardSystemNames::SLASH:
-		//{
-		//	cardScriptManager.add_Function
-		//	(
-		//		CardSystemNames::SLASH, cardECSID, 
-		//		[&ecs,cardECSID](Entity target)
-		//		{
-		//			ECS::ComponentTypeID card_value_ID = ECS::getComponentTypeID<Components::Card_Value>();
-		//			if (!ecs.getBitMask()[cardECSID].test(card_value_ID))
-		//			{
-		//				std::cout << "Selected card doesn't have card_data component" << std::endl;;
-		//				//return;
-		//				//return PC_RETURN_TAG::INVALID;
-		//			}
-		//			f32 card_damage = ecs.getComponent<Components::Card_Value>(cardECSID)->value;
-
-		//			std::cout << "Successefully hit the enemy" << std::endl;;
-		//			return Call_AttackSystem(ecs, target, card_damage);
-		//		}
-		//	);
-		//	break;
-		//}
-		//default:
-		//	break;
-		//}
+		cards_map[card.name] = cardECSID;
+		cards_vec.push_back(cardECSID);
 	}
 };
 
-Entity CardSystem::generate_card_from_bible(EntityComponent::Registry& ecs,std::string key)
+Entity CardSystem::generate_card_from_bible(std::string key)
 {
 	//if the base key card doesnt exist return
-	if (cards.find(key) == cards.end())
+	if (cards_map.find(key) == cards_map.end())
 		return -1;
 
 	Entity id = ecs.createEntity();
 
-	Entity bibleID = cards[key];
-
-
+	Entity bibleID = cards_map[key];
 
 	Components::Name nm{ ecs.getComponent<Components::Name>(bibleID)->value};
+	CardTag cardTag = *(ecs.getComponent<CardTag>(bibleID));
+	Components::Card_Value card_val{ ecs.getComponent<Components::Card_Value>(bibleID)->value,
+									 ecs.getComponent<Components::Card_Value>(bibleID)->type };
+	Components::Targetting_Component targetting{ ecs.getComponent<Components::Targetting_Component>(bibleID)->targetting_type,
+												 ecs.getComponent<Components::Targetting_Component>(bibleID)->range,
+												 ecs.getComponent<Components::Targetting_Component>(bibleID)->aoe };
+	Components::Card_Cost card_cost{ ecs.getComponent<Components::Card_Cost>(bibleID)->value };
+
+	Components::Card_ID cid{ ecs.getComponent<Components::Card_ID>(bibleID)->value };
+	Components::card_image cimg{ecs.getComponent<Components::card_image>(bibleID)->location};
+
+	ecs.addComponent(id, cid);
+
+	ecs.addComponent(id, cardTag);
+	ecs.addComponent(id, nm);
+	ecs.addComponent(id, card_val);
+	ecs.addComponent(id, targetting);
+	ecs.addComponent(id, card_cost);
+	ecs.addComponent(id, cimg);
+	return id;
+}
+
+Entity CardSystem::generate_card_from_bible(Entity bibleID)
+{
+
+	Entity id = ecs.createEntity();
+
+	Components::Name nm{ ecs.getComponent<Components::Name>(bibleID)->value };
 	CardTag cardTag = *(ecs.getComponent<CardTag>(bibleID));
 	Components::Card_Value card_val{ ecs.getComponent<Components::Card_Value>(bibleID)->value,
 									 ecs.getComponent<Components::Card_Value>(bibleID)->type };
@@ -222,9 +223,18 @@ Entity CardSystem::generate_card_from_bible(EntityComponent::Registry& ecs,std::
 	return id;
 }
 
+Entity CardSystem::get_bible_id(std::string key)
+{
+	//if the base key card doesnt exist return
+	if (cards_map.find(key) == cards_map.end())
+		return -1;
+
+	return cards_map[key];
+}
+
 size_t CardSystem::size() const
 {
-	return cards.size();
+	return cards_vec.size();
 }
 
 void CardScriptsManager::add_Function(std::string name, Entity cardID,std::function<COMBAT_SYSTEM_RETURN_TAG (Entity)> function)

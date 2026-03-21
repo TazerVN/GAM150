@@ -68,7 +68,7 @@ namespace CardInteraction
 		CardHand();
 
 		void generateCards(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs);
-		void update_logic(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt);
+		void update_logic(TBS::TurnBasedSystem& tbs, f32 dt);
 		void update_pos(EntityComponent::Registry& ecs, f32 dt);
 		void activate_card(Entity e);
 		void remove_card(EntityComponent::Registry&, int);

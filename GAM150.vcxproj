@@ -20,6 +20,7 @@
     <ClCompile Include="source\level\CombatLevel.cpp" />
     <ClCompile Include="source\system\AnimationSystem.cpp" />
     <ClCompile Include="source\system\CardResolver.cpp" />
+    <ClCompile Include="source\UI\Victory_Select.cpp" />
     <ClCompile Include="source\util\GameStateManager.cpp" />
     <ClCompile Include="source\level\menu.cpp" />
     <ClCompile Include="source\system\CameraSystem.cpp" />
@@ -65,6 +66,8 @@
     <ClInclude Include="source\level\CombatLevel.h" />
     <ClInclude Include="source\system\AnimationSystem.h" />
     <ClInclude Include="source\system\CardResolver.h" />
+    <ClInclude Include="source\UI\Victory_Card_Select.h" />
+    <ClInclude Include="source\UI\Victory_Select.h" />
     <ClInclude Include="source\util\GameStateManager.h" />
     <ClInclude Include="source\level\menu.h" />
     <ClInclude Include="source\system\CameraSystem.h" />

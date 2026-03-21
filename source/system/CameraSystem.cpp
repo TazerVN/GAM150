@@ -74,11 +74,11 @@ namespace Camera
 
 	}
 
-	void CameraSystem::init(EntityComponent::Registry& ecs)
+	void CameraSystem::init()
 	{
 		this->camera_id = ecs.createEntity();
 		Components::Transform trans{ {0,0}, {0,0} ,{1.f, 1.f}, {AEGfxGetWindowWidth(), AEGfxGetWindowHeight()},0.0f };
-		Components::Input input(AEVK_MBUTTON, true, [this, &ecs]
+		Components::Input input(AEVK_MBUTTON, true, [this]
 								{
 /*	setOrignalDragPos(*this, ecs);
 	updateCameraPos(*this, ecs);*/
@@ -96,7 +96,7 @@ namespace Camera
 
 
 
-	void CameraSystem::update(EntityComponent::Registry& ecs)
+	void CameraSystem::update()
 	{
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();

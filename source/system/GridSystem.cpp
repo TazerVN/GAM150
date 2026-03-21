@@ -257,11 +257,11 @@ namespace Grid
 
 
 
-	Entity GameBoard::create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
+	Entity GameBoard::create_cells(AEVec2 _pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
 
-		Components::Transform trans{ pos, pos, size, {size.x / 2, size.y / 2}, 0.0f };
+		Components::Transform trans{ _pos, _pos, size, {size.x / 2, size.y / 2}, 0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
@@ -592,7 +592,7 @@ namespace Grid
 		Entity cur_part = tbsptr->current();
 		std::array<std::array<Entity, MAX_J>, MAX_I>& positions = get_pos();
 
-		AEVec2 temp = { -1.f,-1.f };
+		AEVec2 _temp = { -1.f,-1.f };
 
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -600,14 +600,14 @@ namespace Grid
 			{
 				if (positions[i][j] == cur_part)
 				{
-					AEVec2Set(&temp, (f32)i, (f32)j);
+					AEVec2Set(&_temp, (f32)i, (f32)j);
 					break;
 				}
 			}
-			if (temp.x != -1.f && temp.y != -1.f) break;
+			if (_temp.x != -1.f && _temp.y != -1.f) break;
 		}
 
-		return temp;
+		return _temp;
 	}
 
 	AEVec2 GameBoard::GetOffsetPos()
@@ -669,7 +669,7 @@ namespace Grid
 		win = nullptr;
 	}
 	
-	bool GameBoard::moveEntityAI(EntityComponent::Registry& ecs, Entity e, s32 x, s32 y)
+	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
 			return false;

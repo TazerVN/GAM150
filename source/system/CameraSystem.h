@@ -16,8 +16,8 @@ namespace Camera{
 		f32 buffer_x, buffer_y;
 		f32 buffer_zoom;
 		CameraSystem();
-		void init(EntityComponent::Registry& ecs);
-		void update(EntityComponent::Registry& ecs);
+		void init();
+		void update();
 		Entity id() const;
 	};
 

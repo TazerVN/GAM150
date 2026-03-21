@@ -83,7 +83,7 @@ namespace CardInteraction
 		cdptr = &cd;
 	}
 
-	void CardHand::update_logic(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 dt)
+	void CardHand::update_logic(TBS::TurnBasedSystem& tbs, f32 dt)
 	{
 		//guard against gbsptr being null
 		this->update_pos(ecs, dt);
@@ -207,41 +207,22 @@ namespace CardInteraction
 		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
 
 		for (size_t i = 0; i < cs->data_card_hand.size(); i++)
+		
 		{
-			this->curr_card_id.push_back(cs->data_card_hand.at(i));
+			Entity cardID_ =  cs->data_card_hand.at(i);
+			this->curr_card_id.push_back(cardID_);
 			this->activate.push_back(false);
 
 			EntityComponent::ComponentTypeID aID = EntityComponent::getComponentTypeID<Components::Name>();
 			if (ecs.getBitMask()[i].test(aID)) {};
 
-			Components::Name* name = ecs.getComponent<Components::Name>(cs->data_card_hand.at(i));
-			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cs->data_card_hand.at(i));
-			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cs->data_card_hand.at(i));
-
+			Components::Name* name = ecs.getComponent<Components::Name>(cardID_);
+			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cardID_);
+			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cardID_);
+			Components::card_image* cimg = ecs.getComponent<Components::card_image>(cardID_);
 			AEGfxTexture* texture = nullptr;
 
-
-			switch (a->type)
-			{
-				case (CardType::SLASHING):
-					texture = tfptr->getTextureCard(TextureFactory::C_SLASH);
-					break;
-				case (CardType::PIERCING):
-					texture = tfptr->getTextureCard(TextureFactory::C_SHOOT);
-					break;
-				case (CardType::FIRE):
-					texture = tfptr->getTextureCard(TextureFactory::C_FIREBOLT);
-					break;
-				case (CardType::FORCED_MOVEMENT):
-					texture = tfptr->getTextureCard(TextureFactory::C_BLACKHOLE);
-					break;
-				case (CardType::DAMAGE_REDUCTION):
-					texture = tfptr->getTextureCard(TextureFactory::C_AURAFARM);
-					break;
-				default:
-					texture = tfptr->getTextureCard(TextureFactory::C_SAMPLE);
-					break;
-			}
+			texture = TF.getTextureFromCardMap(cimg->location);
 
 			Entity eid = ecs.createEntity();
 

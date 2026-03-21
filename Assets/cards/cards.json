@@ -4,28 +4,32 @@
 		"name": "Slash",
 		"cost": 1.0,
 		"value": 20.0,
-		"range": 1.0
+		"range": 1.0,
+		"png" : "card_slash.png"
 	},
 	{
 		"id": 1011,
 		"name": "Slash+",
 		"cost": 1.0,
 		"value": 9.0,
-		"range": 1.0
+		"range": 1.0,
+		"png" : "card_slash+.png"
 	},
 	{
 		"id": 1110,
 		"name": "Shoot",
 		"cost": 1.0,
 		"value": 5.0,
-		"range": 10.0
+		"range": 10.0,
+		"png" : "card_shoot.png"
 	},
 	{
 		"id": 1111,
 		"name": "Shoot+",
 		"cost": 1.0,
 		"value": 9.0,
-		"range": 10.0
+		"range": 10.0,
+		"png" : "card_shoot+.png"
 	},
 	{
 		"id": 1320,
@@ -33,28 +37,32 @@
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 10.0,
-		"aoe": 1.0
+		"aoe": 1.0,
+		"png" : "card_firebolt.png"
 	},
 	{
 		"id": 1030,
 		"name": "Step Slash",
 		"cost": 1.0,
 		"value": 7.0,
-		"range": 3.0
+		"range": 3.0,
+		"png" : "cardSample.png"
 	},
 	{
 		"id": 1310,
 		"name": "Disk Detonate",
 		"cost": 1.0,
 		"value": 7.0,
-		"range": 3.0
+		"range": 3.0,
+		"png" : "cardSample.png"
 	},
 	{
 		"id": 1210,
 		"name": "Snipe",
 		"cost": 1.0,
 		"value": 10.0,
-		"range": 99.0
+		"range": 99.0,
+		"png" : "card_shoot.png"
 	},
 
 	{
@@ -62,93 +70,108 @@
 		"name": "Turn bash",
 		"cost": -1.0,
 		"value": -1.0,
-		"range": -1.0
+		"range": -1.0,
+		"png" : "cardSample.png"
 	},
 
 	{
 		"id": 2000,
 		"name": "Barrier",
 		"cost": 1.0,
-		"value": 10.0
+		"value": 10.0,
+		"png" : "card_barrier.png"
 	},
 	{
 		"id": 2001,
 		"name": "Barrier+",
 		"cost": 1.0,
-		"value": 10.0
+		"value": 10.0,
+		"png" : "card_barrier+.png"
 	},
 	{
 		"id": 2100,
 		"name": "DMG Cut",
 		"cost": 1.0,
-		"value": 0.5
+		"value": 0.5,
+		"png" : "card_dmg_cut.png"
 	},
 	{
 		"id": 2101,
 		"name": "Aura Farm",
 		"cost": 1.0,
-		"value": 1.0
+		"value": 1.0,
+		"png" : "card_aura_farm.png"
 	},
 	{
 		"id": 2102,
 		"name": "Mana Wall",
 		"cost": -1.0,
-		"value": -1.0
+		"value": -1.0,
+		"png" : "cardSample.png"
 	},
 
 	{
 		"id": 3000,
 		"name": "Recovery",
 		"cost": 1.0,
-		"value": 3.0
+		"value": 3.0,
+		"png" : "card_recovery.png"
 	},
 	{
 		"id": 3001,
 		"name": "Recovery+",
 		"cost": 1.0,
-		"value": 6.0
+		"value": 6.0,
+		"png" : "card_recovery.png"
 	},
 	{
 		"id": 3002,
 		"name": "Recovery++",
 		"cost": 1.0,
-		"value": 9.0
+		"value": 9.0,
+		"png" : "card_recovery.png"
 	},
 	{
 		"id": 3100,
 		"name": "PP up",
 		"cost": 1.0,
-		"value": 2.0
+		"value": 2.0,
+		"png" : "card_pp_up.png"
 	},
 	{
 		"id": 3300,
 		"name": "STR Disk",
 		"cost": 1.0,
-		"value": 2.0
+		"value": 2.0,
+		"png" : "card_str_disk.png"
 	},
 	{
 		"id": 3200,
 		"name": "Swift foot",
 		"cost": 1.0,
-		"value": 1.0
+		"value": 1.0,
+		"png" : "cardSample.png"
 	},
 	{
 		"id": 3400,
 		"name": "Data Draw",
 		"cost": 1.0,
-		"value": 2.0
+		"value": 2.0,
+		"png" : "cardSample.png"
 	},
 	{
 		"id": 3401,
 		"name": "Salvage",
 		"cost": -1.0,
-		"value": -1.0
+		"value": -1.0,
+		"png" : "cardSample.png"
 	},
 	{
 		"id": 3402,
 		"name": "Rand Generate",
 		"cost": 1.0,
-		"value": 1.0
+		"value": 1.0,
+		"png" : "cardSample.png"
 	},
 
 	{
@@ -157,7 +180,8 @@
 		"cost": 1.0,
 		"value": 6.0,
 		"range": 10.0,
-		"aoe": 5.0
+		"aoe": 5.0,
+		"png" : "card_gust_of_wind.png"
 	},
 	{
 		"id": 1020,
@@ -165,6 +189,7 @@
 		"cost": 5.0,
 		"value": 80.0,
 		"range": 10.0,
-		"aoe": 7.0
+		"aoe": 7.0,
+		"png" : "card_black_hole.png"
 	}
 ]

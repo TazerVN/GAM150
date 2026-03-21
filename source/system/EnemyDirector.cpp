@@ -266,7 +266,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
                 << " at " << nx << "," << ny << "\n";
             return false;
         }
-        bool ok = board.moveEntityAI(ecs, actor, nx, ny);
+        bool ok = board.moveEntityAI(actor, nx, ny);
         std::cout << "[ED] step " << (ok ? "OK" : "FAILED") << " -> " << nx << "," << ny << "\n";
         return ok;
         };
@@ -369,7 +369,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
             int nx = itPath->x;
             int ny = itPath->y;
 
-            bool ok = board.moveEntityAI(ecs, actor, nx, ny);
+            bool ok = board.moveEntityAI(actor, nx, ny);
             if (!ok)
             {
                 std::cout << "[ED] FRONT moveEntityAI failed at "
@@ -403,7 +403,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
         }
 
         if (bestNx != ax || bestNy != ay) {
-            bool ok = board.moveEntityAI(ecs, actor, bestNx, bestNy);
+            bool ok = board.moveEntityAI(actor, bestNx, bestNy);
             std::cout << "[ED] BACK step " << (ok ? "OK" : "FAIL")
                 << " -> " << bestNx << "," << bestNy << "\n";
         }
@@ -454,7 +454,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
         }
 
         if (bestNx != ax || bestNy != ay)
-            board.moveEntityAI(ecs, actor, bestNx, bestNy);
+            board.moveEntityAI(actor, bestNx, bestNy);
 
         return;
     }

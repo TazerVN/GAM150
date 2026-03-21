@@ -3,7 +3,8 @@
 #include "../UI/UIObject.h"
 #include "AEEngine.h"
 
-PauseMenu::PauseMenu(EntityComponent::Registry& ecs, MeshFactory& mf, s32 z) : on{ false }, created{false}, dim {}, continue_button{}, restart_button{}, leave_button{}
+PauseMenu::PauseMenu(EntityComponent::Registry& ecs, MeshFactory& mf, s32 z) 
+	: on{ false }, created{false}, dim {}, continue_button{}, restart_button{}, leave_button{}
 {
 	Components::TagClass tag{ Components::Tag::UI };
 	this->dim = UIO::ui_blank(ecs, mf, -AEGfxGetWindowWidth() /2.f, AEGfxGetWindowHeight()/2.f, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, z, 0.0f, 0.0f, 0.0f, 0.2f);

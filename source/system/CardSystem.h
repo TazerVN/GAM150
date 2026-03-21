@@ -60,11 +60,14 @@ class CardSystem
 {
 	private:
 		//std::vector<Entity> cards;
-	std::unordered_map<std::string, Entity> cards;
+	std::unordered_map<std::string, Entity> cards_map;
 	CardScriptsManager cardScriptManager;
 	public:
-	void init_cards(EntityComponent::Registry& ecs);
-	Entity generate_card_from_bible(EntityComponent::Registry& ecs, std::string key);
+	std::vector<Entity>cards_vec;
+	void init_cards();
+	Entity generate_card_from_bible(std::string key);
+	Entity generate_card_from_bible(Entity bible_id);
+	Entity get_bible_id(std::string key);
 	size_t size() const;
 };
 

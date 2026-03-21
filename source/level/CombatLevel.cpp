@@ -15,13 +15,13 @@ void LevelStateCombat_load()
 		new_Start = false;
 		for (int i = 0; i < 5; ++i)
 		{
-			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Slash"));
+			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Slash"));
 		}
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "PP up"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Aura Farm"));
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("PP up"));
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Aura Farm"));
 		for (int i = 0; i < 3; ++i)
 		{
-			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Black Hole"));
+			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Black Hole"));
 		}
 
 		Components::HP* playerHP = ecs.getComponent<Components::HP>(playerID);
@@ -42,10 +42,10 @@ void LevelStateCombat_init()
 	ecs.getComponent<Components::Card_Storage>(playerID)->init();
 
 
-	scene.init(ecs, mf, card_system, TF, CS, UIM.getCardHand());
+	scene.init(CS, UIM);
 	/*card = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
 		, scene.getGBS(), UIM);*/
-	UIM.init(scene, mf, TF);
+	UIM.init(scene);
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);

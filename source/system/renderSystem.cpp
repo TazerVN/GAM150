@@ -40,7 +40,6 @@ namespace RenderSystem
 		EntityComponent::ComponentBitMask textMask;
 		textMask.set(transID); textMask.set(textID); textMask.set(colorID);
 
-
 		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 		{
 			if ((it->first & objMask) == objMask)
@@ -78,12 +77,9 @@ namespace RenderSystem
 
 		while (!this->buffer.empty())
 		{
-
-
 			Entity current_e = this->buffer.front().second;
-			this->buffer.pop_front();
-			//int current_e = i;
 
+			this->buffer.pop_front();
 
 			EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 			EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();

@@ -3,7 +3,7 @@
 #include <functional>
 
 namespace EntityFactory {
-	Entity create_actor_spritesheet(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
+	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -25,6 +25,7 @@ namespace EntityFactory {
 		Components::Timer timer{ 1.f, 0.5f, true, true };
 		Components::Animation_Actor aa{ at, 0, 6};
 		Components::AStarResult as{};
+		Components::Tag tag{ Components::Tag::ACTOR };
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -37,6 +38,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, timer);
 		ecs.addComponent(id, aa);
 		ecs.addComponent(id, as);
+		ecs.addComponent(id, tag);
 
 		return id;
 	}
@@ -62,6 +64,7 @@ namespace EntityFactory {
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Timer timer{1.f, 0.5f, true, true};
 		Components::Animation_Actor aa{at};
+		Components::Tag tag{ Components::Tag::ACTOR };
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -73,6 +76,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, timer);
 		ecs.addComponent(id, aa);
+		ecs.addComponent(id, tag);
 
 		return id;
 	}
@@ -83,14 +87,14 @@ namespace EntityFactory {
 	}
 
 	Entity InteractableNode::create_interactable_node(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, AEGfxTexture* pTex
-		,Components::AnimationType at, Components::VictoryNodeTag vic)
+		, Components::AnimationType at, Components::VictoryNodeTag vic)
 	{
 		Entity id = ecs.createEntity();
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Tag tag = Components::Tag::OTHERS;
+		Components::Tag tag {Components::Tag::OTHERS};
 
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, tag);

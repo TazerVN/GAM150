@@ -21,6 +21,9 @@ namespace TextureFactory
 		std::vector<AEGfxTexture*> character;
 		std::vector<AEGfxTexture*> ui;
 		std::vector<AEGfxTexture*> others;
+
+		std::unordered_map<std::string, AEGfxTexture*> card_texture_map;
+
 		s8 fontID;
 
 		public:
@@ -38,5 +41,7 @@ namespace TextureFactory
 		void addTextureChar(AEGfxTexture* pTex);
 		void addTextureUI(AEGfxTexture* pTex);
 		void addTextureOthers(AEGfxTexture* pTex);
+
+		AEGfxTexture* getTextureFromCardMap(std::string key);
 	};
 }
