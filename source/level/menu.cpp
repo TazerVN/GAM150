@@ -23,6 +23,8 @@ void GameStateMainMenu_init()
     menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
     bgTexture = AEGfxTextureLoad("Assets/others/Gradient.png");
 
+    //Sam here is the example to use it below call that function whenever u are done VV
+    //AEGfxTextureUnload(bgTexture);
     playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
     quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
 

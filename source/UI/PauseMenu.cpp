@@ -11,11 +11,16 @@ PauseMenu::PauseMenu(s32 z)
 
 	this->dim = UIO::ui_blank_solid_center(ecs, mf, 0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
 
-	this->continue_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr );
+
+	this->continue_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr);
 	this->continue_button.text = UIO::ui_text(ecs, mf, TF, -70.f, AEGfxGetWinMaxY() * 0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Continue" );
 	
-	this->restart_button.button = UIO::ui_button(ecs, mf, 0, 0, 300.f, 100.f, 0, z + 1, nullptr);
-	this->restart_button.text = UIO::ui_text(ecs, mf, TF, -60.f, -10.f, 0.5f, 100.f, 0, z + 1, "Restart");
+
+
+	this->restart_button.button = UIO::ui_button(ecs, mf, 0, 0, 300.f, 100.f, 0, z,nullptr);
+	this->restart_button.text = UIO::ui_text(ecs, mf, TF, -100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");
+
+
 
 	this->leave_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * -0.50f, 300.f, 100.f, 0, z, nullptr);
 	this->leave_button.text = UIO::ui_text(ecs, mf, TF, -40.f, AEGfxGetWinMaxY() * -0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Exit");
@@ -43,11 +48,18 @@ PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)
 	button_c->onClick = [this] { this->on = false; };
 
 	auto button_r = ecs.getComponent<Components::Input>(this->restart_button.button);
-	button_r->onClick = [this] {
+	button_r->onClick = [this] 
+	{
 		this->on = false;
-		};
+		gLevelStateNext = LevelStates::LS_RESTART;
+	};
 
-
+	auto button_l = ecs.getComponent<Components::Input>(this->leave_button.button);
+	button_l->onClick = [this]
+	{
+		this->on = false;
+		gLevelStateNext = LevelStates::LS_QUIT;
+	};
 
 	return *this;
 }
@@ -68,7 +80,7 @@ void PauseMenu::free()
 	this->restart_button.free();
 	this->leave_button.free();
 	this->created = false;
-		
+	this->on = false;
 }
 bool PauseMenu::isOn()
 {

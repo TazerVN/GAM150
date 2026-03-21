@@ -76,7 +76,7 @@ namespace UIO
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 0.1f, 0.3f, 0.5f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] { button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, z);	//add input system for grid
+		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] {button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, z);	//add input system for grid
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.f, true, true };
 		ecs.addComponent(id, trans);
