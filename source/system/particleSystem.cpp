@@ -123,10 +123,23 @@ void Particle::ParticleSystem::update(f32 dt)
 					break;
 
 				case Components::ParticleType::Shield:
-					if (timer->start == false)
-					{
-						ecs.destroyEntity(ent);
-					}
+					f32 orbitSpeed = 2.0f;    // radians per second
+					f32 orbitRadius = 60.f;    // must match spawn
+
+					// Increment angle over time
+					timer->seconds += dt * orbitSpeed;
+					if (timer->seconds > 2.0f * PI)
+						timer->seconds -= 2.0f * PI;   // wrap around
+
+					// Recalculate position every frame
+					f32 angle = timer->seconds;
+					transform->pos_onscreen.x = transform->pos.x + AECos(angle) * orbitRadius;
+					transform->pos_onscreen.y = transform->pos.y + AESin(angle) * orbitRadius;
+
+					// Pulse alpha — breathing effect
+					color->d_color.a = 0.5f + 0.5f * AESin(timer->seconds * 3.f);
+
+					// Never destroyed — caller must manually free when shield breaks
 					break;
 
 				case Components::ParticleType:: Dataflow:
@@ -228,6 +241,34 @@ void Particle::ParticleSystem::spawn_one(f32 x, f32 y, f32 width, f32 height, f3
 
 void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
+}
+
+void Particle::ParticleSystem::spawn_timed(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
+{
+	Entity id = ecs.createEntity();
+	//default single particle value
+	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {},  rotation };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
+	Components::Color color{ r, g, b, alpha };
+	Components::Timer timer{ lifetime, 0.f, true, false };
+	Components::Particle particle{ type };
+	Components::Velocity vel{ 0.f, 0.f };
+	Components::TagClass tag{ Components::Tag::BACKGROUND };
+	vel.vel.x = velX;
+	vel.vel.y = velY;
+
+	ecs.addComponent(id, trans);
+	ecs.addComponent(id, mesh);
+	ecs.addComponent(id, color);
+	ecs.addComponent(id, timer);
+	ecs.addComponent(id, particle);
+	ecs.addComponent(id, vel);
+	ecs.addComponent(id, tag);
+
+
+
+	Particlebuffer.push_back(id);
+
 }
 
 void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf)
@@ -351,9 +392,12 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 			f32 b = 0.8f + 0.2f * AERandFloat();
 			f32 a = 1.0;
 
+			f32 lifetime = 2.0f + AERandFloat() * 2.0f;
+
 			//0.3f + 0.7f * AERandFloat();
 
-			spawn_one(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Datastream);
+			spawn_timed(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
+			spawn_timed(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
 		}
 	}
 }
@@ -415,9 +459,30 @@ void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, Mesh
 
 }
 
-void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count)
 {
+	for (int i = 0; i < count; i++)
+	{
+		// Evenly space particles around circle
+		f32 angle = (f32(i) / f32(count)) * 2.0f * PI;
+
+		// Spawn position — on the ring around entity
+		f32 spawnX = x + AECos(angle) * orbitRadius;
+		f32 spawnY = y + AESin(angle) * orbitRadius;
+
+		// No velocity — orbit handled in switch case
+		f32 velX = 0.f;
+		f32 velY = 0.f;
+
+		spawn_timed(spawnX, spawnY, 8.f, 8.f, angle, 10, r, g, b, alpha, velX, velY, 999.f, Components::ParticleType::Shield);
+
+		Entity id = Particlebuffer.back();
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+		timer->seconds = angle;
+	}
 }
+
+
 
 void Particle::ParticleSystem::particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
