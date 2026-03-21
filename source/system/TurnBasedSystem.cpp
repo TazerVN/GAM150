@@ -403,8 +403,13 @@ namespace TBS
 		drawPile.erase(drawPile.begin() + index);
 	}
 
-	bool TurnBasedSystem::update() const
+	bool TurnBasedSystem::update()
 	{
+		float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
+		if (cur_Hp <= 0.f)
+		{
+			this->player_died = true;
+		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());
 	}
 	void TurnBasedSystem::tbs_free()
@@ -412,7 +417,7 @@ namespace TBS
 		cur_player = -1;
 		is_active = false;
 		cur_round = 0;
-
+		player_died = false;
 		ecsptr = nullptr;
 		evsptr = nullptr;
 		gameBoardptr = nullptr;

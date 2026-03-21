@@ -370,31 +370,6 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 	for (auto& [cx, cy] : selected)
 		this->aoe_selected_cells.push_back({ f32(cx), f32(cy) });
 
-	/*for (int i = 0; i <= aoe_range; ++i)
-	{
-		for (int j = 0; j <= aoe_range; ++j)
-		{
-			if (i + j > aoe_range) continue;
-
-			if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
-			{
-				this->aoe_selected_cells.push_back({ f32(x + i) , f32(y + j) });
-			}
-			if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
-			{
-				this->aoe_selected_cells.push_back({ f32(x - i) , f32(y - j) });
-			}
-			if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
-			{
-				this->aoe_selected_cells.push_back({ f32(x + i) , f32(y - j) });
-			}
-			if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
-			{
-				this->aoe_selected_cells.push_back({ f32(x - i) , f32(y + j) });
-			}
-		}
-	}*/
-
 	//remove the card that just played inside tbs
 	f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 	int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;

@@ -45,6 +45,7 @@ namespace TBS
 		void round_start(EntityComponent::Registry& ecs);
 		void round_end();
 	public:
+		bool player_died = false;
 		//===========Set Ups============================
 		void init(EntityComponent::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
 			, CardSystem&, CardInteraction::CardHand& ,Entity);
@@ -87,7 +88,7 @@ namespace TBS
 		//return the cardID inside the hand
 		Entity draw_card(Entity player, size_t chIndex);
 
-		bool update() const;
+		bool update();
 		void tbs_free();
 	};
 }

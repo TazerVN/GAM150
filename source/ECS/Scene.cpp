@@ -127,7 +127,7 @@ void Scene::update()
 	{
 		if (TBSys.update())
 		{
-			std::cout<< "WIN!!!!" << std::endl;
+			std::cout << "WIN!!!!" << std::endl;
 			TBSys.active() = false;
 			_win = true;
 
@@ -136,13 +136,13 @@ void Scene::update()
 			player->cur_movSpd = player->ini_movSpd;
 
 			Entity BossNode;
-			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1), 
-				Components::AnimationType::NONE,Components::VictoryNodeTag::BOSS);
+			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
+				Components::AnimationType::NONE, Components::VictoryNodeTag::BOSS);
 
 			Entity combatNode;
 			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
-			BattleGrid.placeEntity(ecs,combatNode,0,0);
+			BattleGrid.placeEntity(ecs, combatNode, 0, 0);
 			BattleGrid.placeEntity(ecs, BossNode, MAX_I - 1, MAX_J - 1);
 		}
 
@@ -164,12 +164,12 @@ void Scene::update()
 
 		switch (highlight_type)
 		{
-		case highlight_tag::ATTACK_HIGHLIGHT: 
+		case highlight_tag::ATTACK_HIGHLIGHT:
 		{
 			Entity card_ID = TBSys.draw_card(TBSys.current(), TBSys.get_selected_cardhand_index());
 			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
-			highlight_cells(ecs, TBSys, BattleGrid, cbs , card_range, highlight_type);
+			highlight_cells(ecs, TBSys, BattleGrid, cbs, card_range, highlight_type);
 
 			break;
 		}
@@ -178,7 +178,7 @@ void Scene::update()
 			f32& range = ecs.getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
 			highlight_cells(ecs, TBSys, BattleGrid, cbs, range, highlight_type);
 		}
-			break;
+		break;
 		default:
 			break;
 		}
