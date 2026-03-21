@@ -129,6 +129,62 @@ void Particle::ParticleSystem::update(f32 dt)
 					}
 					break;
 
+				case Components::ParticleType:: Dataflow:
+				{
+					f32 t = timer->seconds / timer->max_seconds;
+					color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
+
+					// Reset to left when timer ends
+					if (timer->start == false)
+					{
+						f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+
+						transform->pos.x = -halfWidth;
+						transform->pos.y = (AERandFloat() * 100.f) - 50.f;
+						transform->pos_onscreen.x = transform->pos.x;
+						transform->pos_onscreen.y = transform->pos.y;
+
+						timer->seconds = 0.f;
+						timer->start = true;
+					}
+					break;
+				}
+
+				case Components::ParticleType::Databub:
+				{
+					// Seaweed motion — sine wave on x axis
+					f32 wobbleSpeed = 3.0f;   // how fast it sways
+					f32 wobbleStrength = 15.f;   // how wide it sways
+
+					transform->pos_onscreen.x += AECos(timer->seconds * wobbleSpeed) * dt * wobbleStrength;
+
+					// Fade out near top of screen
+					f32 t = timer->seconds / timer->max_seconds;
+					color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
+
+					// Reset to bottom when timer ends — loops forever
+					if (timer->start == false)
+					{
+						f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+						f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+						f32 screenWidth = halfWidth * 2.f;
+						f32 spacing = screenWidth / 15.f;
+
+						// Reset near original column x, random y at bottom
+						f32 newX = transform->pos.x;   // stay in same column
+						f32 newY = -halfHeight + AERandFloat() * 80.f;
+
+						transform->pos.x = newX;
+						transform->pos.y = newY;
+						transform->pos_onscreen.x = newX;
+						transform->pos_onscreen.y = newY;
+
+						timer->seconds = 0.f;
+						timer->start = true;
+					}
+					break;
+				}
+
 				}
 
 			}
@@ -168,6 +224,10 @@ void Particle::ParticleSystem::spawn_one(f32 x, f32 y, f32 width, f32 height, f3
 
 	Particlebuffer.push_back(id);
 
+}
+
+void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+{
 }
 
 void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf)
@@ -362,6 +422,81 @@ void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, Me
 void Particle::ParticleSystem::particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
 {
 
+}
+
+void Particle::ParticleSystem::particleDataFlow(EntityComponent::Registry& ecs, MeshFactory& mf)
+{
+	f32 screenWidth = f32(AEGfxGetWindowWidth());
+	f32 screenHeight = f32(AEGfxGetWindowHeight());
+	f32 halfWidth = screenWidth * 0.5f;
+	f32 halfHeight = screenHeight * 0.5f;
+
+	for (int i = 0; i < 50; i++)
+	{
+		// Spawn randomly across screen width, within horizontal band
+		f32 x = -halfWidth + AERandFloat() * screenWidth;
+		f32 y = (AERandFloat() * 100.f) - 50.f;   // band: -50 to +50
+
+		// Move right only
+		f32 speed = 80.f + AERandFloat() * 120.f;
+		f32 velX = speed;
+		f32 velY = 0.f;
+
+		// Cyan colour
+		f32 r = 0.f;
+		f32 g = 0.7f + 0.3f * AERandFloat();
+		f32 b = 0.8f + 0.2f * AERandFloat();
+		f32 a = 0.5f + 0.5f * AERandFloat();
+
+		spawn_one(x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
+	}
+}
+
+void Particle::ParticleSystem::particleDataBubble(EntityComponent::Registry& ecs, MeshFactory& mf)
+{
+	f32 screenWidth = f32(AEGfxGetWindowWidth());
+	f32 halfWidth = screenWidth * 0.5f;
+	f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+
+	int spawnPoints = 15;   // how many columns across bottom
+	int perPoint = 3;    // particles per spawn point
+
+	f32 spacing = screenWidth / f32(spawnPoints);
+
+	for (int col = 0; col < spawnPoints; col++)
+	{
+		// Evenly space across bottom
+		f32 x = -halfWidth + (col * spacing) + (spacing * 0.5f);
+
+		for (int j = 0; j < perPoint; j++)
+		{
+			// Spawn near bottom edge
+			f32 y = -halfHeight + AERandFloat() * 80.f;  // 0 to 80 above bottom
+
+			// Upward velocity only — wobble handled in switch case
+			f32 velX = 0.f;
+			f32 velY = 30.f + AERandFloat() * 50.f;      // 30 to 80 upward
+
+			// Random lifetime — creates staggered timing
+			f32 lifetime = 1.5f + AERandFloat() * 3.0f;  // 1.5 to 4.5 seconds
+
+			// Cyan/teal bubble colours
+			f32 r = 0.f;
+			f32 g = 0.6f + 0.4f * AERandFloat();
+			f32 b = 0.7f + 0.3f * AERandFloat();
+			f32 a = 0.4f + 0.6f * AERandFloat();
+
+			// Small squares — bubble feel
+			f32 size = 4.f + AERandFloat() * 8.f; 
+
+			spawn_one(x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
+
+			// Stagger start time — so not all bubbles rise together
+			Entity id = Particlebuffer.back();
+			Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
+			timer->seconds = AERandFloat() * lifetime;   // start at random point in lifetime
+		}
+	}
 }
 
 void Particle::ParticleSystem::particle_system_free()

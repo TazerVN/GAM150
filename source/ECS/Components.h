@@ -36,7 +36,9 @@ namespace Components
 		Noise,
 		Heal,
 		Shield,
-		Damage
+		Damage,
+		Dataflow,
+		Databub
 	};
 
 	enum class AnimationType : char
