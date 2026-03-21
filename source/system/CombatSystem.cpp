@@ -11,6 +11,7 @@
 #include <utility>
 #include "../global.h"
 
+//==================Helpers=================
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_highlighted_cell()
 {
 	return highlighted_cells;
@@ -20,8 +21,47 @@ std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_selected_cell()
 {
 	return aoe_selected_cells;
 }
+namespace { //so no need to declare in .h file
+	bool get_line_direction(const AEVec2& start, const AEVec2& end, int& dx, int& dy, int& distance)
+	{
+		int sx = static_cast<int>(start.x);
+		int sy = static_cast<int>(start.y);
+		int ex = static_cast<int>(end.x);
+		int ey = static_cast<int>(end.y);
 
+		int diffX = ex - sx;
+		int diffY = ey - sy;
 
+		// Cardinal directions only
+		if (diffX != 0 && diffY != 0)
+			return false;
+
+		if (diffX == 0 && diffY == 0)
+			return false;
+
+		if (diffX != 0)
+		{
+			dx = (diffX > 0) ? 1 : -1;
+			dy = 0;
+			distance = std::abs(diffX);
+		}
+		else
+		{
+			dx = 0;
+			dy = (diffY > 0) ? 1 : -1;
+			distance = std::abs(diffY);
+		}
+
+		return true;
+	}
+}
+
+bool is_valid_grid_pos(int x, int y)
+{
+	return x >= 0 && x < MAX_I && y >= 0 && y < MAX_J;
+}
+
+//-============END OF HELPERS=============
 void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
 	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem)
 {
@@ -69,7 +109,19 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		final_damage *= stats->atkMultiplier;
 	}
 
-	switch (ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type)
+
+	Components::Card_ID* cid = ecs.getComponent<Components::Card_ID>(cardID);
+	if (!cid)
+		return;
+
+	Components::Targetting_Component* tgtComp = ecs.getComponent<Components::Targetting_Component>(cardID);
+	if (!tgtComp)
+		return;
+
+	int serialID = cid->value;
+	int family = (serialID / 100) % 10; // pierce or not
+
+	switch (tgtComp->targetting_type)
 	{
 	case Targetting::SINGLE_TARGET:
 	{
@@ -87,7 +139,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		f32 targetHp = ecs.getComponent<Components::HP>(target)->c_value;
 		if (targetHp <= 0.f)
 		{
-			graveyard.push_back({pos, target});
+			graveyard.push_back({ pos, target });
 		}
 		break;
 	}
@@ -114,12 +166,107 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 					graveyard.push_back({ pos,ent });
 				}
 			}
-		}	
+		}
 		for (AEVec2 a : aoe_selected_cells)
 		{
 			gbptr->activate_aoe_highlight()[int(a.x)][int(a.y)] = 0;
 		}
 		aoe_selected_cells.clear();
+		break;
+	}
+	case Targetting::LINE:
+	{
+		s32 ax, ay;
+		if (!gbptr->findEntityCell(caster, ax, ay))
+		{
+			std::cout << "Could not find caster on board.\n";
+			break;
+		}
+
+		AEVec2 casterPos{ (f32)ax, (f32)ay };
+
+		int dx = 0;
+		int dy = 0;
+		int distance = 0;
+
+		if (!get_line_direction(casterPos, pos, dx, dy, distance))
+		{
+			std::cout << "LINE attack requires same row or column.\n";
+			break;
+		}
+
+		int maxRange = static_cast<int>(tgtComp->range);
+
+		if (distance > maxRange)
+		{
+			std::cout << "LINE attack out of range.\n";
+			break;
+		}
+
+		// Shoot / Shoot+ : piercing
+		if (family == 1)
+		{
+			for (int step = 1; step <= maxRange; ++step)
+			{
+				int cx = ax + dx * step;
+				int cy = ay + dy * step;
+
+				if (cx < 0 || cx >= MAX_I || cy < 0 || cy >= MAX_J)
+					break;
+
+				Entity& ent = gbptr->get_pos()[cx][cy];
+				if (ent != -1 && ent != caster)
+				{
+					if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+					{
+						std::cout << "Cannot damage the entity" << std::endl;
+					}
+					else
+					{
+						attackResolved = true;
+					}
+
+					f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
+					if (targetHp <= 0.f)
+					{
+						graveyard.push_back({ AEVec2{ (f32)cx, (f32)cy }, ent });
+					}
+				}
+			}
+		}
+		// Snipe : first enemy only
+		else if (family == 2)
+		{
+			for (int step = 1; step <= maxRange; ++step)
+			{
+				int cx = ax + dx * step;
+				int cy = ay + dy * step;
+
+				if (cx < 0 || cx >= MAX_I || cy < 0 || cy >= MAX_J)
+					break;
+
+				Entity& ent = gbptr->get_pos()[cx][cy];
+				if (ent != -1 && ent != caster)
+				{
+					if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+					{
+						std::cout << "Cannot damage the entity" << std::endl;
+					}
+					else
+					{
+						attackResolved = true;
+					}
+
+					f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
+					if (targetHp <= 0.f)
+					{
+						graveyard.push_back({ AEVec2{ (f32)cx, (f32)cy }, ent });
+					}
+					break; // frontmost enemy blocks the shot
+				}
+			}
+		}
+
 		break;
 	}
 	default:
@@ -170,6 +317,94 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 		}
 		graveyard.clear();
 	}
+}
+
+// non piercing long ranged atk
+bool CombatNameSpace::CombatSystem::resolve_line_attack_first_hit(
+	EntityComponent::Registry& ecs,
+	Entity caster,
+	const AEVec2& startPos,
+	const AEVec2& targetPos,
+	int maxRange,
+	f32 damage)
+{
+	int dx = 0, dy = 0, distance = 0;
+	if (!get_line_direction(startPos, targetPos, dx, dy, distance))
+		return false;
+
+	if (distance > maxRange)
+		return false;
+
+	for (int step = 1; step <= maxRange; ++step)
+	{
+		int cx = static_cast<int>(startPos.x) + dx * step;
+		int cy = static_cast<int>(startPos.y) + dy * step;
+
+		if (!is_valid_grid_pos(cx, cy))
+			break;
+
+		Entity ent = gbptr->get_pos()[cx][cy];
+		if (ent != Components::NULL_INDEX && ent != -1 && ent != caster)
+		{
+			if (Call_AttackSystem(ecs, ent, damage) == COMBAT_SYSTEM_RETURN_TAG::VALID)
+			{
+				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
+				if (targetHp <= 0.f)
+				{
+					graveyard.push_back({ AEVec2{ static_cast<f32>(cx), static_cast<f32>(cy) }, ent });
+				}
+				return true;
+			}
+			return false;
+		}
+	}
+
+	return false;
+}
+
+//piercing long ranged atk
+bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
+	EntityComponent::Registry& ecs,
+	Entity caster,
+	const AEVec2& startPos,
+	const AEVec2& targetPos,
+	int maxRange,
+	f32 damage)
+{
+	int dx = 0, dy = 0, distance = 0;
+	if (!get_line_direction(startPos, targetPos, dx, dy, distance))
+		return false;
+
+	if (distance > maxRange)
+		return false;
+
+	bool hitAnything = false;
+
+	for (int step = 1; step <= maxRange; ++step)
+	{
+		int cx = static_cast<int>(startPos.x) + dx * step;
+		int cy = static_cast<int>(startPos.y) + dy * step;
+
+		if (!is_valid_grid_pos(cx, cy))
+			break;
+
+		Entity ent = gbptr->get_pos()[cx][cy];
+		if (ent != Components::NULL_INDEX && ent != -1 && ent != caster)
+		{
+			if (Call_AttackSystem(ecs, ent, damage) == COMBAT_SYSTEM_RETURN_TAG::VALID)
+			{
+				hitAnything = true;
+
+				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
+				if (targetHp <= 0.f)
+				{
+					graveyard.push_back({ AEVec2{ static_cast<f32>(cx), static_cast<f32>(cy) }, ent });
+				}
+			}
+		}
+	}
+
+	return hitAnything;
 }
 
 COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage)

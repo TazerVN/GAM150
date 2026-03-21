@@ -46,6 +46,9 @@ namespace CombatNameSpace
 
 		void play_attack_card(EntityComponent::Registry& ecs, Entity caster, Entity cardID, Entity target, AEVec2 pos);
 		void handle_graveyard();
+		// Ranged attacks
+		bool resolve_line_attack_first_hit(EntityComponent::Registry& ecs, Entity caster, const AEVec2& startPos, const AEVec2& targetPos, int maxRange, f32 damage);
+		bool resolve_line_attack_pierce(EntityComponent::Registry& ecs, Entity caster, const AEVec2& startPos, const AEVec2& targetPos, int maxRange, f32 damage);
 
 
 		void set_targetted_ent(Entity ent);

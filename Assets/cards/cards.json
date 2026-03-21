@@ -3,7 +3,7 @@
 		"id": 1010,
 		"name": "Slash",
 		"cost": 1.0,
-		"value": 20.0,
+		"value": 10.0,
 		"range": 1.0,
 		"png" : "card_slash.png"
 	},
@@ -11,41 +11,24 @@
 		"id": 1011,
 		"name": "Slash+",
 		"cost": 1.0,
-		"value": 9.0,
+		"value": 15.0,
 		"range": 1.0,
 		"png" : "card_slash+.png"
 	},
 	{
-		"id": 1110,
-		"name": "Shoot",
-		"cost": 1.0,
-		"value": 5.0,
-		"range": 10.0,
-		"png" : "card_shoot.png"
-	},
-	{
-		"id": 1111,
-		"name": "Shoot+",
-		"cost": 1.0,
-		"value": 9.0,
-		"range": 10.0,
-		"png" : "card_shoot+.png"
-	},
-	{
-		"id": 1320,
-		"name": "Firebolt",
-		"cost": 1.0,
-		"value": 7.0,
-		"range": 10.0,
-		"aoe": 1.0,
-		"png" : "card_firebolt.png"
-	},
-	{
-		"id": 1030,
+		"id": 1012,
 		"name": "Step Slash",
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 3.0,
+		"png" : "cardSample.png"
+	},
+	{
+		"id": 1210,
+		"name": "Turn bash",
+		"cost": -1.0,
+		"value": -1.0,
+		"range": -1.0,
 		"png" : "cardSample.png"
 	},
 	{
@@ -57,23 +40,38 @@
 		"png" : "cardSample.png"
 	},
 	{
-		"id": 1210,
-		"name": "Snipe",
+		"id": 1320,
+		"name": "Firebolt",
+		"cost": 1.0,
+		"value": 7.0,
+		"range": 10.0,
+		"aoe": 1.0,
+		"png" : "card_firebolt.png"
+	},
+	{
+		"id": 1130,
+		"name": "Shoot",
 		"cost": 1.0,
 		"value": 10.0,
+		"range": 10.0,
+		"png" : "card_shoot.png"
+	},
+	{
+		"id": 1131,
+		"name": "Shoot+",
+		"cost": 1.0,
+		"value": 15.0,
+		"range": 10.0,
+		"png" : "card_shoot+.png"
+	},
+	{
+		"id": 1230,
+		"name": "Snipe",
+		"cost": 1.0,
+		"value": 30.0,
 		"range": 99.0,
 		"png" : "card_shoot.png"
 	},
-
-	{
-		"id": 1230,
-		"name": "Turn bash",
-		"cost": -1.0,
-		"value": -1.0,
-		"range": -1.0,
-		"png" : "cardSample.png"
-	},
-
 	{
 		"id": 2000,
 		"name": "Barrier",
