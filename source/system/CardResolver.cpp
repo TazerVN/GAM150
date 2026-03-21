@@ -70,8 +70,7 @@ namespace CardResolver
 			//-----------------------------------
 		case 1:
 		{
-			// For now all attack families still go through existing combat attack logic
-			combatSystem.play_attack_card(ecs, cardID, target, targetPos);
+			combatSystem.play_attack_card(ecs, caster, cardID, target, targetPos);
 			return PC_RETURN_TAG::VALID;
 		}
 
@@ -90,7 +89,7 @@ namespace CardResolver
 				stats->shields += value->value;
 				return PC_RETURN_TAG::VALID;
 
-			case 1: // Damage reduction / invincibility family
+			case 1: // Aura Farm
 				// TODO: implement proper reduction/invincibility stat when your team adds it
 				std::cout << "[CardResolver] Defense family 1 not fully implemented yet.\n";
 				return PC_RETURN_TAG::VALID;
@@ -139,8 +138,38 @@ namespace CardResolver
 
 			case 3: // ATK buff
 			{
-				// TODO: implement proper attack stat when your team adds it
-				std::cout << "[CardResolver] ATK buff not fully implemented yet.\n";
+				Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
+				if (!stats)
+					return PC_RETURN_TAG::INVALID;
+
+				const int maxStacks = 3;
+				const int buffHits = 3;
+				const f32 buffStep = 0.5f;
+
+				// First activation: start the hit counter
+				if (stats->atkBuffHitsLeft <= 0)
+				{
+					stats->atkBuffHitsLeft = buffHits;
+					stats->atkBuffStacks = 1;
+					stats->atkMultiplier = 1.0f + buffStep; // 1.5x
+				}
+				else
+				{
+					// Active buff: stack only up to maxStacks, do not refresh hits
+					if (stats->atkBuffStacks < maxStacks)
+					{
+						++stats->atkBuffStacks;
+						stats->atkMultiplier += buffStep;
+					}
+				}
+
+				std::cout << "[CardResolver] ATK buff applied. Multiplier = "
+					<< stats->atkMultiplier
+					<< " | Hits Left = "
+					<< stats->atkBuffHitsLeft
+					<< " | Stacks = "
+					<< stats->atkBuffStacks << '\n';
+
 				return PC_RETURN_TAG::VALID;
 			}
 

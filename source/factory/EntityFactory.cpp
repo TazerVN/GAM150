@@ -15,6 +15,9 @@ namespace EntityFactory {
 		{	5,	//max points
 			0,	//cur_points
 			0,	//shields
+			0,	//atkhits left
+			0,	//atkbuff stacks left
+			1.f,	//ATK Multiplier
 			7.f};	//movement spd
 		//=====================Render==========================
 		Components::Texture texture{pTex, 0.0f, 0.0f};

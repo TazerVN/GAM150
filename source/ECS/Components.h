@@ -280,6 +280,9 @@ namespace Components
 		int maxPoints;			// per-round cap (set when entity created)
 		int points{ 0 };			// current round points (reset at round start)
 		int shields{ 0 };
+		int atkBuffHitsLeft{ 0 };	// hits left for atk buff
+		int atkBuffStacks{ 0 };		// stacks left ofr atk buff MAX 3
+		f32 atkMultiplier{ 1.0f };	// multiplier
 		f32 ini_movSpd;
 		f32 max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 	};

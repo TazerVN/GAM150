@@ -18,8 +18,9 @@ void LevelStateCombat_load()
 			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Slash"));
 		}
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("PP up"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Aura Farm"));
-		for (int i = 0; i < 3; ++i)
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("STR Disk"));
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Recovery"));
+		for (int i = 0; i < 2; ++i)
 		{
 			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Black Hole"));
 		}

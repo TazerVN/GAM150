@@ -50,7 +50,7 @@ bool CombatNameSpace::CombatSystem::check_within_range(s32 const& x, s32 const& 
 	return false;
 }
 
-void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& ecs, Entity cardID, Entity target, AEVec2 pos)
+void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& ecs, Entity caster, Entity cardID, Entity target, AEVec2 pos)
 {
 	EntityComponent::ComponentTypeID card_value_ID = EntityComponent::getComponentTypeID<Components::Card_Value>();
 	if (!ecs.getBitMask()[cardID].test(card_value_ID))
@@ -58,16 +58,29 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		std::cout << "Selected card doesn't have card_data component";
 		return;
 	}
+
 	f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
+	f32 final_damage = card_damage;
+	bool attackResolved = false;
+
+	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
+	if (stats)
+	{
+		final_damage *= stats->atkMultiplier;
+	}
 
 	switch (ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type)
 	{
 	case Targetting::SINGLE_TARGET:
 	{
 
-		if (Call_AttackSystem(ecs, target, card_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+		if (Call_AttackSystem(ecs, target, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 		{
 			std::cout << "Cannot damage the entity" << std::endl;
+		}
+		else
+		{
+			attackResolved = true;
 		}
 
 		//if died push to graveyard;
@@ -86,9 +99,13 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 			if (ent != -1 && ent != tbsptr->current())
 			{
 				std::cout << "Hit Entity :" << ent << std::endl;
-				if (Call_AttackSystem(ecs, ent, card_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+				if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 				{
 					std::cout << "Cannot damage the entity" << std::endl;
+				}
+				else
+				{
+					attackResolved = true;
 				}
 				//if died push to graveyard;
 				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
@@ -107,6 +124,26 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 	}
 	default:
 		break;
+	}
+
+	// STR DISK LOGIC (ATK BUFF)
+	if (attackResolved && stats && stats->atkBuffHitsLeft > 0)
+	{
+		--stats->atkBuffHitsLeft;
+
+		if (stats->atkBuffHitsLeft <= 0)
+		{
+			stats->atkBuffHitsLeft = 0;
+			stats->atkBuffStacks = 0;
+			stats->atkMultiplier = 1.0f;
+		}
+
+		std::cout << "[CombatSystem] ATK buff consumed. Multiplier = "
+			<< stats->atkMultiplier
+			<< " | Hits Left = "
+			<< stats->atkBuffHitsLeft
+			<< " | Stacks = "
+			<< stats->atkBuffStacks << '\n';
 	}
 }
 
