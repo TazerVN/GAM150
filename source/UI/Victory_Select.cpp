@@ -1,13 +1,27 @@
 #include "pch.h"
 #include "Victory_Select.h"
+#include "UIObject.h"
 
 void Victory_Select::update()
 {
 	if (this->on)
 	{
 		this->on = false;
-		victory_cards.push_back(create_Victory_card("Slash", 0.f, 0.f));
+
+		this->dim = UIO::ui_blank_solid_center(ecs, mf, 0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+		Components::TagClass tag{ Components::Tag::UI };
+		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
+		ecs.addComponent(dim, tag);
+		ecs.addComponent(dim, in);
+
+		for(int i = 0; i < 3; i++)
+		{
+			f32 x = i/3.f * AEGfxGetWindowWidth() + AEGfxGetWinMinX() + 324.f * 0.8f;
+			victory_cards.push_back(create_Victory_card("Slash", x, 0.f));
+		}
 	}
+
+
 }
 void Victory_Select::free()
 {
@@ -15,6 +29,7 @@ void Victory_Select::free()
 	{
 		ecs.destroyEntity(vc);
 	}
+	ecs.destroyEntity(dim);
 	victory_cards.clear();
 }
 
@@ -29,7 +44,7 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 	//===========Victory Card================
 	Entity vc_id = ecs.createEntity();
 
-	Components::Transform trans{ {x,y},{x,y}, {324, 528}, {324, 528}, 0.0f };
+	Components::Transform trans{ {x,y},{x,y}, {324 * 0.8f, 528 * 0.8f,}, {324 * 0.8f, 528 * 0.8f}, 0.0f };
 	Components::Input input(AEVK_LBUTTON, true,
 		[cardname,this]
 		{
@@ -37,9 +52,9 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 			ecs.getComponent<Components::Card_Storage>(playerID)->add_card_to_deck(actual_card);
 			this->free();
 		},
-		nullptr, nullptr, 10);
+		nullptr, nullptr, 40);
 	Components::Texture texture{ pTex };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 30 };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 41 };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::TagClass tag { Components::Tag::UI };
 
