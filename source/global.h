@@ -22,7 +22,10 @@
 #include "UI/Text.h"
 
 
+#define PLAYER_MAX_HEALTH 100;
+
 extern size_t playerID;
+extern bool new_Start;
 
 
 extern EntityComponent::Registry ecs;

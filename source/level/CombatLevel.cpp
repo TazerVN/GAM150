@@ -10,7 +10,26 @@ Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
 {
+	if (new_Start)
+	{
+		new_Start = false;
+		for (int i = 0; i < 5; ++i)
+		{
+			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Slash"));
+		}
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "PP up"));
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Aura Farm"));
+		for (int i = 0; i < 3; ++i)
+		{
+			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(ecs, "Black Hole"));
+		}
 
+		Components::HP* playerHP = ecs.getComponent<Components::HP>(playerID);
+		playerHP->max_value = PLAYER_MAX_HEALTH;
+		playerHP->c_value = playerHP->max_value;
+
+		std::cout << "New start! Reset Player" << std::endl;
+	}
 }
 void LevelStateCombat_init()
 {
@@ -51,14 +70,13 @@ void LevelStateCombat_update()
 		UIM.getPauseMenu().free(ecs);
 		if (AEInputCheckTriggered(AEVK_H)) // test particle
 		{
-
 			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
 		}
 		scene.update();
-		PS.update(ecs, 0.2);
+		PS.update(0.2);
 		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 		UIM.update(scene, dt);
-		AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
+		AS.update(ecs, scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
 	}
 	else if(!scene.getTBS().player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{

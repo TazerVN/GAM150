@@ -6,7 +6,7 @@
 void Particle::ParticleSystem::init(EntityComponent::Registry& ecs, MeshFactory& mf, size_t poolSize)
 {
 }
-void Particle::ParticleSystem::update(EntityComponent::Registry& ecs, f32 dt)
+void Particle::ParticleSystem::update(f32 dt)
 {
 
 	EntityComponent::ComponentTypeID particleID = EntityComponent::getComponentTypeID<Components::Particle>();

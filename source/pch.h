@@ -22,4 +22,5 @@
 #include "system/particleSystem.h"
 #include "system/GridSystem.h"
 #include "system/CombatSystem.h"
+#include "system/PhaseSystem.h"
 #include "global.h"

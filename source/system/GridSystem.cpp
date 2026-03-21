@@ -22,6 +22,33 @@ namespace Grid
 		cur_x = x;
 		cur_y = y;
 
+		if (*win && pos[x][y] != playerID)
+		{
+			if (pos[x][y] != -1 && *ecs.getComponent<Components::Tag>(pos[x][y]) == Components::Tag::OTHERS)
+			{
+				s32 px, py;
+				findEntityCell(playerID, px, py);
+				if (grid_dist_chebyshev(x, y, px, py) == 1)
+				{
+					switch (*ecs.getComponent<Components::VictoryNodeTag>(pos[x][y]))
+					{
+					case Components::VictoryNodeTag::COMBAT :
+					{
+						std::cout << "Teleporting to combat" << std::endl;
+						return;
+					}
+					case Components::VictoryNodeTag::BOSS :
+					{
+						std::cout << "Teleporting to Boss" << std::endl;
+						return;
+					}
+					default:
+						break;
+					}
+						
+				}
+			}
+		}
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 		if (tbsptr->current() != playerID) return;
 
@@ -149,6 +176,7 @@ namespace Grid
 		unselect_movement();
 
 		tbsptr->show_stats(*ecsptr);
+		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 	}
 
 	void GameBoard::move_select(s32 const& x, s32 const& y)

@@ -1,7 +1,7 @@
 #include "pch.h"
 
 size_t playerID;
-
+bool new_Start;
 
 //=====================One time declaration of extern values============================= 
 

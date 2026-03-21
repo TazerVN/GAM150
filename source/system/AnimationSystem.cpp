@@ -2,7 +2,6 @@
 
 #include "AnimationSystem.h"
 #include "../system/GridSystem.h"
-
 namespace Animation
 {
 
@@ -80,10 +79,8 @@ namespace Animation
 		timer->start = true;
 		bool flag = false;
 
-		std::cout << "Move Animating !! timer: " << timer->start << " flag : " << flag << std::endl;
 		if (!astar->path.empty())
 		{
-			std::cout << "AStar is not empty!" << flag << std::endl;
 			Components::GridCell current = astar->path.front();
 
 			if (timer->seconds >= timer->max_seconds)
@@ -114,10 +111,8 @@ namespace Animation
 		}
 		else
 		{
-			std::cout << "Movement Animation before Finished!! timer: " << timer->start << " flag : " << flag << std::endl;
 			flag = true;
 			timer->start = false;
-			std::cout << "Movement Animation Finished!! timer: " << timer->start << " flag : " << flag << std::endl;
 		}
 
 		return flag;
@@ -157,7 +152,7 @@ namespace Animation
 	}
 
 
-	void AnimationSystem::update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cs)
+	void AnimationSystem::update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CombatNameSpace::CombatSystem& cs)
 	{
 		EntityComponent::ComponentTypeID animID = EntityComponent::getComponentTypeID<Components::Animation_Actor>();
 		EntityComponent::ComponentTypeID timerID = EntityComponent::getComponentTypeID<Components::Timer>();
@@ -183,6 +178,7 @@ namespace Animation
 							if (moving_animation(ecs, ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
+								gbs.set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 							}
 							break;
 						case Components::AnimationType::ATTACK_MELEE:

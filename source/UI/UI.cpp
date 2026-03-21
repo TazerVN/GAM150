@@ -26,7 +26,7 @@ namespace UI
 										 [&scene]
 										 {
 											 if (scene.getGBS().getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
-											 scene.getTBS().next(ecs);
+											 scene.getTBS().next();
 										 }
 		);
 

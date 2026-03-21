@@ -15,6 +15,6 @@ namespace Animation
 		public:
 		AnimationSystem();
 		void init(EntityComponent::Registry& ecs);
-		void update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cs);
+		void update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs,CombatNameSpace::CombatSystem& cs);
 	};
 };

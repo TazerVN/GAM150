@@ -17,7 +17,7 @@ namespace Particle
 
 		void init(EntityComponent::Registry& ecs, MeshFactory& mf, size_t poolSize = 256);
 
-		void update(EntityComponent::Registry& ecs, f32 dt);
+		void update(f32 dt);
 
 		void spawn_one(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 

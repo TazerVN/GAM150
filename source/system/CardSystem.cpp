@@ -144,7 +144,7 @@ Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 void CardSystem::init_cards(EntityComponent::Registry& ecs)
 {
 	std::vector<JSON_CARD> vec;
-	JSON_RET ret = parse_data(vec, "../../Assets/cards/cards.json");
+	JSON_RET ret = parse_card_data(vec, "../../Assets/cards/cards.json");
 
 	for (JSON_CARD card : vec)
 	{

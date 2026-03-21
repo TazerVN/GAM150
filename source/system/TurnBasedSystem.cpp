@@ -166,9 +166,9 @@ namespace TBS
 		selected_card[cur_player] = bol;
 	}
 
-	void TurnBasedSystem::next(EntityComponent::Registry & ecs)
+	void TurnBasedSystem::next()
 	{
-		if (!is_active) return;
+		if (!is_active || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION) return;
 
 		++cur_player;
 		if (cur_player >= participants.size())
@@ -405,10 +405,15 @@ namespace TBS
 
 	bool TurnBasedSystem::update()
 	{
-		float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
-		if (cur_Hp <= 0.f)
+		if (!this->player_died)
 		{
-			this->player_died = true;
+			float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
+			if (cur_Hp <= 0.f)
+			{
+				this->player_died = true;
+				ecs.getComponent<Components::Card_Storage>(playerID)->free();
+				new_Start = true;
+			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());
 	}

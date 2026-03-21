@@ -12,7 +12,7 @@ AEGfxTexture* cardtext;
 
 void GameState_game_load()
 {
-	
+	new_Start = true;
 }
 
 void GameState_game_init()

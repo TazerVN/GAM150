@@ -188,7 +188,7 @@ void EnemyDirector::update(EntityComponent::Registry& ecs,
         if (cmd.size() == 1 && cmd[0] == "STOP")
         {
             ++timelineIp_;
-            tbs.next(ecs);
+            tbs.next();
             std::cout << "[ED] STOP hit. End of horde chunk.\n";
             break;
         }

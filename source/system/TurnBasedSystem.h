@@ -60,7 +60,7 @@ namespace TBS
 		//determine if the active participant has selected a card or not
 		bool is_current_selected_card() const;
 		void set_selected_card(bool bol);
-		void next(EntityComponent::Registry& ecs);	
+		void next();	
 		void end();
 
 		bool& active();

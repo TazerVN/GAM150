@@ -89,7 +89,8 @@ namespace CardInteraction
 		this->update_pos(ecs, dt);
 		if (gbsptr == nullptr) return;
 		//if not within main phase return
-		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
+		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE &&
+			gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)) return;
 
 		if (tbsptr->current() != playerID) return;
 
