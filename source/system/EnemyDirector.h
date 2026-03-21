@@ -39,7 +39,7 @@ private:
     // Global behaviour timeline read in exact file order
     std::vector<Tokens> timeline_;
     size_t timelineIp_ = 0;
-    bool hordeTurnConsumed_ = 0;
+    bool hordeTurnActive_ = 0;
 
     // Actor ID binding stuff
     std::unordered_map<std::string, Entity> idToEntity_;        // "E0" -> entity

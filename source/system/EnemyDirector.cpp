@@ -152,83 +152,72 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     Entity cur = tbs.current();
     if (cur == Components::NULL_INDEX) return;
 
-    // If it is player's turn reset the latch and do nothing
+    // If it is player's turn, reset latch and do nothing
     if (cur == playerID)
     {
-        hordeTurnConsumed_ = false;
+        hordeTurnActive_ = false;
         return;
     }
 
-    // If processed this enemy turn, do nothing
-    if (hordeTurnConsumed_)
-        return;
-
-    // Enemy turn just began, consume it once
-    hordeTurnConsumed_ = true;
-
-    const size_t guardMax = 128;
-    size_t guard = 0;
-
-    std::cout << "\n[ED] ===== HORDE TIMELINE BEGIN =====\n";
-
-    while (guard++ < guardMax)
+    // Once enemy turn starts, keep it latched until STOP is reached
+    if (!hordeTurnActive_)
     {
-        if (timelineIp_ >= timeline_.size())
-            timelineIp_ = 0;
-
-        const Tokens& cmd = timeline_[timelineIp_];
-
-        std::cout << "[ED] cmd: ";
-        for (auto const& s : cmd) std::cout << s << ' ';
-        std::cout << "\n";
-
-        // STOP ends this horde chunk
-        if (cmd.size() == 1 && cmd[0] == "STOP")
-        {
-            ++timelineIp_;
-            tbs.next();
-            std::cout << "[ED] STOP hit. End of horde chunk.\n";
-            break;
-        }
-
-        // malformed line
-        if (cmd.size() < 2)
-        {
-            std::cout << "[ED] malformed line, skipping.\n";
-            ++timelineIp_;
-            continue;
-        }
-
-        const std::string& actorId = cmd[0];
-
-        auto it = idToEntity_.find(actorId);
-        if (it == idToEntity_.end())
-        {
-            std::cout << "[ED] no bound entity for actorId=" << actorId << "\n";
-            ++timelineIp_;
-            continue;
-        }
-
-        Entity actor = it->second;
-
-        if (cmd[1] == "MOVE")
-        {
-            execMOVE(ecs, board, actor, playerID, cmd);
-        }
-        else if (cmd[1] == "ATTACK")
-        {
-            execATTACK(ecs, board, actor, playerID, cmd);
-        }
-        else
-        {
-            std::cout << "[ED] unknown verb: " << cmd[1] << "\n";
-        }
-
-        ++timelineIp_;
+        hordeTurnActive_ = true;
+        std::cout << "\n[ED] ===== HORDE TIMELINE BEGIN =====\n";
     }
 
-    if (guard >= guardMax)
-        std::cout << "[ED] ERROR: guardMax hit while processing timeline.\n";
+    if (timelineIp_ >= timeline_.size())
+        timelineIp_ = 0;
+
+    const Tokens& cmd = timeline_[timelineIp_];
+
+    std::cout << "[ED] cmd: ";
+    for (auto const& s : cmd) std::cout << s << ' ';
+    std::cout << "\n";
+
+    // STOP ends this horde chunk and advances turn
+    if (cmd.size() == 1 && cmd[0] == "STOP")
+    {
+        ++timelineIp_;
+        tbs.next();
+        std::cout << "[ED] STOP hit. End of horde chunk.\n";
+        return;
+    }
+
+    // malformed line
+    if (cmd.size() < 2)
+    {
+        std::cout << "[ED] malformed line, skipping.\n";
+        ++timelineIp_;
+        return;
+    }
+
+    const std::string& actorId = cmd[0];
+
+    auto it = idToEntity_.find(actorId);
+    if (it == idToEntity_.end())
+    {
+        std::cout << "[ED] no bound entity for actorId=" << actorId << "\n";
+        ++timelineIp_;
+        return;
+    }
+
+    Entity actor = it->second;
+
+    if (cmd[1] == "MOVE")
+    {
+        execMOVE(ecs, board, actor, playerID, cmd);
+    }
+    else if (cmd[1] == "ATTACK")
+    {
+        execATTACK(ecs, board, actor, playerID, cmd);
+    }
+    else
+    {
+        std::cout << "[ED] unknown verb: " << cmd[1] << "\n";
+    }
+
+    ++timelineIp_;
 }
 
 void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
