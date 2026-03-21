@@ -9,10 +9,13 @@
 
 // PROXY CODE
 // NEED CLEAN UP
+//Particle::ParticleSystem PS;
 
 void GameStateMainMenu_load()
 {
 	std::cout << "Main menu loaded" << std::endl;
+    TF.textureInit();      
+    mf.MeshFactoryInit();
     
 }
 void GameStateMainMenu_init()
@@ -22,6 +25,8 @@ void GameStateMainMenu_init()
     // Load font (second param is font size)
     menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
     bgTexture = AEGfxTextureLoad("Assets/others/Gradient.png");
+    //PS.particleDataFlow(ecs, mf);
+    //PS.particleDataBubble(ecs, mf);
 
     //Sam here is the example to use it below call that function whenever u are done VV
     //AEGfxTextureUnload(bgTexture);
@@ -46,6 +51,9 @@ void GameStateMainMenu_update()
     
     AEGfxSetBackgroundColor(0.f, 0.f, 0.f);
 
+    // DataFlow HERE
+    //PS.particleDataFlow(ecs, mf);
+
     AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
     AEGfxSetBlendMode(AE_GFX_BM_BLEND);
     AEGfxSetTransparency(1.0f);
@@ -65,6 +73,9 @@ void GameStateMainMenu_update()
     }
     */
 
+    // DataBub HERE
+    //PS.particleDataBubble(ecs, mf);
+
     DrawButton(playBtn);
     DrawButton(quitBtn);
 
@@ -79,6 +90,7 @@ void GameStateMainMenu_unload()
 {
     std::cout << "Main menu unloaded" << std::endl;
     AEGfxDestroyFont(menuFont);
+    AEGfxTextureUnload(bgTexture);
 }
 
 bool IsMouseOver(const Button& btn)

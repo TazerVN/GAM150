@@ -42,3 +42,4 @@ extern Velocity::VelocitySystem VS;
 extern TransformSystem::TransformSystem TrS;
 extern Animation::AnimationSystem AS;
 extern Text::PopUpText PUT;
+extern Particle::ParticleSystem PS;
