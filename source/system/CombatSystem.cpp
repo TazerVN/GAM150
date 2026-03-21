@@ -30,6 +30,11 @@ void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSy
 	tbsptr = &tbs;
 	cardHandptr = &cardhand;
 	evsptr = &eventSystem;
+
+	this->total_attack_cards_played = 0;
+	this->total_def_cards_played = 0;
+	this->total_item_cards_played = 0;
+	this->total_world_interaction_card_played = 0;
 }
 
 

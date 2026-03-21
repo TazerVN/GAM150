@@ -22,4 +22,5 @@ struct JSON_CARD
 	float aoe = 0.0f;
 };
 
-JSON_RET parse_data(std::vector<JSON_CARD>& vec,char const* str);
+JSON_RET parse_card_data(std::vector<JSON_CARD>& vec,char const* str);
+JSON_RET parse_player_data(std::vector<JSON_CARD>& vec, char const* str);

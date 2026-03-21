@@ -2,6 +2,7 @@
 #include "../UI/cardInteraction.h"
 #include "CombatLevel.h"
 #include "../util/LevelManager.h"
+#include "../UI/UI.h"
 
 Scene scene;
 UI::UIManager UIM;
@@ -35,36 +36,38 @@ void LevelStateCombat_init()
 void LevelStateCombat_update()
 {
 	f32 dt = AEFrameRateControllerGetFrameTime();
-	if (!scene.getTBS().player_died)
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+
+		s32 mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX,&mouseY);
+
+		f32 worldX = f32(mouseX) - (f32(AEGfxGetWindowWidth()) * 0.5f);
+		f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
+		PS.particleClick(ecs, mf, worldX, worldY);
+	}
+
+	if (!scene.getTBS().player_died && !UIM.getPauseMenu().isOn())
 	{
-		//==========(Object updates)===========
-		if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-
-			s32 mouseX, mouseY;
-			AEInputGetCursorPosition(&mouseX, &mouseY);
-
-			f32 worldX = f32(mouseX) - (f32(AEGfxGetWindowWidth()) * 0.5f);
-			f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
-			PS.particleClick(ecs, mf, worldX, worldY);
-		}
-
+		UIM.getPauseMenu().free(ecs);
 		if (AEInputCheckTriggered(AEVK_H)) // test particle
 		{
 
 			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
 		}
 		scene.update();
+		PS.update(ecs, 0.2);
+		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+		UIM.update(scene, dt);
+		AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
 	}
-	else 
+	else if(!scene.getTBS().player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
-		std::cout << "Player Died" << std::endl;
+		PauseMenu& p = UIM.getPauseMenu();
+		p = PauseMenu(ecs, mf, 50);
 	}
-	UIM.update(scene, dt);
-	PUT.update();
-	AS.update(ecs, scene.getBattleGrid(), scene.getCombatSystem());
-	scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 
 	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;
+	PUT.update();
 }
 void LevelStateCombat_free()
 {

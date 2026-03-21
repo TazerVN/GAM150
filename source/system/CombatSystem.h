@@ -30,9 +30,15 @@ namespace CombatNameSpace
 		std::vector<AEVec2> aoe_selected_cells;
 		
 		std::vector<std::pair<AEVec2, Entity>> graveyard;
+
 	public:
 		void init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb ,TBS::TurnBasedSystem& tbs,
 					 CardInteraction::CardHand& cardhand,EventPool<highlight_tag>& eventSystem);
+
+		int total_attack_cards_played = 0;
+		int total_def_cards_played = 0;
+		int total_item_cards_played = 0;
+		int total_world_interaction_card_played = 0;
 
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::vector<AEVec2>& get_aoe_selected_cell();

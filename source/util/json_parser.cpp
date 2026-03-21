@@ -5,7 +5,7 @@
 #include <iostream>
 #include <array>
 
-JSON_RET parse_data(std::vector<JSON_CARD>& vec, char const* str)
+JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
 {
 	std::ifstream file(str);
 	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
@@ -44,4 +44,28 @@ JSON_RET parse_data(std::vector<JSON_CARD>& vec, char const* str)
 	}
 
 	return JSON_RET::OK;
+}
+
+JSON_RET parse_player_data(std::vector<JSON_CARD>& vec, char const* str)
+{
+	std::ifstream file(str);
+	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
+
+	std::string json
+	(
+		(std::istreambuf_iterator<char>(file)),
+		std::istreambuf_iterator<char>()
+	);
+
+	rapidjson::Document doc;
+	doc.Parse(json.c_str());
+	if (doc.HasParseError()) {
+		std::cerr << "Error parsing JSON: "
+			<< doc.GetParseError() << std::endl;
+		return JSON_RET::PARSE_ERROR;
+	}
+
+	if (!doc.IsArray()) return JSON_RET::PARSE_ERROR;
+
+	rapidjson::Value& arr = doc.GetArray();
 }
