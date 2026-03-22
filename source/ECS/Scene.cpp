@@ -56,7 +56,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		// temporary spawn position logic
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-		Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
+		/*Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);*/
+		Entity temp = beastiary.generate_enemy_from_beastiary("Melee", spawnPos, { 192.0f,192.0f }, Components::AnimationType::IDLE);
 
 		add_entity_to_scene(temp);                  // adds to scene/world
 		ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);

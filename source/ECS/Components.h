@@ -240,7 +240,7 @@ namespace Components
 	{
 		std::string value;
 	};
-	struct card_image
+	struct image_location
 	{
 		std::string location;
 	};

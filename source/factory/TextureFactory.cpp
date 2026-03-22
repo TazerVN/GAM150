@@ -49,7 +49,7 @@ namespace TextureFactory
 		for (Entity card : card_system.cards_vec)
 		{
 			std::string tex = "../../Assets/cards/";
-			std::string loc = ecs.getComponent<Components::card_image>(card)->location;
+			std::string loc = ecs.getComponent<Components::image_location>(card)->location;
 			tex += loc;
 			if (card_texture_map.find(loc) == card_texture_map.end())
 			{
@@ -64,9 +64,21 @@ namespace TextureFactory
 		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
 
 		//CHAR
-		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy1.png"));
-		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/enemy2.png"));
-		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet.png"));
+		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet.png"));	//first must always be hero or creator actor spritesheet will fail
+		//add textures for enemies
+		for (Entity enemy : beastiary.enemies_vec)
+		{
+			std::string tex = "../../Assets/character/";
+			Components::image_location* i = ecs.getComponent<Components::image_location>(enemy);
+			std::string loc = i->location;
+			tex += loc;
+			if (enemy_texture_map.find(loc) == enemy_texture_map.end())
+			{
+				AEGfxTexture* ptex = AEGfxTextureLoad(tex.c_str());
+				enemy_texture_map[loc] = ptex;
+				this->addTextureChar(ptex);
+			}
+		}
 
 		//UI
 
@@ -137,6 +149,10 @@ namespace TextureFactory
 	AEGfxTexture* TextureFactory::getTextureFromCardMap(std::string key)
 	{
 		return this->card_texture_map[key];
+	}
+	AEGfxTexture* TextureFactory::getTextureFromEnemyMap(std::string key)
+	{
+		return this->enemy_texture_map[key];
 	}
 	s8 TextureFactory::getFontID(){
 		return this->fontID;

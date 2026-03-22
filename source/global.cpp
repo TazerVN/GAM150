@@ -9,7 +9,7 @@ EntityComponent::Registry ecs;
 CardSystem card_system;
 MeshFactory mf;
 TextureFactory::TextureFactory TF;
-
+Beastiary beastiary;
 
 InputSystem::InputManager IM;
 Camera::CameraSystem CS;

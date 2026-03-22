@@ -38,7 +38,7 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 	Entity _card = card_system.get_bible_id(cardname);
 
 	//============texture==================
-	std::string& loc = ecs.getComponent<Components::card_image>(_card)->location;
+	std::string& loc = ecs.getComponent<Components::image_location>(_card)->location;
 	AEGfxTexture* pTex = TF.getTextureFromCardMap(loc);
 
 	//===========Victory Card================

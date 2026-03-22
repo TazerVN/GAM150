@@ -219,7 +219,7 @@ namespace CardInteraction
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID_);
 			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cardID_);
 			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cardID_);
-			Components::card_image* cimg = ecs.getComponent<Components::card_image>(cardID_);
+			Components::image_location* cimg = ecs.getComponent<Components::image_location>(cardID_);
 			AEGfxTexture* texture = nullptr;
 
 			texture = TF.getTextureFromCardMap(cimg->location);

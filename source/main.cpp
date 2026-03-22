@@ -82,6 +82,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 void load_Sys_Comp()
 {
 	card_system.init_cards();
+	beastiary.init_data();
 	TF.textureInit();
 	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 	//==========System=============
@@ -90,7 +91,7 @@ void load_Sys_Comp()
 
 	Entity temp;
 	//Add player
-	temp = EntityFactory::create_actor_spritesheet({ 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(2), Components::AnimationType::NONE);
+	temp = EntityFactory::create_actor_spritesheet({ 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	
 	//=============================
