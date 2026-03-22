@@ -41,7 +41,6 @@ namespace Animation
 		if (lerp >= 1.f)
 		{
 			texture->offset_x = 0.f;
-			texture->offset_y = 0.f;
 			flag = true;
 			timer->start = false;
 			anim->current_frame = 0.f;
@@ -49,19 +48,11 @@ namespace Animation
 		else
 		{
 
-			if (texture->offset_y >= 0.f && texture->offset_y < (1.f / 6.f))
-			{
-				texture->offset_y = 2.f / 6.f;
-			}
-			else if (texture->offset_y >= 1.f/6.f && texture->offset_y < (2.f / 6.f))
-			{
-				texture->offset_y = 3.f / 6.f;
-			}
-
+			int frame = 7 + int(lerp * 5);
 			if(static_cast<int>(timer->seconds * 100) % static_cast<int>(fps * 100) == 0)
 				anim->current_frame = ++anim->current_frame % anim->max_frame;
 
-			texture->offset_x = f32(anim->current_frame) / f32(anim->max_frame);
+			texture->offset_x = frame / 18.f;
 		}
 
 		return flag;
@@ -111,8 +102,8 @@ namespace Animation
 				texture->offset_y = 1.f/4.f;
 			}
 
-			int frame = 1 + int(lerp * 5);
 
+			int frame = 1 + int(lerp * 5);
 			
 
 			if (static_cast<int>(timer->seconds * 100) % static_cast<int>(fps * 100) == 0 &&
