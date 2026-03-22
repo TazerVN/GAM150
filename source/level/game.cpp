@@ -16,9 +16,6 @@ void GameState_game_load()
 
 void GameState_game_init()
 {
-	s32 w_width = AEGfxGetWindowWidth();
-	s32 w_height = AEGfxGetWindowHeight();
-
 	LevelMgrInit(LevelStates::LS_COMBAT);
 }
 

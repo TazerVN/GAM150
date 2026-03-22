@@ -206,11 +206,11 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
 
     if (cmd[1] == "MOVE")
     {
-        execMOVE(ecs, board, actor, playerID, cmd);
+        execMOVE(board, actor, playerID, cmd);
     }
     else if (cmd[1] == "ATTACK")
     {
-        execATTACK(ecs, board, actor, playerID, cmd);
+        execATTACK(board, actor, playerID, cmd);
     }
     else
     {
@@ -220,8 +220,17 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     ++timelineIp_;
 }
 
-void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
-    Grid::GameBoard& board,
+const std::vector<EnemyDirector::Tokens>& EnemyDirector::get_timeline() const
+{
+    return timeline_;
+}
+
+const std::unordered_map<std::string, Entity>& EnemyDirector::get_map() const
+{
+    return idToEntity_;
+}
+
+void EnemyDirector::execMOVE(Grid::GameBoard& board,
     Entity actor,
     Entity playerID,
     const Tokens& t)
@@ -449,8 +458,7 @@ void EnemyDirector::execMOVE(EntityComponent::Registry& ecs,
     std::cout << "[EnemyDirector] MOVE args not recognized.\n";
 }
 
-void EnemyDirector::execATTACK(EntityComponent::Registry& ecs,
-    Grid::GameBoard& board,
+void EnemyDirector::execATTACK(Grid::GameBoard& board,
     Entity actor,
     Entity playerID,
     const Tokens& t)

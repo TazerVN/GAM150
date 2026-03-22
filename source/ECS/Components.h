@@ -46,6 +46,11 @@ namespace Components
 		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, NONE, COUNT
 	};
 
+	enum class IntentionType : char
+	{
+		ATTACK,SEVER_ATTACK,MOVE
+	};
+
 	//========================= COMMON ==============================
 	/*struct Transform
 	{

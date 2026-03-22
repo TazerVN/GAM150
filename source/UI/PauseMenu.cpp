@@ -9,21 +9,21 @@ PauseMenu::PauseMenu(s32 z)
 	Components::TagClass tag{ Components::Tag::UI };
 	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40};
 
-	this->dim = UIO::ui_blank_solid_center(ecs, mf, 0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+	this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
 
 
-	this->continue_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr);
-	this->continue_button.text = UIO::ui_text(ecs, mf, TF, -70.f, AEGfxGetWinMaxY() * 0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Continue" );
+	this->continue_button.button = UIO::ui_button(0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr);
+	this->continue_button.text = UIO::ui_text(-70.f, AEGfxGetWinMaxY() * 0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Continue" );
 	
 
 
-	this->restart_button.button = UIO::ui_button(ecs, mf, 0, 0, 300.f, 100.f, 0, z,nullptr);
-	this->restart_button.text = UIO::ui_text(ecs, mf, TF, -100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");
+	this->restart_button.button = UIO::ui_button(0, 0, 300.f, 100.f, 0, z,nullptr);
+	this->restart_button.text = UIO::ui_text(-100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");
 
 
 
-	this->leave_button.button = UIO::ui_button(ecs, mf, 0, AEGfxGetWinMaxY() * -0.50f, 300.f, 100.f, 0, z, nullptr);
-	this->leave_button.text = UIO::ui_text(ecs, mf, TF, -40.f, AEGfxGetWinMaxY() * -0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Exit");
+	this->leave_button.button = UIO::ui_button(0, AEGfxGetWinMaxY() * -0.50f, 300.f, 100.f, 0, z, nullptr);
+	this->leave_button.text = UIO::ui_text(-40.f, AEGfxGetWinMaxY() * -0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Exit");
 
 
 	ecs.addComponent(this->dim, tag);

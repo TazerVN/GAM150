@@ -60,6 +60,7 @@
     <ClCompile Include="source\UI\Victory_Select.cpp" />
     <ClCompile Include="source\factory\Beastiary.cpp" />
     <ClCompile Include="source\factory\AudioFactory.cpp" />
+    <ClCompile Include="source\UI\IntentionDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -123,6 +124,7 @@
     <ClInclude Include="source\UI\Victory_Card_Select.h" />
     <ClInclude Include="source\UI\Victory_Select.h" />
     <ClInclude Include="source\factory\Beastiary.h" />
+    <ClInclude Include="source\UI\IntentionDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />

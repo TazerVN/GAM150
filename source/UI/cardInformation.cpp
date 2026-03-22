@@ -32,7 +32,7 @@ namespace CardInformation
 		created = false;
 
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
-		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, s8(z) };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ TF.getTextureUI(7) };
 		Components::TagClass tag{ Components::Tag::UI };

@@ -4,7 +4,7 @@
 namespace UIO
 {
 
-	Entity ui_hp_bar(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity ui_hp_bar(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 
 	{
 
@@ -22,7 +22,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_stamina_bar(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity ui_stamina_bar(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -38,7 +38,7 @@ namespace UIO
 		return id;
 	}
 
-	void button_onHover(EntityComponent::Registry& ecs, Entity id)
+	void button_onHover(Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 
@@ -54,7 +54,7 @@ namespace UIO
 	}
 
 
-	void button_offHover(EntityComponent::Registry& ecs, Entity id)
+	void button_offHover(Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 
@@ -68,7 +68,7 @@ namespace UIO
 
 	}
 
-	Entity ui_button(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
+	Entity ui_button(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
 
 	{
 		Entity id = ecs.createEntity();
@@ -76,7 +76,7 @@ namespace UIO
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 0.1f, 0.3f, 0.5f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] {button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, z);	//add input system for grid
+		Components::Input in(AEVK_LBUTTON, true, func, [id] {button_onHover(id); }, [id] { button_offHover(id); }, z);	//add input system for grid
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.f, true, true };
 		ecs.addComponent(id, trans);
@@ -90,7 +90,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_button_texture(EntityComponent::Registry& ecs, MeshFactory& mf, AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
+	Entity ui_button_texture(AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, std::function<void()> func)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -98,7 +98,7 @@ namespace UIO
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Texture tex{ texture };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [&ecs, id] { button_onHover(ecs, id); }, [&ecs, id] { button_offHover(ecs, id); }, 10);	//add input system for grid
+		Components::Input in(AEVK_LBUTTON, true, func, [id] { button_onHover(id); }, [id] { button_offHover(id); }, 10);	//add input system for grid
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.5f, true, true };
 		ecs.addComponent(id, trans);
@@ -112,13 +112,13 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_text(EntityComponent::Registry& ecs, MeshFactory& mf, TextureFactory::TextureFactory& tf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, const char* a)
+	Entity ui_text(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, const char* a)
 
 	{
 		Entity id = ecs.createEntity();
 		//default player values
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
-		Components::Text text{ a, tf.getFontID(), z };
+		Components::Text text{ a, TF.getFontID(), z };
 		Components::Color color{ 0.8f, 1.0f, 1.0f ,1.0f };
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		ecs.addComponent(id, trans);
@@ -130,7 +130,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_anchor(EntityComponent::Registry& ecs, f32 x, f32 y, f32 width, f32 height, f32 rotation)
+	Entity ui_anchor(f32 x, f32 y, f32 width, f32 height, f32 rotation)
 	{
 		Entity id = ecs.createEntity();
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {}, rotation };
@@ -142,7 +142,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_blank_solid_corner(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
+	Entity ui_blank_solid_corner(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -156,7 +156,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_blank_solid_center(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
+	Entity ui_blank_solid_center(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 a)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -170,7 +170,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_blank_texture(EntityComponent::Registry& ecs, MeshFactory& mf, AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+	Entity ui_blank_texture(AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
 	{
 		Entity id = ecs.createEntity();
 		//default player values

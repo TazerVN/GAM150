@@ -7,8 +7,7 @@
 #include "../UI/UI.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
-Entity spawnEnemyAndBind(EntityComponent::Registry& ecs,
-	EnemyDirector& enemyDirector,
+Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 	const std::string& actorId,
 	const char* name,
 	AEVec2 pos,

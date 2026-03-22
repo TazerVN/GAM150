@@ -20,8 +20,9 @@ namespace UI
 	class UIManager
 	{
 		private:
-		std::vector<std::pair<Entity, Entity>> actor_children_list;
+		std::vector<std::pair<Entity, Entity>> hp_children_list;
 		std::vector<std::pair<Entity, Entity>> mana_children_list;
+		std::vector<std::pair<Entity, Entity>> intention_children_list;
 		std::vector<Entity> current_ui;
 
 		//card
@@ -39,7 +40,7 @@ namespace UI
 		UIManager();
 		void update(Scene& scene, f32 dt);
 		void init(Scene& scene);
-		void free(EntityComponent::Registry& ecs);
+		void free();
 
 		CardInteraction::CardHand& getCardHand();
 		CardInformation::CardDisplay& getCardDisplay();

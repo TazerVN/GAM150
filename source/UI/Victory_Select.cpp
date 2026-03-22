@@ -8,7 +8,7 @@ void Victory_Select::update()
 	{
 		this->on = false;
 
-		this->dim = UIO::ui_blank_solid_center(ecs, mf, 0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+		this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
 		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
 		ecs.addComponent(dim, tag);

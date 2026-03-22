@@ -41,9 +41,6 @@ void LevelStateCombat_load()
 }
 void LevelStateCombat_init()
 {
-	//==========(Init)======================
-	s32 w_width = AEGfxGetWindowWidth();
-	s32 w_height = AEGfxGetWindowHeight();
 
 	//===========Game===============
 	//load in player deck
@@ -101,7 +98,7 @@ void LevelStateCombat_update()
 void LevelStateCombat_free()
 {
 	scene.scene_free();
-	UIM.free(ecs);
+	UIM.free();
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
 }

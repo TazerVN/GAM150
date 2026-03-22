@@ -10,14 +10,14 @@ namespace CardInteraction
 	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity,Entity> entity);
 	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost);
 
-	void hand_onHover(EntityComponent::Registry& ecs, Entity id)
+	void hand_onHover(Entity id)
 	{
 		//Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		//t->pos_onscreen.y = t->pos.y + 40;
 		//t->size_col.x = t->size.x + 40;
 	}
 
-	void hand_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, Entity id)
+	void hand_offHover(CardInformation::CardDisplay& cd, Entity id)
 	{
 		/*Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		t->pos_onscreen = t->pos;
@@ -70,7 +70,7 @@ namespace CardInteraction
 		this->reset = true;
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id] { hand_onHover(ecs, id); }, [id = this->id, &cd] { hand_offHover(ecs, cd, id); });
+		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id] { hand_onHover(id); }, [id = this->id, &cd] { hand_offHover(cd, id); });
 		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);

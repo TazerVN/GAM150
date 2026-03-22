@@ -52,19 +52,21 @@ private:
     // ============== Command executors =============
 
     // Move Entity
-    void execMOVE(EntityComponent::Registry& ecs,
-        Grid::GameBoard& board,
+    void execMOVE(Grid::GameBoard& board,
         Entity actor,
         Entity playerID,
         const Tokens& t);
 
     // Entity Attacks
-    void execATTACK(EntityComponent::Registry& ecs,
-        Grid::GameBoard& board,
+    void execATTACK(Grid::GameBoard& board,
         Entity actor,
         Entity playerID,
         const Tokens& t);
 
     // More to come!!!
     // Cast soon >>>>> 
+
+public:
+    const std::vector<Tokens>& get_timeline() const;
+    const std::unordered_map<std::string, Entity>& get_map() const; // "E0" -> entity
 };
