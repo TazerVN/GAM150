@@ -174,44 +174,6 @@ namespace UI
 
 	}
 
-	/*void UIManager::ui_cardInformation(EntityComponent::Registry& ecs, Entity id)
-	{
-		if(card_info_exist == false){
-			Entity cardInformation = ui_blank_texture(ecs, mf, TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 379, 458, 0, 30);
-
-			Components::Timer timer{1.f, 0.f};
-			ecs.addComponent(cardInformation, timer);
-
-			this->current_ui.push_back(cardInformation);
-
-			card_info_exist = true;
-
-			EntityComponent::ComponentTypeID nameID = EntityComponent::getComponentTypeID<Components::Name>();
-			EntityComponent::ComponentTypeID costID = EntityComponent::getComponentTypeID<Components::Card_Cost>();
-			EntityComponent::ComponentTypeID damageID = EntityComponent::getComponentTypeID<Components::Card_Value>();
-			if(!ecs.getBitMask()[id].test(nameID)) return;
-			if(!ecs.getBitMask()[id].test(costID)) return;
-			if(!ecs.getBitMask()[id].test(damageID)) return;
-
-			auto name = ecs.getComponent<Components::Name>(id);
-			auto cost = ecs.getComponent<Components::Card_Cost>(id);
-			auto damage = ecs.getComponent<Components::Card_Value>(id);
-
-			auto parent_t = ecs.getComponent<Components::Transform>(cardInformation);
-
-			Entity cardName = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y, 0.5f, 0.5f, 0, 31, name->value.c_str());
-			Entity cardCost = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y - 50.f, 0.5f, 0.5f, 0, 31, std::to_string(cost->value).c_str());
-			Entity cardDamage = ui_text(ecs, mf, TF, parent_t->pos_onscreen.x, parent_t->pos_onscreen.y - 100.f, 0.5f, 0.5f, 0, 31, std::to_string(damage->value).c_str());
-
-			std::pair<Entity, Entity> p_n{cardInformation, cardName};
-			std::pair<Entity, Entity> p_c{cardInformation, cardCost};
-			std::pair<Entity, Entity> p_d{cardInformation, cardDamage};
-			this->mana_children_list.push_back(p_n);
-			this->mana_children_list.push_back(p_c);
-			this->mana_children_list.push_back(p_d);
-		}
-	}*/
-
 	CardInteraction::CardHand& UIManager::getCardHand()
 	{
 		return this->hand;
