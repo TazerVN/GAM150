@@ -29,7 +29,7 @@ namespace UIO
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},{}, rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
 		Components::Color color{ 0.0f, 0.8f, 1.0f ,1.0f };
-		Components::TurnBasedStats stats{ 0,0,0, 100 };
+		Components::TurnBasedStats stats{ 0,0,0, 100, 100, 100 };
 		ecs.addComponent(id, stats);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);

@@ -64,7 +64,8 @@ namespace Particle
 
 		void particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 
-		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf);
+
+		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count);
 
 		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 

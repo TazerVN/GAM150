@@ -123,6 +123,7 @@ void Particle::ParticleSystem::update(f32 dt)
 					break;
 
 				case Components::ParticleType::Shield:
+				{
 					f32 orbitSpeed = 2.0f;    // radians per second
 					f32 orbitRadius = 60.f;    // must match spawn
 
@@ -141,6 +142,7 @@ void Particle::ParticleSystem::update(f32 dt)
 
 					// Never destroyed — caller must manually free when shield breaks
 					break;
+				}
 
 				case Components::ParticleType:: Dataflow:
 				{

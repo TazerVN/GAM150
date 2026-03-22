@@ -59,7 +59,7 @@ namespace UI
 
 			if (e == playerID)
 			{
-				Entity stamina = UIO::ui_stamina_bar(ecs, mf, 40, -20, 70, 8, 90, 6);
+				Entity stamina = UIO::ui_stamina_bar(ecs, mf, 40, -20, 70, 8, 90, 7);
 				Entity blank_s = UIO::ui_blank_solid_corner(ecs, mf, 40, -20, 70, 8, 90, 6, 0.0f, 0.0f, 0.0f, 1.0f);
 
 				std::pair<Entity, Entity> stam{ e, stamina };
@@ -310,6 +310,8 @@ namespace UI
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
+
+			sta_child->max_movSpd = sta_parent->max_movSpd;
 			sta_child->cur_movSpd = sta_parent->cur_movSpd / sta_parent->max_movSpd * sta_child->max_movSpd;
 			transform_child->size.x = sta_child->cur_movSpd / sta_child->max_movSpd * transform_child->size_og.x;
 			mesh_child->z = mesh_parent->z + 11;
