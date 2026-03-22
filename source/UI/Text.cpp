@@ -3,10 +3,37 @@
 
 namespace Text
 {
+	void PopUpText::display(Entity pos, const char* text)
+	{
+		*this << 0;
+		this->current.push_back(this->text_create_attached(pos, text, c_color.r, c_color.g, c_color.b, c_color.a));
+	}
 
 	PopUpText& operator<<(PopUpText& out, const char* text)
 	{
-		out.current.push_back(out.text_create(text));
+		Entity id = out.text_create(out.pos, text, out.c_color.r, out.c_color.g, out.c_color.b, out.c_color.a);
+
+		out.current.push_back(id);
+
+		return out;
+	}
+	PopUpText& operator<<(PopUpText& out, s32 value)
+	{
+		switch(value)
+		{
+			case 0:
+				out.c_color = {1.0f, 0.2f, 0.2f, 1.f};
+				break;
+			case 1:
+				out.c_color = {0.5f, 0.5f, 1.0f, 1.f };
+				break;
+			case 2:
+				out.c_color = { 1.0f, 1.0f, 1.0f, 1.f};
+				break;
+			default:
+				break;
+
+		}
 		return out;
 	}
 
@@ -16,30 +43,59 @@ namespace Text
 		this->pos = pos;
 	}
 
-	Entity PopUpText::text_create(const char* a)
+	Entity PopUpText::text_create(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a)
 	{
 		Entity id = this->ecs->createEntity();
 
-		Components::Transform* pos = ecs->getComponent<Components::Transform>(this->pos);
+		Components::Transform* pos = ecs->getComponent<Components::Transform>(e);
 
 		/*f32 x = pos->pos_onscreen.x - 64.f;
 		f32 y = pos->pos_onscreen.y + 32.f;*/
-		f32 x = pos->pos_onscreen.x - 200.f;
+		f32 x = pos->pos_onscreen.x - 100.f;
 		f32 y = pos->pos_onscreen.y + 150.f;
 
+		
+
 		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
-		Components::Text text{ a, TF.getFontID(), 25 };
-		Components::Color color{ 1.0f, 0.2f, 0.2f ,1.0f };
+		Components::Text text{ t, TF.getFontID(), 25 };
+		Components::Color color{ r, g, b ,a};
+		Components::Timer time{ 3.f, 0.f };
+		Components::Velocity vel{ 0.f, 1.f };
+		Components::TagClass tag{ Components::Tag::UI };
+
+		ecs->addComponent(id, tag);
+		ecs->addComponent(id, trans);
+		ecs->addComponent(id, text);
+		ecs->addComponent(id, color);
+		ecs->addComponent(id, time);
+		ecs->addComponent(id, vel);
+		return id;
+	}
+
+	Entity PopUpText::text_create_attached(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a)
+	{
+		Entity id = this->ecs->createEntity();
+
+		Components::Transform* pos = ecs->getComponent<Components::Transform>(e);
+
+		/*f32 x = pos->pos_onscreen.x - 64.f;
+		f32 y = pos->pos_onscreen.y + 32.f;*/
+		f32 x = pos->pos_onscreen.x;
+		f32 y = pos->pos_onscreen.y + 100.f;
+
+
+
+		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
+		Components::Text text{ t, TF.getFontID(), 25 };
+		Components::Color color{ r, g, b ,a };
 		Components::Timer time{ 2.f, 0.f };
 		Components::Velocity vel{ 0.f, 1.f };
-		Components::TagClass tag{Components::Tag::UI};
 
 		ecs->addComponent(id, trans);
 		ecs->addComponent(id, text);
 		ecs->addComponent(id, color);
 		ecs->addComponent(id, time);
 		ecs->addComponent(id, vel);
-		ecs->addComponent(id, tag);
 		return id;
 	}
 
