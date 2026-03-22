@@ -149,6 +149,7 @@ namespace Grid
 		tbsptr->set_selected_card(false);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		
 	}
 
 	void GameBoard::move_trigger(s32 const& x, s32 const& y)

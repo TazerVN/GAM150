@@ -2,6 +2,26 @@
 
 #include "IntentionDisplay.h"
 #include "../system/EnemyDirector.h"
+#include "ECS/Scene.h"
+
+Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+{
+	Entity id = ecs.createEntity();
+	//default player values
+	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},{}, rotation };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), TEXTURE , MESH_RECTANGLE_CORNER, z };
+	Components::Color color{ 0.0f, 0.8f, 1.0f ,1.0f };
+	Components::Texture texture{ pTex };
+	Components::Tag tag{ Components::Tag::UI };
+
+	ecs.addComponent(id, trans);
+	ecs.addComponent(id, mesh);
+	ecs.addComponent(id, color);
+	ecs.addComponent(id, texture);
+
+	return id;
+}
+
 
 void IntentionDisplaySystem::init(EnemyDirector& enemyDirector)
 {
@@ -10,11 +30,37 @@ void IntentionDisplaySystem::init(EnemyDirector& enemyDirector)
 	for (auto it = this->ptr_enemyDirector->get_map().begin(); it != this->ptr_enemyDirector->get_map().end(); ++it)
 	{
 		Entity enemy = it->second;
+		Entity intentionD = intenton_icon(TF.getTextureOthers(0), -50.f, 100.f, 64.f, 64.f, 0, 10);
+		this->intentionDisplay_list.push_back({enemy , intentionD});
 	}
 }
 
-void IntentionDisplaySystem::update()
+void IntentionDisplaySystem::update(Scene& scene)
 {
+	EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
+
+	//check if the enemy died if so delete the data
+	int i = 0;
+	for (; i < this->intentionDisplay_list.size(); i++)
+	{
+		Entity enemy = this->intentionDisplay_list[i].first;
+		bool exist = false;
+
+		Entity hordeEnt = scene.getTBS().get_participant()[1];
+		
+		if (ecs.getBitMask()[hordeEnt].test(hordeID))
+		{
+			auto horde = ecs.getComponent<Components::Horde_Tag>(hordeEnt);
+			auto find = std::find(horde->goons.begin(), horde->goons.end(), enemy);
+			if (find != horde->goons.end()) continue;
+		}
+
+		ecs.destroyEntity(this->intentionDisplay_list[i].second);
+		this->intentionDisplay_list[i] = this->intentionDisplay_list[this->intentionDisplay_list.size() - 1];
+		this->intentionDisplay_list.pop_back();
+	}
+
+
 	EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 	EntityComponent::ComponentTypeID textureID = EntityComponent::getComponentTypeID<Components::Texture>();
 	EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
@@ -23,15 +69,8 @@ void IntentionDisplaySystem::update()
 	EntityComponent::ComponentBitMask objMask;
 	objMask.set(transID); objMask.set(meshID); objMask.set(textureID);
 
-	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+	for (std::pair<Entity,Entity> a : intentionDisplay_list)
 	{
-		if ((it->first & objMask) == objMask)
-		{
-			for (Entity ent : it->second)
-			{
-				Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
-				std::pair<s8, Entity> a{ mesh->z, ent };
-			}
-		}
+		
 	}
 }

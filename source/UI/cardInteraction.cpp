@@ -110,11 +110,6 @@ namespace CardInteraction
 
 			if (this->activate[i] == true)
 			{
-				//if (!gbptr->selected_player() && gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)	//if not in card_select or player explore
-				//{
-				//	tbsptr->select_hand_index(i);
-				//	tbsptr->select_card(ecs);
-				//}
 				this->activate[i] = false;
 				Entity cardID = tbsptr->draw_card(playerID, i);
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
@@ -149,7 +144,7 @@ namespace CardInteraction
 			curr_card_id.clear();
 			activate.clear();
 
-			this->generateCards(ecs, tbs);
+			this->generateCards();
 			this->reset = false;
 			std::cout << "Shuffle New Cards" << std::endl;
 
@@ -198,13 +193,13 @@ namespace CardInteraction
 		
 	}
 
-	void CardHand::generateCards(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs)
+	void CardHand::generateCards()
 	{
 		EntityComponent::ComponentTypeID cID = EntityComponent::getComponentTypeID<Components::Card_Storage>();
 
-		if (!ecs.getBitMask()[tbs.current()].test(cID)) return;
+		if (!ecs.getBitMask()[tbsptr->current()].test(cID)) return;
 
-		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbs.current());
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(tbsptr->current());
 
 		for (size_t i = 0; i < cs->data_card_hand.size(); i++)
 		
@@ -229,6 +224,7 @@ namespace CardInteraction
 			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 30, texture, 
 				[this, eid]
 				{ 
+					if(!this->tbsptr->is_current_selected_card())
 					this->activate_card(eid); 
 				},
 			static_cast<s32>(c->value), *this->cdptr, cs->data_card_hand.at(i)));

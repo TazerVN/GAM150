@@ -49,7 +49,6 @@ namespace CardInteraction
 		Entity id;
 		bool reset;
 
-
 		TBS::TurnBasedSystem* tbsptr = nullptr;
 		
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
@@ -67,7 +66,7 @@ namespace CardInteraction
 
 		CardHand();
 
-		void generateCards(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs);
+		void generateCards();
 		void update_logic(TBS::TurnBasedSystem& tbs, f32 dt);
 		void update_pos(EntityComponent::Registry& ecs, f32 dt);
 		void activate_card(Entity e);

@@ -51,7 +51,7 @@ namespace UI
 		for (Entity e : scene.entities_store())
 		{
 			Entity health = UIO::ui_hp_bar(-50, 100, 100, 10, 0, 6);
-			Entity blank = UIO::ui_blank_solid_corner(-50, 100, 100, 10, 0, 6, 0.0f, 0.0f, 0.0f, 1.0f);
+			Entity blank = UIO::ui_blank_solid_corner(-5, 100, 100, 10, 0, 6, 0.0f, 0.0f, 0.0f, 1.0f);
 			std::pair<Entity, Entity> hp{ e, health };
 			std::pair<Entity, Entity> hp_blank{ e, blank };
 			this->hp_children_list.push_back(hp_blank);
