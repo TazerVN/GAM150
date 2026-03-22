@@ -59,6 +59,7 @@
     <ClCompile Include="source\UI\UIObject.cpp" />
     <ClCompile Include="source\UI\Victory_Select.cpp" />
     <ClCompile Include="source\factory\Beastiary.cpp" />
+    <ClCompile Include="source\factory\AudioFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -125,5 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />
+    <ClInclude Include="source\factory\AudioFactory.h" />
   </ItemGroup>
 </Project>

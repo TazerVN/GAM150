@@ -45,3 +45,4 @@ extern TransformSystem::TransformSystem TrS;
 extern Animation::AnimationSystem AS;
 extern Text::PopUpText PUT;
 extern Particle::ParticleSystem PS;
+extern AudioFactory::AudioFactory AF;

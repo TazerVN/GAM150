@@ -8,6 +8,7 @@
 #include "factory/TextureFactory.h"
 #include "factory/EntityFactory.h"
 #include "factory/Beastiary.h"
+#include "factory/AudioFactory.h"
 
 #include "util/GameStateManager.h"
 #include "util/LevelManager.h"
