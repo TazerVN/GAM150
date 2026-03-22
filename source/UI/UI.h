@@ -28,6 +28,7 @@ namespace UI
 		//card
 		CardInformation::CardDisplay info;
 		CardInteraction::CardHand hand;
+		Entity turn;
 		
 		//Pause
 		PauseMenu pause;
@@ -36,6 +37,7 @@ namespace UI
 		void health_update();
 		void stamina_update();
 		void mana_update(Scene& scene);
+		void turn_update(Scene& scene);
 		public:
 		UIManager();
 		void update(Scene& scene, f32 dt);

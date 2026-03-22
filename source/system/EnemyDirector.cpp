@@ -229,7 +229,10 @@ const std::unordered_map<std::string, Entity>& EnemyDirector::get_map() const
 {
     return idToEntity_;
 }
-
+size_t EnemyDirector::index() const
+{
+    return timelineIp_;
+}
 void EnemyDirector::execMOVE(Grid::GameBoard& board,
     Entity actor,
     Entity playerID,

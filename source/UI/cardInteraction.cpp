@@ -224,7 +224,7 @@ namespace CardInteraction
 			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 30, texture, 
 				[this, eid]
 				{ 
-					if(!this->tbsptr->is_current_selected_card())
+					this->gbptr->unselect_card();
 					this->activate_card(eid); 
 				},
 			static_cast<s32>(c->value), *this->cdptr, cs->data_card_hand.at(i)));

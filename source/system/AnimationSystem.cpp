@@ -41,7 +41,6 @@ namespace Animation
 		if (lerp >= 1.f)
 		{
 			texture->offset_x = 0.f;
-			texture->offset_y = 0.f;
 			flag = true;
 			timer->start = false;
 			anim->current_frame = 0.f;
@@ -49,19 +48,11 @@ namespace Animation
 		else
 		{
 
-			if (texture->offset_y >= 0.f && texture->offset_y < (1.f / 6.f))
-			{
-				texture->offset_y = 2.f / 6.f;
-			}
-			else if (texture->offset_y >= 1.f/6.f && texture->offset_y < (2.f / 6.f))
-			{
-				texture->offset_y = 3.f / 6.f;
-			}
-
+			int frame = 7 + int(lerp * 5);
 			if(static_cast<int>(timer->seconds * 100) % static_cast<int>(fps * 100) == 0)
 				anim->current_frame = ++anim->current_frame % anim->max_frame;
 
-			texture->offset_x = f32(anim->current_frame) / f32(anim->max_frame);
+			texture->offset_x = frame / 18.f;
 		}
 
 		return flag;
@@ -95,14 +86,29 @@ namespace Animation
 
 			f32 destination_x = offset_x + (current.x - current.y) * CELL_WIDTH / 2;
 			f32 destination_y = transform->size.y / 3 + offset_y - (current.x + current.y) * CELL_HEIGHT / 4;
+			f32 fps = (timer->max_seconds / 6.f);
 
-			if ((destination_y - transform->pos.y) > 0)
+			if ((destination_y - transform->pos.y) > 0 && (destination_x - transform->pos.x) < 0)
 			{
-				texture->offset_x = 1.f/6.f;
+				texture->offset_y = 3.f/4.f;
 			}
-			else if ((destination_y - transform->pos.y) < 0){
-				texture->offset_x = 0;
+			else if ((destination_y - transform->pos.y) < 0 && (destination_x - transform->pos.x) < 0){
+				texture->offset_y = 1.f;
 			}
+			else if ((destination_y - transform->pos.y) > 0 && (destination_x - transform->pos.x) > 0){
+				texture->offset_y = 2.f/4.f;
+			}
+			else if ((destination_y - transform->pos.y) < 0 && (destination_x - transform->pos.x) > 0){
+				texture->offset_y = 1.f/4.f;
+			}
+
+
+			int frame = 1 + int(lerp * 5);
+			
+
+			if (static_cast<int>(timer->seconds * 100) % static_cast<int>(fps * 100) == 0 &&
+				(transform->pos.x != transform->pos_onscreen.x && transform->pos.y != transform->pos_onscreen.y))
+			texture->offset_x = frame / 18.f;
 
 			transform->pos_onscreen.x = transform->pos.x + (destination_x - transform->pos.x) * lerp;
 			transform->pos_onscreen.y = transform->pos.y + (destination_y - transform->pos.y) * lerp;
@@ -113,6 +119,7 @@ namespace Animation
 		{
 			flag = true;
 			timer->start = false;
+			texture->offset_x = 0;
 		}
 
 		return flag;
@@ -142,7 +149,7 @@ namespace Animation
 					
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]  = animationTimer(ecs, 1.f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]  = animationTimer(ecs, 1.f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)]        = animationTimer(ecs, 0.2f, 0.f, false, true);
+					anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)]        = animationTimer(ecs, 0.3f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]          = animationTimer(ecs, 1.f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)] = animationTimer(ecs, 1.f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::NONE)]          = animationTimer(ecs, 1.f, 0.f, false, true);

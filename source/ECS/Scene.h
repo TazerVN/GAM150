@@ -1,18 +1,13 @@
 #pragma once
-
-
 #include "../types.h"
 #include "../system/EnemyDirector.h"
-//#include "../system/TurnBasedSystem.h"
 #include "../system/PhaseSystem.h"
 #include "../system/GridSystem.h"
-//#include "../system/CombatSystem.h"
 #include "../system/CameraSystem.h"
 #include "../system/CardSystem.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
-//#include "../UI/cardInteraction.h"
-
+#include "../UI/IntentionDisplay.h"
 #include "AEEngine.h"
 
 
@@ -24,6 +19,8 @@ namespace Text { class NameTag; }
 namespace EntityFactory { class InteractableNode; }
 namespace Camera { class CameraSystem; }
 namespace UI { class UIManager; }
+
+class IntentionDisplaySystem;
 class CardSystem;
 class EnemyDirector;
 
@@ -46,6 +43,7 @@ private:
 	UI::UIManager* UIptr;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
+	IntentionDisplaySystem intentDisplaySystem;
 
 	bool _win = false;
 

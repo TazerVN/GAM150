@@ -64,7 +64,7 @@ namespace TextureFactory
 		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
 
 		//CHAR
-		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet.png"));	//first must always be hero or creator actor spritesheet will fail
+		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet_new.png"));	//first must always be hero or creator actor spritesheet will fail
 		//add textures for enemies
 		for (Entity enemy : beastiary.enemies_vec)
 		{

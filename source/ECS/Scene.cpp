@@ -98,7 +98,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		}
 	}
 
-
+	intentDisplaySystem.init(enemyDirector);
 }
 
 void Scene::update()
@@ -162,6 +162,7 @@ void Scene::update()
 		enemyDirector.update(gbs, TBSys, BattleGrid);
 	}
 
+	intentDisplaySystem.update(*this);
 	//==================Handle Events===============================
 
 	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)

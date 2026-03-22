@@ -69,4 +69,5 @@ private:
 public:
     const std::vector<Tokens>& get_timeline() const;
     const std::unordered_map<std::string, Entity>& get_map() const; // "E0" -> entity
+    size_t index() const;
 };

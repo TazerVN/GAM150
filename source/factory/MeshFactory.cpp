@@ -28,8 +28,8 @@ void MeshFactory::MeshFactoryInit(){
 AEGfxVertexList* createMesh_triangular_rectangle(MESH_POS mode)
 {
 	AEGfxVertexList* targetMesh;
-	const u32 spritesheet_rows = 6;
-	const u32 spritesheet_cols = 6;
+	const u32 spritesheet_rows = 4;
+	const u32 spritesheet_cols = 18;
 	const f32 sprite_uv_width = 1.f / spritesheet_cols;
 	const f32 sprite_uv_height = 1.f / spritesheet_rows;
 	AEGfxMeshStart();

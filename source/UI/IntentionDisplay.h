@@ -9,7 +9,7 @@ class IntentionDisplaySystem
 {
 private:
 	EnemyDirector* ptr_enemyDirector = nullptr;
-
+	bool triggered{false};
 	std::vector<std::pair<Entity, Entity>> intentionDisplay_list;
 public:
 	void init(EnemyDirector&);
