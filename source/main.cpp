@@ -26,7 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, false, NULL);
 	// Changing the window title
-	AESysSetWindowTitle("Yes!");
+	AESysSetWindowTitle("Beyond the Nexus! You should checkout Zombat");
 
 	/*SetGameState(game_init,game_update,game_free);*/
 
@@ -73,6 +73,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	mf.MeshFree();
+	AF.free();
 	// reset the system modules
 	AESysReset();
 	AESysExit();
@@ -82,6 +83,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 void load_Sys_Comp()
 {
 	card_system.init_cards();
+	AF = AudioFactory::AudioFactory();
+	AF.init();
 	TF.textureInit();
 	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 	//==========System=============

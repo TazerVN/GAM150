@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\factory\AudioFactory.cpp" />
     <ClCompile Include="source\UI\PauseMenu.cpp" />
     <ClCompile Include="source\level\EncounterLevel.cpp" />
     <ClCompile Include="source\pch.cpp">
@@ -60,6 +61,7 @@
     <ClCompile Include="source\UI\UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\factory\AudioFactory.h" />
     <ClInclude Include="source\UI\PauseMenu.h" />
     <ClInclude Include="source\level\EncounterLevel.h" />
     <ClInclude Include="source\pch.h" />

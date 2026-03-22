@@ -16,7 +16,6 @@ void GameStateMainMenu_load()
 	std::cout << "Main menu loaded" << std::endl;
     TF.textureInit();      
     mf.MeshFactoryInit();
-    
 }
 void GameStateMainMenu_init()
 {
