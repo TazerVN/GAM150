@@ -36,7 +36,7 @@ namespace UI
 
 		Entity turn_board = UIO::ui_blank_texture(ecs, mf, TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
-		Entity turn_text = UIO::ui_text(ecs, mf, TF, 0.57F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Turn 1");
+		turn = UIO::ui_text(ecs, mf, TF, 0.55F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Round ");
 
 		Entity bin_button = UIO::ui_button_texture(ecs, mf, TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
 
@@ -44,7 +44,7 @@ namespace UI
 		this->current_ui.push_back(pause_button);
 		this->current_ui.push_back(deck_button);
 		this->current_ui.push_back(turn_board);
-		this->current_ui.push_back(turn_text);
+		this->current_ui.push_back(turn);
 		this->current_ui.push_back(bin_button);
 
 		//========================================== health/stamina bar ======================================
@@ -155,6 +155,7 @@ namespace UI
 		this->health_update();
 		this->stamina_update();
 		this->mana_update(scene);
+		this->turn_update(scene);
 
 		for (std::pair<Entity, Entity> p : this->mana_children_list)
 		{
@@ -321,5 +322,12 @@ namespace UI
 		}
 	}
 
+	void UIManager::turn_update(Scene& scene)
+	{
+		Components::Text* text = ecs.getComponent<Components::Text>(turn);
+		std::string temp = std::to_string(scene.getTBS().round());
+		std::string buffer{ "Round " + temp };
+		text->text = buffer;
+	}
 
 }

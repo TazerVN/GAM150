@@ -96,11 +96,17 @@ namespace Animation
 			f32 destination_x = offset_x + (current.x - current.y) * CELL_WIDTH / 2;
 			f32 destination_y = transform->size.y / 3 + offset_y - (current.x + current.y) * CELL_HEIGHT / 4;
 
-			if ((destination_y - transform->pos.y) > 0)
+			if ((destination_y - transform->pos.y) > 0 && (destination_x - transform->pos.x) < 0)
 			{
-				texture->offset_x = 1.f/6.f;
+				texture->offset_x = 2.f/6.f;
 			}
-			else if ((destination_y - transform->pos.y) < 0){
+			else if ((destination_y - transform->pos.y) < 0 && (destination_x - transform->pos.x) < 0){
+				texture->offset_x = 1.f;
+			}
+			else if ((destination_y - transform->pos.y) > 0 && (destination_x - transform->pos.x) > 0){
+				texture->offset_x = 4.f/6.f;
+			}
+			else if ((destination_y - transform->pos.y) < 0 && (destination_x - transform->pos.x) > 0){
 				texture->offset_x = 0;
 			}
 
