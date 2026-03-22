@@ -444,6 +444,8 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entit
 	// Leftover damage hits HP
 	hp->c_value -= damage;
 
+	PUT.display(target, std::to_string(static_cast<int>(damage)).c_str());
+
 	std::cout << "[Combat] Target: " << target;
 	if (stats)
 	{

@@ -126,7 +126,7 @@ namespace CardInteraction
 				if (card_cost > player_curMana)
 				{
 					std::cout << "Not enough mana!!" << std::endl;
-					PUT << "Not enough mana!!";
+					PUT << 0 << "Not enough mana!!";
 					return;
 				}
 				tbsptr->select_hand_index(i);

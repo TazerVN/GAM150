@@ -70,7 +70,7 @@ namespace Grid
 					else
 					{
 						std::cout << "Selected cell is outside range" << std::endl;
-						PUT << "Out of Range";
+						PUT << 0 << "Out of Range";
 						unselect_card();
 						return;
 					}
@@ -98,7 +98,7 @@ namespace Grid
 						if (!cbsptr->check_within_range(x, y))
 						{
 							std::cout << "Target is outside range" << std::endl;
-							PUT << "Out of range!";
+							PUT << 0 << "Out of range!";
 							unselect_card();
 
 							return;
@@ -158,7 +158,7 @@ namespace Grid
 		if (!cbsptr->check_within_range(x, y))
 		{
 			std::cout << "Outside movement range" << std::endl;
-			PUT << "Outside range";
+			PUT << 0 << "Outside range";
 			unselect_movement();
 			return;
 		}
@@ -166,7 +166,7 @@ namespace Grid
 		if (this->pos[x][y] != -1)
 		{
 			std::cout << "Cannot move onto another entity" << std::endl;
-			PUT << "Already Occupied";
+			PUT << 0 << "Already Occupied";
 			unselect_movement();
 			return;
 		}
@@ -184,13 +184,13 @@ namespace Grid
 		if (pos[x][y] != tbsptr->current())
 		{
 			std::cout << "Cannot select this entity!" << std::endl;
-			PUT << "Cannot select this Entity";
+			PUT << 0 << "Cannot select this Entity";
 			return;
 		}
 
 		if(ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd == 0)
 		{
-			PUT << "Out of stamina";
+			PUT << 0 << "Out of stamina";
 			return;
 		}
 
