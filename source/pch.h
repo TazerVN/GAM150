@@ -7,6 +7,7 @@
 #include "factory/MeshFactory.h"
 #include "factory/TextureFactory.h"
 #include "factory/EntityFactory.h"
+#include "factory/Beastiary.h"
 
 #include "util/GameStateManager.h"
 #include "util/LevelManager.h"
@@ -23,4 +24,6 @@
 #include "system/GridSystem.h"
 #include "system/CombatSystem.h"
 #include "system/PhaseSystem.h"
+#include "system/CardSystem.h"
+
 #include "global.h"

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\factory\Beastiary.cpp" />
     <ClCompile Include="source\UI\PauseMenu.cpp" />
     <ClCompile Include="source\level\EncounterLevel.cpp" />
     <ClCompile Include="source\pch.cpp">
@@ -38,7 +39,6 @@
     <ClCompile Include="source\ECS\ECSystem.cpp" />
     <ClCompile Include="source\system\inputSystem.cpp" />
     <ClCompile Include="source\level\game.cpp" />
-    <ClCompile Include="source\ECS\gameObject.cpp" />
     <ClCompile Include="source\system\GridSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\factory\MeshFactory.cpp" />
@@ -60,6 +60,7 @@
     <ClCompile Include="source\UI\UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\factory\Beastiary.h" />
     <ClInclude Include="source\UI\PauseMenu.h" />
     <ClInclude Include="source\level\EncounterLevel.h" />
     <ClInclude Include="source\pch.h" />
@@ -86,7 +87,6 @@
     <ClInclude Include="source\ECS\ECSystem.h" />
     <ClInclude Include="source\system\inputSystem.h" />
     <ClInclude Include="source\level\game.h" />
-    <ClInclude Include="source\ECS\gameObject.h" />
     <ClInclude Include="source\global.h" />
     <ClInclude Include="source\system\GridSystem.h" />
     <ClInclude Include="source\factory\MeshFactory.h" />
@@ -107,6 +107,9 @@
     <ClInclude Include="source\system\TimerSystem.h" />
     <ClInclude Include="source\types.h" />
     <ClInclude Include="source\UI\UIObject.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\misc\enemies.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -7,6 +7,7 @@
 #include "factory/MeshFactory.h"
 #include "factory/TextureFactory.h"
 #include "factory/EntityFactory.h"
+#include "factory/Beastiary.h"
 
 #include "util/GameStateManager.h"
 
@@ -34,6 +35,7 @@ extern MeshFactory mf;
 
 
 extern CardSystem card_system;
+extern Beastiary beastiary;
 extern Timer::TimerSystem TS;
 extern InputSystem::InputManager IM;
 extern Camera::CameraSystem CS;

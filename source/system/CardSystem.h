@@ -43,25 +43,24 @@ enum class CardScriptReturn
 	FunctionTargetDied
 };
 
-Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card);
+Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card);
 
-//script manager for those cards that require extra steps
-class CardScriptsManager
-{
-	private:
-	std::unordered_map<std::string, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)>> functions;
-	//std::map<CardSystemNames, std::function<void(Entity)>> functions;
-	public:
-	void add_Function(std::string name, Entity cardID, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)> function);
-	CardScriptReturn runCardFunction(std::string card_name, Entity target);
-};
+////script manager for those cards that require extra steps
+//class CardScriptsManager
+//{
+//	private:
+//	std::unordered_map<std::string, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)>> functions;
+//	//std::map<CardSystemNames, std::function<void(Entity)>> functions;
+//	public:
+//	void add_Function(std::string name, Entity cardID, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)> function);
+//	CardScriptReturn runCardFunction(std::string card_name, Entity target);
+//};
 
 class CardSystem
 {
 	private:
 		//std::vector<Entity> cards;
 	std::unordered_map<std::string, Entity> cards_map;
-	CardScriptsManager cardScriptManager;
 	public:
 	std::vector<Entity>cards_vec;
 	void init_cards();

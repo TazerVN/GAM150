@@ -121,7 +121,7 @@ static CardType decode_card_type(int id)
 //	return id;
 //}
 
-Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
+Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 {
 	Entity id = ecs.createEntity();
 	Components::Name nm{ json_card.name };
@@ -130,7 +130,7 @@ Entity create_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
 	Components::Targetting_Component targetting{ decode_targetting(json_card.id), json_card.range, json_card.aoe };
 	Components::Card_Cost card_cost{ json_card.cost };
 	Components::Card_ID cid{ json_card.id };
-	Components::card_image cimg{ json_card.card_image };
+	Components::image_location cimg{ json_card.card_image };
 	
 	ecs.addComponent(id, cid);
 	ecs.addComponent(id, cardTag);
@@ -157,7 +157,7 @@ void CardSystem::init_cards()
 		std::cout << "Value : " << card.value << std::endl;
 		std::cout << "AOE : " << card.aoe << std::endl;
 		std::cout << "Card Image : " << card.card_image << '\n' << std::endl;
-		Entity cardECSID = create_card(ecs, card);
+		Entity cardECSID = create_ECS_card(ecs, card);
 		cards_map[card.name] = cardECSID;
 		cards_vec.push_back(cardECSID);
 	}
@@ -183,7 +183,7 @@ Entity CardSystem::generate_card_from_bible(std::string key)
 	Components::Card_Cost card_cost{ ecs.getComponent<Components::Card_Cost>(bibleID)->value };
 
 	Components::Card_ID cid{ ecs.getComponent<Components::Card_ID>(bibleID)->value };
-	Components::card_image cimg{ecs.getComponent<Components::card_image>(bibleID)->location};
+	Components::image_location cimg{ecs.getComponent<Components::image_location>(bibleID)->location};
 
 	ecs.addComponent(id, cid);
 
@@ -235,20 +235,4 @@ Entity CardSystem::get_bible_id(std::string key)
 size_t CardSystem::size() const
 {
 	return cards_vec.size();
-}
-
-void CardScriptsManager::add_Function(std::string name, Entity cardID,std::function<COMBAT_SYSTEM_RETURN_TAG (Entity)> function)
-{
-	functions[name] = function;
-}
-
-CardScriptReturn CardScriptsManager::runCardFunction(std::string card_name, Entity target)
-{
-	auto it = functions.find(card_name);
-	if (it != functions.end())
-	{
-		COMBAT_SYSTEM_RETURN_TAG returned = it->second(target);
-		return CardScriptReturn::FunctionRunSuccess;
-	}
-	return CardScriptReturn::FunctionNotFound;
 }

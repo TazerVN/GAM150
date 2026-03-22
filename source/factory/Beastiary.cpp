@@ -1,0 +1,134 @@
+#include "pch.h"
+
+Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_enemy)
+{
+	Entity enemy_id = ecs.createEntity();
+	Components::Name nm{ json_enemy.name };
+	Components::HP hp{ json_enemy.hp };
+	Components::Attack atk{ json_enemy.value };
+	Components::TurnBasedStats tbstats
+	{ 5,	//max points
+	  0,	//cur_points
+	  0,	//shields
+	  7.f };	//movement spd
+	Components::Targetting_Component targetting{ Targetting::SINGLE_TARGET,json_enemy.range,0.f };
+	Components::image_location eimg{ json_enemy.png };
+
+	ecs.addComponent(enemy_id, nm);
+	ecs.addComponent(enemy_id, hp);
+	ecs.addComponent(enemy_id, atk);
+	ecs.addComponent(enemy_id, tbstats);
+	ecs.addComponent(enemy_id, targetting);
+	ecs.addComponent(enemy_id, eimg);
+
+	return enemy_id;
+}
+
+void Beastiary::init_data()
+{
+	std::vector<JSON_ENEMY> vec;
+	JSON_RET ret = parse_enemy_data(vec, "../../Assets/misc/enemies.json");
+
+	for (JSON_ENEMY enemy : vec)
+	{
+		std::cout << "Name : " << enemy.name.c_str() << std::endl;
+		std::cout << "HP : " << enemy.hp << std::endl;
+		std::cout << "Value : " << enemy.value << std::endl;
+		std::cout << "Enemy Image : " << enemy.png << '\n' << std::endl;
+		Entity enemyECSID = create_ECS_enemy(ecs, enemy);
+		enemies_map[enemy.name] = enemyECSID;
+		enemies_vec.push_back(enemyECSID);
+	}
+}
+Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos, AEVec2 size, Components::AnimationType at)
+{
+	if (enemies_map.find(key) == enemies_map.end())
+		return -1;
+
+	Entity id = ecs.createEntity();
+
+	Entity beastiaryID = enemies_map[key];
+	Components::Name nm{ ecs.getComponent<Components::Name>(beastiaryID)->value };
+	Components::HP hp{ *ecs.getComponent<Components::HP>(beastiaryID) };
+	Components::Attack atk{ *ecs.getComponent<Components::Attack>(beastiaryID) };
+	Components::TurnBasedStats tbstats{ *ecs.getComponent<Components::TurnBasedStats>(beastiaryID) };
+	Components::Targetting_Component targetting{ *ecs.getComponent<Components::Targetting_Component>(beastiaryID) };
+	Components::image_location eimg{ *ecs.getComponent<Components::image_location>(beastiaryID)};
+
+	AEGfxTexture* pTex = TF.getTextureFromEnemyMap(ecs.getComponent<Components::image_location>(beastiaryID)->location);
+	Components::Texture tex{pTex , 0.0f, 0.0f };
+
+	Components::Transform trans{ spawnpos, spawnpos , size , size,0.f };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+	Components::Timer timer{ 1.f, 0.5f, true, true };
+	Components::Animation_Actor aa{ at };
+	Components::Tag tag{ Components::Tag::ACTOR };
+
+	ecs.addComponent(id, nm);
+	ecs.addComponent(id, hp);
+	ecs.addComponent(id, atk);
+	ecs.addComponent(id, tbstats);
+	ecs.addComponent(id, targetting);
+	ecs.addComponent(id, eimg);
+
+	ecs.addComponent(id, tex);
+	ecs.addComponent(id, trans);
+	ecs.addComponent(id, mesh);
+	ecs.addComponent(id, color);
+	ecs.addComponent(id, timer);
+	ecs.addComponent(id, aa);
+	ecs.addComponent(id, tag);
+	return id;
+}
+Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawnpos, AEVec2 size, Components::AnimationType at)
+{
+	Entity id = ecs.createEntity();
+
+	Components::Name nm{ ecs.getComponent<Components::Name>(beastiaryID)->value };
+	Components::HP hp{ *ecs.getComponent<Components::HP>(beastiaryID) };
+	Components::Attack atk{ *ecs.getComponent<Components::Attack>(beastiaryID) };
+	Components::TurnBasedStats tbstats{ *ecs.getComponent<Components::TurnBasedStats>(beastiaryID) };
+	Components::Targetting_Component targetting{ *ecs.getComponent<Components::Targetting_Component>(beastiaryID) };
+	Components::image_location eimg{ *ecs.getComponent<Components::image_location>(beastiaryID) };
+
+	AEGfxTexture* pTex = TF.getTextureFromEnemyMap(ecs.getComponent<Components::image_location>(beastiaryID)->location);
+	Components::Texture tex{ pTex , 0.0f, 0.0f };
+
+	Components::Transform trans{ spawnpos, spawnpos , size , size,0.f };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+	Components::Timer timer{ 1.f, 0.5f, true, true };
+	Components::Animation_Actor aa{ at };
+	Components::Tag tag{ Components::Tag::ACTOR };
+
+	ecs.addComponent(id, nm);
+	ecs.addComponent(id, hp);
+	ecs.addComponent(id, atk);
+	ecs.addComponent(id, tbstats);
+	ecs.addComponent(id, targetting);
+	ecs.addComponent(id, eimg);
+
+	ecs.addComponent(id, tex);
+	ecs.addComponent(id, trans);
+	ecs.addComponent(id, mesh);
+	ecs.addComponent(id, color);
+	ecs.addComponent(id, timer);
+	ecs.addComponent(id, aa);
+	ecs.addComponent(id, tag);
+	
+	return id;
+}
+Entity Beastiary::get_beastiary_id(std::string key)
+{
+
+	if (enemies_map.find(key) == enemies_map.end())
+		return -1;
+
+	return enemies_map[key];
+
+}
+size_t Beastiary::size() const
+{
+	return enemies_vec.size();
+}

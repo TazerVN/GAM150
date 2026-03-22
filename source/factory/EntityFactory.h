@@ -36,4 +36,6 @@ namespace EntityFactory
 		void goToCombat();
 		void goToBoss();
 	};
+
+
 }

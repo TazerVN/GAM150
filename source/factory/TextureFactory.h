@@ -23,6 +23,7 @@ namespace TextureFactory
 		std::vector<AEGfxTexture*> others;
 
 		std::unordered_map<std::string, AEGfxTexture*> card_texture_map;
+		std::unordered_map<std::string, AEGfxTexture*> enemy_texture_map;
 
 		s8 fontID;
 
@@ -43,5 +44,6 @@ namespace TextureFactory
 		void addTextureOthers(AEGfxTexture* pTex);
 
 		AEGfxTexture* getTextureFromCardMap(std::string key);
+		AEGfxTexture* getTextureFromEnemyMap(std::string key);
 	};
 }

@@ -47,7 +47,7 @@ JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
 	return JSON_RET::OK;
 }
 
-JSON_RET parse_player_data(std::vector<JSON_CARD>& vec, char const* str)
+JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str)
 {
 	std::ifstream file(str);
 	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
@@ -69,4 +69,20 @@ JSON_RET parse_player_data(std::vector<JSON_CARD>& vec, char const* str)
 	if (!doc.IsArray()) return JSON_RET::PARSE_ERROR;
 
 	rapidjson::Value& arr = doc.GetArray();
+
+	for (int i = 0; i < arr.Size(); ++i)
+
+	{
+		JSON_ENEMY temp_card{};
+
+		temp_card.name = (arr[i].HasMember("name")) ? arr[i]["name"].GetString() : "NULL";
+		temp_card.hp = (arr[i].HasMember("hp")) ? arr[i]["hp"].GetFloat() : -1.0f;
+		temp_card.value = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.0f;
+		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetFloat() : -1.0f;
+		temp_card.png = (arr[i].HasMember("png")) ? arr[i]["png"].GetString() : "NULL";
+
+		vec.push_back(temp_card);
+	}
+
+	return JSON_RET::OK;
 }
