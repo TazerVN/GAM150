@@ -184,7 +184,7 @@ namespace Grid
 	{
 		if (pos[x][y] != tbsptr->current())
 		{
-			std::cout << "Cannot select this entity!" << std::endl;
+			std::cout << "Cannot select this entity! " << pos[x][y] << std::endl;
 			PUT << 0 << "Cannot select this Entity";
 			return;
 		}

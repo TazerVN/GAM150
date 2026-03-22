@@ -8,6 +8,7 @@
 #include "../system/PhaseSystem.h"
 #include "../system/TurnBasedSystem.h"
 #include "../system/GridSystem.h"   // GameBoard (Grid::GameBoard)
+#include "../UI/IntentionDisplay.h"
 
 
 // Loads lines like: "E0 MOVE FRONT" and executes one line per enemy turn.
@@ -27,7 +28,8 @@ public:
     // Execute one horde chunk until a STOP line is reached
     void update(PhaseSystem::GameBoardState& gbs,
         TBS::TurnBasedSystem& tbs,
-        Grid::GameBoard& board);
+        Grid::GameBoard& board,
+        IntentionDisplaySystem& intent);
 
     // Number of enemies to spawn for this level
     int getSpawnCount() const;
@@ -68,6 +70,7 @@ private:
 
 public:
     const std::vector<Tokens>& get_timeline() const;
-    const std::unordered_map<std::string, Entity>& get_map() const; // "E0" -> entity
+    std::unordered_map<std::string, Entity>& get_map(); // "E0" -> entity
+    void print_current_instruction() const;
     size_t index() const;
 };

@@ -44,8 +44,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	st->max_movSpd = st->ini_movSpd;
 	st->cur_movSpd = st->max_movSpd;
 
-	enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
-
+	//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
+	enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt"); //load enemy instrucitons
 
 	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
 	{
@@ -134,6 +134,10 @@ void Scene::update()
 	{
 		gbs.debug_print();
 	}
+	if (AEInputCheckTriggered(AEVK_DOWN))
+	{
+		enemyDirector.print_current_instruction();
+	}
 	//nameTags.update();
 	if (TBSys.active())
 	{
@@ -159,7 +163,7 @@ void Scene::update()
 		}
 
 		cbs.update();
-		enemyDirector.update(gbs, TBSys, BattleGrid);
+		enemyDirector.update(gbs, TBSys, BattleGrid,intentDisplaySystem);
 	}
 
 	intentDisplaySystem.update(*this);

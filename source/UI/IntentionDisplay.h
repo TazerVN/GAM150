@@ -14,4 +14,5 @@ private:
 public:
 	void init(EnemyDirector&);
 	void update(Scene& scene);
+	void trigger();
 };

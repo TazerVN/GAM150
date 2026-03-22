@@ -143,7 +143,8 @@ void EnemyDirector::bindActor(const std::string& actorId, Entity e)
 
 void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     TBS::TurnBasedSystem& tbs,
-    Grid::GameBoard& board)
+    Grid::GameBoard& board,
+    IntentionDisplaySystem& intent)
 {
     (void)gbs;
 
@@ -180,6 +181,7 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     {
         ++timelineIp_;
         tbs.next();
+        intent.trigger();
         std::cout << "[ED] STOP hit. End of horde chunk.\n";
         return;
     }
@@ -225,10 +227,28 @@ const std::vector<EnemyDirector::Tokens>& EnemyDirector::get_timeline() const
     return timeline_;
 }
 
-const std::unordered_map<std::string, Entity>& EnemyDirector::get_map() const
+std::unordered_map<std::string, Entity>& EnemyDirector::get_map()
 {
     return idToEntity_;
 }
+
+void EnemyDirector::print_current_instruction() const
+{
+    std::cout << "\nCurrent Instruction VV" << std::endl;
+    size_t index = timelineIp_;
+    bool brake = true;
+    while (brake)
+    {
+        if (index >= timeline_.size()) index = 0;
+        if (timeline_[index][0] == "STOP")
+            brake = false;
+        for (std::string a : timeline_[index++])
+        {
+            std::cout << a << ' ';
+        }
+    }
+}
+
 size_t EnemyDirector::index() const
 {
     return timelineIp_;

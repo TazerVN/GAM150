@@ -33,16 +33,11 @@ void IntentionDisplaySystem::init(EnemyDirector& enemyDirector)
 		Entity intentionD = intenton_icon(TF.getTextureOthers(0), -50.f, 80.f, 64.f, 64.f, 0, 10);
 		this->intentionDisplay_list.push_back({enemy , intentionD});
 	}
+	triggered = true;
 }
 
 void IntentionDisplaySystem::update(Scene& scene)
 {
-	if (triggered)
-	{
-		size_t tlindex = ptr_enemyDirector->index();
-		
-	}
-
 	EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 	//check if the enemy died if so delete the data
@@ -65,6 +60,63 @@ void IntentionDisplaySystem::update(Scene& scene)
 		this->intentionDisplay_list[i] = this->intentionDisplay_list[this->intentionDisplay_list.size() - 1];
 		this->intentionDisplay_list.pop_back();
 	}
+
+	if (triggered)
+	{
+		triggered = false;
+		size_t index = this->ptr_enemyDirector->index();
+		const std::vector<EnemyDirector::Tokens>& timeline_ = this->ptr_enemyDirector->get_timeline();
+
+		for (size_t i = 0; i < timeline_.size(); i++)
+		{
+			if (index >= timeline_.size()) index = 0;
+
+			for (std::string a : timeline_[index])
+			{
+				Entity ent;
+				std::string key = timeline_[index][0];
+				std::unordered_map<std::string, Entity>& map = ptr_enemyDirector->get_map();
+				if (map.find(key) != map.end())
+				{
+					ent = map[key];
+				}
+				else ent = -1;
+
+				if (ent == -1) continue;
+
+				std::string intent = timeline_[index][1];
+				if (intent == "ATTACK")
+				{
+					for (auto it : intentionDisplay_list)
+					{
+						if (ent == it.first)
+						{
+							Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
+							intentionDisp->texture = TF.getTextureOthers(3);
+							break;
+						}
+					}
+				}
+				else if (intent == "MOVE")
+				{
+					for (auto it : intentionDisplay_list)
+					{
+						if (ent == it.first)
+						{
+							Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
+							intentionDisp->texture = TF.getTextureOthers(4);
+							break;
+						}
+					}
+				}
+
+				index++;
+			}
+
+			if (timeline_[index][0] == "STOP") break;
+		}
+	}
+
 	if (!intentionDisplay_list.empty())
 	{
 		for (std::pair<Entity, Entity> p : intentionDisplay_list)
@@ -84,4 +136,9 @@ void IntentionDisplaySystem::update(Scene& scene)
 			child_mesh->z = parent_mesh->z + 1;
 		}
 	}
+}
+
+void IntentionDisplaySystem::trigger()
+{
+	this->triggered = true;
 }
