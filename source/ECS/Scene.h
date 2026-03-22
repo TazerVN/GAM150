@@ -31,7 +31,6 @@ class EnemyDirector;
 class Scene
 {
 private:
-
 	size_t next_entity = 0;
 	std::vector<Entity> entities;
 
@@ -67,6 +66,6 @@ public:
 
 };
 
-void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs, int range, highlight_tag type);
+void highlight_cells(bool,TBS::TurnBasedSystem&, Grid::GameBoard&, CombatNameSpace::CombatSystem&, int, highlight_tag);
 void unhighlight_cells(Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs);
 //AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);

@@ -57,7 +57,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
 		/*Entity temp = EntityFactory::create_actor_normal(ecs, mf, spawnPos, { 192.0f,192.0f }, enemyName.c_str(), 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);*/
-		Entity temp = beastiary.generate_enemy_from_beastiary("Melee", spawnPos, { 192.0f,192.0f }, Components::AnimationType::IDLE);
+		Entity temp = beastiary.generate_enemy_from_beastiary("Ranger", spawnPos, { 192.0f,192.0f }, Components::AnimationType::IDLE);
 
 		add_entity_to_scene(temp);                  // adds to scene/world
 		ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);
@@ -182,14 +182,15 @@ void Scene::update()
 			Entity card_ID = TBSys.draw_card(TBSys.current(), TBSys.get_selected_cardhand_index());
 			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
-			highlight_cells(ecs, TBSys, BattleGrid, cbs, card_range, highlight_type);
+			Targetting targetting = ecs.getComponent<Components::Targetting_Component>(card_ID)->targetting_type;
+			highlight_cells(targetting == Targetting::LINE,TBSys, BattleGrid, cbs, card_range, highlight_type);
 
 			break;
 		}
 		case highlight_tag::MOVE_HIGHLIGHT:
 		{
 			f32& range = ecs.getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
-			highlight_cells(ecs, TBSys, BattleGrid, cbs, range, highlight_type);
+			highlight_cells(false,TBSys, BattleGrid, cbs, range, highlight_type);
 		}
 		break;
 		default:
@@ -247,44 +248,75 @@ bool Scene::win()const
 {
 	return _win;
 }
-void highlight_cells(EntityComponent::Registry& ecs, TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
+void highlight_cells(bool line,TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
 {
 	//=========================Highlight_cells=================================
 
 	AEVec2 cur_part_pos = gb.Get_CurPart_gridPos();
 
-	for (int i = 0; i <= range; ++i)
+	if (line)
 	{
-		for (int j = 0; j <= range; ++j)
+		for (int itr = 0; itr <= range; ++itr)
 		{
-			//if (i + j == 0) continue;
-			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J)
+			if (cur_part_pos.x + itr < MAX_I)
 			{
-				if(gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
-					continue;
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
-				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] = type;
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
+				gb.activate_highlight()[cur_part_pos.x + itr][cur_part_pos.y] = type;
 			}
-			if (i + j <= range &&cur_part_pos.x - i >= 0 && cur_part_pos.y - j >= 0)
+			if (cur_part_pos.x - itr >= 0)
 			{
-				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
-					continue;
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
-				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] = type;
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
+				gb.activate_highlight()[cur_part_pos.x - itr][cur_part_pos.y] = type;
 			}
-			if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y - j >= 0)
+			if (cur_part_pos.y + itr < MAX_J)
 			{
-				if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
-					continue;
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
-				gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] = type;
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
+				gb.activate_highlight()[cur_part_pos.x][cur_part_pos.y + itr] = type;
 			}
-			if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y + j < MAX_J)
+			if (cur_part_pos.y - itr >= 0)
 			{
-				if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
-					continue;
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
-				gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] = type;
+				cbs.get_highlighted_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
+				gb.activate_highlight()[cur_part_pos.x][cur_part_pos.y - itr] = type;
+			}
+
+
+		}
+	}
+	else 
+	{
+		for (int i = 0; i <= range; ++i)
+		{
+			for (int j = 0; j <= range; ++j)
+			{
+				//if (i + j == 0) continue;
+				if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J)
+				{
+					if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
+						continue;
+					cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
+					gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] = type;
+				}
+				if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y - j >= 0)
+				{
+					if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
+						continue;
+					cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
+					gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] = type;
+				}
+				if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y - j >= 0)
+				{
+					if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
+						continue;
+					cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
+					gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] = type;
+				}
+				if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y + j < MAX_J)
+				{
+					if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
+						continue;
+					cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
+					gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] = type;
+				}
 			}
 		}
 	}

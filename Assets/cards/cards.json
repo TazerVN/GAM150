@@ -132,7 +132,7 @@
 	{
 		"id": 3100,
 		"name": "PP up",
-		"cost": 1.0,
+		"cost": 0.0,
 		"value": 2.0,
 		"png" : "card_pp_up.png"
 	},
