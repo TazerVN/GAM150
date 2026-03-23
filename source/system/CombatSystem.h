@@ -73,4 +73,4 @@ enum class COMBAT_SYSTEM_RETURN_TAG
 	VALID = 0
 };
 
-COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage);
+COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameBoard& gb);

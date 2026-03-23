@@ -74,10 +74,6 @@ void LevelStateCombat_update()
 	if (!scene.getTBS().player_died && !UIM.getPauseMenu().isOn())
 	{
 		UIM.getPauseMenu().free();
-		if (AEInputCheckTriggered(AEVK_H)) // test particle
-		{
-			PS.particleHeal(ecs, mf, 0.0f, 0.0f);
-		}
 		VS.update(ecs);
 		scene.update();
 		PS.update(0.2);

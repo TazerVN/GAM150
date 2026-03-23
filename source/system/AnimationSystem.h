@@ -4,8 +4,7 @@
 #include "../types.h"
 #include "../ECS/Components.h"
 #include "../ECS/ECSystem.h"
-
-
+#include "../system/CombatSystem.h"
 
 namespace Animation
 {

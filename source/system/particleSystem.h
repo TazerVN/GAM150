@@ -20,11 +20,11 @@ namespace Particle
 
 		void update(f32 dt);
 
-		void spawn_one(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
+		void spawn_one(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
 		void spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
-		void spawn_timed(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY,f32 lifetime, Components::ParticleType type);
+		void spawn_timed(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY,f32 lifetime, Components::ParticleType type);
 
 		void particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf);
 		/*
@@ -62,10 +62,10 @@ namespace Particle
 		* Parallax Scrolling for Background
 		*/
 
-		void particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+		void particleHeal(f32 x, f32 y, f32 w, f32 h);
 
 
-		void particleShield(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count);
+		void particleShield(f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count);
 
 		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
 

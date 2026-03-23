@@ -69,3 +69,9 @@ bool rect2circle_intersect(float rX, float rY, float rW, float rH, float cX, flo
 	//if nearest point intersect with circle then it is intersecting.
 	return (point2circle_intersect(nearestX, nearestY, cX, cY, cD)) ? 1 : 0;
 }
+
+void translate_To_Isometric(AEVec2 offset, f32 height, f32& x, f32& y, s32 grid_x, s32 grid_y)
+{
+	x = offset.x + (grid_x - grid_y) * CELL_WIDTH / 2;
+	y = height / 3 + offset.y - (grid_x + grid_y) * CELL_HEIGHT / 4;
+}
