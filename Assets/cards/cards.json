@@ -26,9 +26,9 @@
 	{
 		"id": 1210,
 		"name": "Turn bash",
-		"cost": -1.0,
-		"value": -1.0,
-		"range": -1.0,
+		"cost": 4.0,
+		"value": 1.0,
+		"range": 1.0,
 		"png" : "cardSample.png"
 	},
 	{

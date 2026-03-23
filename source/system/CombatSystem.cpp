@@ -99,16 +99,27 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		return;
 	}
 
-	f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
-	f32 final_damage = card_damage;
-	bool attackResolved = false;
+	//f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
+	//f32 final_damage = card_damage;
+	//bool attackResolved = false;
 
-	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
-	if (stats)
-	{
-		final_damage *= stats->atkMultiplier;
-	}
+	//Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
+	//if (stats)
+	//{
+	//	final_damage *= stats->atkMultiplier;
+	//}
 
+
+	//Components::Card_ID* cid = ecs.getComponent<Components::Card_ID>(cardID);
+	//if (!cid)
+	//	return;
+
+	//Components::Targetting_Component* tgtComp = ecs.getComponent<Components::Targetting_Component>(cardID);
+	//if (!tgtComp)
+	//	return;
+
+	//int serialID = cid->value;
+	//int family = (serialID / 100) % 10; // pierce or not
 
 	Components::Card_ID* cid = ecs.getComponent<Components::Card_ID>(cardID);
 	if (!cid)
@@ -119,7 +130,25 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		return;
 
 	int serialID = cid->value;
-	int family = (serialID / 100) % 10; // pierce or not
+	int family = (serialID / 100) % 10;
+
+	f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
+
+	// Turn bash special damage
+	if (serialID == 1210)
+	{
+		card_damage = static_cast<f32>(tbsptr->round());
+		std::cout << "[CombatSystem] Turn bash damage = " << card_damage << '\n';
+	}
+
+	f32 final_damage = card_damage;
+	bool attackResolved = false;
+
+	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
+	if (stats)
+	{
+		final_damage *= stats->atkMultiplier;
+	}
 
 	switch (tgtComp->targetting_type)
 	{
