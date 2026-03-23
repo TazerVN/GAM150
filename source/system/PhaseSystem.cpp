@@ -70,8 +70,8 @@ namespace PhaseSystem
 		return ret;
 	}
 
-	GameBoardState::GameBoardState() : gb_curr{ GBPhase::START_PHASE }, player_curr{ PlayerPhase::PLAYER_EXPLORE }{}
-	GameBoardState::GameBoardState(GBPhase gbp, PlayerPhase pp) : gb_curr{gbp}, player_curr{pp}{}
+	GameBoardState::GameBoardState() : gb_curr{ GBPhase::START_PHASE }, player_curr{ PlayerPhase::PLAYER_EXPLORE }, enemy_curr{ EnemyPhase::ENEMY_IDLE}{}
+	GameBoardState::GameBoardState(GBPhase gbp, PlayerPhase pp, EnemyPhase ep) : gb_curr{ gbp }, player_curr{ pp }, enemy_curr{ ep } {}
 
 	GBPhase GameBoardState::getGBPhase() const
 	{
@@ -79,6 +79,9 @@ namespace PhaseSystem
 	}
 	PlayerPhase GameBoardState::getPlayerPhase() const {
 		return this->player_curr;
+	}
+	EnemyPhase GameBoardState::getEnemyPhase() const {
+		return this->enemy_curr;
 	}
 	GBPhase GameBoardState::getPrevGBPhase() const
 	{
@@ -94,6 +97,10 @@ namespace PhaseSystem
 	void GameBoardState::set_PlayerPhase(PlayerPhase pp) {
 		prev_PlayerPhase = player_curr;
 		this->player_curr = pp;
+	}
+	void GameBoardState::set_EnemyPhase(EnemyPhase ep)
+	{
+		this->enemy_curr = ep;
 	}
 
 	void GameBoardState::nextGBPhase(){

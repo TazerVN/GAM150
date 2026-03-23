@@ -61,6 +61,7 @@ private:
 
     // Entity Attacks
     void execATTACK(Grid::GameBoard& board,
+                    PhaseSystem::GameBoardState& gbs,
         Entity actor,
         Entity playerID,
         const Tokens& t);

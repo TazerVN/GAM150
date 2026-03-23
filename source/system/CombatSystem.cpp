@@ -445,6 +445,8 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entit
 	hp->c_value -= damage;
 
 	PUT.display(target, std::to_string(static_cast<int>(damage)).c_str());
+	auto anim = ecs.getComponent<Components::Animation_Actor>(target);
+	anim->anim_type = Components::AnimationType::TAKING_DAMAGE;
 
 	std::cout << "[Combat] Target: " << target;
 	if (stats)
