@@ -13,12 +13,17 @@ Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_e
 	  7.f };	//movement spd
 	Components::Targetting_Component targetting{ Targetting::SINGLE_TARGET,json_enemy.range,0.f };
 	Components::image_location eimg{ json_enemy.png };
+	Components::Animation_Actor aa{ Components::AnimationType::IDLE };
+	Components::AStarResult ar{};
 
 	ecs.addComponent(enemy_id, nm);
 	ecs.addComponent(enemy_id, hp);
 	ecs.addComponent(enemy_id, atk);
 	ecs.addComponent(enemy_id, tbstats);
 	ecs.addComponent(enemy_id, targetting);
+	ecs.addComponent(enemy_id, eimg);
+	ecs.addComponent(enemy_id, ar);
+	ecs.addComponent(enemy_id, aa);
 	ecs.addComponent(enemy_id, eimg);
 
 	return enemy_id;
@@ -63,6 +68,7 @@ Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::Timer timer{ 1.f, 0.5f, true, true };
 	Components::Animation_Actor aa{ at };
+	Components::AStarResult ar{};
 	Components::Tag tag{ Components::Tag::ACTOR };
 
 	ecs.addComponent(id, nm);
@@ -78,6 +84,7 @@ Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos
 	ecs.addComponent(id, color);
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, aa);
+	ecs.addComponent(id, ar);
 	ecs.addComponent(id, tag);
 	return id;
 }
@@ -100,6 +107,7 @@ Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawn
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::Timer timer{ 1.f, 0.5f, true, true };
 	Components::Animation_Actor aa{ at };
+	Components::AStarResult ar{};
 	Components::Tag tag{ Components::Tag::ACTOR };
 
 	ecs.addComponent(id, nm);
@@ -115,6 +123,7 @@ Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawn
 	ecs.addComponent(id, color);
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, aa);
+	ecs.addComponent(id, ar);
 	ecs.addComponent(id, tag);
 	
 	return id;

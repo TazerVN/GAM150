@@ -160,10 +160,17 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
         return;
     }
 
+    if(gbs.getEnemyPhase() == PhaseSystem::EnemyPhase::ENEMY_ANIMATION)
+    {
+        return;
+    }
+
     // Once enemy turn starts, keep it latched until STOP is reached
     if (!hordeTurnActive_)
     {
         hordeTurnActive_ = true;
+        gbs.set_GBPhase(PhaseSystem::GBPhase::ENEMY_PHASE);
+        gbs.debug_print();
         std::cout << "\n[ED] ===== HORDE TIMELINE BEGIN =====\n";
     }
 
@@ -183,6 +190,7 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
         tbs.next();
         intent.trigger();
         std::cout << "[ED] STOP hit. End of horde chunk.\n";
+        gbs.debug_print();
         return;
     }
 
@@ -212,7 +220,7 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     }
     else if (cmd[1] == "ATTACK")
     {
-        execATTACK(board, actor, playerID, cmd);
+        execATTACK(board, gbs ,actor, playerID, cmd);
     }
     else
     {
@@ -350,54 +358,56 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
             return;
         }
 
-        // build walkable grid for A*
-        std::vector<uint8_t> walkable(MAX_I * MAX_J, 1);
+        //// build walkable grid for A*
+        //std::vector<uint8_t> walkable(MAX_I * MAX_J, 1);
 
-        for (int y = 0; y < MAX_J; ++y)
-        {
-            for (int x = 0; x < MAX_I; ++x)
-            {
-                Entity ent = pos[x][y];
-                if (ent != Components::NULL_INDEX && ent != actor)
-                {
-                    walkable[y * MAX_I + x] = 0;
-                }
-            }
-        }
+        //for (int y = 0; y < MAX_J; ++y)
+        //{
+        //    for (int x = 0; x < MAX_I; ++x)
+        //    {
+        //        Entity ent = pos[x][y];
+        //        if (ent != Components::NULL_INDEX && ent != actor)
+        //        {
+        //            walkable[y * MAX_I + x] = 0;
+        //        }
+        //    }
+        //}
 
         Components::GridCell start{ ax, ay };
         Components::GridCell goal{ tx, ty };
 
-        Components::AStarResult result =
+        board.moveEntityAI(actor, tx, ty);
+
+        /*Components::AStarResult result =
             AStar_FindPath_Grid4(MAX_I, MAX_J, walkable.data(), start, goal);
 
         if (result.path.empty())
         {
             std::cout << "[ED] FRONT no path found.\n";
             return;
-        }
+        }*/
 
-        // path includes start cell, so next move begins at index 1
-        int maxMoves = std::min<int>(steps, static_cast<int>(result.path.size()) - 1);
+        //// path includes start cell, so next move begins at index 1
+        //int maxMoves = std::min<int>(steps, static_cast<int>(result.path.size()) - 1);
 
-        auto itPath = result.path.begin();
-        ++itPath; // skip start cell
+        //auto itPath = result.path.begin();
+        //++itPath; // skip start cell
 
-        for (int moved = 0; moved < maxMoves && itPath != result.path.end(); ++moved, ++itPath)
-        {
-            int nx = itPath->x;
-            int ny = itPath->y;
+        //for (int moved = 0; moved < maxMoves && itPath != result.path.end(); ++moved, ++itPath)
+        //{
+        //    int nx = itPath->x;
+        //    int ny = itPath->y;
 
-            bool ok = board.moveEntityAI(actor, nx, ny);
-            if (!ok)
-            {
-                std::cout << "[ED] FRONT moveEntityAI failed at "
-                    << nx << "," << ny << "\n";
-                return;
-            }
-        }
+        //    bool ok = board.moveEntityAI(actor, nx, ny);
+        //    if (!ok)
+        //    {
+        //        std::cout << "[ED] FRONT moveEntityAI failed at "
+        //            << nx << "," << ny << "\n";
+        //        return;
+        //    }
+        //}
 
-        std::cout << "[ED] FRONT path moved " << maxMoves << " step(s).\n";
+        //std::cout << "[ED] FRONT path moved " << maxMoves << " step(s).\n";
         return;
     }
 
@@ -482,6 +492,7 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 }
 
 void EnemyDirector::execATTACK(Grid::GameBoard& board,
+                               PhaseSystem::GameBoardState& gbs,
     Entity actor,
     Entity playerID,
     const Tokens& t)
@@ -526,6 +537,11 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
 
     if (dist <= attackRange)
     {
+        auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
+
+        aa->anim_type = Components::AnimationType::ENEMY_ATTACK;
+        gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
+
         COMBAT_SYSTEM_RETURN_TAG result =
             Call_AttackSystem(playerID, static_cast<f32>(damage),board);
 

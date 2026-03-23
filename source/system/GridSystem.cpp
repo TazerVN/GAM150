@@ -415,6 +415,7 @@ namespace Grid
 
 				this->pos[start_i][start_j] = -1;
 				this->walkable[start_j * MAX_I + start_i] = 1;
+
 				this->pos[x][y] = e;
 				this->walkable[y * MAX_I + x] = 0;
 
@@ -660,24 +661,40 @@ namespace Grid
 		if (!findEntityCell(e, ex, ey))
 			return false;
 
+
+		EntityComponent::ComponentTypeID astarID =
+			EntityComponent::getComponentTypeID<Components::AStarResult>();
+		Components::GridCell s{ ex, ey};
+		Components::GridCell g{ x,  y };
+
+		//if (!ecs.getBitMask()[e].test(astarID)) return true;
+
+		Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
+		astar->path = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g).path;
+
+		int max_move = 5;
+		while(astar->path.size() > max_move)
+		{
+			astar->path.pop_back();
+		}
+
+		int new_x = astar->path.back().x;
+		int new_y = astar->path.back().y;
+
 		pos[ex][ey] = -1;
 		walkable[ey * MAX_I + ex] = 1;
 
-		pos[x][y] = e;
-		walkable[y * MAX_I + x] = 0;
+		pos[new_x][new_y] = e;
+		walkable[new_y * MAX_I + new_x] = 0;
 
-		EntityComponent::ComponentTypeID transID =
-			EntityComponent::getComponentTypeID<Components::Transform>();
-
-		if (ecs.getBitMask()[e].test(transID))
+		if (!astar->path.empty())
 		{
 			Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
+			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
 
-			transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
-			transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
-			transform->pos_onscreen = transform->pos;
-			mesh->z = x + 2;
+			anim->anim_type = Components::AnimationType::ENEMY_MOVING;
+			gbsptr->set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 		}
 
 		return true;

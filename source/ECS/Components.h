@@ -43,7 +43,7 @@ namespace Components
 
 	enum class AnimationType : char
 	{
-		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, NONE, COUNT
+		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, ENEMY_ATTACK, ENEMY_MOVING ,NONE, COUNT
 	};
 
 	enum class IntentionType : char
@@ -190,6 +190,7 @@ namespace Components
 		int max_frame;
 		bool finished;
 		AnimationType anim_type;
+		AnimationType default_type;
 		std::array<Entity, static_cast<size_t>(Components::AnimationType::COUNT)> timer_array;
 
 		Animation_Actor(Components::AnimationType type, int current_frame = 0, int max_frame = 0);
