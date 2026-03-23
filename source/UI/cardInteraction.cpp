@@ -89,9 +89,9 @@ namespace CardInteraction
 		this->update_pos(ecs, dt);
 		if (gbsptr == nullptr) return;
 		//if not within main phase return
-		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE &&
-			gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_EXPLORE)) return;
-
+		if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
+		if(gbsptr->getPlayerPhase() != PhaseSystem::PlayerPhase::PLAYER_EXPLORE) 
+			return;
 		if (tbsptr->current() != playerID) return;
 
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
@@ -111,6 +111,7 @@ namespace CardInteraction
 			if (this->activate[i] == true)
 			{
 				this->activate[i] = false;
+
 				Entity cardID = tbsptr->draw_card(playerID, i);
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
@@ -224,8 +225,11 @@ namespace CardInteraction
 			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 30, texture, 
 				[this, eid]
 				{ 
-					this->gbptr->unselect_card();
-					this->activate_card(eid); 
+					if(gbsptr->getPlayerPhase() != PhaseSystem::PlayerPhase::PLAYER_ANIMATION)
+					{
+						this->gbptr->unselect_card();
+						this->activate_card(eid);
+					}
 				},
 			static_cast<s32>(c->value), *this->cdptr, cs->data_card_hand.at(i)));
 

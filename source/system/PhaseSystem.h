@@ -6,6 +6,7 @@
 namespace PhaseSystem{
 	enum class GBPhase{START_PHASE, STANDBY_PHASE, DRAW_PHASE, MAIN_PHASE, PLAYER_RESOLUTION, ENEMY_PHASE, ENEMY_RESOLUTION , UNIN};
 	enum class PlayerPhase{PLAYER_EXPLORE, GRID_SELECT, AOE_GRID_SELECT, PLAYER_ANIMATION, UNIN};
+	enum class EnemyPhase {ENEMY_ANIMATION, ENEMY_IDLE};
 
 	constexpr size_t GBPhaseCount = static_cast<size_t>(GBPhase::UNIN);
 	constexpr size_t PlayerPhaseCount = static_cast<size_t>(PlayerPhase::UNIN);

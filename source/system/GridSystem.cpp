@@ -140,8 +140,18 @@ namespace Grid
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 		/*gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;*/
 
+		Components::Card_Storage* cs = ecs.getComponent<Components::Card_Storage>(playerID);
 		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(playerID);
-		anim->anim_type = Components::AnimationType::ATTACK_MELEE;
+		Entity cur_card = cs->data_card_hand[tbsptr->get_selected_cardhand_index()];
+
+		Components::Targetting_Component* tc = ecs.getComponent<Components::Targetting_Component>(cur_card);
+		if(tc->targetting_type == Targetting::SINGLE_TARGET && tc->range <= 2.f){
+			anim->anim_type = Components::AnimationType::ATTACK_MELEE;
+		}
+		else
+		{
+			anim->anim_type = Components::AnimationType::ATTACK_RANGE;
+		}
 	}
 
 	void GameBoard::unselect_card()

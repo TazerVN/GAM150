@@ -10,6 +10,29 @@ namespace Animation
 
 	}
 
+	bool range_animation(Entity id, Entity timer_id)
+	{
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
+
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
+		Components::Texture* texture = ecs.getComponent<Components::Texture>(id);
+
+		timer->start = true;
+		f32 lerp = timer->seconds / timer->max_seconds;
+		bool flag = false;
+
+		if(lerp >= 1.f)
+		{
+			flag = true;
+			texture->offset_x = 0.f;
+			timer->start = false;
+		}
+		else{
+			texture->offset_x = 13.f / 18.f;
+		}
+
+		return flag;
+	}
 
 	void idle_animation(Entity id, Entity timer_id)
 	{
@@ -147,8 +170,8 @@ namespace Animation
 				{
 					Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(ent);
 					
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]  = animationTimer(ecs, 1.f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]  = animationTimer(ecs, 1.f, 0.f, false, true);
+					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]  = animationTimer(ecs, 0.5f, 0.f, false, true);
+					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]  = animationTimer(ecs, 0.5f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)]        = animationTimer(ecs, 0.3f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]          = animationTimer(ecs, 1.f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)] = animationTimer(ecs, 1.f, 0.f, false, true);
@@ -190,6 +213,13 @@ namespace Animation
 							break;
 						case Components::AnimationType::ATTACK_MELEE:
 							if (melee_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
+							{
+								anim->anim_type = Components::AnimationType::NONE;
+								cs.set_play_card_triggered(true);
+							}
+							break;
+						case Components::AnimationType::ATTACK_RANGE:
+							if (range_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]))
 							{
 								anim->anim_type = Components::AnimationType::NONE;
 								cs.set_play_card_triggered(true);

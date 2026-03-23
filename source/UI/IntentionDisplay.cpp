@@ -10,7 +10,7 @@ Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f3
 	//default player values
 	Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},{}, rotation };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), TEXTURE , MESH_RECTANGLE_CORNER, z };
-	Components::Color color{ 0.0f, 0.8f, 1.0f ,1.0f };
+	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::Texture texture{ pTex };
 	Components::Tag tag{ Components::Tag::UI };
 
@@ -30,7 +30,7 @@ void IntentionDisplaySystem::init(EnemyDirector& enemyDirector)
 	for (auto it = this->ptr_enemyDirector->get_map().begin(); it != this->ptr_enemyDirector->get_map().end(); ++it)
 	{
 		Entity enemy = it->second;
-		Entity intentionD = intenton_icon(TF.getTextureOthers(0), -50.f, 80.f, 64.f, 64.f, 0, 10);
+		Entity intentionD = intenton_icon(TF.getTextureOthers(0), -50.f, 80.f, 32.f, 32.f, 0, 10);
 		this->intentionDisplay_list.push_back({enemy , intentionD});
 	}
 	triggered = true;
