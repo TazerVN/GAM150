@@ -146,11 +146,11 @@ namespace Grid
 
 		Components::Targetting_Component* tc = ecs.getComponent<Components::Targetting_Component>(cur_card);
 		if(tc->targetting_type == Targetting::SINGLE_TARGET && tc->range <= 2.f){
-			anim->anim_type = Components::AnimationType::ATTACK_MELEE;
+			anim->setType(Components::AnimationType::ATTACK_MELEE);
 		}
 		else
 		{
-			anim->anim_type = Components::AnimationType::ATTACK_RANGE;
+			anim->setType(Components::AnimationType::ATTACK_RANGE);
 		}
 	}
 
@@ -411,7 +411,7 @@ namespace Grid
 			if(!astar->path.empty())
 			{ 
 				Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
-				anim->anim_type = Components::AnimationType::MOVING;
+				anim->setType(Components::AnimationType::MOVING);
 
 				this->pos[start_i][start_j] = -1;
 				this->walkable[start_j * MAX_I + start_i] = 1;
@@ -693,7 +693,7 @@ namespace Grid
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
 			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
 
-			anim->anim_type = Components::AnimationType::ENEMY_MOVING;
+			anim->setType(Components::AnimationType::ENEMY_MOVING);
 			gbsptr->set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 		}
 

@@ -43,7 +43,7 @@ namespace Components
 
 	enum class AnimationType : char
 	{
-		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, ENEMY_ATTACK, ENEMY_MOVING ,NONE, COUNT
+		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, ENEMY_ATTACK, ENEMY_MOVING, DEATH ,NONE, COUNT
 	};
 
 	enum class IntentionType : char
@@ -186,14 +186,18 @@ namespace Components
 	struct Animation_Actor
 	{
 		public:
+		AnimationType anim_type;
+		AnimationType default_type;
+		AnimationType prev_type;
 		int current_frame;
 		int max_frame;
 		bool finished;
-		AnimationType anim_type;
-		AnimationType default_type;
 		std::array<Entity, static_cast<size_t>(Components::AnimationType::COUNT)> timer_array;
 
 		Animation_Actor(Components::AnimationType type, int current_frame = 0, int max_frame = 0);
+		void setType(AnimationType at);
+		AnimationType getCurrType();
+		AnimationType getDefaultType();
 	};
 
 	enum class VictoryNodeTag

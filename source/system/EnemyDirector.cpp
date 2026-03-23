@@ -539,7 +539,7 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
     {
         auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
 
-        aa->anim_type = Components::AnimationType::ENEMY_ATTACK;
+        aa->setType(Components::AnimationType::ENEMY_ATTACK);
         gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 
         COMBAT_SYSTEM_RETURN_TAG result =

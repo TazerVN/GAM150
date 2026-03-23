@@ -302,20 +302,50 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 	if (!graveyard.empty())
 	{
 		Components::Horde_Tag* goons = ecs.getComponent<Components::Horde_Tag>(tbsptr->get_participant()[1]);
-		for (std::pair<AEVec2, Entity> gra : graveyard)
+		int i = 0;
+		for (std::pair<AEVec2, Entity>& gra : graveyard)
 		{
 			AEVec2& targetPos = gra.first;
 
 			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
-			
-			if (goons->alive())
+
+			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(gra.second);
+
+			if (!anim)
 			{
+				// Already destroyed somehow, just remove from graveyard
+				graveyard[i] = graveyard.back();
+				graveyard.pop_back();
+				continue;
+			}
+			
+			if (goons->alive() && anim->prev_type != Components::AnimationType::DEATH && anim->anim_type != Components::AnimationType::DEATH)
+			{
+				anim->setType(Components::AnimationType::DEATH);
 				goons->remove_goon(gra.second);
 			}
-			gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
-			ecs.destroyEntity(gra.second);
+
+			if(anim->prev_type == Components::AnimationType::DEATH){
+				gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
+				ecs.destroyEntity(gra.second);
+
+				if(graveyard.size() > 1){
+
+					std::pair<AEVec2, Entity> temp = graveyard[graveyard.size() - 1];
+					graveyard[graveyard.size() - 1] = gra;
+					graveyard[i] = temp;
+					graveyard.pop_back();
+					}
+				else
+				{
+					graveyard.pop_back();
+				}
+			}
+			else
+			{
+				i++;
+			}
 		}
-		graveyard.clear();
 	}
 }
 
@@ -446,7 +476,7 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entit
 
 	PUT.display(target, std::to_string(static_cast<int>(damage)).c_str());
 	auto anim = ecs.getComponent<Components::Animation_Actor>(target);
-	anim->anim_type = Components::AnimationType::TAKING_DAMAGE;
+	anim->setType(Components::AnimationType::TAKING_DAMAGE);
 
 	std::cout << "[Combat] Target: " << target;
 	if (stats)

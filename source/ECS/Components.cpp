@@ -75,9 +75,25 @@ Components::HP::HP(f32 max) : c_value{ max }, max_value{ max } {}
 Components::Texture::Texture(AEGfxTexture* texture, f32 offset_x, f32 offset_y) : texture{ texture }, offset_x{ offset_x }, offset_y{ offset_y } {}
 
 Components::Animation_Actor::Animation_Actor(Components::AnimationType type, int current, int max)
-	: anim_type{ type }, default_type{type}, finished {false}, timer_array{ size_t(-1) }, current_frame{ current }, max_frame{ max }
+	: prev_type{type} ,anim_type{ type }, default_type{type}, finished {false}, timer_array{ size_t(-1) }, current_frame{ current }, max_frame{ max }
 
 {
+}
+
+void Components::Animation_Actor::setType(Components::AnimationType at)
+{
+	this->prev_type = this->anim_type;
+	this->anim_type = at;
+}
+
+Components::AnimationType Components::Animation_Actor::getCurrType()
+{
+	return this->anim_type;
+}
+
+Components::AnimationType Components::Animation_Actor::getDefaultType()
+{
+	return this->default_type;
 }
 void Components::Horde_Tag::remove_goon(Entity removed_goon)
 {

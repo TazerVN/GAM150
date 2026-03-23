@@ -251,6 +251,33 @@ namespace Animation
 		return flag;
 	}
 
+	bool death_animation(Entity id, Entity timer_id)
+	{
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
+		Components::Color* color = ecs.getComponent<Components::Color>(id);
+
+		bool flag = false;
+		timer->start = true;
+
+		f32 lerp = timer->seconds / timer->max_seconds;
+		f32 minimum = 0.6f;
+
+
+		if(timer->seconds >= timer->max_seconds)
+		{
+			flag = true;
+			timer->start = false;
+			
+		}
+		else
+		{
+			color->d_color.a = 1.f - lerp;
+		}
+
+		return flag;
+	}
+
 
 	Entity animationTimer(EntityComponent::Registry& ecs, f32 max, f32 current, bool start, bool reset)
 	{
@@ -282,6 +309,7 @@ namespace Animation
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)] = animationTimer(ecs, 0.2f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)] = animationTimer(ecs, 0.2f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)] = animationTimer(ecs, 0.1f, 0.f, false, true);
+					anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)] = animationTimer(ecs, 0.5f, 0.f, false, true);
 					anim->timer_array[static_cast<size_t>(Components::AnimationType::NONE)] = animationTimer(ecs, 1.f, 0.f, false, true);
 				}
 			}
@@ -305,7 +333,7 @@ namespace Animation
 				for (Entity ent : it->second)
 				{
 					Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(ent);
-					switch (anim->anim_type)
+					switch (anim->getCurrType())
 					{
 						case Components::AnimationType::IDLE:
 							idle_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)]);
@@ -315,7 +343,7 @@ namespace Animation
 							AEVec2 offset{ gb.GetOffsetPos() };
 							if (moving_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
 								gbs.set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 							}
 							break;
@@ -323,14 +351,14 @@ namespace Animation
 						case Components::AnimationType::ATTACK_MELEE:
 							if (melee_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
 								cs.set_play_card_triggered(true);
 							}
 							break;
 						case Components::AnimationType::ATTACK_RANGE:
 							if (range_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
 								cs.set_play_card_triggered(true);
 							}
 							break;
@@ -338,21 +366,27 @@ namespace Animation
 							AEVec2 offset{ gb.GetOffsetPos() };
 							if (moving_animation_enemy(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)], offset.x, offset.y))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
 								gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
 							}
 							break;
 						case Components::AnimationType::ENEMY_ATTACK:
 							if (range_animation_enemy(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)]))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
 								gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
 							}
 							break;
 						case Components::AnimationType::TAKING_DAMAGE:
 							if (damage_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)]))
 							{
-								anim->anim_type = anim->default_type;
+								anim->setType(anim->default_type);
+							}
+							break;
+						case Components::AnimationType::DEATH:
+							if (death_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)]))
+							{
+								anim->setType(anim->default_type);
 							}
 							break;
 					}
