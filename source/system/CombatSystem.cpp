@@ -126,7 +126,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 	case Targetting::SINGLE_TARGET:
 	{
 
-		if (Call_AttackSystem(ecs, target, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+		if (Call_AttackSystem(target, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 		{
 			std::cout << "Cannot damage the entity" << std::endl;
 		}
@@ -151,7 +151,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 			if (ent != -1 && ent != tbsptr->current())
 			{
 				std::cout << "Hit Entity :" << ent << std::endl;
-				if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+				if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 				{
 					std::cout << "Cannot damage the entity" << std::endl;
 				}
@@ -217,7 +217,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 				Entity& ent = gbptr->get_pos()[cx][cy];
 				if (ent != -1 && ent != caster)
 				{
-					if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+					if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 					{
 						std::cout << "Cannot damage the entity" << std::endl;
 					}
@@ -248,7 +248,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 				Entity& ent = gbptr->get_pos()[cx][cy];
 				if (ent != -1 && ent != caster)
 				{
-					if (Call_AttackSystem(ecs, ent, final_damage) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+					if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 					{
 						std::cout << "Cannot damage the entity" << std::endl;
 					}
@@ -346,7 +346,7 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_first_hit(
 		Entity ent = gbptr->get_pos()[cx][cy];
 		if (ent != Components::NULL_INDEX && ent != -1 && ent != caster)
 		{
-			if (Call_AttackSystem(ecs, ent, damage) == COMBAT_SYSTEM_RETURN_TAG::VALID)
+			if (Call_AttackSystem(ent, damage,*gbptr) == COMBAT_SYSTEM_RETURN_TAG::VALID)
 			{
 				f32 targetHp = ecs.getComponent<Components::HP>(ent)->c_value;
 				if (targetHp <= 0.f)
@@ -391,7 +391,7 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
 		Entity ent = gbptr->get_pos()[cx][cy];
 		if (ent != Components::NULL_INDEX && ent != -1 && ent != caster)
 		{
-			if (Call_AttackSystem(ecs, ent, damage) == COMBAT_SYSTEM_RETURN_TAG::VALID)
+			if (Call_AttackSystem(ent, damage,*gbptr) == COMBAT_SYSTEM_RETURN_TAG::VALID)
 			{
 				hitAnything = true;
 
@@ -407,7 +407,7 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
 	return hitAnything;
 }
 
-COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entity target, f32 damage)
+COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameBoard& gb)
 {
 	EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 
@@ -452,6 +452,15 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(EntityComponent::Registry& ecs, Entit
 		std::cout << " | Shield After: " << stats->shields;
 	}
 	std::cout << " | HP After: " << hp->c_value << '\n';
+
+	s32 x, y;
+	gb.findEntityCell(target, x, y);
+	f32 particle_x; f32 width = 40.f;
+	f32 particle_y; f32 height = 20.f;
+	translate_To_Isometric(gb.GetOffsetPos(), height, particle_x, particle_y, x, y);
+	PS.particleHeal(particle_x, particle_y, width, height);	//here heal is placeholder
+
+
 
 	return COMBAT_SYSTEM_RETURN_TAG::VALID;
 }

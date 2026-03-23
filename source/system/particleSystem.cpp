@@ -213,7 +213,7 @@ void Particle::ParticleSystem::update(f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_one(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -223,19 +223,21 @@ void Particle::ParticleSystem::spawn_one(f32 x, f32 y, f32 width, f32 height, f3
 	Components::Timer timer{ AERandFloat() };
 	Components::Particle particle{ type };
 	Components::Velocity vel{ 0.f, 0.f };
-	Components::TagClass tag{ Components::Tag::BACKGROUND};
+	
 	vel.vel.x = velX;
 	vel.vel.y = velY;
-
+	
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
 	ecs.addComponent(id, color);
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, particle);
 	ecs.addComponent(id, vel);
-	ecs.addComponent(id, tag);
-
-
+	if (isUI)
+	{
+		Components::TagClass tag{ Components::Tag::BACKGROUND };
+		ecs.addComponent(id, tag);
+	}
 
 	Particlebuffer.push_back(id);
 
@@ -245,7 +247,7 @@ void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height
 {
 }
 
-void Particle::ParticleSystem::spawn_timed(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_timed(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -255,7 +257,7 @@ void Particle::ParticleSystem::spawn_timed(f32 x, f32 y, f32 width, f32 height, 
 	Components::Timer timer{ lifetime, 0.f, true, false };
 	Components::Particle particle{ type };
 	Components::Velocity vel{ 0.f, 0.f };
-	Components::TagClass tag{ Components::Tag::BACKGROUND };
+	
 	vel.vel.x = velX;
 	vel.vel.y = velY;
 
@@ -265,9 +267,12 @@ void Particle::ParticleSystem::spawn_timed(f32 x, f32 y, f32 width, f32 height, 
 	ecs.addComponent(id, timer);
 	ecs.addComponent(id, particle);
 	ecs.addComponent(id, vel);
-	ecs.addComponent(id, tag);
 
-
+	if (isUI)
+	{
+		Components::TagClass tag{ Components::Tag::BACKGROUND };
+		ecs.addComponent(id, tag);
+	}
 
 	Particlebuffer.push_back(id);
 
@@ -292,8 +297,8 @@ void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, 
 		f32 alpha_No = 1.0f;
 		f32 alpha_Rand = AERandFloat();
 
-		spawn_one(x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
-		spawn_one(x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
+		spawn_one(true,x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
+		spawn_one(true,x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
 		//spawn_one(ecs, mf, x, y, 35.0f, 50.0f, 0.4f, 10, r, g2, b2, alpha_Rand, 1.0f, 1.0f);
 
 
@@ -323,7 +328,7 @@ void Particle::ParticleSystem::particleBurst()
 
 
 		// input
-		spawn_one(0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
+		spawn_one(true,0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
 	}
 }
 
@@ -356,7 +361,7 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 
 
 		// input
-		spawn_one(x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
+		spawn_one(true,x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
 	}
 }
 
@@ -398,8 +403,8 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 
 			//0.3f + 0.7f * AERandFloat();
 
-			spawn_timed(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
-			spawn_timed(x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
+			spawn_timed(true,x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
+			spawn_timed(true,x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
 		}
 	}
 }
@@ -434,18 +439,18 @@ void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 1.0f;
 
-		spawn_one(x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
+		spawn_one(true,x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
 	}
 }
 
-void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+void Particle::ParticleSystem::particleHeal( f32 x, f32 y, f32 w, f32 h)
 {
 	int max_count = 15;
 
 	for (int i = 0; i < max_count; i++)
 	{
-		f32 spawnX = x + (AERandFloat() * 40.0f) - 20.0f;
-		f32 spawnY = y + (AERandFloat() * 20.0f) - 10.0f;
+		f32 spawnX = x + (AERandFloat() * w) - 20.0f;
+		f32 spawnY = y + (AERandFloat() * h) - 10.0f;
 
 		f32 velX = (AERandFloat() * 30.f) - 15.0f;
 		f32 velY = 60.0f + AERandFloat() * 40.0f;
@@ -455,13 +460,13 @@ void Particle::ParticleSystem::particleHeal(EntityComponent::Registry& ecs, Mesh
 		f32 b = 0.2f * AERandFloat();
 		f32 a = 0.8f + 0.2f * AERandFloat();
 
-		spawn_one(spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
+		spawn_one(false,spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
 
 	}
 
 }
 
-void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count)
+void Particle::ParticleSystem::particleShield(f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count)
 {
 	for (int i = 0; i < count; i++)
 	{
@@ -476,7 +481,7 @@ void Particle::ParticleSystem::particleShield(EntityComponent::Registry& ecs, Me
 		f32 velX = 0.f;
 		f32 velY = 0.f;
 
-		spawn_timed(spawnX, spawnY, 8.f, 8.f, angle, 10, r, g, b, alpha, velX, velY, 999.f, Components::ParticleType::Shield);
+		spawn_timed(false,spawnX, spawnY, 8.f, 8.f, angle, 10, r, g, b, alpha, velX, velY, 999.f, Components::ParticleType::Shield);
 
 		Entity id = Particlebuffer.back();
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
@@ -515,7 +520,7 @@ void Particle::ParticleSystem::particleDataFlow(EntityComponent::Registry& ecs, 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 0.5f + 0.5f * AERandFloat();
 
-		spawn_one(x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
+		spawn_one(true,x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
 	}
 }
 
@@ -556,7 +561,7 @@ void Particle::ParticleSystem::particleDataBubble(EntityComponent::Registry& ecs
 			// Small squares — bubble feel
 			f32 size = 4.f + AERandFloat() * 8.f; 
 
-			spawn_one(x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
+			spawn_one(true,x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
 
 			// Stagger start time — so not all bubbles rise together
 			Entity id = Particlebuffer.back();

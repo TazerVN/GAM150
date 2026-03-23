@@ -527,7 +527,7 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
     if (dist <= attackRange)
     {
         COMBAT_SYSTEM_RETURN_TAG result =
-            Call_AttackSystem(ecs, playerID, static_cast<f32>(damage));
+            Call_AttackSystem(playerID, static_cast<f32>(damage),board);
 
         if (result == COMBAT_SYSTEM_RETURN_TAG::VALID)
         {

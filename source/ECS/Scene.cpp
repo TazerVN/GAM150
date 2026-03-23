@@ -5,6 +5,7 @@
 #include "../util/LevelManager.h"
 #include "factory/EntityFactory.h"
 #include "../UI/UI.h"
+//#include "util/util.h"
 
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
@@ -103,6 +104,15 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
+	if (AEInputCheckTriggered(AEVK_RCTRL)) // test particle
+	{
+		f32 x; f32 width = 40.f;
+		f32 y; f32 height = 40.f;
+		translate_To_Isometric(BattleGrid.GetOffsetPos(), height, x, y, BattleGrid.cur_x, BattleGrid.cur_y);
+
+		PS.particleShield(x,y + 50.f,0.2f,0.f,1.f,1.f,2.f,50);
+	}
+
 	if (AEInputCheckTriggered(AEVK_F1))
 	{
 		BattleGrid.in_walkable_debug = !BattleGrid.in_walkable_debug;
