@@ -3,7 +3,6 @@
 #include "CombatLevel.h"
 #include "../util/LevelManager.h"
 #include "../UI/UI.h"
-#include "../level/game.h"
 
 Scene scene;
 UI::UIManager UIM;
@@ -13,25 +12,26 @@ void LevelStateCombat_load()
 {
 	if (new_Start)
 	{
+		
 		new_Start = false;
-		for (int i = 0; i < 5; ++i)
+
+		if(playerID == -1)
+			EntityFactory::create_player();
+		unsigned int seed = rand()*323123;
+		std::srand(seed);
+		if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
 		{
-			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Slash"));
+			std::cout << " put data fail";
 		}
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("PP up"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Snipe"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Shoot"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Shoot+"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Turn bash"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Mana Wall"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Barrier"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Barrier+"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Aura Farm"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("STR Disk"));
-		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Recovery"));
-		for (int i = 0; i < 2; ++i)
+
+		int upper_bound = card_system.start_decks.size() - 1; int lower_bound = 0;
+		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+
+		JSON_DECK deck = card_system.start_decks[index];
+
+		for (std::string& card_name : deck.cards)
 		{
-			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Black Hole"));
+			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(card_name));
 		}
 
 		Components::HP* playerHP = ecs.getComponent<Components::HP>(playerID);
@@ -39,14 +39,8 @@ void LevelStateCombat_load()
 		playerHP->c_value = playerHP->max_value;
 
 		std::cout << "New start! Reset Player" << std::endl;
-		AF.bgm.play(0);
-
-		unsigned int seed = static_cast<unsigned int>(time(nullptr));
-		if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
-		{
-			std::cout << " put data fail";
-		}
 	}
+	AF.bgm.play(0);
 }
 void LevelStateCombat_init()
 {
@@ -107,10 +101,10 @@ void LevelStateCombat_free()
 {
 	scene.scene_free();
 	UIM.free();
-	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
 	PUT.free();
 	AF.bgm.stop();
+	EntityFactory::free_Player();
 }
 void LevelStateCombat_unload()
 {

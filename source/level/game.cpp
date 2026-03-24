@@ -11,7 +11,6 @@ s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
 
-bool player_died = false;
 
 void GameState_game_load()
 {
@@ -52,6 +51,7 @@ void GameState_game_update()
 			LevelStateUpdate();
 			if (player_died && gGameStateCurr != GameStates::GS_GAMEOVER)
 			{
+				new_Start = true;
 				LevelStateFree();
 				gGameStateNext = GameStates::GS_GAMEOVER;
 			}

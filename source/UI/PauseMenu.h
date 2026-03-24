@@ -13,7 +13,7 @@ class PauseMenu
 
 	Entity dim;
 	TextButton continue_button;
-	TextButton restart_button;
+	TextButton abandon_button;
 	TextButton leave_button;
 	bool on{false};
 	bool created{false};

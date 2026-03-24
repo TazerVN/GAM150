@@ -61,7 +61,7 @@ JSON_RET parse_seed(unsigned int& seed, char const* file_loc)
 }
 
 
-JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
+JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 {
 	std::ifstream file(str);
 	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
@@ -99,6 +99,41 @@ JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
 		temp_card.card_image = (arr[i].HasMember("png")) ? arr[i]["png"].GetString() : "NULL";
 
 		vec.push_back(temp_card);
+	}
+
+	return JSON_RET::OK;
+}
+
+JSON_RET parse_starter_decks(std::vector<JSON_DECK>& decks, char const* str)
+{
+	std::ifstream file(str);
+	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
+
+	std::string json
+	(
+		(std::istreambuf_iterator<char>(file)),
+		std::istreambuf_iterator<char>()
+	);
+
+	rapidjson::Document doc;
+	doc.Parse(json.c_str());
+	if (doc.HasParseError()) {
+		std::cerr << "Error parsing JSON: "
+			<< doc.GetParseError() << std::endl;
+		return JSON_RET::PARSE_ERROR;
+	}
+
+	if (!doc.HasMember("Decks")) return JSON_RET::PARSE_ERROR;
+
+	for (auto& d : doc["Decks"].GetArray())
+	{
+		JSON_DECK deck;
+		deck.name = d["name"].GetString();
+		for (auto& card : d["cards"].GetArray())
+		{
+			deck.cards.push_back(card.GetString());
+		}
+		decks.push_back(deck);
 	}
 
 	return JSON_RET::OK;

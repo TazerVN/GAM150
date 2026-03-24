@@ -1,0 +1,47 @@
+{
+	"Decks" :
+	[
+		{
+			"name" : "Melee Deck",
+			"cards" : 
+			[
+				"Slash",
+				"Slash",
+				"Slash",
+				"Slash",
+				"Barrier",
+				"Barrier",
+				"Barrier",
+				"Barrier"
+			]
+		},
+		{
+			"name" : "Ranged Deck",
+			"cards" : 
+			[
+				"Shoot",
+				"Shoot",
+				"Shoot",
+				"Shoot",
+				"Barrier",
+				"Barrier",
+				"Barrier",
+				"Barrier"
+			]
+		},
+		{
+			"name" : "Balanced Deck",
+			"cards" : 
+			[
+				"Slash",
+				"Slash",
+				"Shoot",
+				"Shoot",
+				"Barrier",
+				"Barrier",
+				"Barrier",
+				"Barrier"
+			]
+		}
+	]
+}
