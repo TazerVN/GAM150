@@ -20,6 +20,9 @@ namespace Particle
 
 		void update(f32 dt);
 
+		void remove(size_t index);
+
+
 		void spawn_one(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);
 
 		void spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type);

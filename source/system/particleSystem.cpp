@@ -3,6 +3,20 @@
 #include "particleSystem.h"
 #include "../ECS/Components.h"
 
+
+void Particle::ParticleSystem::remove(size_t index)
+{
+	if(Particlebuffer.empty()) return;
+	if(Particlebuffer.size() > 1){
+		Particlebuffer[index] = Particlebuffer[Particlebuffer.size() - 1];
+		Particlebuffer.pop_back();
+	}
+	else
+	{
+		Particlebuffer.pop_back();
+	}
+};
+
 void Particle::ParticleSystem::init(size_t poolSize)
 {
 }
@@ -18,8 +32,11 @@ void Particle::ParticleSystem::update(f32 dt)
 	{
 		if ((it->first & objMask) == objMask)
 		{*/
-	for (Entity ent : this->Particlebuffer)
+
+	for (int i = 0; i < this->Particlebuffer.size(); )
 	{
+		Entity ent = Particlebuffer[i];
+
 		if (!ecs.getBitMask()[ent].test(particleID)) continue;
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
 		//transform->pos_onscreen.y += dt * 1.0f;
@@ -37,6 +54,8 @@ void Particle::ParticleSystem::update(f32 dt)
 				if (timer->start == false)
 				{
 					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
 				}
 				break;
 
@@ -45,6 +64,8 @@ void Particle::ParticleSystem::update(f32 dt)
 				if (timer->start == false)
 				{
 					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
 				}
 				break;
 
@@ -52,6 +73,8 @@ void Particle::ParticleSystem::update(f32 dt)
 				if (timer->start == false)
 				{
 					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
 				}
 				break;
 
@@ -120,6 +143,8 @@ void Particle::ParticleSystem::update(f32 dt)
 				if (timer->start == false)
 				{
 					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
 				}
 				break;
 
@@ -204,7 +229,7 @@ void Particle::ParticleSystem::update(f32 dt)
 		}
 
 
-
+		i++;
 	}
 }
 
