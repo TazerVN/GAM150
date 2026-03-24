@@ -22,7 +22,7 @@ namespace Grid
 		cur_x = x;
 		cur_y = y;
 
-		if (*win && pos[x][y] != playerID)
+		/*if (*win && pos[x][y] != playerID)
 		{
 			if (pos[x][y] != -1 && *ecs.getComponent<Components::Tag>(pos[x][y]) == Components::Tag::OTHERS)
 			{
@@ -48,7 +48,7 @@ namespace Grid
 						
 				}
 			}
-		}
+		}*/
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 		if (tbsptr->current() != playerID) return;
 
@@ -357,10 +357,19 @@ namespace Grid
 		this->walkable[y * MAX_I + x] = 0;
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
+		EntityComponent::ComponentTypeID gdID = EntityComponent::getComponentTypeID<Components::gridData>();
+		if (!ecs.getBitMask()[e].test(gdID)) return;
+
 		if (!ecs.getBitMask()[e].test(transID)) return;
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
 		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
+		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
+
+		gd->prev_x = x;
+		gd->prev_y = y;
+		gd->x = x;
+		gd->y = y;
 
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
 		transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
@@ -379,21 +388,9 @@ namespace Grid
 
 	void GameBoard::moveEntity(Entity e, s32 x, s32 y)
 	{
-		int start_i{-1}, start_j{-1};
-		//get player's position first
-		for (int i = 0; i < MAX_I; ++i)
-		{
-			for (int j = 0; j < MAX_J; ++j)
-			{
-				if (this->pos[i][j] == e)
-				{
-					start_i = i;
-					start_j = j;
-					break;
-				}
-			}
-			if (start_i != -1 && start_j != -1) break;
-		}
+		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
+		
+		int start_i{ gd->x }, start_j{ gd->y };
 		int dist = grid_dist_manhattan(start_i, start_j, x, y);
 
 		EntityComponent::ComponentTypeID astarID = EntityComponent::getComponentTypeID<Components::AStarResult>();
@@ -429,9 +426,9 @@ namespace Grid
 				std::cout << "Cant find path!!" << std::endl;
 			}
 		}
-		/*gbsptr->set_GBPhase(PhaseSystem::GBPhase::PLAYER_RESOLUTION);
-		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
-		gbsptr->GBPActive()[static_cast<size_t>(PhaseSystem::GBPhase::PLAYER_RESOLUTION)] = true;*/
+		// update grid data
+		gd->prev_x = gd->x; gd->prev_y = gd->y;
+		gd->x = x; gd->y = y;
 	}
 
 	void GameBoard::update(EntityComponent::Registry& ecs, Entity camera)
@@ -595,16 +592,6 @@ namespace Grid
 		return this->offset;
 	}
 
-	s32 GameBoard::grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
-	{
-		return math_absolute(x2 - x1) + math_absolute(y2 - y1);
-	}
-
-	s32 GameBoard::grid_dist_chebyshev(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
-	{
-		int lhs{ math_absolute(x2 - x1) }; int rhs{ math_absolute(y2 - y1) };
-		return math_max(lhs, rhs);
-	}
 
 	bool GameBoard::findEntityCell(Entity e, s32& outX, s32& outY) const
 	{
@@ -697,6 +684,9 @@ namespace Grid
 			gbsptr->set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 		}
 
+		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
+		gd->prev_x = gd->x; gd->prev_y = gd->y;
+		gd->x = x; gd->y = y;
 		return true;
 	}
 

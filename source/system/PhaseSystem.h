@@ -50,6 +50,7 @@ namespace PhaseSystem{
 		std::array<bool, GBPhaseCount>& GBPActive();
 
 		void debug_print();
+		void gbs_free();
 	};
 	
 

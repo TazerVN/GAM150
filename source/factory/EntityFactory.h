@@ -7,9 +7,10 @@
 #include "../util/util.h"
 #include "../util/json_parser.h"
 
-
 #include <AEEngine.h>
 namespace Grid { class GameBoard; }
+namespace PhaseSystem { class GameBoardState; }
+
 namespace EntityFactory
 {
 	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at);
@@ -24,10 +25,11 @@ namespace EntityFactory
 	class InteractableNode
 	{
 	private:
-		Grid::GameBoard* gbptr;
+		Grid::GameBoard* gbptr = nullptr;
+		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		std::vector<Entity> nodes;
 	public:
-		void init(Grid::GameBoard& gb);
+		void init(Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs);
 		Entity create_interactable_node(EntityComponent::Registry&, MeshFactory&, AEVec2, AEVec2, AEGfxTexture*,
 			Components::AnimationType, Components::VictoryNodeTag);
 		void update();

@@ -64,15 +64,13 @@ void GameState_game_update()
 		}
 	}
 	//if LS_QUIT is set
-	else
+	else 
 	{
 		LevelStateFree();
 		init_triggered = true;
 		gGameStateNext = GameStates::GS_MAINMENU;
 	}
 
-	//========(Render)====================
-	RM.RM_render(ecs, CS.id());
 	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 }
 void GameState_game_free()

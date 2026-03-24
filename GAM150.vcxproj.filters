@@ -61,6 +61,7 @@
     <ClCompile Include="source\factory\Beastiary.cpp" />
     <ClCompile Include="source\factory\AudioFactory.cpp" />
     <ClCompile Include="source\UI\IntentionDisplay.cpp" />
+    <ClCompile Include="source\level\Gameover.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="source\UI\Victory_Select.h" />
     <ClInclude Include="source\factory\Beastiary.h" />
     <ClInclude Include="source\UI\IntentionDisplay.h" />
+    <ClInclude Include="source\level\Gameover.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />

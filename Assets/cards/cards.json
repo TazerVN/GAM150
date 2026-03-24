@@ -3,17 +3,19 @@
 		"id": 1010,
 		"name": "Slash",
 		"cost": 1.0,
-		"value": 50.0,
+		"value": 30.0,
 		"range": 2.0,
-		"png" : "card_slash.png"
+		"description": "Deal 30 DMG",
+		"png": "card_slash.png"
 	},
 	{
 		"id": 1011,
 		"name": "Slash+",
 		"cost": 1.0,
-		"value": 75.0,
+		"value": 50.0,
 		"range": 2.0,
-		"png" : "card_slash+.png"
+		"description": "Deal 50 DMG",
+		"png": "card_slash+.png"
 	},
 	{
 		"id": 1012,
@@ -21,7 +23,8 @@
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 3.0,
-		"png" : "cardSample.png"
+		"description": "",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 1210,
@@ -29,7 +32,8 @@
 		"cost": 4.0,
 		"value": 1.0,
 		"range": 1.0,
-		"png" : "cardSample.png"
+		"description": "Deal more damage based on turn counter",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 1310,
@@ -37,157 +41,178 @@
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 3.0,
-		"png" : "cardSample.png"
+		"description": "Condition: Discard a card\nDeal damage equal to the cost of the discarded card, double if is a attack card",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 1320,
 		"name": "Firebolt",
 		"cost": 1.0,
-		"value": 7.0,
+		"value": 20.0,
 		"range": 10.0,
 		"aoe": 1.0,
-		"png" : "card_firebolt.png"
-	},
+		"description": "Send a fire ball to a location causing 20 AOE DMG",
+		"png": "card_firebolt.png"
+	},	
 	{
 		"id": 1130,
 		"name": "Shoot",
 		"cost": 1.0,
 		"value": 10.0,
-		"range": 10.0,
-		"png" : "card_shoot.png"
+		"range": 20.0,
+		"description": "Shoot a laser; Deal 20 DMG within a straight line; Ignores blockables",
+		"png": "card_shoot.png"
 	},
 	{
 		"id": 1131,
 		"name": "Shoot+",
 		"cost": 1.0,
-		"value": 15.0,
+		"value": 40.0,
 		"range": 10.0,
-		"png" : "card_shoot+.png"
+		"description": "Shoot stronger laser; Deal 40 DMG within a straight line; Ignores blockables",
+		"png": "card_shoot+.png"
 	},
 	{
 		"id": 1230,
 		"name": "Snipe",
 		"cost": 1.0,
-		"value": 30.0,
+		"value": 60.0,
 		"range": 99.0,
-		"png" : "card_shoot.png"
+		"description": "Snipe a enemy on board; deal 60 DMG; Can be blocked by effects and walls",
+		"png": "card_shoot.png"
 	},
 	{
 		"id": 2000,
 		"name": "Barrier",
 		"cost": 1.0,
 		"value": 10.0,
-		"png" : "card_barrier.png"
+		"description": "Put up a temporary barrier",
+		"png": "card_barrier.png"
 	},
 	{
 		"id": 2001,
 		"name": "Barrier+",
 		"cost": 1.0,
 		"value": 10.0,
-		"png" : "card_barrier+.png"
+		"description": "Put up a stronger barrier",
+		"png": "card_barrier+.png"
 	},
 	{
 		"id": 2100,
 		"name": "DMG Cut",
 		"cost": 1.0,
 		"value": 0.5,
-		"png" : "card_dmg_cut.png"
+		"description": "Next damage taken will be halved",
+		"png": "card_dmg_cut.png"
 	},
 	{
 		"id": 2101,
 		"name": "Aura Farm",
 		"cost": 1.0,
 		"value": 1.0,
-		"png" : "card_aura_farm.png"
+		"description": "One turn invincibility",
+		"png": "card_aura_farm.png"
 	},
 	{
 		"id": 2102,
 		"name": "Mana Wall",
 		"cost": -1.0,
 		"value": -1.0,
-		"png" : "cardSample.png"
+		"description": "Consumes all current mana and generate a temporary barrier",
+		"png": "cardSample.png"
 	},
 
 	{
 		"id": 3000,
 		"name": "Recovery",
 		"cost": 1.0,
-		"value": 3.0,
-		"png" : "card_recovery.png"
+		"value": 10.0,
+		"description": "Recover health; +10HP",
+		"png": "card_recovery.png"
 	},
 	{
 		"id": 3001,
 		"name": "Recovery+",
 		"cost": 1.0,
-		"value": 6.0,
-		"png" : "card_recovery.png"
+		"value": 20.0,
+		"description": "Recover more health; +20HP",
+		"png": "card_recovery.png"
 	},
 	{
 		"id": 3002,
 		"name": "Recovery++",
 		"cost": 1.0,
 		"value": 9.0,
-		"png" : "card_recovery.png"
+		"description": "Greatly recover more health; +50HP",
+		"png": "card_recovery.png"
 	},
 	{
 		"id": 3100,
 		"name": "PP up",
 		"cost": 0.0,
 		"value": 2.0,
-		"png" : "card_pp_up.png"
+		"description": "Gives you 2 PP",
+		"png": "card_pp_up.png"
 	},
 	{
 		"id": 3300,
 		"name": "STR Disk",
 		"cost": 1.0,
 		"value": 2.0,
-		"png" : "card_str_disk.png"
+		"description": "Next attack hit harder; DMG increased by 1.5x",
+		"png": "card_str_disk.png"
 	},
 	{
 		"id": 3200,
 		"name": "Swift foot",
 		"cost": 1.0,
 		"value": 1.0,
-		"png" : "cardSample.png"
+		"description": "refresh movement; Stamina +3",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 3400,
 		"name": "Data Draw",
 		"cost": 1.0,
 		"value": 2.0,
-		"png" : "cardSample.png"
+		"description": "Draw 2 cards.",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 3401,
 		"name": "Salvage",
 		"cost": -1.0,
 		"value": -1.0,
-		"png" : "cardSample.png"
+		"description": "Get card from discard pile",
+		"png": "cardSample.png"
 	},
 	{
 		"id": 3402,
 		"name": "Rand Generate",
 		"cost": 1.0,
 		"value": 1.0,
-		"png" : "cardSample.png"
+		"description": "Randomly genrate attack/ defense card",
+		"png": "cardSample.png"
 	},
 
 	{
 		"id": 4110,
 		"name": "Gust of Wind",
 		"cost": 1.0,
-		"value": 6.0,
+		"value": 0.0,
 		"range": 10.0,
 		"aoe": 5.0,
-		"png" : "card_gust_of_wind.png"
+		"description": "Blow an enemy away; Push enemies 4 Tiles towards a direction",
+		"png": "card_gust_of_wind.png"
 	},
 	{
 		"id": 1020,
 		"name": "Black Hole",
 		"cost": 5.0,
 		"value": 80.0,
-		"range": 10.0,
-		"aoe": 7.0,
-		"png" : "card_black_hole.png"
+		"range": 4.0,
+		"aoe": 4.0,
+		"description": "Instant kill an enemy (10% success rate); Take 40 DMG upon fail; cool desc: To summon power stronger than the god's is to lose one's humanity",
+		"png": "card_black_hole.png"
 	}
 ]

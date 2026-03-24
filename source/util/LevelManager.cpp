@@ -2,6 +2,7 @@
 
 #include "LevelManager.h"
 #include "../level/CombatLevel.h"
+#include "../level/EncounterLevel.h"
 #include <iostream>
 
 bool init_triggered = true;
@@ -48,6 +49,15 @@ void LevelMgrUpdate()
 		break;
 	}
 	case LevelStates::LS_ENCOUNTER:
+	{
+		LevelStateLoad = LevelStateEncounter_load;
+		LevelStateInit = LevelStateEncounter_init;
+		LevelStateUpdate = LevelStateEncounter_update;
+		LevelStateFree = LevelStateEncounter_free;
+		LevelStateUnload = LevelStateEncounter_unload;
+		break;
+	}
+	case LevelStates::LS_BOSS:
 	{
 		LevelStateLoad = LevelStateCombat_load;
 		LevelStateInit = LevelStateCombat_init;

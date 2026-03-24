@@ -2,6 +2,7 @@
 #include "GameStateManager.h"
 #include "../level/game.h"
 #include "../level/menu.h"
+#include "../level/Gameover.h"
 #include <iostream>
 
 GameStates gGameStateInit;
@@ -50,6 +51,15 @@ void GameStateMgrUpdate()
 		GameStateUpdate = GameState_game_update;
 		GameStateFree = GameState_game_free;
 		GameStateUnload = GameState_game_unload;
+		break;
+	}
+	case GameStates::GS_GAMEOVER:
+	{
+		GameStateLoad  = GameState_GameOver_load;
+		GameStateInit = GameState_GameOver_init;
+		GameStateUpdate = GameState_GameOver_update;
+		GameStateFree = GameState_GameOver_free;
+		GameStateUnload = GameState_GameOver_unload;
 		break;
 	}
 	default:

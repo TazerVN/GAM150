@@ -10,3 +10,7 @@ bool circle2circle_intersect(float c1X, float c1Y, float c1D, float c2X, float c
 bool rect2circle_intersect(float rX, float rY, float rW, float rH, float cX, float cY, float cD);
 
 void translate_To_Isometric(AEVec2 offset, f32 height, f32& x, f32& y, s32 grid_x, s32 grid_y);
+
+s32 grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2);
+
+s32 grid_dist_chebyshev(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2);

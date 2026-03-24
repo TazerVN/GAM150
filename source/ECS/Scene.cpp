@@ -29,6 +29,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	cameraSys = &cam;
 	UIptr = &_UI;
+	iNodes.init(BattleGrid,gbs);
 
 	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
@@ -163,7 +164,7 @@ void Scene::update()
 
 			Entity BossNode;
 			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
-				Components::AnimationType::NONE, Components::VictoryNodeTag::BOSS);
+				Components::AnimationType::NONE, Components::VictoryNodeTag::ENCOUNTER);
 
 			Entity combatNode;
 			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
@@ -177,6 +178,7 @@ void Scene::update()
 	}
 
 	intentDisplaySystem.update(*this);
+	iNodes.update();
 	//==================Handle Events===============================
 
 	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
@@ -234,7 +236,12 @@ void Scene::scene_free()
 	cameraSys = nullptr;
 	entities.clear();
 	next_entity = 0;
+	PS.particle_system_free();
+	intentDisplaySystem.intentionSystem_free();
 	_win = false;
+	ecs.getComponent<Components::Transform>(playerID)->pos_onscreen.x = -1000.f;
+	ecs.getComponent<Components::Transform>(playerID)->pos_onscreen.y = -1000.f;
+	gbs.gbs_free();
 	//nameTags.name_tag_free();
 }
 
