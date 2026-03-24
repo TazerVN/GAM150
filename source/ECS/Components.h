@@ -290,7 +290,6 @@ namespace Components
 
 
 		std::vector<size_t> original_draw_pile;
-
 		std::vector<size_t> data_draw_pile;
 		std::vector<size_t> data_card_hand;
 		std::vector<size_t> data_discard_pile;

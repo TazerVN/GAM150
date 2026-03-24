@@ -40,6 +40,12 @@ void LevelStateCombat_load()
 
 		std::cout << "New start! Reset Player" << std::endl;
 		AF.bgm.play(0);
+
+		unsigned int seed = static_cast<unsigned int>(time(nullptr));
+		if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+		{
+			std::cout << " put data fail";
+		}
 	}
 }
 void LevelStateCombat_init()

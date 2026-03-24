@@ -1,9 +1,65 @@
 #include "pch.h"
-#include "json_parser.h"
 #include "../../Extern/rapidjson/document.h"
 #include <fstream>
 #include <iostream>
 #include <array>
+
+#include "json_parser.h"
+#include "document.h"
+#include "prettywriter.h"
+#include "ostreamwrapper.h"
+
+
+JSON_RET parse_date_to_file(unsigned int value ,char const* file_loc)
+{
+	std::ofstream file(file_loc);
+	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
+
+	rapidjson::OStreamWrapper osw(file);
+
+	rapidjson::Document doc;
+	doc.SetObject();
+	auto& alloc = doc.GetAllocator();
+	
+
+	doc.AddMember("Seed", value, alloc);
+
+	rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+
+	doc.Accept(writer);
+
+	file.close();
+
+	return JSON_RET::OK;
+}
+
+
+JSON_RET parse_seed(unsigned int& seed, char const* file_loc)
+{
+	std::ifstream file(file_loc);
+	if (!file.is_open()) 
+		return JSON_RET::FILE_OPEN_ERROR;
+
+	std::string json
+	(
+		(std::istreambuf_iterator<char>(file)),
+		std::istreambuf_iterator<char>()
+	);
+
+	rapidjson::Document doc;
+	doc.Parse(json.c_str());
+	if (doc.HasParseError()) {
+		std::cerr << "Error parsing JSON: "
+			<< doc.GetParseError() << std::endl;
+		return JSON_RET::PARSE_ERROR;
+	}
+	if (doc.HasMember("Seed"))
+		seed = doc["Seed"].GetUint();
+	else
+		return JSON_RET::PARSE_ERROR;
+	return JSON_RET::OK;
+}
+
 
 JSON_RET parse_card_data(std::vector<JSON_CARD>& vec, char const* str)
 {

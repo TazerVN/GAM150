@@ -5,6 +5,9 @@
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
 #include "../level/game.h"
+#include <random>
+
+
 
 namespace TBS
 {
@@ -397,7 +400,9 @@ namespace TBS
 			}
 		}
 
-		int index = int(AERandFloat() * drawPile.size());
+		int upper_bound = drawPile.size() - 1; int lower_bound = 0;
+		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+		//int index = int(AERandFloat() * drawPile.size());	<- old rand code
 		Entity card = drawPile[index];
 		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
 		//remove the card afterwards
