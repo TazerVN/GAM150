@@ -56,9 +56,27 @@
 			"name" : "Item Deck",
 			"cards" : 
 			[
-				"PP Up",
+				"PP up",
 				"Recovery",
 				"STR Disk"
+			]
+		},
+		{
+			"name" : "Perfect Deck",
+			"cards" : 
+			[
+				"PP up",
+				"Recovery+",
+				"STR Disk",
+				"Barrier+",
+				"Shoot+",
+				"Snipe",
+				"Turn bash",
+				"Slash",
+				"Swift foot",
+				"Gust of Wind",
+				"Mana Wall",
+				"Black Hole"
 			]
 		}
 	]

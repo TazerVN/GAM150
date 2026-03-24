@@ -28,7 +28,11 @@ void LevelStateCombat_load()
 		int lower_bound = 0;
 		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
 
-		JSON_DECK deck = card_system.start_decks[index];
+		//JSON_DECK deck = card_system.start_decks[index];
+
+		//perfect deck (optimal deck)
+		int perfection = (card_system.start_decks.size() - 1);
+		JSON_DECK deck = card_system.start_decks[perfection];
 
 		//for teesting decks
 		//JSON_DECK deck = card_system.start_decks[3];
