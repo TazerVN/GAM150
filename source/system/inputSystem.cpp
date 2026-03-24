@@ -80,12 +80,26 @@ namespace InputSystem
 			f32 newsize_x = t->size_og.x * zoom;
 			f32 newsize_y = t->size_og.y * zoom;
 
+			if(cur_drag == e)
+			{
+				if(AEInputCheckCurr(in->type))
+				{
+					if (in->onDrag != nullptr) in->onDrag();
+					continue;
+				}
+			}
+
+
 			if (in->col && point2rect_intersect(newpos_x, newpos_y, newsize_x, newsize_y, f32(this->mousex), f32(this->mousey)))
 			{
 				if (in->drag == false)
 				{
 
 					if (AEInputCheckTriggered(in->type))
+					{
+						if (in->onClick != nullptr) in->onClick();
+					}
+					else if(cur_drag != 0 && AEInputCheckReleased(in->type))
 					{
 						if (in->onClick != nullptr) in->onClick();
 					}
@@ -99,13 +113,24 @@ namespace InputSystem
 					}
 				}
 				else{
-					if (AEInputCheckCurr(in->type))
+					if ((cur_drag == 0 || cur_drag == e) && AEInputCheckCurr(in->type))
+					{
+						if(cur_drag == 0)
+						{
+							if (in->onClick != nullptr) in->onClick();
+						}
+						if (in->onDrag != nullptr) in->onDrag();
+						cur_drag = e;
+						
+					}
+					else if(AEInputCheckReleased(in->type) && cur_drag == e)
+					{
+						cur_drag = 0;
+						//pass for now
+					}
+					else if(AEInputCheckReleased(in->type) && cur_drag != e)
 					{
 						if (in->onClick != nullptr) in->onClick();
-					}
-					else if(AEInputCheckReleased(in->type))
-					{
-						//pass for now
 					}
 					else if (active_hover == false && in->hover == true)
 					{
@@ -151,6 +176,7 @@ namespace InputSystem
 	{
 		this->mousex = 0;
 		this->mousey = 0;
+		this->cur_drag = 0;
 		
 	}
 

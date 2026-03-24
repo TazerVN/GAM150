@@ -54,9 +54,11 @@ void Components::Card_Storage::reset()
 Components::Input::Input(u8 type, bool hover,
 	std::function<void()> onClick,
 	std::function<void()> onHover,
-	std::function<void()> offHover, s8 z, bool drag, bool col)
+	std::function<void()> offHover, s8 z, bool drag, bool col, 
+						 std::function<void()> onDrag, 
+						 std::function<void()> offDrag)
 	: type(type), hover(hover), onClick(onClick),
-	onHover(onHover), offHover(offHover), on(true), z{ z }, drag{ drag }, col{ col }
+	onHover(onHover), offHover(offHover), on(true), z{ z }, drag{ drag }, col{ col }, onDrag{onDrag}, offDrag{offDrag}
 {
 }
 

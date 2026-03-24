@@ -171,24 +171,28 @@ namespace CardInteraction
 			Components::Transform* card_t_c = ecs.getComponent<Components::Transform>(eID.first);
 
 			Components::Mesh* mesh_m = ecs.getComponent<Components::Mesh>(eID.second);
-			Components::Input* in_m = ecs.getComponent<Components::Input>(eID.second);
 			Components::Transform* card_t_m = ecs.getComponent<Components::Transform>(eID.second);
 
+			if(in_c->drag && AEInputCheckCurr(in_c->type))
+			{
+			}
+			else
+			{
+				cardhand_t->size.x = container_width_ratio * cardhand_t->size_og.x;
 
+				f32 target_x = cardhand_t->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_t->size.x - cardhand_t->size.x / 2 + card_t_c->size_og.x/2;
+				f32 target_y = cardhand_t->pos_onscreen.y;
 
-			cardhand_t->size.x = container_width_ratio * cardhand_t->size_og.x;
+				card_t_c->pos.x = target_x;
+				card_t_c->pos.y = target_y;
+				card_t_c->pos_onscreen = card_t_c->pos;
 
-			f32 target_x = cardhand_t->pos_onscreen.x + (f32(i) / curr_hand_display.size()) * cardhand_t->size.x - cardhand_t->size.x / 2 + card_t_c->size_og.x/2;
-			f32 target_y = cardhand_t->pos_onscreen.y;
+				card_t_m->pos.x = target_x - card_t_c->size.x * 0.40f;
+				card_t_m->pos.y = target_y + card_t_c->size.y * 0.36f;
+				card_t_m->pos_onscreen = card_t_m->pos;
+				i++;
+			}
 
-			card_t_c->pos.x = target_x;
-			card_t_c->pos.y = target_y;
-			card_t_c->pos_onscreen = card_t_c->pos;
-
-			card_t_m->pos.x = target_x - card_t_c->size.x * 0.40f;
-			card_t_m->pos.y = target_y + card_t_c->size.y * 0.36f;
-			card_t_m->pos_onscreen = card_t_m->pos;
-			i++;
 		}
 		i = 0;
 		
@@ -398,6 +402,125 @@ namespace CardInteraction
 		t2->size.x = t2->size_og.x * 4.f / 3.f;
 
 	}
+	void card_onDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
+	{
+		Entity first = id.first;
+		Entity second = id.second;
+
+		cd.setStateOn(false);
+
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
+		Components::Input* i = ecs.getComponent<Components::Input>(first);
+
+		Components::Transform* t1 = ecs.getComponent<Components::Transform>(first);
+		Components::Color* c1 = ecs.getComponent<Components::Color>(first);
+		Components::Mesh* m1 = ecs.getComponent<Components::Mesh>(first);
+
+		Components::Transform* t2 = ecs.getComponent<Components::Transform>(second);
+		Components::Color* c2 = ecs.getComponent<Components::Color>(second);
+		Components::Text* m2 = ecs.getComponent<Components::Text>(second);
+
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+		m1->z = 31;
+		m2->z = 31;
+		i->z = 0;
+
+		c1->d_color.r = minimum + (1.f - minimum) * lerp;
+		c1->d_color.b = minimum + (1.f - minimum) * lerp;
+		c1->d_color.g = minimum + (1.f - minimum) * lerp;
+		c1->d_color.a = 0.2f;
+
+
+		t1->size.y = t1->size_og.y * 1.2f;
+		t1->size.x = t1->size_og.x * 4.f / 3.f * 1.2f;
+
+		c2->d_color.r = minimum + (1.f - minimum) * lerp;
+		c2->d_color.b = minimum + (1.f - minimum) * lerp;
+		c2->d_color.g = minimum + (1.f - minimum) * lerp;
+		c2->d_color.a = 0.2f;
+
+		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
+		t2->size.x = t2->size_og.x * 4.f / 3.f;
+
+		s32 mousex, mousey;
+
+		AEInputGetCursorPosition(&mousex, &mousey);
+
+		mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
+		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+
+		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+		mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+
+	
+		t1->pos_onscreen.x = f32(mousex);
+		t1->pos_onscreen.y = f32(mousey);
+		t2->pos_onscreen.x = t1->pos_onscreen.x - t1->size.x * 0.40f;
+		t2->pos_onscreen.y = t1->pos_onscreen.y + t1->size.y * 0.36f;
+
+	}
+	//void card_offDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
+	//{
+	//	Entity first = id.first;
+	//	Entity second = id.second;
+
+	//	cd.setStateOn(false);
+	//	cd.setCurrentCard(card_data);
+
+	//	Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
+	//	Components::Input* i = ecs.getComponent<Components::Input>(first);
+
+	//	Components::Transform* t1 = ecs.getComponent<Components::Transform>(first);
+	//	Components::Color* c1 = ecs.getComponent<Components::Color>(first);
+	//	Components::Mesh* m1 = ecs.getComponent<Components::Mesh>(first);
+
+	//	Components::Transform* t2 = ecs.getComponent<Components::Transform>(second);
+	//	Components::Color* c2 = ecs.getComponent<Components::Color>(second);
+	//	Components::Text* m2 = ecs.getComponent<Components::Text>(second);
+
+
+	//	f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+	//	f32 minimum = 0.6f;
+
+	//	m1->z = 31;
+	//	m2->z = 31;
+	//	i->z = 31;
+
+	//	c1->d_color.r = minimum + (1.f - minimum) * lerp;
+	//	c1->d_color.b = minimum + (1.f - minimum) * lerp;
+	//	c1->d_color.g = minimum + (1.f - minimum) * lerp;
+
+
+	//	t1->size.y = t1->size_og.y * 1.2f;
+	//	t1->size.x = t1->size_og.x * 4.f / 3.f * 1.2f;
+
+	//	c2->d_color.r = minimum + (1.f - minimum) * lerp;
+	//	c2->d_color.b = minimum + (1.f - minimum) * lerp;
+	//	c2->d_color.g = minimum + (1.f - minimum) * lerp;
+
+	//	t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
+	//	t2->size.x = t2->size_og.x * 4.f / 3.f;
+
+	//	s32 mousex, mousey;
+
+	//	AEInputGetCursorPosition(&mousex, &mousey);
+
+	//	mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
+	//	mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+
+	//	mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+	//	mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+
+	//	t1->pos_onscreen.x = f32(mousex);
+	//	t1->pos_onscreen.y = f32(mousey);
+	//	t2->pos_onscreen.x = f32(mousex);
+	//	t2->pos_onscreen.y = f32(mousey);
+
+	//	std::cout << "drag";
+	//}
 
 
 
@@ -425,14 +548,16 @@ namespace CardInteraction
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
-
-		c1->d_color = c1->c_color;
-		t1->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
 		t1->size.y = t1->size_og.y;
 		t1->size.x = t1->size_og.x * 4.f/3.f;
 
+		c1->d_color = c1->c_color;
 		c2->d_color = c2->c_color;
+	/*	
+		t1->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
+
 		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
+		*/
 		t2->size.y = t2->size_og.y;
 		t2->size.x = t2->size_og.x;
 
@@ -450,7 +575,12 @@ namespace CardInteraction
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
-		Components::Input input(AEVK_LBUTTON, true, fp, [result, &ecs, &cd, card_data] { card_onHover(ecs, cd, result, card_data); }, [result, &ecs, &cd] { card_offHover(ecs, cd, result); }, 30);
+		Components::Input input(AEVK_LBUTTON, true, fp, 
+								[result, &ecs, &cd, card_data] { card_onHover(ecs, cd, result, card_data); }, 
+								[result, &ecs, &cd] { card_offHover(ecs, cd, result); },
+								30, true, true,
+								[result, &ecs, &cd, card_data] { card_onDrag(ecs, cd, result, card_data); }
+								);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
 		Components::Timer timer{ 0.5f, 0.f, true, true };
