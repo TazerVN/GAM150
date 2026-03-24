@@ -129,7 +129,6 @@ namespace CardInteraction
 				tbsptr->select_card(ecs);
 			}
 
-
 		}
 
 
@@ -248,8 +247,10 @@ namespace CardInteraction
 			if (this->curr_hand_display[i].first == e)
 			{
 				this->activate[i] = true;
+				AF.sfx.play(0);
 			}
 		}
+		AF.sfx.resetAudio();
 	}
 
 	void CardHand::remove_card(EntityComponent::Registry& ecs, int index)
@@ -404,6 +405,7 @@ namespace CardInteraction
 	}
 	void card_onDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
 	{
+
 		Entity first = id.first;
 		Entity second = id.second;
 

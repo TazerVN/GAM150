@@ -38,7 +38,6 @@ void LevelStateCombat_load()
 		playerHP->c_value = playerHP->max_value;
 
 		std::cout << "New start! Reset Player" << std::endl;
-		AF.bgm.play(0);
 	}
 }
 void LevelStateCombat_init()
@@ -58,7 +57,9 @@ void LevelStateCombat_init()
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
+	AF.bgm.play(0);
 	ecs.remove_empty_groups();
+
 }
 void LevelStateCombat_update()
 {
@@ -101,8 +102,8 @@ void LevelStateCombat_free()
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
 	PUT.free();
+	AF.bgm.stop();
 }
 void LevelStateCombat_unload()
 {
-
 }

@@ -102,6 +102,7 @@ namespace InputSystem
 					else if(cur_drag != 0 && AEInputCheckReleased(in->type))
 					{
 						if (in->onClick != nullptr) in->onClick();
+						cur_drag = 0;
 					}
 					else if (active_hover == false && in->hover == true)
 					{

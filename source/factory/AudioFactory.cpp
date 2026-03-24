@@ -9,6 +9,15 @@ namespace AudioFactory
 	void AudioFactory::init()
 	{
 		this->bgm.add(false, "../../Assets/audio/battle.mp3");
+
+		this->sfx.add(true, "../../Assets/audio/sfx/card.mp3");
+		this->sfx.add(true, "../../Assets/audio/sfx/click.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/attack.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/attack2.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/shoot.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/damage.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/damage2.wav");
+
 		std::cout << "AUDIO INITIALIZE" << std::endl;
 	}
 	AudioFactory::AudioFactory() : 
@@ -80,21 +89,33 @@ namespace AudioFactory
 	void AudioFactory::AudioObject::stop()
 	{
 		AEAudioStopGroup(this->group);
+		stopping = false;
+	}
+
+	bool AudioFactory::AudioObject::isStop()
+	{
+		return stopping;
+	}
+
+	void AudioFactory::AudioObject::resetAudio()
+	{
+		stopping = false;
 	}
 	void AudioFactory::AudioObject::add(bool sfx, const char* path)
 	{
 		AEAudio buffer = AEAudioLoadSound(path);
-		std::cout << "Is Audio valid?: " << AEAudioIsValidAudio(buffer) << std::endl;
 		if (sfx) this->data.push_back(buffer);
 		else this->data.push_back(buffer);
 	}
 	void AudioFactory::AudioObject::play(s32 index)
 	{
 		AEAudio buffer = this->data[index];
-		std::cout << "Is Audio valid?: " << AEAudioIsValidAudio(buffer) << std::endl;
-		std::cout << "Play Audio" << std::endl;
 
-		AEAudioPlay(buffer, this->group, this->volume, this->pitch, this->loop);
+		if (!stopping) 
+		{
+			AEAudioPlay(buffer, this->group, this->volume, this->pitch, this->loop);
+			stopping = true;
+		}
 
 	}
 
