@@ -3,6 +3,7 @@
 #include "CombatLevel.h"
 #include "../util/LevelManager.h"
 #include "../UI/UI.h"
+#include "../level/game.h"
 
 Scene scene;
 UI::UIManager UIM;
@@ -72,7 +73,7 @@ void LevelStateCombat_update()
 		PS.particleClick(ecs, mf, worldX, worldY);
 	}
 
-	if (!scene.getTBS().player_died && !UIM.getPauseMenu().isOn())
+	if (!player_died && !UIM.getPauseMenu().isOn())
 	{
 		UIM.getPauseMenu().free();
 		VS.update(ecs);
@@ -84,7 +85,7 @@ void LevelStateCombat_update()
 		UIM.update(scene, dt);
 		AS.update(ecs, scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
 	}
-	else if(!scene.getTBS().player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
+	else if(!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
 		PauseMenu& p = UIM.getPauseMenu();
 		p = PauseMenu(50);

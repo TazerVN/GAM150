@@ -4,6 +4,7 @@
 #include "../system/CardResolver.h"
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
+#include "../level/game.h"
 
 namespace TBS
 {
@@ -405,12 +406,12 @@ namespace TBS
 
 	bool TurnBasedSystem::update()
 	{
-		if (!this->player_died)
+		if (!player_died)
 		{
 			float cur_Hp = ecs.getComponent<Components::HP>(playerID)->c_value;
 			if (cur_Hp <= 0.f)
 			{
-				this->player_died = true;
+				player_died = true;
 				new_Start = true;
 				//set player's win speed
 				Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
@@ -418,7 +419,7 @@ namespace TBS
 				ecs.getComponent<Components::Card_Storage>(playerID)->free();
 				ecs.getComponent<Components::Card_Storage>(playerID)->reset();
 
-				gLevelStateNext = LevelStates::LS_QUIT;
+				/*gLevelStateNext = LevelStates::LS_QUIT;*/
 			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());

@@ -181,11 +181,9 @@ void Scene::update()
 			BattleGrid.placeEntity(combatNode, 0, 0);
 			BattleGrid.placeEntity(BossNode, MAX_I - 1, MAX_J - 1);
 		}
-
-		cbs.update();
-		enemyDirector.update(gbs, TBSys, BattleGrid,intentDisplaySystem);
 	}
-
+	cbs.update();
+	enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
 	intentDisplaySystem.update(*this);
 	iNodes.update();
 	//==================Handle Events===============================

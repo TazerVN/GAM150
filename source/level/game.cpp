@@ -5,10 +5,13 @@
 #include "../ECS/Scene.h"
 #include "../UI/UI.h"
 #include "../UI/cardInteraction.h"
+#include "game.h"
 
 s8 pFont; char pText[40];
 AEGfxTexture* floortext;
 AEGfxTexture* cardtext;
+
+bool player_died = false;
 
 void GameState_game_load()
 {
@@ -49,6 +52,12 @@ void GameState_game_update()
 		if (gLevelStateCurr == gLevelStateNext)
 		{
 			LevelStateUpdate();
+			if (player_died && gGameStateCurr != GameStates::GS_GAMEOVER)
+			{
+				LevelStateFree();
+				gGameStateNext = GameStates::GS_GAMEOVER;
+			}
+				
 		}
 		else
 		{
@@ -70,8 +79,6 @@ void GameState_game_update()
 		init_triggered = true;
 		gGameStateNext = GameStates::GS_MAINMENU;
 	}
-
-	//AEGfxPrint(pFont, pText, 0.f, 0.f, 0.4, 0.f, 0.f, 0.f, 1.f);
 }
 void GameState_game_free()
 {
