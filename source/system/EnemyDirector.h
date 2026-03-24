@@ -34,11 +34,13 @@ public:
     // Number of enemies to spawn for this level
     int getSpawnCount() const;
     int getRangedSpawnCount() const;
+    int getMapObjectCount() const; 
 
 private:
     // Number of enemies listed in the SPAWN section
     int spawnCount_ = 0;
     int rangedSpawnCount_ = 0;
+    int mapObjectCount = 0;
 
     // Global behaviour timeline read in exact file order
     std::vector<Tokens> timeline_;

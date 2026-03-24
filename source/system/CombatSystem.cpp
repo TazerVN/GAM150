@@ -159,8 +159,14 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 			Entity& ent = gbptr->get_pos()[pos.x][pos.y];
 			if (ent != -1 && ent != tbsptr->current())
 			{
+				Components::Tag* tag = ecs.getComponent<Components::Tag>(ent);
+				if (tag && *tag == Components::Tag::OTHERS)
+				{
+					continue; // skip rocks / mana wall / map objects
+				}
+
 				std::cout << "Hit Entity :" << ent << std::endl;
-				if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
+				if (Call_AttackSystem(ent, final_damage, *gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 				{
 					std::cout << "Cannot damage the entity" << std::endl;
 				}
@@ -486,8 +492,10 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameB
 
 	PUT.display(target, std::to_string(static_cast<int>(damage)).c_str());
 	auto anim = ecs.getComponent<Components::Animation_Actor>(target);
-	anim->setType(Components::AnimationType::TAKING_DAMAGE);
-
+	if (anim)
+	{
+		anim->setType(Components::AnimationType::TAKING_DAMAGE);
+	}
 	std::cout << "[Combat] Target: " << target;
 	if (stats)
 	{

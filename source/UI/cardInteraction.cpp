@@ -542,8 +542,8 @@ namespace CardInteraction
 		Components::Text* m2 = ecs.getComponent<Components::Text>(second);
 
 
-		m1->z = 30;
-		m2->z = 30;
+		m1->z = 30; // card mesh
+		m2->z = 31; // mana text stays above card
 		i->z = 30;
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;

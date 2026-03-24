@@ -72,12 +72,74 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		enemyDirector.bindActor(actorId, temp);
 	}
 
+	std::vector<Entity> rocks;
+
+	for (int i = 0; i < enemyDirector.getMapObjectCount(); ++i)
+	{
+		Entity rock = EntityFactory::create_grid_object(
+			ecs,
+			mf,
+			{ 0.0f, 0.0f },
+			{ 298.0f, 258.0f },
+			"Rock",
+			TF.getTextureOthers(0),
+			1.0f
+		);
+
+		Components::Color* rockColor = ecs.getComponent<Components::Color>(rock);
+		if (rockColor)
+		{
+			rockColor->c_color.r = 0.5f;
+			rockColor->c_color.g = 0.7f;
+			rockColor->c_color.b = 1.0f;
+			rockColor->d_color = rockColor->c_color;
+		}
+
+		rocks.push_back(rock);
+	}
+
+
+
+
 	cbs.init(ecs, gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool);
 	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
 	BattleGrid.init(&TBSys, eventPool, gbs, cbs, TF.getTextureFloor(0), 0, w_height / 3,_win);
 
+	for (Entity rock : rocks)
+	{
+		s32 x = 0;
+		s32 y = 0;
+
+		const int maxAttempts = 100;
+		int attempts = 0;
+
+		do
+		{
+			x = std::rand() % MAX_I;
+			y = std::rand() % MAX_J;
+			++attempts;
+		} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
+
+		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+		{
+			BattleGrid.placeEntity(rock, x, y);
+
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(rock);
+			if (mesh)
+			{
+				mesh->z = 0;
+			}
+		}
+		else
+		{
+			std::cout << "[Scene] Failed to place rock " << rock << " on empty tile.\n";
+		}
+	}
+
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
+
+
 
 	//nameTags.create_static_nametag(playerID, "Player");
 
@@ -100,12 +162,22 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
 		{
 			BattleGrid.placeEntity(entities[i], x, y);
+
+			Components::Tag* tag = ecs.getComponent<Components::Tag>(entities[i]);
+			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(entities[i]);
+
+			if (tag && mesh && *tag == Components::Tag::OTHERS)
+			{
+				mesh->z = 0; // keep rocks under most other visuals
+			}
 		}
 		else
 		{
 			std::cout << "[Scene] Failed to place entity " << entities[i] << " on empty tile.\n";
 		}
 	}
+
+
 
 	intentDisplaySystem.init(enemyDirector);
 }

@@ -201,8 +201,130 @@ namespace CardResolver
 				return PC_RETURN_TAG::VALID;
 
 			case 1: // Push
+			{
 				std::cout << "[CardResolver] Push event triggered\n";
+
+				// 0 = east, 1 = south, 2 = west, 3 = north
+				int dx = 0;
+				int dy = 0;
+
+				switch (board.placementDirection)
+				{
+				case 0: dx = 1;  dy = 0;  break;
+				case 1: dx = 0;  dy = 1;  break;
+				case 2: dx = -1; dy = 0;  break;
+				case 3: dx = 0;  dy = -1; break;
+				default: break;
+				}
+
+				std::vector<Entity> targets;
+
+				EntityComponent::ComponentTypeID tagID =
+					EntityComponent::getComponentTypeID<Components::Tag>();
+				EntityComponent::ComponentTypeID gdID =
+					EntityComponent::getComponentTypeID<Components::gridData>();
+				EntityComponent::ComponentTypeID astarID =
+					EntityComponent::getComponentTypeID<Components::AStarResult>();
+				EntityComponent::ComponentTypeID animID =
+					EntityComponent::getComponentTypeID<Components::Animation_Actor>();
+
+				// collect all valid pushed targets first
+				for (int i = 0; i < MAX_I; ++i)
+				{
+					for (int j = 0; j < MAX_J; ++j)
+					{
+						Entity e = board.get_pos()[i][j];
+						if (e == Components::NULL_INDEX) continue;
+						if (e == caster) continue;
+
+						if (!ecs.getBitMask()[e].test(tagID)) continue;
+						if (!ecs.getBitMask()[e].test(gdID)) continue;
+						if (!ecs.getBitMask()[e].test(astarID)) continue;
+						if (!ecs.getBitMask()[e].test(animID)) continue;
+
+						Components::Tag* tag = ecs.getComponent<Components::Tag>(e);
+						if (!tag) continue;
+
+						// skip grid objects like Mana Wall
+						if (*tag == Components::Tag::OTHERS) continue;
+
+						targets.push_back(e);
+					}
+				}
+
+				bool anyMoved = false;
+
+				// push each target up to 5 tiles by queueing a movement path
+				for (Entity e : targets)
+				{
+					Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
+					Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
+					Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
+
+					if (!gd || !astar || !anim) continue;
+
+					int startX = gd->x;
+					int startY = gd->y;
+
+					std::list<Components::GridCell> pushPath;
+
+					int finalX = startX;
+					int finalY = startY;
+
+					// temporarily free the start cell so the enemy can move out of it
+					board.get_pos()[startX][startY] = Components::NULL_INDEX;
+					board.walkable[startY * MAX_I + startX] = 1;
+
+					for (int step = 1; step <= 5; ++step)
+					{
+						int nx = startX + dx * step;
+						int ny = startY + dy * step;
+
+						// stop at board edge for now
+						if (nx < 0 || nx >= MAX_I || ny < 0 || ny >= MAX_J)
+							break;
+
+						// stop if blocked by something already occupying the tile
+						if (board.get_pos()[nx][ny] != Components::NULL_INDEX)
+							break;
+
+						pushPath.push_back({ nx, ny });
+						finalX = nx;
+						finalY = ny;
+					}
+
+					// no movement: restore original board state
+					if (pushPath.empty())
+					{
+						board.get_pos()[startX][startY] = e;
+						board.walkable[startY * MAX_I + startX] = 0;
+						continue;
+					}
+
+					// reserve final board position immediately
+					board.get_pos()[finalX][finalY] = e;
+					board.walkable[finalY * MAX_I + finalX] = 0;
+
+					// queue animation path
+					astar->path = pushPath;
+					anim->setType(Components::AnimationType::ENEMY_MOVING);
+
+					// update logical grid position to final reserved tile
+					gd->prev_x = startX;
+					gd->prev_y = startY;
+					gd->x = finalX;
+					gd->y = finalY;
+
+					anyMoved = true;
+				}
+
+				if (anyMoved)
+				{
+					board.setEnemyAnimationPhase();
+				}
+
 				return PC_RETURN_TAG::VALID;
+			}
 
 			case 2: // Mana Wall
 			{
@@ -251,10 +373,11 @@ namespace CardResolver
 
 			int cx = static_cast<int>(targetPos.x);
 			int cy = static_cast<int>(targetPos.y);
+			bool manaWallVertical = (board.placementDirection % 2);
 
 			int offsets[3][2];
 
-			if (!board.manaWallVertical)
+			if (!manaWallVertical)
 			{
 				offsets[0][0] = -1; offsets[0][1] = 0;
 				offsets[1][0] = 0; offsets[1][1] = 0;
@@ -292,9 +415,16 @@ namespace CardResolver
 					{ 0.0f, 0.0f },
 					{ 128.0f, 128.0f },
 					"ManaWall",
-					TF.getTextureOthers(0), 
+					TF.getTextureOthers(5), 
 					1.0f
 				);
+
+				Components::Transform* trans = ecs.getComponent<Components::Transform>(wall);
+				if (trans && manaWallVertical)
+				{
+					trans->size.x = -128.0f;
+					trans->size.y = 128.0f;
+				}
 
 				board.placeEntity(wall, x, y);
 			}

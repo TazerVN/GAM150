@@ -57,7 +57,7 @@ namespace Grid
 	public:
 		bool in_walkable_debug = false;
 		bool in_pos_debug = false;
-		bool manaWallVertical = false;
+		int placementDirection = 0;
 
 		s32 cur_x, cur_y, prev_x, prev_y;
 		uint8_t walkable[MAX_I * MAX_J]{};
@@ -75,10 +75,12 @@ namespace Grid
 		// helper functions for CPU - Zejin 
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
 		bool moveEntityAI(Entity e, s32 x, s32 y, int max_move = 5);
+		void setEnemyAnimationPhase();
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
 		void updateCell(s32 x, s32 y);
 		void func_aoe_hightlight_cells(s32 x , s32 y);
+		
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();

@@ -325,6 +325,48 @@ namespace Animation
 		}
 	}
 
+	//helper - zejin
+	bool any_enemy_animation_active(EntityComponent::Registry& ecs)
+	{
+		EntityComponent::ComponentTypeID animID =
+			EntityComponent::getComponentTypeID<Components::Animation_Actor>();
+		EntityComponent::ComponentTypeID tagID =
+			EntityComponent::getComponentTypeID<Components::Tag>();
+
+		EntityComponent::ComponentBitMask objMask;
+		objMask.set(animID);
+		objMask.set(tagID);
+
+		for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+		{
+			if ((it->first & objMask) == objMask)
+			{
+				for (Entity ent : it->second)
+				{
+					Components::Tag* tag = ecs.getComponent<Components::Tag>(ent);
+					Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(ent);
+
+					if (!tag || !anim)
+						continue;
+
+					// skip player, cards, ui, etc.
+					if (*tag != Components::Tag::ACTOR)
+						continue;
+
+					Components::AnimationType type = anim->getCurrType();
+
+					if (type == Components::AnimationType::ENEMY_MOVING ||
+						type == Components::AnimationType::ENEMY_ATTACK)
+					{
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
 
 	void AnimationSystem::update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CombatNameSpace::CombatSystem& cs)
 	{
@@ -372,20 +414,37 @@ namespace Animation
 							}
 							break;
 						case Components::AnimationType::ENEMY_MOVING:
+						{
 							AEVec2 offset{ gb.GetOffsetPos() };
-							if (moving_animation_enemy(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)], offset.x, offset.y))
+							if (moving_animation_enemy(ent,
+								anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)],
+								offset.x, offset.y))
 							{
 								anim->setType(anim->default_type);
-								gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
+
+								// only end enemy animation phase when ALL enemies are done
+								if (!any_enemy_animation_active(ecs))
+								{
+									gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
+								}
 							}
 							break;
+						}
 						case Components::AnimationType::ENEMY_ATTACK:
-							if (range_animation_enemy(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)]))
+						{
+							if (range_animation_enemy(ent,
+								anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)]))
 							{
 								anim->setType(anim->default_type);
-								gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
+
+								// only end enemy animation phase when ALL enemies are done
+								if (!any_enemy_animation_active(ecs))
+								{
+									gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_IDLE);
+								}
 							}
 							break;
+						}
 						case Components::AnimationType::TAKING_DAMAGE:
 							if (damage_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)]))
 							{

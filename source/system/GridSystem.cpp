@@ -181,7 +181,7 @@ namespace Grid
 		tbsptr->set_selected_card(false);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-		manaWallVertical = false;
+		placementDirection = 0;
 		
 	}
 
@@ -454,13 +454,34 @@ namespace Grid
 
 	void GameBoard::update(EntityComponent::Registry& ecs, Entity camera)
 	{
+		bool isGust = false;
+		bool isManaWall = false;
+
+		if (tbsptr->is_current_selected_card())
+		{
+			int idx = tbsptr->get_selected_cardhand_index();
+			if (idx >= 0)
+			{
+				Entity cardID = tbsptr->draw_card(playerID, idx);
+				if (cardID != Components::NULL_INDEX)
+				{
+					Components::Card_ID* idComp = ecs.getComponent<Components::Card_ID>(cardID);
+					if (idComp)
+					{
+						int serialID = idComp->value;
+						isManaWall = (serialID == 4220);
+						isGust = (serialID == 4120);
+					}
+				}
+			}
+		}
+
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_RBUTTON))
 		{
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 			tbsptr->set_selected_card(false);
 			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-			manaWallVertical = false;
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
@@ -470,13 +491,11 @@ namespace Grid
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_R))
 		{
-			Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
-			int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
-			bool isManaWall = (serialID == 4220); // keep this matching your real ID
+			bool canRotate = isManaWall || isGust;
 
-			if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT && isManaWall)
+			if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT && canRotate)
 			{
-				manaWallVertical = !manaWallVertical;
+				placementDirection = (placementDirection + 1) % 4;
 
 				for (AEVec2 a : this->aoe_highlighted_cells)
 				{
@@ -484,8 +503,7 @@ namespace Grid
 				}
 				this->aoe_highlighted_cells.clear();
 
-				std::cout << "Mana Wall flipped to "
-					<< (manaWallVertical ? "vertical" : "horizontal") << std::endl;
+				std::cout << "Direction = " << placementDirection << std::endl;
 			}
 		}
 
@@ -522,11 +540,11 @@ namespace Grid
 
 
 				if (this->aoe_highlight_activate[i][j])
-				{
-					color->d_color.r -= (aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4;
+			{
+					color->d_color.r -= (aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4f;
 					color->d_color.g -= 0.8f;
 					color->d_color.b -= 0.8f;
-				}
+			}
 
 				//======================update entity cell=====================================
 				if (this->pos[i][j] != -1)
@@ -689,21 +707,25 @@ namespace Grid
 		if (!findEntityCell(e, ex, ey))
 			return false;
 
-
-		EntityComponent::ComponentTypeID astarID =
-			EntityComponent::getComponentTypeID<Components::AStarResult>();
-		Components::GridCell s{ ex, ey};
-		Components::GridCell g{ x,  y };
-
-		//if (!ecs.getBitMask()[e].test(astarID)) return true;
+		Components::GridCell s{ ex, ey };
+		Components::GridCell g{ x, y };
 
 		Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
+		if (!astar)
+			return false;
+
 		astar->path = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g).path;
 
-		while(astar->path.size() > max_move)
+		if (astar->path.empty())
+			return false;
+
+		while (static_cast<int>(astar->path.size()) > max_move)
 		{
 			astar->path.pop_back();
 		}
+
+		if (astar->path.empty())
+			return false;
 
 		int new_x = astar->path.back().x;
 		int new_y = astar->path.back().y;
@@ -714,19 +736,22 @@ namespace Grid
 		pos[new_x][new_y] = e;
 		walkable[new_y * MAX_I + new_x] = 0;
 
-		if (!astar->path.empty())
+		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
+		if (anim)
 		{
-			Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
-			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
-
 			anim->setType(Components::AnimationType::ENEMY_MOVING);
 			gbsptr->set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 		}
 
 		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
-		gd->prev_x = gd->x; gd->prev_y = gd->y;
-		gd->x = x; gd->y = y;
+		if (gd)
+		{
+			gd->prev_x = gd->x;
+			gd->prev_y = gd->y;
+			gd->x = new_x;
+			gd->y = new_y;
+		}
+
 		return true;
 	}
 
@@ -737,7 +762,8 @@ namespace Grid
 		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
 		int serialID = ecs.getComponent<Components::Card_ID>(card_ID)->value;
-		bool isManaWall = (serialID == 4220); // change if your final ID differs
+		bool isManaWall = (serialID == 4220);
+		bool isGust = (serialID == 4120);
 
 		AEVec2 cur_part_pos = Get_CurPart_gridPos();
 		int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
@@ -745,6 +771,55 @@ namespace Grid
 		//std::cout << "Hovered card serialID = " << serialID << std::endl;
 		//std::cout << "isManaWall = " << isManaWall << std::endl;
 
+		
+
+		if (isGust)
+		{
+			int gustRange = 25;
+
+			for (int i = 0; i <= gustRange; ++i)
+			{
+				for (int j = 0; j <= gustRange; ++j)
+				{
+					if (i + j <= gustRange && x + i < MAX_I && y + j < MAX_J)
+					{
+						if (!this->aoe_highlight_activate[x + i][y + j])
+						{
+							this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
+							this->aoe_highlight_activate[x + i][y + j] = 1;
+						}
+					}
+					if (i + j <= gustRange && x - i >= 0 && y - j >= 0)
+					{
+						if (!this->aoe_highlight_activate[x - i][y - j])
+						{
+							this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
+							this->aoe_highlight_activate[x - i][y - j] = 1;
+						}
+					}
+					if (i + j <= gustRange && x + i < MAX_I && y - j >= 0)
+					{
+						if (!this->aoe_highlight_activate[x + i][y - j])
+						{
+							this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
+							this->aoe_highlight_activate[x + i][y - j] = 1;
+						}
+					}
+					if (i + j <= gustRange && x - i >= 0 && y + j < MAX_J)
+					{
+						if (!this->aoe_highlight_activate[x - i][y + j])
+						{
+							this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
+							this->aoe_highlight_activate[x - i][y + j] = 1;
+						}
+					}
+				}
+			}
+
+			this->aoe_highlight_activate[x][y] = 2;
+			return;
+		}
+		
 		if (rng > range)
 			return;
 
@@ -752,16 +827,16 @@ namespace Grid
 		{
 			int offsets[3][2];
 
-			if (!manaWallVertical)
+			// 0 = east, 2 = west -> horizontal
+			// 1 = south, 3 = north -> vertical
+			if (placementDirection % 2 == 0)
 			{
-				// horizontal
 				offsets[0][0] = -1; offsets[0][1] = 0;
 				offsets[1][0] = 0; offsets[1][1] = 0;
 				offsets[2][0] = 1; offsets[2][1] = 0;
 			}
 			else
 			{
-				// vertical
 				offsets[0][0] = 0; offsets[0][1] = -1;
 				offsets[1][0] = 0; offsets[1][1] = 0;
 				offsets[2][0] = 0; offsets[2][1] = 1;
@@ -828,4 +903,11 @@ namespace Grid
 		this->aoe_highlight_activate[x][y] = 2;
 	}
 
+	void GameBoard::setEnemyAnimationPhase()
+	{
+		if (gbsptr)
+		{
+			gbsptr->set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
+		}
+	}
 }

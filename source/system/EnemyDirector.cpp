@@ -85,10 +85,13 @@ bool EnemyDirector::loadScriptFile(const std::string& filePath)
     timeline_.clear();
     timelineIp_ = 0;
     spawnCount_ = 0;
+    rangedSpawnCount_ = 0;
+    mapObjectCount = 0;
 
     enum class Section
     {
         NONE,
+        MAP,
         SPAWN,
         BEHAVIOUR
     };
@@ -108,6 +111,11 @@ bool EnemyDirector::loadScriptFile(const std::string& filePath)
         if (s.empty()) continue;
 
         // section headers
+        if (s == "# ----- MAP -----")
+        {
+            section = Section::MAP;
+            continue;
+        }
         if (s == "# ---- SPAWN ----")
         {
             section = Section::SPAWN;
@@ -121,6 +129,20 @@ bool EnemyDirector::loadScriptFile(const std::string& filePath)
 
         // skip comments
         if (isCommentOrEmpty(s)) continue;
+
+        if (section == Section::MAP)
+        {
+            Tokens t = tokenize(s);
+            if (t.empty()) continue;
+
+            if (t.size() == 1)
+            {
+                mapObjectCount = std::stoi(t[0]);
+                std::cout << "[ED] mapObjectCount = " << mapObjectCount << "\n";
+                section = Section::NONE;
+                continue;
+            }
+        }
 
         if (section == Section::SPAWN)
         {
@@ -171,6 +193,11 @@ int EnemyDirector::getRangedSpawnCount() const
 {
     return rangedSpawnCount_;
 }
+
+int EnemyDirector::getMapObjectCount() const {
+    return mapObjectCount;
+};
+
 
 void EnemyDirector::bindActor(const std::string& actorId, Entity e)
 {

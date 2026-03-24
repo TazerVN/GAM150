@@ -187,12 +187,12 @@
 	},
 
 	{
-		"id": 4110,
+		"id": 4120,
 		"name": "Gust of Wind",
-		"cost": 1.0,
-		"value": 0.0,
-		"range": 10.0,
-		"aoe": 5.0,
+		"cost": 3.0,
+		"value": -1.0,
+		"range": 45.0,
+		"aoe": 45.0,
 		"description": "Blow an enemy away;\nPush enemies 4 Tiles towards a direction\n",
 		"png": "card_gust_of_wind.png"
 	},
