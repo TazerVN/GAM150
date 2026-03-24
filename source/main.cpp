@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		while (gGameStateCurr == gGameStateNext)
 		{
 			AESysFrameStart();
-
+			IM.update(ecs, CS.id());
 			GameStateUpdate();
 			//========(Render)====================
 			RM.RM_render(ecs, CS.id());
