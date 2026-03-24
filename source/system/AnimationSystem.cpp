@@ -12,6 +12,9 @@ namespace Animation
 
 	bool range_animation(Entity id, Entity timer_id)
 	{
+
+		AF.sfx.play(4);
+
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
@@ -20,6 +23,7 @@ namespace Animation
 		timer->start = true;
 		f32 lerp = timer->seconds / timer->max_seconds;
 		bool flag = false;
+
 
 		if (lerp >= 1.f)
 		{
@@ -50,6 +54,9 @@ namespace Animation
 
 	bool melee_animation(Entity id, Entity timer_id)
 	{
+
+		AF.sfx.play(2);
+
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
@@ -62,7 +69,7 @@ namespace Animation
 		f32 lerp = timer->seconds / timer->max_seconds;
 		f32 fps = timer->max_seconds / 6.f;
 
-
+	
 
 		if (lerp >= 1.f)
 		{
@@ -240,6 +247,7 @@ namespace Animation
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
+		AF.sfx.play(5);
 
 		if (timer->seconds >= timer->max_seconds)
 		{
@@ -268,6 +276,9 @@ namespace Animation
 
 		bool flag = false;
 		timer->start = true;
+
+
+		AF.sfx.play(6);
 
 		f32 lerp = timer->seconds / timer->max_seconds;
 		f32 minimum = 0.6f;
@@ -394,6 +405,7 @@ namespace Animation
 							AEVec2 offset{ gb.GetOffsetPos() };
 							if (moving_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)], offset.x, offset.y))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 								gbs.set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 							}
@@ -402,6 +414,7 @@ namespace Animation
 						case Components::AnimationType::ATTACK_MELEE:
 							if (melee_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)]))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 								cs.set_play_card_triggered(true);
 							}
@@ -409,6 +422,7 @@ namespace Animation
 						case Components::AnimationType::ATTACK_RANGE:
 							if (range_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)]))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 								cs.set_play_card_triggered(true);
 							}
@@ -420,6 +434,7 @@ namespace Animation
 								anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)],
 								offset.x, offset.y))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 
 								// only end enemy animation phase when ALL enemies are done
@@ -435,6 +450,7 @@ namespace Animation
 							if (range_animation_enemy(ent,
 								anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)]))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 
 								// only end enemy animation phase when ALL enemies are done
@@ -448,12 +464,14 @@ namespace Animation
 						case Components::AnimationType::TAKING_DAMAGE:
 							if (damage_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)]))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 							}
 							break;
 						case Components::AnimationType::DEATH:
 							if (death_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)]))
 							{
+								AF.sfx.resetAudio();
 								anim->setType(anim->default_type);
 							}
 							break;

@@ -22,6 +22,9 @@ namespace EntityFactory
 	void add_card_player_deck(EntityComponent::Registry& ecs, Entity user, Entity cardID);
 	void remove_card_player(EntityComponent::Registry& ecs, Entity user, int index);
 
+	void create_player();
+	void free_Player();
+
 	class InteractableNode
 	{
 	private:
@@ -34,9 +37,6 @@ namespace EntityFactory
 			Components::AnimationType, Components::VictoryNodeTag);
 		void update();
 		void free();
-
-		void goToCombat();
-		void goToBoss();
 	};
 
 

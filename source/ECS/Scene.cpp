@@ -24,8 +24,17 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
-	std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+	unsigned int seed;
+
+	if (parse_seed(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+	{
+		seed = static_cast<unsigned int>(time(nullptr));
+	}
+	std::srand(seed);
+
 	cameraSys = &cam;
+	UIptr = &_UI;
 	UIptr = &_UI;
 	iNodes.init(BattleGrid,gbs);
 
@@ -257,16 +266,22 @@ void Scene::update()
 			ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
 			UIptr->getVictoryMenu().on = true;
 
-			Entity BossNode;
-			BossNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
+			Entity firstNode;
+			firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::ENCOUNTER);
 
-			Entity combatNode;
-			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
+			Entity secondNode;
+			secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
-			BattleGrid.placeEntity(combatNode, 0, 0);
-			BattleGrid.placeEntity(BossNode, MAX_I - 1, MAX_J - 1);
+			unsigned int seed = static_cast<unsigned int>(time(nullptr));
+			if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+			{
+				std::cout << " put data fail";
+			}
+
+			BattleGrid.placeEntity(firstNode, 0, 0);
+			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
 		}
 	}
 	cbs.update();
@@ -333,9 +348,8 @@ void Scene::scene_free()
 	PS.particle_system_free();
 	intentDisplaySystem.intentionSystem_free();
 	_win = false;
-	ecs.getComponent<Components::Transform>(playerID)->pos_onscreen.x = -1000.f;
-	ecs.getComponent<Components::Transform>(playerID)->pos_onscreen.y = -1000.f;
 	gbs.gbs_free();
+	EntityFactory::free_Player();
 	//nameTags.name_tag_free();
 }
 

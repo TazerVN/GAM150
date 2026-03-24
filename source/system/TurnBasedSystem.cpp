@@ -5,6 +5,9 @@
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
 #include "../level/game.h"
+#include <random>
+
+
 
 namespace TBS
 {
@@ -397,7 +400,9 @@ namespace TBS
 			}
 		}
 
-		int index = int(AERandFloat() * drawPile.size());
+		int upper_bound = drawPile.size() - 1; int lower_bound = 0;
+		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+		//int index = int(AERandFloat() * drawPile.size());	<- old rand code
 		Entity card = drawPile[index];
 		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
 		//remove the card afterwards
@@ -412,14 +417,11 @@ namespace TBS
 			if (cur_Hp <= 0.f)
 			{
 				player_died = true;
-				new_Start = true;
 				//set player's win speed
 				Components::TurnBasedStats* player = ecs.getComponent < Components::TurnBasedStats>(playerID);
 				player->cur_movSpd = player->ini_movSpd;
 				ecs.getComponent<Components::Card_Storage>(playerID)->free();
 				ecs.getComponent<Components::Card_Storage>(playerID)->reset();
-
-				/*gLevelStateNext = LevelStates::LS_QUIT;*/
 			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());

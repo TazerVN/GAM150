@@ -27,6 +27,7 @@
 
 extern size_t playerID;
 extern bool new_Start;
+extern bool player_died;
 
 
 extern EntityComponent::Registry ecs;

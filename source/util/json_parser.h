@@ -33,5 +33,14 @@ struct JSON_ENEMY
 	std::string png;
 };
 
-JSON_RET parse_card_data(std::vector<JSON_CARD>& vec,char const* str);
+struct JSON_DECK
+{
+	std::string name;
+	std::vector<std::string> cards;
+};
+
+JSON_RET parse_date_to_file(unsigned int value, char const* file_loc);
+JSON_RET parse_seed(unsigned int& seed, char const* file_loc);
+JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec,char const* str);
+JSON_RET parse_starter_decks(std::vector<JSON_DECK>& decks,char const* str);
 JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str);

@@ -95,14 +95,9 @@ void load_Sys_Comp()
 	CS.init();
 	RM.RenderSystem_init(ecs);
 
-	Entity temp;
-	//Add player
-	temp = EntityFactory::create_actor_spritesheet({ -1000.f,-1000.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
-	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	Entity t = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 100, 0.0f, 0.0f, 0.3f, 0.15f);
 	Components::TagClass tg{Components::Tag::UI};
 	ecs.addComponent(t, tg);
-
-	
+	EntityFactory::create_player();
 	//=============================
 }

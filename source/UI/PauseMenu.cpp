@@ -4,7 +4,7 @@
 #include "AEEngine.h"
 
 PauseMenu::PauseMenu(s32 z) 
-	: on{ false }, created{false}, dim {}, continue_button{}, restart_button{}, leave_button{}
+	: on{ false }, created{false}, dim {}, continue_button{}, abandon_button{}, leave_button{}
 {
 	Components::TagClass tag{ Components::Tag::UI };
 	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40};
@@ -17,8 +17,8 @@ PauseMenu::PauseMenu(s32 z)
 	
 
 
-	this->restart_button.button = UIO::ui_button(0, 0, 300.f, 100.f, 0, z,nullptr);
-	this->restart_button.text = UIO::ui_text(-100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");
+	this->abandon_button.button = UIO::ui_button(0, 0, 300.f, 100.f, 0, z,nullptr);
+	this->abandon_button.text = UIO::ui_text(-100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");
 
 
 
@@ -30,8 +30,8 @@ PauseMenu::PauseMenu(s32 z)
 	ecs.addComponent(this->dim, in);
 	ecs.addComponent(this->continue_button.button, tag);
 	ecs.addComponent(this->continue_button.text, tag);
-	ecs.addComponent(this->restart_button.button, tag);
-	ecs.addComponent(this->restart_button.text, tag);
+	ecs.addComponent(this->abandon_button.button, tag);
+	ecs.addComponent(this->abandon_button.text, tag);
 	ecs.addComponent(this->leave_button.button, tag);
 	ecs.addComponent(this->leave_button.text, tag);
 }
@@ -40,18 +40,18 @@ PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)
 {
 	this->dim = rhs.dim;
 	this->continue_button = rhs.continue_button;
-	this->restart_button = rhs.restart_button;
+	this->abandon_button = rhs.abandon_button;
 	this->leave_button = rhs.leave_button;
 	this->created = true;
 
 	auto button_c = ecs.getComponent<Components::Input>(this->continue_button.button);
 	button_c->onClick = [this] { this->on = false; };
 
-	auto button_r = ecs.getComponent<Components::Input>(this->restart_button.button);
+	auto button_r = ecs.getComponent<Components::Input>(this->abandon_button.button);
 	button_r->onClick = [this] 
 	{
 		this->on = false;
-		gLevelStateNext = LevelStates::LS_RESTART;
+		player_died = true;
 	};
 
 	auto button_l = ecs.getComponent<Components::Input>(this->leave_button.button);
@@ -77,7 +77,7 @@ void PauseMenu::free()
 		this->dim = 0;
 	}
 	this->continue_button.free();
-	this->restart_button.free();
+	this->abandon_button.free();
 	this->leave_button.free();
 	this->created = false;
 	this->on = false;

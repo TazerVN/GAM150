@@ -1,7 +1,8 @@
 #include "pch.h"
 
-size_t playerID;
+size_t playerID = -1;
 bool new_Start = true;
+bool player_died = false;
 
 //=====================One time declaration of extern values============================= 
 
