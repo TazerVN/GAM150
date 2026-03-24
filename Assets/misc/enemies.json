@@ -4,14 +4,14 @@
     "hp":  100.0,
     "value":  20.0,
     "range": 1.0,
-    "png" :  "enemy1.png"
+    "png" :  "enemy2.png"
   },
   {
     "name": "Ranger",
     "hp": 60.0,
     "value": 20.0,
     "range": 1.0,
-    "png" : "enemy2.png"
+    "png" : "enemy1.png"
   },
   {
     "name": "Caster",
