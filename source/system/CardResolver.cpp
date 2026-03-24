@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CardResolver.h"
+#include "../system/GridSystem.h"
 
 namespace
 {
@@ -203,6 +204,12 @@ namespace CardResolver
 				std::cout << "[CardResolver] Push event triggered\n";
 				return PC_RETURN_TAG::VALID;
 
+			case 2: // Mana Wall
+			{
+				std::cout << "[CardResolver] Mana Wall triggered\n";
+				// spawn wall here
+				return PC_RETURN_TAG::VALID;
+			}
 			default:
 				return PC_RETURN_TAG::INVALID;
 			}
@@ -211,5 +218,91 @@ namespace CardResolver
 		default:
 			return PC_RETURN_TAG::INVALID;
 		}
+	}
+
+	//overload for invoving placing entity (Mana wall)
+	PC_RETURN_TAG resolve(
+		EntityComponent::Registry& ecs,
+		CombatNameSpace::CombatSystem& combatSystem,
+		Grid::GameBoard& board,
+		TBS::TurnBasedSystem& tbs,
+		MeshFactory& mf,
+		TextureFactory::TextureFactory& TF,
+		Entity caster,
+		Entity cardID,
+		Entity target,
+		AEVec2 targetPos)
+	{
+		if (cardID == Components::NULL_INDEX)
+			return PC_RETURN_TAG::INVALID;
+
+		Components::Card_ID* idComp = ecs.getComponent<Components::Card_ID>(cardID);
+		if (!idComp)
+			return PC_RETURN_TAG::INVALID;
+
+		int serialID = idComp->value;
+		int category = get_category(serialID);
+		int family = get_family(serialID);
+
+		// Mana Wall here
+		if (category == 4 && family == 2)   // e.g. 4200
+		{
+			std::cout << "[CardResolver] Mana Wall triggered\n";
+
+			int cx = static_cast<int>(targetPos.x);
+			int cy = static_cast<int>(targetPos.y);
+
+			int offsets[3][2];
+
+			if (!board.manaWallVertical)
+			{
+				offsets[0][0] = -1; offsets[0][1] = 0;
+				offsets[1][0] = 0; offsets[1][1] = 0;
+				offsets[2][0] = 1; offsets[2][1] = 0;
+			}
+			else
+			{
+				offsets[0][0] = 0; offsets[0][1] = -1;
+				offsets[1][0] = 0; offsets[1][1] = 0;
+				offsets[2][0] = 0; offsets[2][1] = 1;
+			}
+
+			// validate first
+			for (int i = 0; i < 3; ++i)
+			{
+				int x = cx + offsets[i][0];
+				int y = cy + offsets[i][1];
+
+				if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+					return PC_RETURN_TAG::INVALID;
+
+				if (board.get_pos()[x][y] != Components::NULL_INDEX)
+					return PC_RETURN_TAG::INVALID;
+			}
+
+			// spawn wall pieces
+			for (int i = 0; i < 3; ++i)
+			{
+				int x = cx + offsets[i][0];
+				int y = cy + offsets[i][1];
+
+				Entity wall = EntityFactory::create_grid_object(
+					ecs,
+					mf,
+					{ 0.0f, 0.0f },
+					{ 128.0f, 128.0f },
+					"ManaWall",
+					TF.getTextureOthers(0), 
+					1.0f
+				);
+
+				board.placeEntity(wall, x, y);
+			}
+
+			return PC_RETURN_TAG::VALID;
+		}
+
+		// all normal cards use the old resolver
+		return resolve(ecs, combatSystem, board, tbs, caster, cardID, target, targetPos);
 	}
 }

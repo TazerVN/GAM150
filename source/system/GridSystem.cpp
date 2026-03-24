@@ -85,24 +85,46 @@ namespace Grid
 					Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
 					Targetting targettingType = ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type;
 
+					int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
+					int category = serialID / 1000;
+					bool isEventCard = (category == 4);
+
 					std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
+
+					if (!cbsptr->check_within_range(x, y))
+					{
+						std::cout << "Target is outside range" << std::endl;
+						PUT << 0 << "Out of range!";
+						unselect_card();
+						return;
+					}
+
+					if (isEventCard)
+					{
+						// Mana Wall is placed on empty cells, not entities
+						if (pos[x][y] != -1)
+						{
+							std::cout << "Mana Wall requires an empty cell" << std::endl;
+							PUT << 0 << "Select an empty cell";
+							unselect_card();
+							return;
+						}
+
+						trigger_play_card(x, y);
+						return;
+					}
+
+					// your old behaviour steven - zejin
 					if (pos[x][y] != -1)
 					{
-						if (targettingType!= Targetting::SELF && pos[x][y] == tbsptr->current())
+						if (targettingType != Targetting::SELF && pos[x][y] == tbsptr->current())
 						{
 							std::cout << "Selected Player initializing Movement" << std::endl;
 							unselect_card();
 							move_select(x, y);
 							return;
 						}
-						if (!cbsptr->check_within_range(x, y))
-						{
-							std::cout << "Target is outside range" << std::endl;
-							PUT << 0 << "Out of range!";
-							unselect_card();
 
-							return;
-						}
 						trigger_play_card(x, y);
 					}
 					else
@@ -159,6 +181,7 @@ namespace Grid
 		tbsptr->set_selected_card(false);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		manaWallVertical = false;
 		
 	}
 
@@ -265,9 +288,6 @@ namespace Grid
 
 	}
 
-
-
-
 	Entity GameBoard::create_cells(AEVec2 _pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
 	{
 		Entity id = ecs.createEntity();
@@ -298,6 +318,7 @@ namespace Grid
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
 				{
+
 					this->func_aoe_hightlight_cells(x, y);
 				}
 			},
@@ -436,10 +457,30 @@ namespace Grid
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_RBUTTON))
 		{
-			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-			tbsptr->set_selected_card(false);
-			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-			//gbsptr->debug_print();
+			Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
+			int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
+			bool isManaWall = (serialID == 4220); // keep this matching your real ID
+
+			if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT && isManaWall)
+			{
+				manaWallVertical = !manaWallVertical;
+
+				for (AEVec2 a : this->aoe_highlighted_cells)
+				{
+					aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
+				}
+				this->aoe_highlighted_cells.clear();
+
+				std::cout << "Mana Wall flipped to "
+					<< (manaWallVertical ? "vertical" : "horizontal") << std::endl;
+			}
+			else
+			{
+				gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+				tbsptr->set_selected_card(false);
+				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+				manaWallVertical = false;
+			}
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
@@ -695,48 +736,96 @@ namespace Grid
 		f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
 		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
-		AEVec2 cur_part_pos = Get_CurPart_gridPos();
+		int serialID = ecs.getComponent<Components::Card_ID>(card_ID)->value;
+		bool isManaWall = (serialID == 4220); // change if your final ID differs
 
+		AEVec2 cur_part_pos = Get_CurPart_gridPos();
 		int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
 
-		if (rng <= range)
+		//std::cout << "Hovered card serialID = " << serialID << std::endl;
+		//std::cout << "isManaWall = " << isManaWall << std::endl;
+
+		if (rng > range)
+			return;
+
+		if (isManaWall)
 		{
-			for (int i = 0; i <= aoe_range; ++i)
+			int offsets[3][2];
+
+			if (!manaWallVertical)
 			{
-				for (int j = 0; j <= aoe_range; ++j)
+				// horizontal
+				offsets[0][0] = -1; offsets[0][1] = 0;
+				offsets[1][0] = 0; offsets[1][1] = 0;
+				offsets[2][0] = 1; offsets[2][1] = 0;
+			}
+			else
+			{
+				// vertical
+				offsets[0][0] = 0; offsets[0][1] = -1;
+				offsets[1][0] = 0; offsets[1][1] = 0;
+				offsets[2][0] = 0; offsets[2][1] = 1;
+			}
+
+			for (int i = 0; i < 3; ++i)
+			{
+				int nx = x + offsets[i][0];
+				int ny = y + offsets[i][1];
+
+				if (nx < 0 || nx >= MAX_I || ny < 0 || ny >= MAX_J)
+					continue;
+
+				if (!this->aoe_highlight_activate[nx][ny])
 				{
-					if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
+					this->aoe_highlighted_cells.push_back({ (f32)nx, (f32)ny });
+					this->aoe_highlight_activate[nx][ny] = 1;
+				}
+			}
+
+			this->aoe_highlight_activate[x][y] = 2;
+			return;
+		}
+
+		for (int i = 0; i <= aoe_range; ++i)
+		{
+			for (int j = 0; j <= aoe_range; ++j)
+			{
+				if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
+				{
+					if (!this->aoe_highlight_activate[x + i][y + j])
 					{
-						if (this->aoe_highlight_activate[x + i][y + j])
-							continue;
-						this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y + j) });
+						this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
 						this->aoe_highlight_activate[x + i][y + j] = 1;
 					}
-					if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
+				}
+				if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
+				{
+					if (!this->aoe_highlight_activate[x - i][y - j])
 					{
-						if (this->aoe_highlight_activate[x - i][y - j])
-							continue;
-						this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y - j) });
+						this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
 						this->aoe_highlight_activate[x - i][y - j] = 1;
 					}
-					if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
+				}
+				if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
+				{
+					if (!this->aoe_highlight_activate[x + i][y - j])
 					{
-						if (this->aoe_highlight_activate[x + i][y - j])
-							continue;
-						this->aoe_highlighted_cells.push_back({ f32(x + i) , f32(y - j) });
+						this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
 						this->aoe_highlight_activate[x + i][y - j] = 1;
 					}
-					if (i + j <= aoe_range && f32(x - i) >= 0 && f32(y + j) < MAX_J)
+				}
+				if (i + j <= aoe_range && x - i >= 0 && y + j < MAX_J)
+				{
+					if (!this->aoe_highlight_activate[x - i][y + j])
 					{
-						if (this->aoe_highlight_activate[x - i][y + j])
-							continue;
-						this->aoe_highlighted_cells.push_back({ f32(x - i) , f32(y + j) });
+						this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
 						this->aoe_highlight_activate[x - i][y + j] = 1;
 					}
 				}
 			}
-			this->aoe_highlight_activate[x][y] = 2;
 		}
+
+		this->aoe_highlight_activate[x][y] = 2;
 	}
 
 }

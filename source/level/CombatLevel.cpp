@@ -22,6 +22,7 @@ void LevelStateCombat_load()
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Shoot"));
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Shoot+"));
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Turn bash"));
+		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Mana Wall"));
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Barrier"));
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Barrier+"));
 		EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible("Aura Farm"));

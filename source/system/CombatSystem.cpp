@@ -70,6 +70,8 @@ void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSy
 	tbsptr = &tbs;
 	cardHandptr = &cardhand;
 	evsptr = &eventSystem;
+	mfptr = &mf;
+	tfptr = &TF;
 
 	this->total_attack_cards_played = 0;
 	this->total_def_cards_played = 0;
@@ -769,6 +771,8 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 		*this,
 		*gbptr,
 		*tbsptr,
+		*mfptr,
+		*tfptr,
 		player,
 		cardID,
 		target,
