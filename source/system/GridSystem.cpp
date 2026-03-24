@@ -636,7 +636,7 @@ namespace Grid
 		win = nullptr;
 	}
 	
-	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y)
+	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y, int max_move)
 	{
 		if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
 			return false;
@@ -659,7 +659,6 @@ namespace Grid
 		Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(e);
 		astar->path = AStar_FindPath_Grid4(MAX_I, MAX_J, walkable, s, g).path;
 
-		int max_move = 5;
 		while(astar->path.size() > max_move)
 		{
 			astar->path.pop_back();
