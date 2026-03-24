@@ -40,6 +40,9 @@ namespace CombatNameSpace
 		int total_item_cards_played = 0;
 		int total_world_interaction_card_played = 0;
 
+		MeshFactory* mfptr = nullptr;
+		TextureFactory::TextureFactory* tfptr = nullptr;
+
 		std::vector<AEVec2>& get_highlighted_cell();
 		std::vector<AEVec2>& get_aoe_selected_cell();
 		bool check_within_range(s32 const& x, s32 const& y);

@@ -114,15 +114,6 @@
 		"png": "card_aura_farm.png"
 	},
 	{
-		"id": 2102,
-		"name": "Mana Wall",
-		"cost": -1.0,
-		"value": -1.0,
-		"description": "Consumes all current mana and\ngenerate a temporary barrier\n",
-		"png": "cardSample.png"
-	},
-
-	{
 		"id": 3000,
 		"name": "Recovery",
 		"cost": 1.0,
@@ -205,6 +196,16 @@
 		"description": "Blow an enemy away;\nPush enemies 4 Tiles towards a direction\n",
 		"png": "card_gust_of_wind.png"
 	},
+	{
+		"id": 4220,
+		"name": "Mana Wall",
+		"cost": 5.0,
+		"value": -1.0,
+		"range": 10.0,
+		"description": "Consumes all current mana and\ngenerate a temporary barrier\n",
+		"png": "cardSample.png"
+	},
+
 	{
 		"id": 1020,
 		"name": "Black Hole",

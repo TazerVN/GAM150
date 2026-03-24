@@ -57,6 +57,7 @@ namespace Grid
 	public:
 		bool in_walkable_debug = false;
 		bool in_pos_debug = false;
+		bool manaWallVertical = false;
 
 		s32 cur_x, cur_y, prev_x, prev_y;
 		uint8_t walkable[MAX_I * MAX_J]{};

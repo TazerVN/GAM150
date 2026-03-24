@@ -89,6 +89,31 @@ namespace EntityFactory {
 		return id;
 	}
 
+	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp)
+	{
+		Entity id = ecs.createEntity();
+
+		Components::Name nm{ name };
+		Components::HP HP{ hp };
+		Components::Texture texture{ pTex, 0.0f, 0.0f };
+		Components::Transform trans{ pos, pos, size, size, 0.f };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Color color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		Components::Tag tag{ Components::Tag::OTHERS };
+		Components::gridData gd{};
+
+		ecs.addComponent(id, gd);
+		ecs.addComponent(id, nm);
+		ecs.addComponent(id, HP);
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, texture);
+		ecs.addComponent(id, tag);
+
+		return id;
+	}
+
 	void InteractableNode::init(Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
 	{
 		gbptr = &gb;
