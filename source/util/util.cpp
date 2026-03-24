@@ -75,3 +75,14 @@ void translate_To_Isometric(AEVec2 offset, f32 height, f32& x, f32& y, s32 grid_
 	x = offset.x + (grid_x - grid_y) * CELL_WIDTH / 2;
 	y = height / 3 + offset.y - (grid_x + grid_y) * CELL_HEIGHT / 4;
 }
+
+s32 grid_dist_manhattan(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+{
+	return math_absolute(x2 - x1) + math_absolute(y2 - y1);
+}
+
+s32 grid_dist_chebyshev(s32 const& x1, s32 const& y1, s32 const& x2, s32 const& y2)
+{
+	int lhs{ math_absolute(x2 - x1) }; int rhs{ math_absolute(y2 - y1) };
+	return math_max(lhs, rhs);
+}

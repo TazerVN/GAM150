@@ -3,6 +3,20 @@
 #include "particleSystem.h"
 #include "../ECS/Components.h"
 
+
+void Particle::ParticleSystem::remove(size_t index)
+{
+	if(Particlebuffer.empty()) return;
+	if(Particlebuffer.size() > 1){
+		Particlebuffer[index] = Particlebuffer[Particlebuffer.size() - 1];
+		Particlebuffer.pop_back();
+	}
+	else
+	{
+		Particlebuffer.pop_back();
+	}
+};
+
 void Particle::ParticleSystem::init(size_t poolSize)
 {
 }
@@ -14,196 +28,208 @@ void Particle::ParticleSystem::update(f32 dt)
 	EntityComponent::ComponentBitMask objMask;
 	objMask.set(particleID);
 
-	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+	/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 	{
 		if ((it->first & objMask) == objMask)
+		{*/
+
+	for (int i = 0; i < this->Particlebuffer.size(); )
+	{
+		Entity ent = Particlebuffer[i];
+
+		if (!ecs.getBitMask()[ent].test(particleID)) continue;
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
+		//transform->pos_onscreen.y += dt * 1.0f;
+		//transform->pos_onscreen.x = 0.0f;
+		Components::Color* color = ecs.getComponent<Components::Color>(ent);
+		//color->d_color.b = 0.2f * AERandFloat();
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
+		Components::Particle* particle = ecs.getComponent<Components::Particle>(ent);
+
+		switch (particle->type)
 		{
-			for (Entity ent : it->second)
+			case Components::ParticleType::Digitalize:
+				transform->pos_onscreen.y += dt * 1.0f;
+				color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+				if (timer->start == false)
+				{
+					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
+				}
+				break;
+
+			case Components::ParticleType::Burst:
+				color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
+				if (timer->start == false)
+				{
+					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
+				}
+				break;
+
+			case Components::ParticleType::Click:
+				if (timer->start == false)
+				{
+					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
+				}
+				break;
+
+			case Components::ParticleType::Datastream:
+				color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
+
+				// When timer ends - it reset but dosent die
+				if (timer->start == false)
+				{
+					f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+					f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+
+					f32 newX = -halfWidth + AERandFloat() * halfWidth * 2.f;
+					f32 newY = -halfHeight + AERandFloat() * halfHeight * 2.f;
+
+					transform->pos.x = newX;
+					transform->pos.y = newY;
+					transform->pos_onscreen.x = newX;
+					transform->pos_onscreen.y = newY;
+
+					timer->seconds = 0.0f;
+					timer->start = true;
+
+				}
+				break;
+
+			case Components::ParticleType::Reversestream:
 			{
-				if (!ecs.getBitMask()[ent].test(particleID)) continue;
-				Components::Transform* transform = ecs.getComponent<Components::Transform>(ent);
-				//transform->pos_onscreen.y += dt * 1.0f;
-				//transform->pos_onscreen.x = 0.0f;
-				Components::Color* color = ecs.getComponent<Components::Color>(ent);
-				//color->d_color.b = 0.2f * AERandFloat();
-				Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
-				Components::Particle* particle = ecs.getComponent<Components::Particle>(ent);
-
-				switch (particle->type) {
-				case Components::ParticleType::Digitalize:
-					transform->pos_onscreen.y += dt * 1.0f;
-					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
-					if (timer->start == false)
-					{
-						ecs.destroyEntity(ent);
-					}
-					break;
-
-				case Components::ParticleType::Burst:
-					color->d_color.a = (timer->max_seconds - timer->seconds / timer->max_seconds) * color->c_color.a;
-					if (timer->start == false)
-					{
-						ecs.destroyEntity(ent);
-					}
-					break;
-
-				case Components::ParticleType::Click:
-					if (timer->start == false)
-					{
-						ecs.destroyEntity(ent);
-					}
-					break;
-
-				case Components::ParticleType::Datastream:
-					color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
-
-					// When timer ends - it reset but dosent die
-					if (timer->start == false)
-					{
-						f32 halfWidth  = f32(AEGfxGetWindowWidth())  * 0.5f;
-						f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
-
-						f32 newX = -halfWidth + AERandFloat() * halfWidth * 2.f;
-						f32 newY = -halfHeight + AERandFloat() * halfHeight * 2.f;
-
-						transform->pos.x = newX;
-						transform->pos.y = newY;
-						transform->pos_onscreen.x = newX;
-						transform->pos_onscreen.y = newY;
-
-						timer->seconds = 0.0f;
-						timer->start = true;
-						
-					}
-					break;
-
-				case Components::ParticleType::Reversestream:
+				if (timer->max_seconds <= 1.0f)
 				{
-					if (timer->max_seconds <= 1.0f)
-					{
-						timer->max_seconds = 8.0f + AERandFloat() * 4.0f;
-						timer->reset = true;
-					}
-
-						transform->rotation += dt * 60.f;
-						if (transform->rotation > 360.f) { transform->rotation -= 360.f; }
-
-						f32 t = timer->seconds / timer->max_seconds;
-						if (t < 0.2f)
-							color->d_color.a = (t / 0.2f) * color->c_color.a;
-						else
-							color->d_color.a = (1.0f - t) * color->c_color.a;
-
-						if (timer->seconds <= 0.01f && timer->start == true)
-						{
-							f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
-							f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
-
-							f32 newX = AERandFloat() * halfWidth;
-							f32 newY = AERandFloat() * halfHeight;
-
-							transform->pos.x = newX;
-							transform->pos.y = newY;
-							transform->pos_onscreen.x = newX;
-							transform->pos_onscreen.y = newY;
-						}
-						break;
+					timer->max_seconds = 8.0f + AERandFloat() * 4.0f;
+					timer->reset = true;
 				}
-					
 
-				case Components::ParticleType::Heal:
-					color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
-					
-					transform->pos_onscreen.x += AESin(timer->seconds * 5.f) * dt * 10.f;
+				transform->rotation += dt * 60.f;
+				if (transform->rotation > 360.f) { transform->rotation -= 360.f; }
 
-					if (timer->start == false)
-					{
-						ecs.destroyEntity(ent);
-					}
-					break;
+				f32 t = timer->seconds / timer->max_seconds;
+				if (t < 0.2f)
+					color->d_color.a = (t / 0.2f) * color->c_color.a;
+				else
+					color->d_color.a = (1.0f - t) * color->c_color.a;
 
-				case Components::ParticleType::Shield:
+				if (timer->seconds <= 0.01f && timer->start == true)
 				{
-					f32 orbitSpeed = 2.0f;    // radians per second
-					f32 orbitRadius = 60.f;    // must match spawn
+					f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+					f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
 
-					// Increment angle over time
-					timer->seconds += dt * orbitSpeed;
-					if (timer->seconds > 2.0f * PI)
-						timer->seconds -= 2.0f * PI;   // wrap around
+					f32 newX = AERandFloat() * halfWidth;
+					f32 newY = AERandFloat() * halfHeight;
 
-					// Recalculate position every frame
-					f32 angle = timer->seconds;
-					transform->pos_onscreen.x = transform->pos.x + AECos(angle) * orbitRadius;
-					transform->pos_onscreen.y = transform->pos.y + AESin(angle) * orbitRadius;
-
-					// Pulse alpha — breathing effect
-					color->d_color.a = 0.5f + 0.5f * AESin(timer->seconds * 3.f);
-
-					// Never destroyed — caller must manually free when shield breaks
-					break;
+					transform->pos.x = newX;
+					transform->pos.y = newY;
+					transform->pos_onscreen.x = newX;
+					transform->pos_onscreen.y = newY;
 				}
-
-				case Components::ParticleType:: Dataflow:
-				{
-					f32 t = timer->seconds / timer->max_seconds;
-					color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
-
-					// Reset to left when timer ends
-					if (timer->start == false)
-					{
-						f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
-
-						transform->pos.x = -halfWidth;
-						transform->pos.y = (AERandFloat() * 100.f) - 50.f;
-						transform->pos_onscreen.x = transform->pos.x;
-						transform->pos_onscreen.y = transform->pos.y;
-
-						timer->seconds = 0.f;
-						timer->start = true;
-					}
-					break;
-				}
-
-				case Components::ParticleType::Databub:
-				{
-					// Seaweed motion — sine wave on x axis
-					f32 wobbleSpeed = 3.0f;   // how fast it sways
-					f32 wobbleStrength = 15.f;   // how wide it sways
-
-					transform->pos_onscreen.x += AECos(timer->seconds * wobbleSpeed) * dt * wobbleStrength;
-
-					// Fade out near top of screen
-					f32 t = timer->seconds / timer->max_seconds;
-					color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
-
-					// Reset to bottom when timer ends — loops forever
-					if (timer->start == false)
-					{
-						f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
-						f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
-						f32 screenWidth = halfWidth * 2.f;
-						f32 spacing = screenWidth / 15.f;
-
-						// Reset near original column x, random y at bottom
-						f32 newX = transform->pos.x;   // stay in same column
-						f32 newY = -halfHeight + AERandFloat() * 80.f;
-
-						transform->pos.x = newX;
-						transform->pos.y = newY;
-						transform->pos_onscreen.x = newX;
-						transform->pos_onscreen.y = newY;
-
-						timer->seconds = 0.f;
-						timer->start = true;
-					}
-					break;
-				}
-
-				}
-
+				break;
 			}
+
+
+			case Components::ParticleType::Heal:
+				color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
+
+				transform->pos_onscreen.x += AESin(timer->seconds * 5.f) * dt * 10.f;
+
+				if (timer->start == false)
+				{
+					ecs.destroyEntity(ent);
+					this->remove(i);
+					continue;
+				}
+				break;
+
+			case Components::ParticleType::Shield:
+			{
+				f32 orbitSpeed = 2.0f;    // radians per second
+				f32 orbitRadius = 60.f;    // must match spawn
+
+				// Increment angle over time
+				timer->seconds += dt * orbitSpeed;
+				if (timer->seconds > 2.0f * PI)
+					timer->seconds -= 2.0f * PI;   // wrap around
+
+				// Recalculate position every frame
+				f32 angle = timer->seconds;
+				transform->pos_onscreen.x = transform->pos.x + AECos(angle) * orbitRadius;
+				transform->pos_onscreen.y = transform->pos.y + AESin(angle) * orbitRadius;
+
+				// Pulse alpha — breathing effect
+				color->d_color.a = 0.5f + 0.5f * AESin(timer->seconds * 3.f);
+
+				// Never destroyed — caller must manually free when shield breaks
+				break;
+			}
+
+			case Components::ParticleType::Dataflow:
+			{
+				f32 t = timer->seconds / timer->max_seconds;
+				color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
+
+				// Reset to left when timer ends
+				if (timer->start == false)
+				{
+					f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+
+					transform->pos.x = -halfWidth;
+					transform->pos.y = (AERandFloat() * 100.f) - 50.f;
+					transform->pos_onscreen.x = transform->pos.x;
+					transform->pos_onscreen.y = transform->pos.y;
+
+					timer->seconds = 0.f;
+					timer->start = true;
+				}
+				break;
+			}
+
+			case Components::ParticleType::Databub:
+			{
+				// Seaweed motion — sine wave on x axis
+				f32 wobbleSpeed = 3.0f;   // how fast it sways
+				f32 wobbleStrength = 15.f;   // how wide it sways
+
+				transform->pos_onscreen.x += AECos(timer->seconds * wobbleSpeed) * dt * wobbleStrength;
+
+				// Fade out near top of screen
+				f32 t = timer->seconds / timer->max_seconds;
+				color->d_color.a = (1.0f - (t * t)) * color->c_color.a;
+
+				// Reset to bottom when timer ends — loops forever
+				if (timer->start == false)
+				{
+					f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+					f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
+					f32 screenWidth = halfWidth * 2.f;
+					f32 spacing = screenWidth / 15.f;
+
+					// Reset near original column x, random y at bottom
+					f32 newX = transform->pos.x;   // stay in same column
+					f32 newY = -halfHeight + AERandFloat() * 80.f;
+
+					transform->pos.x = newX;
+					transform->pos.y = newY;
+					transform->pos_onscreen.x = newX;
+					transform->pos_onscreen.y = newY;
+
+					timer->seconds = 0.f;
+					timer->start = true;
+				}
+				break;
+			}
+
 		}
+
+
+		i++;
 	}
 }
 
@@ -213,7 +239,7 @@ void Particle::ParticleSystem::update(f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_one(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -223,10 +249,10 @@ void Particle::ParticleSystem::spawn_one(bool isUI,f32 x, f32 y, f32 width, f32 
 	Components::Timer timer{ AERandFloat() };
 	Components::Particle particle{ type };
 	Components::Velocity vel{ 0.f, 0.f };
-	
+
 	vel.vel.x = velX;
 	vel.vel.y = velY;
-	
+
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
 	ecs.addComponent(id, color);
@@ -247,7 +273,7 @@ void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height
 {
 }
 
-void Particle::ParticleSystem::spawn_timed(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_timed(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -257,7 +283,7 @@ void Particle::ParticleSystem::spawn_timed(bool isUI,f32 x, f32 y, f32 width, f3
 	Components::Timer timer{ lifetime, 0.f, true, false };
 	Components::Particle particle{ type };
 	Components::Velocity vel{ 0.f, 0.f };
-	
+
 	vel.vel.x = velX;
 	vel.vel.y = velY;
 
@@ -297,8 +323,8 @@ void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, 
 		f32 alpha_No = 1.0f;
 		f32 alpha_Rand = AERandFloat();
 
-		spawn_one(true,x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
-		spawn_one(true,x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
+		spawn_one(true, x, y, 10.0f, 40.0f, 0.5f, 10, 0.0f, g1, b1, alpha_No, 1.0f, 1.0f, Components::ParticleType::Digitalize); // rect
+		spawn_one(true, x, y, 25.0f, 40.0f, 0.4f, 10, 0.0f, g2, b2, alpha_Rand, 1.0f, 1.0f, Components::ParticleType::Digitalize); //squar
 		//spawn_one(ecs, mf, x, y, 35.0f, 50.0f, 0.4f, 10, r, g2, b2, alpha_Rand, 1.0f, 1.0f);
 
 
@@ -311,9 +337,9 @@ void Particle::ParticleSystem::particleBurst()
 {
 	int   max_count = 500;
 	f32   speed = 200.f;
-	
+
 	for (int i = 0; i < max_count; i++)
-	{	
+	{
 		// Distribute particle evenly in full circle
 		f32 angle = (f32(i) / f32(max_count)) * 2.0f * PI;
 
@@ -328,7 +354,7 @@ void Particle::ParticleSystem::particleBurst()
 
 
 		// input
-		spawn_one(true,0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
+		spawn_one(true, 0.f, 0.f, 8.f, 8.f, 0.f, 1, 1.0f, 1.0f, 1.0f, 1.0f, velX, velY, Components::ParticleType::Burst);
 	}
 }
 
@@ -361,23 +387,23 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 
 
 		// input
-		spawn_one(true,x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
+		spawn_one(true, x, y, 20.f, 20.f, 0.f, 1, r, g, b, a, velX, velY, Components::ParticleType::Click);
 	}
 }
 
 void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs, MeshFactory& mf)
 {
 	// Screen dimensions
-	f32 screenWidth      = f32(AEGfxGetWindowWidth());
-	f32 screenHeight     = f32(AEGfxGetWindowHeight());
-	f32 halfWidth		 = screenWidth  * 0.5f;
-	f32 halfHeight		 = screenHeight * 0.5f;
+	f32 screenWidth = f32(AEGfxGetWindowWidth());
+	f32 screenHeight = f32(AEGfxGetWindowHeight());
+	f32 halfWidth = screenWidth * 0.5f;
+	f32 halfHeight = screenHeight * 0.5f;
 
 	// Set coloumn
 	int coloumnCount = 20, eachColoumn = 5;
 	f32 coloumnSpacing = screenWidth / f32(coloumnCount);
 
-	
+
 	for (int i = 0; i < coloumnCount; i++)
 	{
 		f32 x = -halfWidth + (i * coloumnSpacing);
@@ -403,8 +429,8 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 
 			//0.3f + 0.7f * AERandFloat();
 
-			spawn_timed(true,x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
-			spawn_timed(true,x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
+			spawn_timed(true, x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
+			spawn_timed(true, x, y, width, height, 125.0f, -10, r, g, b, a, velX, velY, lifetime, Components::ParticleType::Datastream);
 		}
 	}
 }
@@ -439,11 +465,11 @@ void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 1.0f;
 
-		spawn_one(true,x, y,size, size,45.f, -10,r, g, b, a,velX, velY, Components::ParticleType::Reversestream);
+		spawn_one(true, x, y, size, size, 45.f, -10, r, g, b, a, velX, velY, Components::ParticleType::Reversestream);
 	}
 }
 
-void Particle::ParticleSystem::particleHeal( f32 x, f32 y, f32 w, f32 h)
+void Particle::ParticleSystem::particleHeal(f32 x, f32 y, f32 w, f32 h)
 {
 	int max_count = 15;
 
@@ -460,7 +486,7 @@ void Particle::ParticleSystem::particleHeal( f32 x, f32 y, f32 w, f32 h)
 		f32 b = 0.2f * AERandFloat();
 		f32 a = 0.8f + 0.2f * AERandFloat();
 
-		spawn_one(false,spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
+		spawn_one(false, spawnX, spawnY, 8.0f, 15.0f, 0.0f, 10, r, g, b, a, velX, velY, Components::ParticleType::Heal);
 
 	}
 
@@ -481,7 +507,7 @@ void Particle::ParticleSystem::particleShield(f32 x, f32 y, f32 r, f32 g, f32 b,
 		f32 velX = 0.f;
 		f32 velY = 0.f;
 
-		spawn_timed(false,spawnX, spawnY, 8.f, 8.f, angle, 10, r, g, b, alpha, velX, velY, 999.f, Components::ParticleType::Shield);
+		spawn_timed(false, spawnX, spawnY, 8.f, 8.f, angle, 10, r, g, b, alpha, velX, velY, 999.f, Components::ParticleType::Shield);
 
 		Entity id = Particlebuffer.back();
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
@@ -520,7 +546,7 @@ void Particle::ParticleSystem::particleDataFlow(EntityComponent::Registry& ecs, 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 0.5f + 0.5f * AERandFloat();
 
-		spawn_one(true,x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
+		spawn_one(true, x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
 	}
 }
 
@@ -559,9 +585,9 @@ void Particle::ParticleSystem::particleDataBubble(EntityComponent::Registry& ecs
 			f32 a = 0.4f + 0.6f * AERandFloat();
 
 			// Small squares — bubble feel
-			f32 size = 4.f + AERandFloat() * 8.f; 
+			f32 size = 4.f + AERandFloat() * 8.f;
 
-			spawn_one(true,x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
+			spawn_one(true, x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
 
 			// Stagger start time — so not all bubbles rise together
 			Entity id = Particlebuffer.back();

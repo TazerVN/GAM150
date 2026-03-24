@@ -71,6 +71,14 @@ namespace Components
 		float rotation{ 0.f };
 	};
 
+	struct gridData
+	{
+		s32 prev_x{ -1 };
+		s32 prev_y{ -1 };
+		s32 x{ -1 };
+		s32 y{ -1 };
+	};
+
 	struct TagClass
 	{
 		Tag value;
@@ -202,7 +210,7 @@ namespace Components
 
 	enum class VictoryNodeTag
 	{
-		COMBAT,BOSS
+		COMBAT,ENCOUNTER,BOSS
 	};
 
 	//===========================CARDS=========================================
@@ -237,6 +245,11 @@ namespace Components
 	struct Card_Cost
 	{
 		f32 value;
+	};
+
+	struct Card_Description
+	{
+		std::string val;
 	};
 
 	struct Attack

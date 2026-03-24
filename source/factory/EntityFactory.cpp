@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "EntityFactory.h"
+#include "../util/util.h"
 #include <functional>
 
 namespace EntityFactory {
@@ -30,6 +31,7 @@ namespace EntityFactory {
 		Components::Animation_Actor aa{ at, 0, 6};
 		Components::AStarResult as{};
 		Components::Tag tag{ Components::Tag::ACTOR };
+		Components::gridData gd{};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -43,6 +45,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, aa);
 		ecs.addComponent(id, as);
 		ecs.addComponent(id, tag);
+		ecs.addComponent(id, gd);
 
 		return id;
 	}
@@ -68,7 +71,9 @@ namespace EntityFactory {
 		Components::Timer timer{1.f, 0.5f, true, true};
 		Components::Animation_Actor aa{at};
 		Components::Tag tag{ Components::Tag::ACTOR };
+		Components::gridData gd{};
 
+		ecs.addComponent(id, gd);
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
 		ecs.addComponent(id, card_storage);
@@ -84,9 +89,10 @@ namespace EntityFactory {
 		return id;
 	}
 
-	void InteractableNode::init(Grid::GameBoard& gb)
+	void InteractableNode::init(Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs)
 	{
 		gbptr = &gb;
+		gbsptr = &gbs;
 	}
 
 	Entity InteractableNode::create_interactable_node(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, AEGfxTexture* pTex
@@ -98,7 +104,9 @@ namespace EntityFactory {
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Tag tag {Components::Tag::OTHERS};
+		Components::gridData gd{};
 
+		ecs.addComponent(id, gd);
 		ecs.addComponent(id, mesh);
 		ecs.addComponent(id, tag);
 		ecs.addComponent(id, texture);
@@ -122,40 +130,43 @@ namespace EntityFactory {
 
 	void InteractableNode::update()
 	{
+		//if (gbptr == nullptr) return;
+
 		s32& x = gbptr->cur_x; s32& y = gbptr->cur_y;
 		//guard
 		if (x >= MAX_I || x < 0 || y > MAX_J || y < 0) return;
 
 		for (Entity node : nodes)
 		{
-			if (gbptr->get_pos()[x][y] == node)
+			if (gbptr->get_pos()[x][y] == node && gbsptr->getPlayerPhase() != PhaseSystem::PlayerPhase::PLAYER_ANIMATION)
 			{
-				switch (*(ecs.getComponent<Components::VictoryNodeTag>(node)))
+				s32 px = ecs.getComponent<Components::gridData>(playerID)->x;
+				s32 py = ecs.getComponent<Components::gridData>(playerID)->y;
+				if (grid_dist_chebyshev(x, y, px, py) == 1)
 				{
-				case Components::VictoryNodeTag::COMBAT:
-				{
-					gLevelStateNext = LevelStates::LS_COMBAT;
-					break;
+					Components::VictoryNodeTag no = *(ecs.getComponent<Components::VictoryNodeTag>(node));
+					switch (no)
+					{
+					case Components::VictoryNodeTag::COMBAT:
+					{
+						if (gLevelStateCurr == LevelStates::LS_COMBAT)
+							gLevelStateNext = LevelStates::LS_RESTART;
+						else 
+							gLevelStateNext = LevelStates::LS_COMBAT;
+						break;
+					}
+					case Components::VictoryNodeTag::ENCOUNTER:
+					{
+						gLevelStateNext = LevelStates::LS_ENCOUNTER;
+						break;
+					}
+					default:
+						break;
+					}
 				}
-				case Components::VictoryNodeTag::BOSS:
-				{
-					gLevelStateNext = LevelStates::LS_BOSS;
-					break;
-				}
-				default:
-					break;
-				}
+				
 			}
 		}
-	}
-
-	void goToCombat()
-	{
-
-	}
-	void goToBoss()
-	{
-
 	}
 
 	void add_card_player_hand(EntityComponent::Registry& ecs, Entity user, Entity cardID)

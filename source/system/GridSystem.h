@@ -89,9 +89,6 @@ namespace Grid
 		AEVec2& Get_CurPart_gridPos();
 		AEVec2 GetOffsetPos();
 
-		s32 grid_dist_manhattan(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
-		s32 grid_dist_chebyshev(s32 const& x1, s32 const& x2, s32 const& y1, s32 const& y2);
-
 		void debug_print();
 
 		void gameboard_free();

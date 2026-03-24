@@ -153,8 +153,10 @@ namespace PhaseSystem
 		std::cout << "===================================================" << std::endl;
 	}
 
-	void free()
+	void GameBoardState::gbs_free()
 	{
-		
+		resetPlayerPhase();
+		resetGPhase();
+		enemy_curr = EnemyPhase::ENEMY_IDLE;
 	}
 }

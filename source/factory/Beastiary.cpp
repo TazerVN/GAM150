@@ -70,6 +70,8 @@ Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos
 	Components::Animation_Actor aa{ at };
 	Components::AStarResult ar{};
 	Components::Tag tag{ Components::Tag::ACTOR };
+	Components::gridData gd{};
+
 
 	ecs.addComponent(id, nm);
 	ecs.addComponent(id, hp);
@@ -86,6 +88,7 @@ Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos
 	ecs.addComponent(id, aa);
 	ecs.addComponent(id, ar);
 	ecs.addComponent(id, tag);
+	ecs.addComponent(id, gd);
 	return id;
 }
 Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawnpos, AEVec2 size, Components::AnimationType at)
@@ -109,6 +112,7 @@ Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawn
 	Components::Animation_Actor aa{ at };
 	Components::AStarResult ar{};
 	Components::Tag tag{ Components::Tag::ACTOR };
+	Components::gridData gd{};
 
 	ecs.addComponent(id, nm);
 	ecs.addComponent(id, hp);
@@ -125,7 +129,7 @@ Entity Beastiary::generate_enemy_from_beastiary(Entity beastiaryID, AEVec2 spawn
 	ecs.addComponent(id, aa);
 	ecs.addComponent(id, ar);
 	ecs.addComponent(id, tag);
-	
+	ecs.addComponent(id, gd);
 	return id;
 }
 Entity Beastiary::get_beastiary_id(std::string key)

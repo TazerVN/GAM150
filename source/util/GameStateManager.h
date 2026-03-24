@@ -8,6 +8,7 @@ enum class GameStates
 	GS_MAINMENU,
 	// special game state IDs
 	GS_RESTART,
+	GS_GAMEOVER,
 	GS_QUIT,
 	GS_NUM
 };

@@ -417,6 +417,8 @@ namespace TBS
 				player->cur_movSpd = player->ini_movSpd;
 				ecs.getComponent<Components::Card_Storage>(playerID)->free();
 				ecs.getComponent<Components::Card_Storage>(playerID)->reset();
+
+				gLevelStateNext = LevelStates::LS_QUIT;
 			}
 		}
 		return !(ecs.getComponent<Components::Horde_Tag>(participants[1])->alive());

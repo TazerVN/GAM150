@@ -142,3 +142,16 @@ void IntentionDisplaySystem::trigger()
 {
 	this->triggered = true;
 }
+
+void IntentionDisplaySystem::intentionSystem_free()
+{
+	ptr_enemyDirector = nullptr;
+	triggered = false;
+
+	for (std::pair<Entity, Entity> pair : intentionDisplay_list)
+	{
+		ecs.destroyEntity(pair.second);
+	}
+
+	intentionDisplay_list.clear();
+}

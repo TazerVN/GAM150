@@ -15,4 +15,5 @@ public:
 	void init(EnemyDirector&);
 	void update(Scene& scene);
 	void trigger();
+	void intentionSystem_free();
 };

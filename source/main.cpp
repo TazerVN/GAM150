@@ -57,7 +57,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			AESysFrameStart();
 
 			GameStateUpdate();
-
+			//========(Render)====================
+			RM.RM_render(ecs, CS.id());
 			AESysFrameEnd();
 
 			// check if forcing the application to quit
@@ -95,7 +96,7 @@ void load_Sys_Comp()
 
 	Entity temp;
 	//Add player
-	temp = EntityFactory::create_actor_spritesheet({ 0.f,0.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
+	temp = EntityFactory::create_actor_spritesheet({ -1000.f,-1000.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
 	playerID = temp;//important must set the playerID !!!!!!!!!!!
 	
 	//=============================

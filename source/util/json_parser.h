@@ -20,6 +20,7 @@ struct JSON_CARD
 	float value{ 0.0f };
 	float range{ 0.0f };
 	float aoe {0.0f};
+	std::string description;
 	std::string card_image;
 };
 
