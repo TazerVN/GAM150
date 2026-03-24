@@ -99,28 +99,6 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		return;
 	}
 
-	//f32 card_damage = ecs.getComponent<Components::Card_Value>(cardID)->value;
-	//f32 final_damage = card_damage;
-	//bool attackResolved = false;
-
-	//Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(caster);
-	//if (stats)
-	//{
-	//	final_damage *= stats->atkMultiplier;
-	//}
-
-
-	//Components::Card_ID* cid = ecs.getComponent<Components::Card_ID>(cardID);
-	//if (!cid)
-	//	return;
-
-	//Components::Targetting_Component* tgtComp = ecs.getComponent<Components::Targetting_Component>(cardID);
-	//if (!tgtComp)
-	//	return;
-
-	//int serialID = cid->value;
-	//int family = (serialID / 100) % 10; // pierce or not
-
 	Components::Card_ID* cid = ecs.getComponent<Components::Card_ID>(cardID);
 	if (!cid)
 		return;
@@ -802,4 +780,9 @@ void CombatNameSpace::CombatSystem::end_player_resolution()
 	gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
 	int i = static_cast<int>(gbsptr->getGBPhase());
 	gbsptr->GBPTriggered()[i] = true;
+}
+
+std::vector<std::pair<AEVec2, Entity>>& CombatNameSpace::CombatSystem::get_graveyard()
+{
+	return graveyard;
 }

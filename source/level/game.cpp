@@ -28,8 +28,6 @@ void GameState_game_update()
 
 	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
 		gLevelStateNext = LevelStates::LS_QUIT;
-	
-	IM.update(ecs, CS.id());
 	TS.update(ecs);
 
 	if (gLevelStateNext != LevelStates::LS_QUIT)
