@@ -65,7 +65,9 @@ void LevelStateCombat_init()
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
+	AF.bgm.play(0);
 	ecs.remove_empty_groups();
+
 }
 void LevelStateCombat_update()
 {
@@ -98,7 +100,7 @@ void LevelStateCombat_update()
 		p = PauseMenu(50);
 	}
 
-	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;
+	if (AEInputCheckTriggered(AEVK_F5)) gLevelStateNext = LevelStates::LS_RESTART;
 	PUT.update();
 }
 void LevelStateCombat_free()
@@ -108,8 +110,8 @@ void LevelStateCombat_free()
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
 	PUT.free();
+	AF.bgm.stop();
 }
 void LevelStateCombat_unload()
 {
-
 }

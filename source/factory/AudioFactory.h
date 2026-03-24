@@ -13,6 +13,7 @@ namespace AudioFactory
 		{
 			AEAudioGroup group;
 			std::vector<AEAudio> data;
+			bool stopping{false};
 			f32 volume;
 			f32 pitch;
 			s32 loop;
@@ -24,6 +25,8 @@ namespace AudioFactory
 			void free();
 			void add(bool sfx, const char* path);
 			void play(s32 index);
+			bool isStop();
+			void resetAudio();
 			AudioObject();
 			AudioObject(f32 volume, f32 pitch, s32 loop);
 		};

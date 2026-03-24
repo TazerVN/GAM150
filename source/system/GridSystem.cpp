@@ -457,6 +457,19 @@ namespace Grid
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_RBUTTON))
 		{
+			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+			tbsptr->set_selected_card(false);
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+			manaWallVertical = false;
+		}
+		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
+		{
+			unselect_movement();
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		}
+		if (tbsptr->is_current_selected_card()
+			&& AEInputCheckTriggered(AEVK_R))
+		{
 			Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
 			int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
 			bool isManaWall = (serialID == 4220); // keep this matching your real ID
@@ -474,20 +487,7 @@ namespace Grid
 				std::cout << "Mana Wall flipped to "
 					<< (manaWallVertical ? "vertical" : "horizontal") << std::endl;
 			}
-			else
-			{
-				gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-				tbsptr->set_selected_card(false);
-				evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-				manaWallVertical = false;
-			}
 		}
-		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
-		{
-			unselect_movement();
-			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
-		}
-
 
 		for (int i = 0; i < MAX_I; ++i)
 		{
