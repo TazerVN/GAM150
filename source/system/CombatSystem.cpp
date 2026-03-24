@@ -314,8 +314,6 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 		{
 			AEVec2& targetPos = gra.first;
 
-			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
-
 			Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(gra.second);
 
 			if (!anim)
@@ -326,6 +324,9 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 				continue;
 			}
 			
+			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
+			gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
+
 			if (goons->alive() && anim->prev_type != Components::AnimationType::DEATH && anim->anim_type != Components::AnimationType::DEATH)
 			{
 				anim->setType(Components::AnimationType::DEATH);
