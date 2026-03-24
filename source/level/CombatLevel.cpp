@@ -99,6 +99,7 @@ void LevelStateCombat_free()
 	UIM.free();
 	ecs.getComponent<Components::Card_Storage>(playerID)->free();
 	PS.particle_system_free();
+	PUT.free();
 }
 void LevelStateCombat_unload()
 {

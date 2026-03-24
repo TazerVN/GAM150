@@ -131,7 +131,8 @@ Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_car
 	Components::Card_Cost card_cost{ json_card.cost };
 	Components::Card_ID cid{ json_card.id };
 	Components::image_location cimg{ json_card.card_image };
-	
+	Components::Card_Description cardDes{ json_card.description };
+
 	ecs.addComponent(id, cid);
 	ecs.addComponent(id, cardTag);
 	ecs.addComponent(id, nm);
@@ -139,6 +140,7 @@ Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_car
 	ecs.addComponent(id, targetting);
 	ecs.addComponent(id, card_cost);
 	ecs.addComponent(id, cimg);
+	ecs.addComponent(id, cardDes);
 
 	return id;
 }
@@ -156,6 +158,7 @@ void CardSystem::init_cards()
 		//std::cout << "Type : " << static_cast<int>(card.card_type) << std::endl;
 		std::cout << "Value : " << card.value << std::endl;
 		std::cout << "AOE : " << card.aoe << std::endl;
+		std::cout << "Description : " << card.description << std::endl;
 		std::cout << "Card Image : " << card.card_image << '\n' << std::endl;
 		Entity cardECSID = create_ECS_card(ecs, card);
 		cards_map[card.name] = cardECSID;
@@ -184,15 +187,16 @@ Entity CardSystem::generate_card_from_bible(std::string key)
 
 	Components::Card_ID cid{ ecs.getComponent<Components::Card_ID>(bibleID)->value };
 	Components::image_location cimg{ecs.getComponent<Components::image_location>(bibleID)->location};
+	Components::Card_Description cardDes{ ecs.getComponent<Components::Card_Description>(bibleID)->val };
 
 	ecs.addComponent(id, cid);
-
 	ecs.addComponent(id, cardTag);
 	ecs.addComponent(id, nm);
 	ecs.addComponent(id, card_val);
 	ecs.addComponent(id, targetting);
 	ecs.addComponent(id, card_cost);
 	ecs.addComponent(id, cimg);
+	ecs.addComponent(id, cardDes);
 	return id;
 }
 
@@ -211,15 +215,17 @@ Entity CardSystem::generate_card_from_bible(Entity bibleID)
 	Components::Card_Cost card_cost{ ecs.getComponent<Components::Card_Cost>(bibleID)->value };
 
 	Components::Card_ID cid{ ecs.getComponent<Components::Card_ID>(bibleID)->value };
+	Components::image_location cimg{ ecs.getComponent<Components::image_location>(bibleID)->location };
+	Components::Card_Description cardDes{ ecs.getComponent<Components::Card_Description>(bibleID)->val };
 
 	ecs.addComponent(id, cid);
-
 	ecs.addComponent(id, cardTag);
 	ecs.addComponent(id, nm);
 	ecs.addComponent(id, card_val);
 	ecs.addComponent(id, targetting);
 	ecs.addComponent(id, card_cost);
-
+	ecs.addComponent(id, cimg);
+	ecs.addComponent(id, cardDes);
 	return id;
 }
 

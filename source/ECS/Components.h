@@ -247,6 +247,11 @@ namespace Components
 		f32 value;
 	};
 
+	struct Card_Description
+	{
+		std::string val;
+	};
+
 	struct Attack
 	{
 		f32 damage;
