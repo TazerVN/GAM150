@@ -166,7 +166,7 @@ namespace CardInformation
 		//description
 
 
-		f32 size = 0.3;
+		f32 size = 0.3f;
 		std::string token;
 		std::stringstream ss{ card_des->val };
 

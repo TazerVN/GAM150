@@ -8,7 +8,7 @@ namespace Camera
 	{
 	}
 
-	void updateCameraPos(Camera::CameraSystem& cam, EntityComponent::Registry& ecs)
+	void CameraSystem::updateCameraPos(EntityComponent::Registry& ecs)
 	{
 
 		s32 scroll_buffer{ 1 };
@@ -16,11 +16,11 @@ namespace Camera
 
 		if (scroll_buffer != 0.0f)
 		{
-			cam.buffer_zoom += scroll_buffer / (10.f);
-			cam.buffer_zoom = AEClamp(cam.buffer_zoom, 0.2f, 3.f);
+			buffer_zoom += scroll_buffer / (10.f);
+			buffer_zoom = AEClamp(buffer_zoom, 0.2f, 3.f);
 		}
 
-		Components::Transform* transform = ecs.getComponent<Components::Transform>(cam.id());
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(this->id());
 		if (AEInputCheckCurr(AEVK_MBUTTON))
 		{
 
@@ -34,8 +34,11 @@ namespace Camera
 			mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 			mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
-			transform->pos.x = cam.buffer_x - f32(mousex);
-			transform->pos.y = cam.buffer_y - f32(mousey);
+			mouse.x = mousex;
+			mouse.y = mousey;
+
+			transform->pos.x = buffer_x - f32(mousex);
+			transform->pos.y = buffer_y - f32(mousey);
 
 
 			transform->pos.x = AEClamp(transform->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
@@ -43,8 +46,8 @@ namespace Camera
 		}
 
 
-		transform->size.x = cam.buffer_zoom;
-		transform->size.y = cam.buffer_zoom;
+		transform->size.x = buffer_zoom;
+		transform->size.y = buffer_zoom;
 
 	}
 
@@ -106,7 +109,7 @@ namespace Camera
 
 		Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
 		setOrignalDragPos(*this, ecs);
-		updateCameraPos(*this, ecs);
+		this->updateCameraPos(ecs);
 
 	}
 

@@ -32,7 +32,7 @@
 		"cost": 4.0,
 		"value": 1.0,
 		"range": 1.0,
-		"description": "Deal more damage based on turn counter\n",
+		"description": "Deal more damage based \non turn counter\n",
 		"png": "cardSample.png"
 	},
 	{

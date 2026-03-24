@@ -34,10 +34,16 @@ namespace UI
 		PauseMenu pause;
 		Victory_Select vicSelect;
 
+		//other
+		std::pair<Entity, Entity> draw_pile;
+		std::pair<Entity, Entity> discard_pile;
+
 		void health_update();
 		void stamina_update();
 		void mana_update(Scene& scene);
 		void turn_update(Scene& scene);
+		void drawpile_update();
+		void discardpile_update();
 		public:
 		UIManager();
 		void update(Scene& scene, f32 dt);

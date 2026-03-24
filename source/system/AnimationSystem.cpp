@@ -62,6 +62,8 @@ namespace Animation
 		f32 lerp = timer->seconds / timer->max_seconds;
 		f32 fps = timer->max_seconds / 6.f;
 
+
+
 		if (lerp >= 1.f)
 		{
 			texture->offset_x = 0.f;
