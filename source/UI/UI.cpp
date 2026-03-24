@@ -33,19 +33,25 @@ namespace UI
 		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, [this]{ this->pause.setStateOn(true);});
 
 		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, 30, "0");
+		this->draw_pile = std::make_pair(deck_button, deck_text);
 
 		Entity turn_board = UIO::ui_blank_texture(TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
 
 		turn = UIO::ui_text(0.55F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Round ");
 
 		Entity bin_button = UIO::ui_button_texture(TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
+		Entity bin_text = UIO::ui_text( 0.80F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, 30, "0");
+		this->discard_pile = std::make_pair(bin_button, bin_text);
 
 		this->current_ui.push_back(end_b);
 		this->current_ui.push_back(pause_button);
 		this->current_ui.push_back(deck_button);
+		this->current_ui.push_back(deck_text);
 		this->current_ui.push_back(turn_board);
 		this->current_ui.push_back(turn);
 		this->current_ui.push_back(bin_button);
+		this->current_ui.push_back(bin_text);
 
 		//========================================== health/stamina bar ======================================
 		for (Entity e : scene.entities_store())
@@ -152,6 +158,8 @@ namespace UI
 
 		}
 
+		this->discardpile_update();
+		this->drawpile_update();
 		this->health_update();
 		this->stamina_update();
 		this->mana_update(scene);
@@ -342,4 +350,18 @@ namespace UI
 		text->text = buffer;
 	}
 
+	void UIManager::drawpile_update()
+	{
+		auto draw_pile = ecs.getComponent<Components::Card_Storage>(playerID);
+		auto text = ecs.getComponent<Components::Text>(this->draw_pile.second);
+
+		text->text = std::to_string(draw_pile->data_draw_pile.size()).c_str();
+	}
+	void UIManager::discardpile_update() 
+	{
+		auto discard_pile = ecs.getComponent<Components::Card_Storage>(playerID);
+		auto text = ecs.getComponent<Components::Text>(this->discard_pile.second);
+
+		text->text = std::to_string(discard_pile->data_discard_pile.size()).c_str();
+	}
 }
