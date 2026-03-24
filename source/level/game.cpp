@@ -88,5 +88,5 @@ void GameState_game_free()
 
 void GameState_game_unload()
 {
-
+	PS.particle_system_free();
 }

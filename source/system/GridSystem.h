@@ -73,7 +73,7 @@ namespace Grid
 
 		// helper functions for CPU - Zejin 
 		bool findEntityCell(Entity e, s32& outX, s32& outY) const;
-		bool moveEntityAI(Entity e, s32 x, s32 y);
+		bool moveEntityAI(Entity e, s32 x, s32 y, int max_move = 5);
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
 		void updateCell(s32 x, s32 y);

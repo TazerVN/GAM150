@@ -5,7 +5,7 @@
 		"cost": 1.0,
 		"value": 30.0,
 		"range": 2.0,
-		"description": "Deal 30 DMG",
+		"description": "Deal 30 DMG\n",
 		"png": "card_slash.png"
 	},
 	{
@@ -14,7 +14,7 @@
 		"cost": 1.0,
 		"value": 50.0,
 		"range": 2.0,
-		"description": "Deal 50 DMG",
+		"description": "Deal 50 DMG\n",
 		"png": "card_slash+.png"
 	},
 	{
@@ -23,7 +23,7 @@
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 3.0,
-		"description": "",
+		"description": "\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -32,7 +32,7 @@
 		"cost": 4.0,
 		"value": 1.0,
 		"range": 1.0,
-		"description": "Deal more damage based on turn counter",
+		"description": "Deal more damage based \non turn counter\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -41,7 +41,7 @@
 		"cost": 1.0,
 		"value": 7.0,
 		"range": 3.0,
-		"description": "Condition: Discard a card\nDeal damage equal to the cost of the discarded card, double if is a attack card",
+		"description": "Condition:\nDiscard a card\nDeal damage equal to the cost\nof the discarded card,\ndouble if is a attack card\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -51,7 +51,7 @@
 		"value": 20.0,
 		"range": 10.0,
 		"aoe": 1.0,
-		"description": "Send a fire ball to a location causing 20 AOE DMG",
+		"description": "Send a fire ball to a\nlocation causing 20 AOE DMG\n",
 		"png": "card_firebolt.png"
 	},	
 	{
@@ -60,7 +60,7 @@
 		"cost": 1.0,
 		"value": 10.0,
 		"range": 20.0,
-		"description": "Shoot a laser; Deal 20 DMG within a straight line; Ignores blockables",
+		"description": "Shoot a laser;\nDeal 20 DMG within a straight line;\nIgnores blockables\n",
 		"png": "card_shoot.png"
 	},
 	{
@@ -69,7 +69,7 @@
 		"cost": 1.0,
 		"value": 40.0,
 		"range": 10.0,
-		"description": "Shoot stronger laser; Deal 40 DMG within a straight line; Ignores blockables",
+		"description": "Shoot stronger laser;\nDeal 40 DMG within a straight line;\nIgnores blockables\n",
 		"png": "card_shoot+.png"
 	},
 	{
@@ -78,7 +78,7 @@
 		"cost": 1.0,
 		"value": 60.0,
 		"range": 99.0,
-		"description": "Snipe a enemy on board; deal 60 DMG; Can be blocked by effects and walls",
+		"description": "Snipe a enemy on board;\ndeal 60 DMG;\nCan be blocked by effects and walls\n",
 		"png": "card_shoot.png"
 	},
 	{
@@ -86,7 +86,7 @@
 		"name": "Barrier",
 		"cost": 1.0,
 		"value": 10.0,
-		"description": "Put up a temporary barrier",
+		"description": "Put up a temporary barrier\n",
 		"png": "card_barrier.png"
 	},
 	{
@@ -94,7 +94,7 @@
 		"name": "Barrier+",
 		"cost": 1.0,
 		"value": 10.0,
-		"description": "Put up a stronger barrier",
+		"description": "Put up a stronger barrier\n",
 		"png": "card_barrier+.png"
 	},
 	{
@@ -102,7 +102,7 @@
 		"name": "DMG Cut",
 		"cost": 1.0,
 		"value": 0.5,
-		"description": "Next damage taken will be halved",
+		"description": "Next damage taken will be halved\n",
 		"png": "card_dmg_cut.png"
 	},
 	{
@@ -110,7 +110,7 @@
 		"name": "Aura Farm",
 		"cost": 1.0,
 		"value": 1.0,
-		"description": "One turn invincibility",
+		"description": "One turn invincibility\n",
 		"png": "card_aura_farm.png"
 	},
 	{
@@ -118,7 +118,7 @@
 		"name": "Mana Wall",
 		"cost": -1.0,
 		"value": -1.0,
-		"description": "Consumes all current mana and generate a temporary barrier",
+		"description": "Consumes all current mana and\ngenerate a temporary barrier\n",
 		"png": "cardSample.png"
 	},
 
@@ -127,7 +127,7 @@
 		"name": "Recovery",
 		"cost": 1.0,
 		"value": 10.0,
-		"description": "Recover health; +10HP",
+		"description": "Recover health;\n+10HP\n",
 		"png": "card_recovery.png"
 	},
 	{
@@ -135,7 +135,7 @@
 		"name": "Recovery+",
 		"cost": 1.0,
 		"value": 20.0,
-		"description": "Recover more health; +20HP",
+		"description": "Recover more health;\n+20HP\n",
 		"png": "card_recovery.png"
 	},
 	{
@@ -143,7 +143,7 @@
 		"name": "Recovery++",
 		"cost": 1.0,
 		"value": 9.0,
-		"description": "Greatly recover more health; +50HP",
+		"description": "Greatly recover more health;\n+50HP\n",
 		"png": "card_recovery.png"
 	},
 	{
@@ -151,7 +151,7 @@
 		"name": "PP up",
 		"cost": 0.0,
 		"value": 2.0,
-		"description": "Gives you 2 PP",
+		"description": "Gives you 2 PP\n",
 		"png": "card_pp_up.png"
 	},
 	{
@@ -159,7 +159,7 @@
 		"name": "STR Disk",
 		"cost": 1.0,
 		"value": 2.0,
-		"description": "Next attack hit harder; DMG increased by 1.5x",
+		"description": "Next attack hit harder;\nDMG increased by 1.5x\n",
 		"png": "card_str_disk.png"
 	},
 	{
@@ -167,7 +167,7 @@
 		"name": "Swift foot",
 		"cost": 1.0,
 		"value": 1.0,
-		"description": "refresh movement; Stamina +3",
+		"description": "refresh movement;\nStamina +3\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -175,7 +175,7 @@
 		"name": "Data Draw",
 		"cost": 1.0,
 		"value": 2.0,
-		"description": "Draw 2 cards.",
+		"description": "Draw 2 cards.\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -183,7 +183,7 @@
 		"name": "Salvage",
 		"cost": -1.0,
 		"value": -1.0,
-		"description": "Get card from discard pile",
+		"description": "Get card from discard pile\n",
 		"png": "cardSample.png"
 	},
 	{
@@ -191,7 +191,7 @@
 		"name": "Rand Generate",
 		"cost": 1.0,
 		"value": 1.0,
-		"description": "Randomly genrate attack/ defense card",
+		"description": "Randomly genrate attack/ defense card\n",
 		"png": "cardSample.png"
 	},
 
@@ -202,7 +202,7 @@
 		"value": 0.0,
 		"range": 10.0,
 		"aoe": 5.0,
-		"description": "Blow an enemy away; Push enemies 4 Tiles towards a direction",
+		"description": "Blow an enemy away;\nPush enemies 4 Tiles towards a direction\n",
 		"png": "card_gust_of_wind.png"
 	},
 	{
@@ -212,7 +212,7 @@
 		"value": 80.0,
 		"range": 4.0,
 		"aoe": 4.0,
-		"description": "Instant kill an enemy (10% success rate); Take 40 DMG upon fail; cool desc: To summon power stronger than the god's is to lose one's humanity",
+		"description": "Instant kill an enemy \n(10% success rate);\nTake 40 DMG upon fail; \ncool desc:\nTo summon power stronger than the\ngod's is to lose one's humanity \n",
 		"png": "card_black_hole.png"
 	}
 ]
