@@ -89,7 +89,7 @@ namespace UI
 
 		if(this->info.isOn() && !this->info.isCreated())
 		{
-			info = CardInformation::CardDisplay(ecs, mf, -0.75F * AEGfxGetWinMaxX(), 0.50F * AEGfxGetWinMaxY(), 379, 458, 30);
+			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, 30);
 		}
 		else if(!this->info.isOn() && this->info.isCreated())
 		{

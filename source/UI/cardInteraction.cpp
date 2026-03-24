@@ -378,7 +378,7 @@ namespace CardInteraction
 		f32 minimum = 0.6f;
 
 		m1->z = 31;
-		m2->z = 32;
+		m2->z = 31;
 		i->z = 31;
 
 		c1->d_color.r = minimum + (1.f - minimum) * lerp;
@@ -420,7 +420,7 @@ namespace CardInteraction
 
 
 		m1->z = 30;
-		m2->z = 31;
+		m2->z = 30;
 		i->z = 30;
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
