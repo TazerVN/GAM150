@@ -133,11 +133,11 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		{
 			BattleGrid.placeEntity(rock, x, y);
 
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(rock);
+			/*Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(rock);
 			if (mesh)
 			{
 				mesh->z = 0;
-			}
+			}*/
 		}
 		else
 		{
@@ -175,10 +175,10 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 			Components::Tag* tag = ecs.getComponent<Components::Tag>(entities[i]);
 			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(entities[i]);
 
-			if (tag && mesh && *tag == Components::Tag::OTHERS)
-			{
-				mesh->z = 0; // keep rocks under most other visuals
-			}
+			//if (tag && mesh && *tag == Components::Tag::OTHERS)
+			//{
+			//	mesh->z = 0; // keep rocks under most other visuals
+			//}
 		}
 		else
 		{
