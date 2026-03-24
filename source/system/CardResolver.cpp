@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CardResolver.h"
 #include "../system/GridSystem.h"
-
+#include <algorithm>
 namespace
 {
 	int get_category(int id)
@@ -197,9 +197,95 @@ namespace CardResolver
 			switch (family)
 			{
 			case 0: // Absorb / pull
+			{
+				std::vector<Entity> movedEnemies;
 				std::cout << "[CardResolver] Absorb event triggered\n";
-				return PC_RETURN_TAG::VALID;
 
+				int cx = static_cast<int>(targetPos.x);
+				int cy = static_cast<int>(targetPos.y);
+
+				Components::Targetting_Component* tc =
+					ecs.getComponent<Components::Targetting_Component>(cardID);
+				if (!tc)
+					return PC_RETURN_TAG::INVALID;
+
+				int aoe = static_cast<int>(tc->aoe);
+
+				EntityComponent::ComponentTypeID tagID =
+					EntityComponent::getComponentTypeID<Components::Tag>();
+
+				bool anyMoved = false;
+
+				std::vector<std::pair<int, Entity>> targets; // distance, entity
+
+				for (int i = 0; i < MAX_I; ++i)
+				{
+					for (int j = 0; j < MAX_J; ++j)
+					{
+						if (grid_dist_manhattan(i, j, cx, cy) > aoe)
+							continue;
+
+						Entity e = board.get_pos()[i][j];
+						if (e == Components::NULL_INDEX) continue;
+						if (e == caster) continue;
+
+						if (!ecs.getBitMask()[e].test(tagID)) continue;
+
+						Components::Tag* tag = ecs.getComponent<Components::Tag>(e);
+						if (!tag) continue;
+						if (*tag == Components::Tag::OTHERS) continue;
+
+						int dist = grid_dist_manhattan(i, j, cx, cy);
+						targets.push_back({ dist, e });
+					}
+				}
+
+				std::sort(targets.begin(), targets.end(),
+					[](const std::pair<int, Entity>& a, const std::pair<int, Entity>& b)
+					{
+						return a.first > b.first; // farthest first
+					});
+
+				for (const auto& t : targets)
+				{
+					Entity e = t.second;
+					if (board.moveEntityAI(e, cx, cy, 5))
+					{
+						anyMoved = true;
+						movedEnemies.push_back(e);
+					}
+				}
+
+				if (!movedEnemies.empty())
+				{
+					int randomIndex = std::rand() % movedEnemies.size();
+					Entity doomed = movedEnemies[randomIndex];
+
+					int roll = std::rand() % 100;
+
+					if (roll < 10)
+					{
+						s32 ex, ey;
+						if (board.findEntityCell(doomed, ex, ey))
+						{
+							combatSystem.get_graveyard().push_back({ AEVec2{ (f32)ex, (f32)ey }, doomed });
+							std::cout << "[Black Hole] Enemy " << doomed << " was instantly eliminated.\n";
+						}
+					}
+					else
+					{
+						Call_AttackSystem(caster, 40.0f, board);
+						std::cout << "[Black Hole] Failed instant kill. Player took 40 damage.\n";
+					}
+				}
+
+				if (anyMoved)
+				{
+					board.setEnemyAnimationPhase();
+				}
+
+				return PC_RETURN_TAG::VALID;
+			}
 			case 1: // Push
 			{
 				std::cout << "[CardResolver] Push event triggered\n";

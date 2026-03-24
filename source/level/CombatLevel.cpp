@@ -23,11 +23,15 @@ void LevelStateCombat_load()
 		{
 			std::cout << " put data fail";
 		}
+
 		int upper_bound = static_cast<int>(card_system.start_decks.size()) - 1;
 		int lower_bound = 0;
 		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
 
 		JSON_DECK deck = card_system.start_decks[index];
+
+		//for teesting decks
+		//JSON_DECK deck = card_system.start_decks[3];
 
 		for (std::string& card_name : deck.cards)
 		{

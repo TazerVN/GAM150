@@ -42,6 +42,24 @@
 				"Barrier",
 				"Barrier"
 			]
+		},
+		{
+			"name" : "Event Deck",
+			"cards" : 
+			[
+				"Gust of Wind",
+				"Mana Wall",
+				"Black Hole"
+			]
+		},
+		{
+			"name" : "Item Deck",
+			"cards" : 
+			[
+				"PP Up",
+				"Recovery",
+				"STR Disk"
+			]
 		}
 	]
 }

@@ -207,12 +207,12 @@
 	},
 
 	{
-		"id": 1020,
+		"id": 4020,
 		"name": "Black Hole",
 		"cost": 5.0,
-		"value": 80.0,
-		"range": 4.0,
-		"aoe": 4.0,
+		"value": 10.0,
+		"range": 15.0,
+		"aoe": 15.0,
 		"description": "Instant kill an enemy \n(10% success rate);\nTake 40 DMG upon fail; \ncool desc:\nTo summon power stronger than the\ngod's is to lose one's humanity \n",
 		"png": "card_black_hole.png"
 	}
