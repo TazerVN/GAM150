@@ -14,7 +14,7 @@
 namespace Components
 {
 	constexpr size_t MAX_CARDS = 1000;
-	constexpr size_t MAX_COMPONENT = 30;
+	constexpr size_t MAX_COMPONENT = 50;
 
 
 	constexpr size_t NULL_INDEX = -1;
@@ -174,10 +174,12 @@ namespace Components
 			  std::function<void()> onClick,
 			  std::function<void()> onHover,
 			  std::function<void()> offHover,
-			  s8 z = 0, bool drag = false, bool col = true);
+			  s8 z = 0, bool drag = false, bool col = true, std::function<void()> onDrag = nullptr, std::function<void()> offDrag = nullptr);
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;
+		std::function<void()> onDrag;
+		std::function<void()> offDrag;
 	};
 
 	struct Velocity

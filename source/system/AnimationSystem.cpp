@@ -62,6 +62,8 @@ namespace Animation
 		f32 lerp = timer->seconds / timer->max_seconds;
 		f32 fps = timer->max_seconds / 6.f;
 
+
+
 		if (lerp >= 1.f)
 		{
 			texture->offset_x = 0.f;
@@ -77,6 +79,10 @@ namespace Animation
 				anim->current_frame = ++anim->current_frame % anim->max_frame;
 
 			texture->offset_x = frame / 18.f;
+			/*Components::Transform* camera = ecs.getComponent<Components::Transform>(CS.id());
+			int magnitude = 10;
+			camera->pos.x = camera->pos_onscreen.x + magnitude / 2 - AERandFloat() * magnitude;
+			camera->pos.y = camera->pos_onscreen.y + magnitude / 2 - AERandFloat() * magnitude;*/
 		}
 
 		return flag;
@@ -90,6 +96,9 @@ namespace Animation
 		Components::AStarResult* astar = ecs.getComponent<Components::AStarResult>(id);
 		Components::Texture* texture = ecs.getComponent<Components::Texture>(id);
 		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(id);
+
+
+
 
 		timer->start = true;
 		bool flag = false;
@@ -129,7 +138,7 @@ namespace Animation
 				texture->offset_y = 1.f / 4.f;
 			}
 
-
+			
 			int frame = 1 + int(lerp * 5);
 
 
@@ -206,7 +215,7 @@ namespace Animation
 		f32 minimum = 0.6f;
 
 
-		if(timer->seconds >= timer->max_seconds)
+		if (timer->seconds >= timer->max_seconds)
 		{
 			flag = true;
 			timer->start = false;
@@ -232,12 +241,12 @@ namespace Animation
 		f32 minimum = 0.6f;
 
 
-		if(timer->seconds >= timer->max_seconds)
+		if (timer->seconds >= timer->max_seconds)
 		{
 			flag = true;
 			timer->start = false;
 			color->d_color = color->c_color;
-			
+
 			transform->pos_onscreen.x = transform->pos.x;
 		}
 		else
@@ -264,11 +273,11 @@ namespace Animation
 		f32 minimum = 0.6f;
 
 
-		if(timer->seconds >= timer->max_seconds)
+		if (timer->seconds >= timer->max_seconds)
 		{
 			flag = true;
 			timer->start = false;
-			
+
 		}
 		else
 		{

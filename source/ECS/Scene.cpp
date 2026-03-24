@@ -114,6 +114,22 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
+	if (AEInputCheckTriggered(AEVK_MINUS))
+	{
+		/*for (auto it : enemyDirector.get_map())
+		{
+			AEVec2 pos = { f32(ecs.getComponent<Components::gridData>(it.second)->x),
+						   f32(ecs.getComponent<Components::gridData>(it.second)->y) };
+			cbs.get_graveyard().push_back({pos,it.second});
+		}*/
+		for (Entity goon : ecs.getComponent<Components::Horde_Tag>(TBSys.get_participant()[1])->goons)
+		{
+			AEVec2 pos = { f32(ecs.getComponent<Components::gridData>(goon)->x),
+						   f32(ecs.getComponent<Components::gridData>(goon)->y) };
+			cbs.get_graveyard().push_back({ pos,goon });
+		}
+	}
+
 	if (AEInputCheckTriggered(AEVK_RCTRL)) // test particle
 	{
 		f32 x; f32 width = 40.f;
@@ -178,14 +194,13 @@ void Scene::update()
 			Entity combatNode;
 			combatNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
+
 			BattleGrid.placeEntity(combatNode, 0, 0);
 			BattleGrid.placeEntity(BossNode, MAX_I - 1, MAX_J - 1);
 		}
-
-		cbs.update();
-		enemyDirector.update(gbs, TBSys, BattleGrid,intentDisplaySystem);
 	}
-
+	cbs.update();
+	enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
 	intentDisplaySystem.update(*this);
 	iNodes.update();
 	//==================Handle Events===============================

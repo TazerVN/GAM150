@@ -15,7 +15,9 @@ namespace Camera{
 		public:
 		f32 buffer_x, buffer_y;
 		f32 buffer_zoom;
+		AEVec2 mouse;
 		CameraSystem();
+		void updateCameraPos(EntityComponent::Registry& ecs);
 		void init();
 		void update();
 		Entity id() const;

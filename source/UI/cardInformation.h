@@ -17,7 +17,7 @@ namespace CardInformation
 		{
 			Entity name;
 			Entity cost;
-			Entity description;
+			std::vector<Entity> description;
 			Info() = default;
 			Info(EntityComponent::Registry& ecs, Entity display, Entity CardData);
 			void free();

@@ -20,6 +20,7 @@ namespace InputSystem
 		private:
 		std::list<std::pair<s8, Entity>> buffer;
 		public:
+		Entity cur_drag{};
 		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();

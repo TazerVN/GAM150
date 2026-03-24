@@ -67,6 +67,7 @@ namespace CombatNameSpace
 		void update_GBPhasetriggered();
 		void update_GBPhaseUpdate();
 		void end_player_resolution();
+		std::vector<std::pair<AEVec2, Entity>>& get_graveyard();
 	};
 }
 
