@@ -14,7 +14,7 @@
 namespace Components
 {
 	constexpr size_t MAX_CARDS = 1000;
-	constexpr size_t MAX_COMPONENT = 30;
+	constexpr size_t MAX_COMPONENT = 50;
 
 
 	constexpr size_t NULL_INDEX = -1;

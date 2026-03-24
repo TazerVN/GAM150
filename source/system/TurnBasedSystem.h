@@ -45,7 +45,6 @@ namespace TBS
 		void round_start(EntityComponent::Registry& ecs);
 		void round_end();
 	public:
-		bool player_died = false;
 		//===========Set Ups============================
 		void init(EntityComponent::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
 			, CardSystem&, CardInteraction::CardHand& ,Entity);
