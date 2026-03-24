@@ -21,8 +21,6 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 }
 
 
-
-
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {

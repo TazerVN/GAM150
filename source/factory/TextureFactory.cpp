@@ -74,13 +74,13 @@ namespace TextureFactory
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/deckButton.png"));        //1
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));     //2
 		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaEmpty.png"));         //3
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaholderElement.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaOne.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaTwo.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/skillWindow.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/turnCounter.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/moveButton.png"));
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaholderElement.png"));	//4
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaOne.png"));	//5
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaTwo.png"));	//6
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/skillWindow.png"));	//7
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/turnCounter.png"));	//8
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));	//9
+		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/moveButton.png"));	//10
 
 		//Others
 		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Rock.png"));
