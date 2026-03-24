@@ -92,7 +92,7 @@ void LevelStateCombat_update()
 		p = PauseMenu(50);
 	}
 
-	if (AEInputCheckTriggered(AEVK_R)) gLevelStateNext = LevelStates::LS_RESTART;
+	if (AEInputCheckTriggered(AEVK_F5)) gLevelStateNext = LevelStates::LS_RESTART;
 	PUT.update();
 }
 void LevelStateCombat_free()
