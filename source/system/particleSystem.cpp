@@ -604,7 +604,7 @@ void Particle::ParticleSystem::particle_system_free()
 	EntityComponent::ComponentBitMask objMask;
 	objMask.set(particleID);
 
-	for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
+	/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
 	{
 		if ((it->first & objMask) == objMask)
 		{
@@ -614,6 +614,11 @@ void Particle::ParticleSystem::particle_system_free()
 				ecs.destroyEntity(ent);
 			}
 		}
+	}*/
+
+	for(Entity p : Particlebuffer)
+	{
+		ecs.destroyEntity(p);
 	}
 	Particlebuffer.clear();
 }
