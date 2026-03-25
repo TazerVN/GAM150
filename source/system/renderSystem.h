@@ -17,7 +17,7 @@ namespace RenderSystem
 	{
 		private:
 
-		std::list<std::pair<s8, Entity>> buffer;
+		std::list<std::pair<s32, Entity>> buffer;
 		public:
 		RenderSystem();
 		void RenderSystem_init(EntityComponent::Registry& ecs);

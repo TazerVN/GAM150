@@ -15,16 +15,18 @@ namespace CardInformation
 		Entity info_id;
 		struct Info
 		{
+			s32 z{ 1000 };
 			Entity name;
 			Entity cost;
 			std::vector<Entity> description;
 			Info() = default;
-			Info(EntityComponent::Registry& ecs, Entity display, Entity CardData);
+			Info(EntityComponent::Registry& ecs, Entity display, Entity CardData, s32 z);
 			void free();
 		};
 		Info text;
 		bool on{ false };
 		bool created{ false };
+		s32 z{ 1000 };
 
 		public:
 		CardDisplay() = default;

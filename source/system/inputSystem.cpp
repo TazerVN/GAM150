@@ -5,7 +5,7 @@
 
 namespace InputSystem
 {
-	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs);
+	bool IM_CMP(std::pair<s32, Entity> const& rhs, std::pair<s32, Entity> const& lhs);
 
 	void InputManager::update(EntityComponent::Registry& ecs, Entity camera_id)
 	{
@@ -32,7 +32,7 @@ namespace InputSystem
 				for (Entity ent : it->second)
 				{
 					Components::Input* input = ecs.getComponent<Components::Input>(ent);
-					std::pair<s8, Entity> temp {input->z, ent};
+					std::pair<s32, Entity> temp {input->z, ent};
 					this->buffer.push_back(temp);
 				}
 			}
@@ -44,7 +44,7 @@ namespace InputSystem
 		this->buffer.sort(IM_CMP);
 		bool active_hover = false;
 
-		for (std::pair<s8, Entity> temp : this->buffer)
+		for (std::pair<s32, Entity> temp : this->buffer)
 		{
 			f32 camera_x = cam->pos.x;
 			f32 camera_y = cam->pos.y;
@@ -168,7 +168,7 @@ namespace InputSystem
 
 
 
-	bool IM_CMP(std::pair<s8, Entity> const& rhs, std::pair<s8, Entity> const& lhs)
+	bool IM_CMP(std::pair<s32, Entity> const& rhs, std::pair<s32, Entity> const& lhs)
 	{
 		return (rhs.first > lhs.first) ? true : false;
 	}

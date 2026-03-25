@@ -25,6 +25,8 @@ namespace UI
 		std::vector<std::pair<Entity, Entity>> intention_children_list;
 		std::vector<Entity> current_ui;
 
+		s32 z{300};
+
 		//card
 		CardInformation::CardDisplay info;
 		CardInteraction::CardHand hand;

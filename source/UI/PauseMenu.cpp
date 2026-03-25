@@ -9,7 +9,7 @@ PauseMenu::PauseMenu(s32 z)
 	Components::TagClass tag{ Components::Tag::UI };
 	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40};
 
-	this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+	this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, z, 0.0f, 0.0f, 0.0f, 0.5f);
 
 
 	this->continue_button.button = UIO::ui_button(0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr);

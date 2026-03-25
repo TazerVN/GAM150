@@ -16,7 +16,7 @@ namespace RenderSystem
 {
 	void render_mesh(AEGfxVertexList* mesh, AEVec2& pos, AEVec2& size, f32 rotation, AEMtx33* transform);
 
-	bool renderCMP(const std::pair<s8, Entity>& a, const std::pair<s8, Entity>& b)
+	bool renderCMP(const std::pair<s32, Entity>& a, const std::pair<s32, Entity>& b)
 	{
 		if(a.first < b.first) return true;
 		return false;
@@ -47,7 +47,7 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
-					std::pair<s8, Entity> a{mesh->z, ent};
+					std::pair<s32, Entity> a{mesh->z, ent};
 					buffer.push_back(a);
 				}
 			}
@@ -56,7 +56,7 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Text* text = ecs.getComponent<Components::Text>(ent);
-					std::pair<s8, Entity> a{ text->z, ent };
+					std::pair<s32, Entity> a{ text->z, ent };
 					buffer.push_back(a);
 				}
 			}

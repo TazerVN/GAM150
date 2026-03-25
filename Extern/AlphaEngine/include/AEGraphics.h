@@ -720,7 +720,8 @@ AE_API AEGfxTexture*	AEGfxTextureLoadFromMemory(u8 *pColors, u32 Width, u32 Heig
 /******************************************************************************/
 /*!
 \fn		    void AEGfxSaveTextureToFile(AEGfxTexture* pTexture, 
-                                        s8 *pFileName)
+                                        
+                                        *pFileName)
 
 \brief      Save a texture from memory to file.
 

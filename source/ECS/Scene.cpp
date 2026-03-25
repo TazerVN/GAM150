@@ -92,7 +92,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 			{ 298.0f, 258.0f },
 			"Rock",
 			TF.getTextureOthers(0),
-			1.0f
+			1.0f,
+			1
 		);
 
 		Components::Color* rockColor = ecs.getComponent<Components::Color>(rock);

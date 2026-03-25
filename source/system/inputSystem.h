@@ -18,7 +18,7 @@ namespace InputSystem
 	class InputManager
 	{
 		private:
-		std::list<std::pair<s8, Entity>> buffer;
+		std::list<std::pair<s32, Entity>> buffer;
 		public:
 		Entity cur_drag{};
 		int cur_in = -1;

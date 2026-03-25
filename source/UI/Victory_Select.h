@@ -6,6 +6,7 @@ private:
 public:
 	std::vector<Entity>victory_cards;
 	Entity dim;
+	s32 z{1100};
 	bool on = false;
 	void update();
 	void free();

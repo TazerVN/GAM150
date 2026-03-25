@@ -15,7 +15,7 @@ namespace EntityFactory
 {
 	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at);
 	Entity create_actor_normal(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at);
-	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp);
+	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp, s32 z);
 
 	//Entity create_defense_card(ECS::Registry& ecs, const char* name, f32 val, f32 range, f32 cost);
 	void add_card_player_hand(EntityComponent::Registry& ecs, Entity user, Entity cardID);

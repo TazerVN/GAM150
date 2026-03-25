@@ -89,7 +89,7 @@ namespace EntityFactory {
 		return id;
 	}
 
-	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp)
+	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp, s32 z)
 	{
 		Entity id = ecs.createEntity();
 
@@ -97,7 +97,7 @@ namespace EntityFactory {
 		Components::HP HP{ hp };
 		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos, pos, size, size, 0.f };
-		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f, 1.0f };
 		Components::Tag tag{ Components::Tag::OTHERS };
 		Components::gridData gd{};
