@@ -88,6 +88,11 @@ namespace CardResolver
 			{
 			case 0: // Shield
 				stats->shields += static_cast<int>(value->value);
+
+				// cap at 30
+				if (stats->shields > 30)
+					stats->shields = 30;
+
 				return PC_RETURN_TAG::VALID;
 
 			case 1: // Aura Farm

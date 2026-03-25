@@ -150,7 +150,7 @@
 		"name": "STR Disk",
 		"cost": 1.0,
 		"value": 2.0,
-		"description": "Next attack hit harder;\nDMG increased by 1.5x\n",
+		"description": "The next 3 attacks hit harder;\nDMG increased by 1.5x\nstackable; CAP = 3.0x\n",
 		"png": "card_str_disk.png"
 	},
 	{
