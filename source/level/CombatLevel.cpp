@@ -59,8 +59,6 @@ void LevelStateCombat_init()
 
 
 	scene.init(CS, UIM);
-	/*card = CardInteraction::CardHand(ecs, mf, TF, -0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-		, scene.getGBS(), UIM);*/
 	UIM.init(scene);
 
 	PS.particleDataStream(ecs, mf);

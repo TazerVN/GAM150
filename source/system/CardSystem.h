@@ -65,10 +65,12 @@ class CardSystem
 	public:
 	std::vector<Entity>cards_vec;
 	std::vector<JSON_DECK> start_decks;
+
 	void init_cards();
 	Entity generate_card_from_bible(std::string key);
 	Entity generate_card_from_bible(Entity bible_id);
 	Entity get_bible_id(std::string key);
+	Entity getCardAtIndex(int index)const;
 	size_t size() const;
 };
 

@@ -20,6 +20,7 @@
 #include "system/AnimationSystem.h"
 #include "system/particleSystem.h"
 #include "system/CardSystem.h"
+#include "system/ScoringSystem.h"
 #include "UI/Text.h"
 
 
@@ -47,3 +48,4 @@ extern Animation::AnimationSystem AS;
 extern Text::PopUpText PUT;
 extern Particle::ParticleSystem PS;
 extern AudioFactory::AudioFactory AF;
+extern ScoringSystem SS;
