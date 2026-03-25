@@ -17,6 +17,8 @@ namespace AudioFactory
 		this->sfx.add(true, "../../Assets/audio/sfx/shoot.wav");
 		this->sfx.add(true, "../../Assets/audio/sfx/damage.wav");
 		this->sfx.add(true, "../../Assets/audio/sfx/damage2.wav");
+		this->sfx.add(true, "../../Assets/audio/sfx/laser.wav");   // 7
+		this->sfx.add(true, "../../Assets/audio/sfx/sniper.wav");  // 8
 
 		std::cout << "AUDIO INITIALIZE" << std::endl;
 	}

@@ -7,6 +7,8 @@
 #include "../UI/UI.h"
 //#include "util/util.h"
 
+std::vector<std::string> hardcoded_levels;
+
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 	const std::string& actorId,
@@ -24,13 +26,13 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
-
 	unsigned int seed;
 
 	if (parse_seed(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
 	{
 		seed = static_cast<unsigned int>(time(nullptr));
 	}
+
 	std::srand(seed);
 
 	cameraSys = &cam;
@@ -54,7 +56,29 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	st->cur_movSpd = st->max_movSpd;
 
 	//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
-	enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt"); //load enemy instrucitons
+	if (SS.firstLevel())
+	{
+		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+	}
+	else
+	{
+		hardcoded_levels.reserve(sizeof(std::string) * 3);
+		hardcoded_levels.push_back("Clutter");
+		hardcoded_levels.push_back("TEST_level");
+		hardcoded_levels.push_back("TrollAllEnemy");
+
+		int upper_bound = static_cast<int>(hardcoded_levels.size()) - 1;
+		int lower_bound = 0;
+		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+		
+		std::string loc = "Assets/levels/";
+		std::string end = ".txt";
+		loc += hardcoded_levels[index] += end;
+
+		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+
+		hardcoded_levels.clear();
+	}
 
 	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
 	{
@@ -149,7 +173,22 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
+	//Shield display - steven canu draw shield here
+	/*this->playerBarrier = EntityFactory::create_grid_object(
+		ecs,
+		mf,
+		{ 0.0f, 0.0f },
+		{ 192.0f, 192.0f },
+		"Barrier",
+		TF.getTextureOthers(5),
+		1.0f
+	);
 
+	Components::Mesh* barrierMesh = ecs.getComponent<Components::Mesh>(this->playerBarrier);
+	if (barrierMesh)
+	{
+		barrierMesh->on = false;
+	}*/
 
 	//nameTags.create_static_nametag(playerID, "Player");
 
@@ -269,7 +308,7 @@ void Scene::update()
 
 			Entity firstNode;
 			firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
-				Components::AnimationType::NONE, Components::VictoryNodeTag::ENCOUNTER);
+				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			Entity secondNode;
 			secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
@@ -283,6 +322,8 @@ void Scene::update()
 
 			BattleGrid.placeEntity(firstNode, 0, 0);
 			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
+
+			SS.incrementLevelCleared();
 		}
 	}
 	cbs.update();

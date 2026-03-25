@@ -89,6 +89,8 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Enemy_atk_icon.png"));
 		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Enemy_move_icon.png"));
 		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Manawall.png"));
+		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Barrier.png"));
+		this->addTextureOthers(AEGfxTextureLoad("../../Assets/others/Barrier+.png"));
 		//MIS
 		//this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
 		this->fontID = AEGfxCreateFont("../../Assets/font/TahomaBd.ttf", 64.F);

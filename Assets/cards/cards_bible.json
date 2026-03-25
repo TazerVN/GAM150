@@ -33,7 +33,7 @@
 		"value": 1.0,
 		"range": 1.0,
 		"description": "Deal more damage based \non turn counter\n",
-		"png": "cardSample.png"
+		"png": "card_Turn_Bash.png"
 	},
 	{
 		"id": 1310,
@@ -66,7 +66,7 @@
 	{
 		"id": 1131,
 		"name": "Shoot+",
-		"cost": 1.0,
+		"cost": 2.0,
 		"value": 40.0,
 		"range": 10.0,
 		"description": "Shoot stronger laser;\nDeal 40 DMG within a straight line;\nIgnores blockables\n",
@@ -75,16 +75,16 @@
 	{
 		"id": 1230,
 		"name": "Snipe",
-		"cost": 1.0,
+		"cost": 4.0,
 		"value": 60.0,
 		"range": 99.0,
 		"description": "Snipe a enemy on board;\ndeal 60 DMG;\nCan be blocked by effects and walls\n",
-		"png": "card_shoot.png"
+		"png": "card_Snipe.png"
 	},
 	{
 		"id": 2000,
 		"name": "Barrier",
-		"cost": 1.0,
+		"cost": 3.0,
 		"value": 10.0,
 		"description": "Put up a temporary barrier\n",
 		"png": "card_barrier.png"
@@ -92,7 +92,7 @@
 	{
 		"id": 2001,
 		"name": "Barrier+",
-		"cost": 1.0,
+		"cost": 4.0,
 		"value": 10.0,
 		"description": "Put up a stronger barrier\n",
 		"png": "card_barrier+.png"
@@ -100,7 +100,7 @@
 	{
 		"id": 2100,
 		"name": "DMG Cut",
-		"cost": 1.0,
+		"cost": 2.0,
 		"value": 0.5,
 		"description": "Next damage taken will be halved\n",
 		"png": "card_dmg_cut.png"
@@ -108,9 +108,9 @@
 	{
 		"id": 2101,
 		"name": "Aura Farm",
-		"cost": 1.0,
+		"cost": 3.0,
 		"value": 1.0,
-		"description": "One turn invincibility\n",
+		"description": "Invincibility for one round\ntrully... invincible...\nMARK!?\n",
 		"png": "card_aura_farm.png"
 	},
 	{
@@ -124,7 +124,7 @@
 	{
 		"id": 3001,
 		"name": "Recovery+",
-		"cost": 1.0,
+		"cost": 2.0,
 		"value": 20.0,
 		"description": "Recover more health;\n+20HP\n",
 		"png": "card_recovery.png"
@@ -132,8 +132,8 @@
 	{
 		"id": 3002,
 		"name": "Recovery++",
-		"cost": 1.0,
-		"value": 9.0,
+		"cost": 3.0,
+		"value": 30.0,
 		"description": "Greatly recover more health;\n+50HP\n",
 		"png": "card_recovery.png"
 	},
@@ -150,16 +150,16 @@
 		"name": "STR Disk",
 		"cost": 1.0,
 		"value": 2.0,
-		"description": "Next attack hit harder;\nDMG increased by 1.5x\n",
+		"description": "The next 3 attacks hit harder;\nDMG increased by 1.5x\nstackable; CAP = 3.0x\n",
 		"png": "card_str_disk.png"
 	},
 	{
 		"id": 3200,
 		"name": "Swift foot",
-		"cost": 1.0,
+		"cost": 3.0,
 		"value": 1.0,
 		"description": "refresh movement;\nStamina +3\n",
-		"png": "cardSample.png"
+		"png": "card_Swift_foot.png"
 	},
 	{
 		"id": 3400,
@@ -193,7 +193,7 @@
 		"value": -1.0,
 		"range": 45.0,
 		"aoe": 45.0,
-		"description": "Blow an enemy away;\nPush enemies 4 Tiles towards a direction\n",
+		"description": "Blow enemies away;\n press 'R' to rotate\nPush enemies 5 Tiles towards a direction\n",
 		"png": "card_gust_of_wind.png"
 	},
 	{
@@ -202,8 +202,8 @@
 		"cost": 5.0,
 		"value": -1.0,
 		"range": 10.0,
-		"description": "Consumes all current mana and\ngenerate a temporary barrier\n",
-		"png": "cardSample.png"
+		"description": "Consumes all current mana and\ngenerate a barrier\npress 'R' to rotate\n",
+		"png": "card_Manawall.png"
 	},
 
 	{

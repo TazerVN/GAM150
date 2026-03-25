@@ -242,6 +242,11 @@ Entity CardSystem::get_bible_id(std::string key)
 	return cards_map[key];
 }
 
+Entity CardSystem::getCardAtIndex(int index) const
+{
+	return cards_vec[index];
+}
+
 size_t CardSystem::size() const
 {
 	return cards_vec.size();
