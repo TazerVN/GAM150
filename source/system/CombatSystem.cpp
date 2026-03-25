@@ -221,6 +221,8 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		// Shoot / Shoot+ : piercing
 		if (family == 1)
 		{
+			AF.sfx.resetAudio();
+			AF.sfx.play(7);
 			for (int step = 1; step <= maxRange; ++step)
 			{
 				int cx = ax + dx * step;
@@ -252,6 +254,8 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		// Snipe : first enemy only
 		else if (family == 2)
 		{
+			AF.sfx.resetAudio();
+			AF.sfx.play(8); // sniper.wav
 			for (int step = 1; step <= maxRange; ++step)
 			{
 				int cx = ax + dx * step;
@@ -466,10 +470,9 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameB
 	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(target);
 
 	// Aura Farm: ignore all damage
-	if (stats && stats->invincible)
+	if (stats)
 	{
-		std::cout << "[Combat] Target " << target << " is invincible. Damage ignored.\n";
-		return COMBAT_SYSTEM_RETURN_TAG::VALID;
+		damage *= stats->damageTakenMultiplier;
 	}
 
 	// Shield absorbs damage first
@@ -492,7 +495,7 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameB
 
 	PUT.display(target, std::to_string(static_cast<int>(damage)).c_str());
 	auto anim = ecs.getComponent<Components::Animation_Actor>(target);
-	if (anim)
+	if (anim && damage)
 	{
 		anim->setType(Components::AnimationType::TAKING_DAMAGE);
 	}
@@ -581,7 +584,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			stats->cur_movSpd = stats->max_movSpd;
 			stats->points = stats->maxPoints;
 			//stats->shields = 0.f;
-			stats->invincible = false;
+			stats->damageTakenMultiplier = 1.0f;
 
 			//===============================================================
 

@@ -91,9 +91,19 @@ namespace CardResolver
 				return PC_RETURN_TAG::VALID;
 
 			case 1: // Aura Farm
-				stats->invincible = true;
-				std::cout << "[CardResolver] Aura Farm applied. Invincible for next enemy phase.\n";
-				return PC_RETURN_TAG::VALID;
+				if (serialID == 2100) // DMG Cut
+				{
+					stats->damageTakenMultiplier = 0.5f;
+					std::cout << "[CardResolver] DMG Cut applied.\n";
+					return PC_RETURN_TAG::VALID;
+				}
+				else if (serialID == 2101) // Aura Farm
+				{
+					stats->damageTakenMultiplier = 0.0f;
+					std::cout << "[CardResolver] Aura Farm applied.\n";
+					return PC_RETURN_TAG::VALID;
+				}
+				break;
 
 			default:
 				return PC_RETURN_TAG::INVALID;
