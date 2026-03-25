@@ -394,7 +394,6 @@ void Scene::scene_free()
 	gbs.gbs_free();
 	EntityFactory::free_Player();
 	
-	iNodes.free();
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
 }
