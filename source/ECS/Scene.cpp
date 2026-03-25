@@ -387,6 +387,7 @@ void Scene::scene_free()
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
+	UIptr = nullptr;
 	entities.clear();
 	next_entity = 0;
 	PS.particle_system_free();
@@ -394,7 +395,10 @@ void Scene::scene_free()
 	_win = false;
 	gbs.gbs_free();
 	EntityFactory::free_Player();
-	//nameTags.name_tag_free();
+	
+	iNodes.free();
+	Entity playerBarrier = Components::NULL_INDEX; // shield display
+	cbs.combatSystem_free();
 }
 
 PhaseSystem::GameBoardState& Scene::getGBS(){

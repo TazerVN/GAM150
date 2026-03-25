@@ -59,6 +59,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			IM.update(ecs, CS.id());
 			GameStateUpdate();
 			//========(Render)====================
+			PS.update(0.2);
 			RM.RM_render(ecs, CS.id());
 			AESysFrameEnd();
 

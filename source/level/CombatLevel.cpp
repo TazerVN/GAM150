@@ -88,7 +88,6 @@ void LevelStateCombat_update()
 		UIM.getPauseMenu().free();
 		VS.update(ecs);
 		scene.update();
-		PS.update(0.2);
 		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 		//RENDER
 		CS.update();
@@ -111,7 +110,7 @@ void LevelStateCombat_free()
 	PS.particle_system_free();
 	PUT.free();
 	AF.bgm.stop();
-	EntityFactory::free_Player();
+	ecs.remove_empty_groups();
 }
 void LevelStateCombat_unload()
 {
