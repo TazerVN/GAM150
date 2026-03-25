@@ -57,7 +57,7 @@ namespace Text
 		
 
 		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
-		Components::Text text{ t, TF.getFontID(), 25 };
+		Components::Text text{ t, TF.getFontID(), this->z };
 		Components::Color color{ r, g, b ,a};
 		Components::Timer time{ 3.f, 0.f };
 		Components::Velocity vel{ 0.f, 1.f };
@@ -86,7 +86,7 @@ namespace Text
 
 
 		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
-		Components::Text text{ t, TF.getFontID(), 25 };
+		Components::Text text{ t, TF.getFontID(), this->z };
 		Components::Color color{ r, g, b ,a };
 		Components::Timer time{ 2.f, 0.f };
 		Components::Velocity vel{ 0.f, 1.f };
