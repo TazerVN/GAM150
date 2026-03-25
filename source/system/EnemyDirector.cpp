@@ -653,13 +653,44 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
 
     if (isRanged)
     {
+
         // cardinal line attack only
         const int rangedRange = 5;
         bool sameRow = (ay == py);
         bool sameCol = (ax == px);
 
         if ((sameRow || sameCol) && dist <= rangedRange)
-            canAttack = true;
+        {
+            int dx = (px > ax) ? 1 : (px < ax ? -1 : 0);
+            int dy = (py > ay) ? 1 : (py < ay ? -1 : 0);
+
+            bool blocked = false;
+
+            int cx = ax + dx;
+            int cy = ay + dy;
+
+            // walk from enemy to player
+            while (cx != px || cy != py)
+            {
+                if (board.get_pos()[cx][cy] != Components::NULL_INDEX)
+                {
+                    blocked = true;
+                    break;
+                }
+
+                cx += dx;
+                cy += dy;
+            }
+
+            if (!blocked)
+            {
+                canAttack = true;
+            }
+            else
+            {
+                std::cout << "[ED] RANGED ATTACK blocked by obstacle.\n";
+            }
+        }
 
         if (!canAttack)
         {
