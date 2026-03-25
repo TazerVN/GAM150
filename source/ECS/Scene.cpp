@@ -26,6 +26,7 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
+
 	unsigned int seed;
 
 	if (parse_seed(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
@@ -501,6 +502,7 @@ void highlight_cells(bool line,TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, C
 
 void unhighlight_cells(Grid::GameBoard& gb,CombatNameSpace::CombatSystem& cbs)
 {
+	if(cbs.get_highlighted_cell().empty()) return;
 	for (AEVec2 a : cbs.get_highlighted_cell())
 	{
 		gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;

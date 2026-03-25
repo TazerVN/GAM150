@@ -94,6 +94,8 @@ namespace CardInteraction
 			return;
 		if (tbsptr->current() != playerID) return;
 
+		
+
 		for (int i = 0; i < this->curr_hand_display.size(); i++)
 		{
 			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))

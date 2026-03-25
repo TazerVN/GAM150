@@ -308,13 +308,16 @@ namespace UI
 		Components::TurnBasedStats* sta_parent = ecs.getComponent<Components::TurnBasedStats>(playerID);
 		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(playerID);
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(playerID);
+
+
+		//shield implementation
 		if(sta_parent->shields > 0)
 		{
 			if(player_effect == 0)
 			{
 				auto transform = ecs.getComponent<Components::Transform>(playerID);
 
-				player_effect = UIO::ui_blank_texture_world(TF.getTextureOthers(6), transform->pos_onscreen.x, transform->pos_onscreen.y, 128, 128, 0, mesh->z);
+				player_effect = UIO::ui_blank_texture_world(TF.getTextureOthers(6), transform->pos_onscreen.x, transform->pos_onscreen.y, 128.f * 1.1f, 128.f * 1.1f, 0, mesh->z);
 			}
 			else
 			{
@@ -335,6 +338,7 @@ namespace UI
 			}
 		}
 		
+
 	}
 
 	void UIManager::mana_update(Scene& scene)
