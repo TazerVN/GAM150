@@ -144,15 +144,6 @@ namespace EntityFactory {
 		return id;
 	}
 
-	void InteractableNode::free()
-	{
-		for (Entity node : nodes)
-		{
-			ecs.destroyEntity(node);
-		}
-		nodes.clear();
-	}
-
 	void InteractableNode::update()
 	{
 		//if (gbptr == nullptr) return;
