@@ -33,7 +33,7 @@ namespace UI
 		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ this->pause.setStateOn(true);});
 
 		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
-		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, 100, "0");
+		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
 		this->draw_pile = std::make_pair(deck_button, deck_text);
 
 		Entity turn_board = UIO::ui_blank_texture(TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, this->z);

@@ -395,7 +395,7 @@ namespace Grid
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
 		transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
 		transform->pos_onscreen = transform->pos;
-		mesh->z = 2 + x * MAX_I + y;
+		mesh->z = 2 + y * MAX_J + x;
 
 
 		Entity current_cell = this->cells[x][y];

@@ -93,7 +93,7 @@ Entity Victory_Select::create_Victory_card(Entity cardID, f32 x, f32 y)
 		},
 		nullptr, nullptr, 40);
 	Components::Texture texture{ pTex };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 41 };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, this->z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::TagClass tag{ Components::Tag::UI };
 

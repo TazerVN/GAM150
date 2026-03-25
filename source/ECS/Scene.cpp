@@ -75,7 +75,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		std::string end = ".txt";
 		loc += hardcoded_levels[index] += end;
 
-		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+		enemyDirector.loadScriptFile(loc);//load enemy instrucitons
 
 		hardcoded_levels.clear();
 	}

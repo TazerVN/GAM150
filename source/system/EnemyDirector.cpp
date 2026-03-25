@@ -467,7 +467,7 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
     }
 
     // IN_RANGE PLAYER R: if dist <= R do nothing; else step closer
-    if (t[2] == "IN_RANGE" && t.size() >= 5 && t[3] == "PLAYER")
+    if (t[2] == "IN_RANGE" && t.size() >= 4 && t[3] == "PLAYER")
     {
         int steps = 1;
         if (t.size() >= 5)
@@ -486,20 +486,24 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         if (!board.findEntityCell(actor, ax, ay)) return;
         if (!board.findEntityCell(playerID, px, py)) return;
 
+        const int preferredDist = 3;
+        const int minDist = 2;
+
+        int curDist = manhattan(ax, ay, px, py);
         bool sameRow = (ay == py);
         bool sameCol = (ax == px);
 
-        if (sameRow || sameCol)
+        // only stay if already aligned AND close enough
+        if ((sameRow || sameCol) && curDist >= minDist && curDist <= preferredDist)
         {
-            std::cout << "[ED] IN_RANGE already aligned.\n";
+            std::cout << "[ED] IN_RANGE already aligned and in desired range.\n";
             return;
         }
 
         int bestX = -1;
         int bestY = -1;
-        int bestDist = 1000000000;
+        int bestScore = 1000000000;
 
-        // Search all empty tiles that share player's row OR column
         for (int y = 0; y < MAX_J; ++y)
         {
             for (int x = 0; x < MAX_I; ++x)
@@ -510,10 +514,21 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
                 bool alignsWithPlayer = (y == py) || (x == px);
                 if (!alignsWithPlayer) continue;
 
-                int dist = manhattan(ax, ay, x, y);
-                if (dist < bestDist)
+                int distToPlayer = manhattan(x, y, px, py);
+
+                // only accept tiles that are 2 or 3 away from player
+                if (distToPlayer < minDist || distToPlayer > preferredDist)
+                    continue;
+
+                int distFromActor = manhattan(ax, ay, x, y);
+
+                // prefer closest movement for the actor
+                // slight preference for exactly 3 tiles away
+                int score = distFromActor * 10 + std::abs(distToPlayer - preferredDist);
+
+                if (score < bestScore)
                 {
-                    bestDist = dist;
+                    bestScore = score;
                     bestX = x;
                     bestY = y;
                 }
@@ -522,7 +537,7 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 
         if (bestX < 0)
         {
-            std::cout << "[ED] IN_RANGE no valid alignment tile found.\n";
+            std::cout << "[ED] IN_RANGE no valid aligned tile at desired distance.\n";
             return;
         }
 

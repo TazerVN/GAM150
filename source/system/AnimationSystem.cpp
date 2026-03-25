@@ -155,7 +155,7 @@ namespace Animation
 
 			transform->pos_onscreen.x = transform->pos.x + (destination_x - transform->pos.x) * lerp;
 			transform->pos_onscreen.y = transform->pos.y + (destination_y - transform->pos.y) * lerp;
-			mesh->z = 2 + current.x * MAX_J + current.y;
+			mesh->z = 2 + current.y * MAX_J + current.x;
 
 		}
 		else
