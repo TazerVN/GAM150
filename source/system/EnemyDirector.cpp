@@ -254,6 +254,7 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     if (cmd.size() == 1 && cmd[0] == "STOP")
     {
         ++timelineIp_;
+
         tbs.next();
         intent.trigger();
         std::cout << "[ED] STOP hit. End of horde chunk.\n";

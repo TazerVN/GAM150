@@ -172,8 +172,8 @@ namespace TBS
 
 	void TurnBasedSystem::next()
 	{
-		if (!is_active || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION) return;
-
+		if (!is_active) return;
+		if(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION) return;
 		++cur_player;
 		if (cur_player >= participants.size())
 		{
@@ -186,10 +186,6 @@ namespace TBS
 		{
 			gbsptr->resetPlayerPhase();
 			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
-		}
-		else
-		{
-			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::ENEMY_PHASE);
 		}
 		
 		gameBoardptr->unselect_card();
@@ -274,6 +270,7 @@ namespace TBS
 	Entity TurnBasedSystem::draw_card(Entity player, size_t chIndex)
 	{
 		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
+		if(player_storage->data_card_hand.empty()) return -1;
 		return player_storage->data_card_hand[chIndex];
 	}
 	//DEBUG PRINT

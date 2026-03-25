@@ -126,13 +126,15 @@ void IntentionDisplaySystem::update(Scene& scene)
 			if (!ecs.getBitMask()[p.second].test(transID)) continue;
 
 			Components::Transform* parent = ecs.getComponent<Components::Transform>(p.first);
-			Components::Transform* child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* parent_mesh = ecs.getComponent<Components::Mesh>(p.first);
+
+			Components::Transform* child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* child_mesh = ecs.getComponent<Components::Mesh>(p.second);
 
 			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
 
+			if (parent_mesh == nullptr || child_mesh == nullptr) continue;
 			child_mesh->z = parent_mesh->z + 1;
 		}
 	}
