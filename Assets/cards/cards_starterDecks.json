@@ -79,6 +79,18 @@
 				"Mana Wall",
 				"Black Hole"
 			]
+		},
+		{
+			"name" : "Absolute Starter Deck",
+			"cards" : 
+			[
+				"PP up",
+				"Recovery+",
+				"Barrier",
+				"Shoot",
+				"Slash",
+				"Firebolt"
+			]
 		}
 	]
 }

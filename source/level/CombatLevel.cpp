@@ -31,8 +31,9 @@ void LevelStateCombat_load()
 		//JSON_DECK deck = card_system.start_decks[index];
 
 		//perfect deck (optimal deck)
-		int perfection = (card_system.start_decks.size() - 1);
-		JSON_DECK deck = card_system.start_decks[perfection];
+		int absStarter = (card_system.start_decks.size() - 1);
+		int perfection = (card_system.start_decks.size() - 2);
+		JSON_DECK deck = card_system.start_decks[absStarter];
 
 		//for teesting decks
 		//JSON_DECK deck = card_system.start_decks[3];

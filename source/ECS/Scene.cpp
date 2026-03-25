@@ -66,6 +66,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		hardcoded_levels.push_back("Clutter");
 		hardcoded_levels.push_back("TEST_level");
 		hardcoded_levels.push_back("TrollAllEnemy");
+		hardcoded_levels.push_back("ONESHOTWONDER");
+		hardcoded_levels.push_back("FistFight");
 
 		int upper_bound = static_cast<int>(hardcoded_levels.size()) - 1;
 		int lower_bound = 0;
