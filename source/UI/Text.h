@@ -27,7 +27,7 @@ namespace Text
 		std::vector<Entity> current;
 		Entity text_create(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a);
 		Entity text_create_attached(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a);
-
+		s32 z{1000};
 		public:
 		PopUpText() = default;
 		void init(EntityComponent::Registry* ecs, Entity pos);

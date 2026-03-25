@@ -97,7 +97,7 @@ void LevelStateCombat_update()
 	else if(!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
 		PauseMenu& p = UIM.getPauseMenu();
-		p = PauseMenu(50);
+		p = PauseMenu(1200);
 	}
 
 	if (AEInputCheckTriggered(AEVK_F5)) gLevelStateNext = LevelStates::LS_RESTART;

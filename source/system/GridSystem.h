@@ -52,7 +52,7 @@ namespace Grid
 		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 		std::vector<AEVec2> aoe_highlighted_cells;
 
-		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z);
+		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z);
 
 	public:
 		bool in_walkable_debug = false;

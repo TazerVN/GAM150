@@ -21,7 +21,7 @@ namespace UI
 
 		//========================================== buttons ======================================
 		//end turn button
-		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, 30,
+		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, this->z,
 			// the lambda function
 										 [&scene]
 										 {
@@ -30,18 +30,18 @@ namespace UI
 										 }
 		);
 
-		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, 30, [this]{ this->pause.setStateOn(true);});
+		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ this->pause.setStateOn(true);});
 
-		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
-		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, 30, "0");
+		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
+		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
 		this->draw_pile = std::make_pair(deck_button, deck_text);
 
-		Entity turn_board = UIO::ui_blank_texture(TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, 30);
+		Entity turn_board = UIO::ui_blank_texture(TF.getTextureUI(8), 0.65F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 225, 80, 0, this->z);
 
-		turn = UIO::ui_text(0.55F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, 31, "Round ");
+		turn = UIO::ui_text(0.55F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, this->z + 1, "Round ");
 
-		Entity bin_button = UIO::ui_button_texture(TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, 30, nullptr);
-		Entity bin_text = UIO::ui_text( 0.80F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, 30, "0");
+		Entity bin_button = UIO::ui_button_texture(TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
+		Entity bin_text = UIO::ui_text( 0.80F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
 		this->discard_pile = std::make_pair(bin_button, bin_text);
 
 		this->current_ui.push_back(end_b);
@@ -78,12 +78,12 @@ namespace UI
 		//========================================== mana bar ======================================
 		f32 x = 0.55f * AEGfxGetWinMaxX();
 		f32 y = -0.85F * AEGfxGetWinMaxY();
-		Entity mana_bar = UIO::ui_blank_texture(TF.getTextureUI(4), x, y, 302, 82, 0, 32);
+		Entity mana_bar = UIO::ui_blank_texture(TF.getTextureUI(4), x, y, 302, 82, 0, this->z + 2);
 		for (int i = 0; i < 5; i++)
 		{
 			Components::TurnBasedStats stats{ 0,0,0,0 };
 			ecs.addComponent(mana_bar, stats);
-			Entity mana_empty = UIO::ui_blank_texture(TF.getTextureUI(3), i * 40 - 40.f, 20.f, 49, 55, 0, 30);
+			Entity mana_empty = UIO::ui_blank_texture(TF.getTextureUI(3), i * 40 - 40.f, 20.f, 49, 55, 0, this->z);
 			std::pair<Entity, Entity> mana{ mana_bar, mana_empty };
 			this->mana_children_list.push_back(mana);
 		}
@@ -95,7 +95,7 @@ namespace UI
 
 		if(this->info.isOn() && !this->info.isCreated())
 		{
-			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, 30);
+			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, this->z);
 		}
 		else if(!this->info.isOn() && this->info.isCreated())
 		{
@@ -330,7 +330,7 @@ namespace UI
 		}
 		while (this->mana_children_list.size() - empty_blocks_for_display < sta_parent->points)
 		{
-			Entity mana = UIO::ui_blank_texture(TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, 31);
+			Entity mana = UIO::ui_blank_texture(TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, this->z);
 			std::pair<Entity, Entity> mana_p{ p.first , mana };
 			this->mana_children_list.push_back(mana_p);
 			i++;

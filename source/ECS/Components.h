@@ -88,8 +88,8 @@ namespace Components
 	{
 		std::string text;
 		s8 fontID;
-		s8 z;
-		Text(std::string, s8, s8);
+		s32 z;
+		Text(std::string, s8, s32);
 	};
 
 
@@ -151,7 +151,7 @@ namespace Components
 		AEGfxVertexList* mesh = nullptr;
 		RENDER_MODE r_mode;
 		MESH_TYPE type;
-		s8 z;
+		s32 z;
 	};
 
 	struct Color
@@ -169,12 +169,12 @@ namespace Components
 		bool hover;
 		bool drag;
 		bool col;
-		s8 z;
+		s32 z;
 		Input(u8 type, bool hover,
 			  std::function<void()> onClick,
 			  std::function<void()> onHover,
 			  std::function<void()> offHover,
-			  s8 z = 0, bool drag = false, bool col = true, std::function<void()> onDrag = nullptr, std::function<void()> offDrag = nullptr);
+			  s32 z = 0, bool drag = false, bool col = true, std::function<void()> onDrag = nullptr, std::function<void()> offDrag = nullptr);
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 		std::function<void()> offHover;

@@ -8,7 +8,7 @@ namespace CardInteraction
 	void fun();//forward declaration for testing
 	void fu(Entity e);//forward declaration for testing
 	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity,Entity> entity);
-	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost);
+	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost, s32 z);
 
 	void hand_onHover(Entity id)
 	{
@@ -169,7 +169,7 @@ namespace CardInteraction
 			Components::Input* in_c = ecs.getComponent<Components::Input>(eID.first);
 			Components::Transform* card_t_c = ecs.getComponent<Components::Transform>(eID.first);
 
-			Components::Mesh* mesh_m = ecs.getComponent<Components::Mesh>(eID.second);
+			Components::Text* text_m = ecs.getComponent<Components::Text>(eID.second);
 			Components::Transform* card_t_m = ecs.getComponent<Components::Transform>(eID.second);
 
 			if(in_c->drag && AEInputCheckCurr(in_c->type))
@@ -189,6 +189,9 @@ namespace CardInteraction
 				card_t_m->pos.x = target_x - card_t_c->size.x * 0.40f;
 				card_t_m->pos.y = target_y + card_t_c->size.y * 0.36f;
 				card_t_m->pos_onscreen = card_t_m->pos;
+
+				mesh_c->z = this->z;
+				text_m->z = this->z + 1;
 				i++;
 			}
 
@@ -225,7 +228,7 @@ namespace CardInteraction
 
 			Entity eid = ecs.createEntity();
 
-			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, 30, texture, 
+			this->curr_hand_display.push_back(selectableCard_create(eid, ecs, *mfptr, 0, -500, 162, 264, 0, this->z, texture, 
 				[this, eid]
 				{ 
 					if(gbsptr->getPlayerPhase() != PhaseSystem::PlayerPhase::PLAYER_ANIMATION)
@@ -359,7 +362,7 @@ namespace CardInteraction
 
 	}
 
-	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
+	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z)
 	{
 		Entity first = id.first;
 		Entity second = id.second;
@@ -382,9 +385,9 @@ namespace CardInteraction
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
-		m1->z = 31;
-		m2->z = 31;
-		i->z = 31;
+		m1->z = z + 1;
+		m2->z = z + 2;
+		i->z = z + 1;
 
 		c1->d_color.r = minimum + (1.f - minimum) * lerp;
 		c1->d_color.b = minimum + (1.f - minimum) * lerp;
@@ -403,7 +406,7 @@ namespace CardInteraction
 		t2->size.x = t2->size_og.x * 4.f / 3.f;
 
 	}
-	void card_onDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
+	void card_onDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z)
 	{
 
 		Entity first = id.first;
@@ -426,8 +429,8 @@ namespace CardInteraction
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
 		f32 minimum = 0.6f;
 
-		m1->z = 31;
-		m2->z = 31;
+		m1->z = z + 1;
+		m2->z = z + 2;
 		i->z = 0;
 
 		c1->d_color.r = minimum + (1.f - minimum) * lerp;
@@ -526,7 +529,7 @@ namespace CardInteraction
 
 
 
-	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id)
+	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z)
 	{
 
 		Entity first = id.first;
@@ -544,8 +547,8 @@ namespace CardInteraction
 		Components::Text* m2 = ecs.getComponent<Components::Text>(second);
 
 
-		m1->z = 30; // card mesh
-		m2->z = 31; // mana text stays above card
+		m1->z = z; // card mesh
+		m2->z = z + 1; // mana text stays above card
 		i->z = 30;
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
@@ -567,10 +570,10 @@ namespace CardInteraction
 	}
 
 
-	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp, s32 cost, CardInformation::CardDisplay& cd, Entity card_data)
+	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, AEGfxTexture* pTex, std::function<void()> fp, s32 cost, CardInformation::CardDisplay& cd, Entity card_data)
 	{
 		//default player values
-		Entity mana = selectableCard_mana(ecs, x,y, width, height, cost);
+		Entity mana = selectableCard_mana(ecs, x,y, width, height, cost, z);
 		std::pair<Entity, Entity> result{id, mana};
 
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3 * width / 4, height},0.0f };
@@ -578,10 +581,10 @@ namespace CardInteraction
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
 		Components::Input input(AEVK_LBUTTON, true, fp, 
-								[result, &ecs, &cd, card_data] { card_onHover(ecs, cd, result, card_data); }, 
-								[result, &ecs, &cd] { card_offHover(ecs, cd, result); },
+								[result, &ecs, &cd, card_data, z] { card_onHover(ecs, cd, result, card_data, z); }, 
+								[result, &ecs, &cd, z] { card_offHover(ecs, cd, result, z); },
 								30, true, true,
-								[result, &ecs, &cd, card_data] { card_onDrag(ecs, cd, result, card_data); }
+								[result, &ecs, &cd, card_data, z] { card_onDrag(ecs, cd, result, card_data, z ); }
 								);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
@@ -601,7 +604,7 @@ namespace CardInteraction
 		return result;
 	}
 
-	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost)
+	Entity selectableCard_mana(EntityComponent::Registry& ecs, f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost, s32 z)
 	{
 		f32 x = pos_x - width * 0.40f;
 		f32 y = pos_y + height* 0.36f;
@@ -613,7 +616,7 @@ namespace CardInteraction
 		Entity id = ecs.createEntity();
 	
 		Components::Transform trans{ {x,y}, {x,y} ,{0.5f, 0.3f} , {0.5f, 0.3f},0.0f };
-		Components::Text text{std::to_string(cost), TF.getFontID(), 31};
+		Components::Text text{std::to_string(cost), TF.getFontID(), z};
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		ecs.addComponent(id, trans);

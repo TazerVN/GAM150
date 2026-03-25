@@ -4,7 +4,7 @@
 #include "../system/EnemyDirector.h"
 #include "ECS/Scene.h"
 
-Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z)
+Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z)
 {
 	Entity id = ecs.createEntity();
 	//default player values

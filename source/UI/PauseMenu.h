@@ -11,6 +11,7 @@ class PauseMenu
 		void free();
 	};
 
+	s32 z{1200};
 	Entity dim;
 	TextButton continue_button;
 	TextButton abandon_button;

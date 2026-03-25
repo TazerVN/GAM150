@@ -517,7 +517,7 @@ namespace CardResolver
 					{ 238.0f, 238.0f },
 					"ManaWall",
 					TF.getTextureOthers(5), 
-					1.0f
+					1.0f, 1
 				);
 
 				Components::Transform* trans = ecs.getComponent<Components::Transform>(wall);

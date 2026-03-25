@@ -8,7 +8,7 @@ void Victory_Select::update()
 	{
 		this->on = false;
 
-		this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, 40, 0.0f, 0.0f, 0.0f, 0.5f);
+		this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, this->z, 0.0f, 0.0f, 0.0f, 0.5f);
 		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
 		ecs.addComponent(dim, tag);
@@ -59,7 +59,7 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 		},
 		nullptr, nullptr, 40);
 	Components::Texture texture{ pTex };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 41 };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, this->z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::TagClass tag { Components::Tag::UI };
 
@@ -93,7 +93,7 @@ Entity Victory_Select::create_Victory_card(Entity cardID, f32 x, f32 y)
 		},
 		nullptr, nullptr, 40);
 	Components::Texture texture{ pTex };
-	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 41 };
+	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, this->z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::TagClass tag{ Components::Tag::UI };
 

@@ -35,8 +35,8 @@ namespace Grid { class GameBoard; }
 namespace CardInteraction
 {
 
-	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data);
-	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id);
+	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z);
+	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z);
 	void card_onClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
 	void card_offClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
 
@@ -48,6 +48,7 @@ namespace CardInteraction
 		std::vector<bool> activate;
 		Entity id;
 		bool reset;
+		s32 z{ 1000 };
 
 		TBS::TurnBasedSystem* tbsptr = nullptr;
 		
@@ -79,7 +80,7 @@ namespace CardInteraction
 
 	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf,
 													f32 x, f32 y, f32 width, f32 height, 
-													f32 rotation, s8 z, AEGfxTexture* pTex, std::function<void()> fp, 
+													f32 rotation, s32 z, AEGfxTexture* pTex, std::function<void()> fp, 
 													s32 cost, CardInformation::CardDisplay& cd, Entity card_data);
 	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity, Entity> entity);
 }

@@ -18,10 +18,11 @@ namespace CardInformation
 		this->on = rhs.on;
 		this->created = rhs.on;
 		this->info_id = rhs.info_id;
+		this->z = rhs.z;
 
 		if (this->current_card_id != 0)
 		{
-			this->text = Info(ecs, this->info_id, current_card_id);
+			this->text = Info(ecs, this->info_id, current_card_id, this->z + 1);
 		}
 		return *this;
 	}
@@ -34,7 +35,7 @@ namespace CardInformation
 		created = false;
 
 		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {width, height},0.0f };
-		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, s8(z) };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ TF.getTextureUI(7) };
 		Components::TagClass tag{ Components::Tag::UI };
@@ -123,7 +124,7 @@ namespace CardInformation
 
 	}
 
-	CardDisplay::Info::Info(EntityComponent::Registry& ecs, Entity display, Entity CardData)
+	CardDisplay::Info::Info(EntityComponent::Registry& ecs, Entity display, Entity CardData, s32 z)
 	{
 
 		auto display_transform = ecs.getComponent<Components::Transform>(display);
@@ -132,8 +133,7 @@ namespace CardInformation
 		auto card_cost = ecs.getComponent<Components::Card_Cost>(CardData);
 		auto card_des = ecs.getComponent<Components::Card_Description>(CardData);
 
-
-		s8 z = 31;
+		this->z = z;
 
 		f32 x = display_transform->pos.x;
 		f32 y = display_transform->pos.y;

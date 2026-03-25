@@ -239,7 +239,7 @@ void Particle::ParticleSystem::update(f32 dt)
 //{
 //}
 
-void Particle::ParticleSystem::spawn_one(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_one(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value
@@ -269,11 +269,11 @@ void Particle::ParticleSystem::spawn_one(bool isUI, f32 x, f32 y, f32 width, f32
 
 }
 
-void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
 {
 }
 
-void Particle::ParticleSystem::spawn_timed(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s8 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
+void Particle::ParticleSystem::spawn_timed(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
 {
 	Entity id = ecs.createEntity();
 	//default single particle value

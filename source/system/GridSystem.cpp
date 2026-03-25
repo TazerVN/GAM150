@@ -288,7 +288,7 @@ namespace Grid
 
 	}
 
-	Entity GameBoard::create_cells(AEVec2 _pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s8 z)
+	Entity GameBoard::create_cells(AEVec2 _pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z)
 	{
 		Entity id = ecs.createEntity();
 
@@ -395,7 +395,7 @@ namespace Grid
 		transform->pos.x = this->offset.x + (x - y) * CELL_WIDTH / 2;
 		transform->pos.y = transform->size.y / 3 + this->offset.y - (x + y) * CELL_HEIGHT / 4;
 		transform->pos_onscreen = transform->pos;
-		mesh->z = x + 2;
+		mesh->z = 2 + y * MAX_J + x;
 
 
 		Entity current_cell = this->cells[x][y];
