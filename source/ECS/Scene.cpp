@@ -148,7 +148,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
-	//Shield display
+	//Shield display - steven canu draw shield here
 	/*this->playerBarrier = EntityFactory::create_grid_object(
 		ecs,
 		mf,

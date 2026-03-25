@@ -203,7 +203,7 @@
 		"value": -1.0,
 		"range": 10.0,
 		"description": "Consumes all current mana and\ngenerate a barrier\npress 'R' to rotate\n",
-		"png": "cardSample.png"
+		"png": "card_Manawall.png"
 	},
 
 	{

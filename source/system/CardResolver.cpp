@@ -514,7 +514,7 @@ namespace CardResolver
 					ecs,
 					mf,
 					{ 0.0f, 0.0f },
-					{ 128.0f, 128.0f },
+					{ 238.0f, 238.0f },
 					"ManaWall",
 					TF.getTextureOthers(5), 
 					1.0f
@@ -523,8 +523,8 @@ namespace CardResolver
 				Components::Transform* trans = ecs.getComponent<Components::Transform>(wall);
 				if (trans && manaWallVertical)
 				{
-					trans->size.x = -128.0f;
-					trans->size.y = 128.0f;
+					trans->size.x = -248.0f;
+					trans->size.y = 248.0f;
 				}
 
 				board.placeEntity(wall, x, y);
