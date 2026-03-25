@@ -43,6 +43,7 @@ private:
 	UI::UIManager* UIptr;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
+	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	IntentionDisplaySystem intentDisplaySystem;
 
 	bool _win = false;

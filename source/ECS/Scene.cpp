@@ -172,7 +172,22 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
+	//Shield display
+	/*this->playerBarrier = EntityFactory::create_grid_object(
+		ecs,
+		mf,
+		{ 0.0f, 0.0f },
+		{ 192.0f, 192.0f },
+		"Barrier",
+		TF.getTextureOthers(5),
+		1.0f
+	);
 
+	Components::Mesh* barrierMesh = ecs.getComponent<Components::Mesh>(this->playerBarrier);
+	if (barrierMesh)
+	{
+		barrierMesh->on = false;
+	}*/
 
 	//nameTags.create_static_nametag(playerID, "Player");
 
