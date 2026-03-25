@@ -158,6 +158,7 @@ namespace UI
 
 		}
 
+		this->player_effect_update();
 		this->discardpile_update();
 		this->drawpile_update();
 		this->health_update();
@@ -300,6 +301,40 @@ namespace UI
 			mesh_child->z = mesh_parent->z + 11;
 		}
 
+	}
+
+	void UIManager::player_effect_update()
+	{
+		Components::TurnBasedStats* sta_parent = ecs.getComponent<Components::TurnBasedStats>(playerID);
+		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(playerID);
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(playerID);
+		if(sta_parent->shields > 0)
+		{
+			if(player_effect == 0)
+			{
+				auto transform = ecs.getComponent<Components::Transform>(playerID);
+
+				player_effect = UIO::ui_blank_texture_world(TF.getTextureOthers(6), transform->pos_onscreen.x, transform->pos_onscreen.y, 128, 128, 0, mesh->z);
+			}
+			else
+			{
+				auto transform_effect = ecs.getComponent<Components::Transform>(player_effect);
+				auto mesh_effect = ecs.getComponent<Components::Mesh>(player_effect);
+				transform_effect->pos = transform->pos_onscreen;
+				transform_effect->pos_onscreen = transform_effect->pos;
+				mesh_effect->z = mesh->z;
+			}
+
+		}
+		else
+		{
+			if (player_effect != 0) 
+			{
+				ecs.destroyEntity(player_effect);
+				player_effect = 0;
+			}
+		}
+		
 	}
 
 	void UIManager::mana_update(Scene& scene)

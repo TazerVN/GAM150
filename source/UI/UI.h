@@ -23,6 +23,7 @@ namespace UI
 		std::vector<std::pair<Entity, Entity>> hp_children_list;
 		std::vector<std::pair<Entity, Entity>> mana_children_list;
 		std::vector<std::pair<Entity, Entity>> intention_children_list;
+		Entity player_effect{0};
 		std::vector<Entity> current_ui;
 
 		s32 z{1000};
@@ -46,6 +47,7 @@ namespace UI
 		void turn_update(Scene& scene);
 		void drawpile_update();
 		void discardpile_update();
+		void player_effect_update();
 		public:
 		UIManager();
 		void update(Scene& scene, f32 dt);

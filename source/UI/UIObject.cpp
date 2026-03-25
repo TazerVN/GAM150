@@ -187,4 +187,19 @@ namespace UIO
 
 		return id;
 	}
+	Entity ui_blank_texture_world(AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z)
+	{
+		Entity id = ecs.createEntity();
+		//default player values
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height}, {}, rotation };
+		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
+		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
+		Components::Texture tex{ texture };
+		ecs.addComponent(id, trans);
+		ecs.addComponent(id, mesh);
+		ecs.addComponent(id, color);
+		ecs.addComponent(id, tex);
+
+		return id;
+	}
 }
