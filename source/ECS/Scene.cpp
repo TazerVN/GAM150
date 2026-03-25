@@ -66,6 +66,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		hardcoded_levels.push_back("Clutter");
 		hardcoded_levels.push_back("TEST_level");
 		hardcoded_levels.push_back("TrollAllEnemy");
+		hardcoded_levels.push_back("ONESHOTWONDER");
+		hardcoded_levels.push_back("FistFight");
 
 		int upper_bound = static_cast<int>(hardcoded_levels.size()) - 1;
 		int lower_bound = 0;
@@ -385,6 +387,7 @@ void Scene::scene_free()
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
+	UIptr = nullptr;
 	entities.clear();
 	next_entity = 0;
 	PS.particle_system_free();
@@ -392,7 +395,9 @@ void Scene::scene_free()
 	_win = false;
 	gbs.gbs_free();
 	EntityFactory::free_Player();
-	//nameTags.name_tag_free();
+	
+	Entity playerBarrier = Components::NULL_INDEX; // shield display
+	cbs.combatSystem_free();
 }
 
 PhaseSystem::GameBoardState& Scene::getGBS(){

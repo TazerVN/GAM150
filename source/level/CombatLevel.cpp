@@ -31,8 +31,9 @@ void LevelStateCombat_load()
 		//JSON_DECK deck = card_system.start_decks[index];
 
 		//perfect deck (optimal deck)
-		int perfection = (card_system.start_decks.size() - 1);
-		JSON_DECK deck = card_system.start_decks[perfection];
+		int absStarter = (card_system.start_decks.size() - 1);
+		int perfection = (card_system.start_decks.size() - 2);
+		JSON_DECK deck = card_system.start_decks[absStarter];
 
 		//for teesting decks
 		//JSON_DECK deck = card_system.start_decks[3];
@@ -87,7 +88,6 @@ void LevelStateCombat_update()
 		UIM.getPauseMenu().free();
 		VS.update(ecs);
 		scene.update();
-		PS.update(0.2);
 		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 		//RENDER
 		CS.update();
@@ -110,7 +110,7 @@ void LevelStateCombat_free()
 	PS.particle_system_free();
 	PUT.free();
 	AF.bgm.stop();
-	EntityFactory::free_Player();
+	ecs.remove_empty_groups();
 }
 void LevelStateCombat_unload()
 {

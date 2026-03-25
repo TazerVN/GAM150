@@ -36,7 +36,6 @@ namespace EntityFactory
 		Entity create_interactable_node(EntityComponent::Registry&, MeshFactory&, AEVec2, AEVec2, AEGfxTexture*,
 			Components::AnimationType, Components::VictoryNodeTag);
 		void update();
-		void free();
 	};
 
 

@@ -798,6 +798,24 @@ void CombatNameSpace::CombatSystem::end_player_resolution()
 	gbsptr->GBPTriggered()[i] = true;
 }
 
+void CombatNameSpace::CombatSystem::combatSystem_free()
+{
+	horde = -1;
+	gbsptr = nullptr;
+	gbptr = nullptr;
+	tbsptr = nullptr;
+	cardHandptr = nullptr;
+	evsptr = nullptr;
+
+	targetted_entity = -1;
+	targetted_x = -1; targetted_y= -1;
+	play_card_triggered = false;
+
+	if(!highlighted_cells.empty())highlighted_cells.clear();
+	if(!aoe_selected_cells.empty())aoe_selected_cells.clear();
+	if(!graveyard.empty())graveyard.clear();
+}
+
 std::vector<std::pair<AEVec2, Entity>>& CombatNameSpace::CombatSystem::get_graveyard()
 {
 	return graveyard;
