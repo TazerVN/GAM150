@@ -54,58 +54,55 @@ namespace Grid
 			}
 			case PhaseSystem::PlayerPhase::GRID_SELECT:
 			{
-				if (tbsptr->is_current_selected_card())
+				Entity cardID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
+				Targetting targettingType = ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type;
+
+				int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
+				int category = serialID / 1000;
+				bool isEventCard = (category == 4);
+
+				std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
+
+				if (!cbsptr->check_within_range(x, y))
 				{
-					Entity cardID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
-					Targetting targettingType = ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type;
+					std::cout << "Target is outside range" << std::endl;
+					PUT << 0 << "Out of range!";
+					unselect_card();
+					return;
+				}
 
-					int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
-					int category = serialID / 1000;
-					bool isEventCard = (category == 4);
-
-					std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
-
-					if (!cbsptr->check_within_range(x, y))
-					{
-						std::cout << "Target is outside range" << std::endl;
-						PUT << 0 << "Out of range!";
-						unselect_card();
-						return;
-					}
-
-					if (isEventCard)
-					{
-						// Mana Wall is placed on empty cells, not entities
-						if (pos[x][y] != -1)
-						{
-							std::cout << "Mana Wall requires an empty cell" << std::endl;
-							PUT << 0 << "Select an empty cell";
-							unselect_card();
-							return;
-						}
-
-						trigger_play_card(x, y);
-						return;
-					}
-
-					// your old behaviour steven - zejin
+				if (isEventCard)
+				{
+					// Mana Wall is placed on empty cells, not entities
 					if (pos[x][y] != -1)
 					{
-						if (targettingType != Targetting::SELF && pos[x][y] == tbsptr->current())
-						{
-							std::cout << "Selected Player initializing Movement" << std::endl;
-							unselect_card();
-							move_select(x, y);
-							return;
-						}
-
-						trigger_play_card(x, y);
-					}
-					else
-					{
-						std::cout << "Select a valid cell with entity" << std::endl;
+						std::cout << "Mana Wall requires an empty cell" << std::endl;
+						PUT << 0 << "Select an empty cell";
 						unselect_card();
+						return;
 					}
+
+					trigger_play_card(x, y);
+					return;
+				}
+
+				// your old behaviour steven - zejin
+				if (pos[x][y] != -1)
+				{
+					if (targettingType != Targetting::SELF && pos[x][y] == tbsptr->current())
+					{
+						std::cout << "Selected Player initializing Movement" << std::endl;
+						unselect_card();
+						move_select(x, y);
+						return;
+					}
+
+					trigger_play_card(x, y);
+				}
+				else
+				{
+					std::cout << "Select a valid cell with entity" << std::endl;
+					unselect_card();
 				}
 				break;
 			}
@@ -189,6 +186,7 @@ namespace Grid
 
 	void GameBoard::move_select(s32 const& x, s32 const& y)
 	{
+		prev_x = x, prev_y = y;
 		if (pos[x][y] != tbsptr->current())
 		{
 			std::cout << "Cannot select this entity! " << pos[x][y] << std::endl;
@@ -202,21 +200,12 @@ namespace Grid
 			return;
 		}
 
-		this->unselect_card();
+		if(tbsptr->is_current_selected_card())this->unselect_card();
 
 		this->cur = this->pos[x][y];
 		selected_part = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
-
-		/*if (this->activate[x][y] == false)
-		{
-			this->activate[x][y] = true;
-			this->cur = this->pos[x][y];
-			selected_part = true;
-			evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
-			evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
-		}*/
 	}
 	void cell_onHover(Entity id, Entity character)
 	{
@@ -258,8 +247,6 @@ namespace Grid
 			cc->d_color.g = cc->c_color.g;
 			cc->d_color.b = cc->c_color.b;
 		}
-
-
 	}
 
 	Entity GameBoard::create_cells(AEVec2 _pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z)
@@ -288,6 +275,17 @@ namespace Grid
 						hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
 					hlptr->aoe_highlighted_cells.clear();
+
+					for (AEVec2 a : hlptr->move_trail_highlighted_cells)
+					{
+						hlptr->move_trail_highlight_activate[int(a.x)][int(a.y)] = 0;
+					}
+					hlptr->move_trail_highlighted_cells.clear();
+				}
+
+				if (this->selected_part)
+				{
+					this->draw_movement_trail(x, y);
 				}
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
@@ -522,6 +520,13 @@ namespace Grid
 					color->d_color.b -= 0.8f;
 				}
 
+				if (hlptr->move_trail_highlight_activate[i][j])
+				{
+					color->d_color.r -= 0.99f;
+					color->d_color.g -= 0.99f;
+					color->d_color.b -= 0.4f;
+				}
+
 				//======================update entity cell=====================================
 				if (this->pos[i][j] != -1)
 				{
@@ -735,7 +740,18 @@ namespace Grid
 
 		return true;
 	}
+	void GameBoard::draw_movement_trail(s32 x, s32 y)
+	{
+		Components::GridCell s{ s32(prev_x), s32(prev_y) };
+		Components::GridCell g{ x, y };
+		Components::AStarResult astar = AStar_FindPath_Grid4(MAX_I, MAX_J, this->walkable, s, g);
 
+		for (Components::GridCell cell : astar.path)
+		{
+			hlptr->move_trail_highlighted_cells.push_back({ f32(cell.x) , f32(cell.y) });
+			hlptr->move_trail_highlight_activate[cell.x][cell.y] = 1;
+		}
+	}
 	void GameBoard::func_aoe_hightlight_cells(s32 x, s32 y)
 	{
 		Entity card_ID = cbsptr->draw_card(tbsptr->current(), tbsptr->get_selected_cardhand_index());

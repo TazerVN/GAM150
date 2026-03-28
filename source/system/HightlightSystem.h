@@ -27,6 +27,9 @@ public:
 	std::array<std::array<bool, MAX_J>, MAX_I> aoe_highlight_activate;
 	std::vector<AEVec2> aoe_highlighted_cells;
 
+	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate;
+	std::vector<AEVec2> move_trail_highlighted_cells;
+
 	std::array<std::array<Components::RGBA, MAX_J>, MAX_I> highlight_activate;
 
 	HighlightSystem(EventPool<highlight_tag>& eventPool, 

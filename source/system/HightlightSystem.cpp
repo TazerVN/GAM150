@@ -3,6 +3,7 @@
 
 #include "GridSystem.h"
 #include "TurnBasedSystem.h"
+#include "../util/Pathfinding.h"
 
 
 //enum class highlight_tag
@@ -36,58 +37,97 @@ HighlightSystem::HighlightSystem(EventPool<highlight_tag>& eventPool,
 void HighlightSystem::highlight_cells(Targetting targetting, int range, highlight_tag type)
 {
 	//=========================Highlight_cells=================================
-
 	AEVec2 cur_part_pos = gbptr->Get_CurPart_gridPos();
-
-	if (targetting == Targetting::LINE)
+	switch (type)
 	{
-		for (int itr = 0; itr <= range; ++itr)
+	case highlight_tag::UNHIGHLIGHTED:
+		break;
+	case highlight_tag::ATTACK_HIGHLIGHT:
 		{
-			if (cur_part_pos.x + itr < MAX_I)
+			if (targetting == Targetting::LINE)
 			{
-				cbsptr->get_selected_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
-				this->highlight_activate[cur_part_pos.x + itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
-			}
-			if (cur_part_pos.x - itr >= 0)
-			{
-				cbsptr->get_selected_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
-				this->highlight_activate[cur_part_pos.x - itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
-			}
-			if (cur_part_pos.y + itr < MAX_J)
-			{
-				cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
-				this->highlight_activate[cur_part_pos.x][cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
-			}
-			if (cur_part_pos.y - itr >= 0)
-			{
-				cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
-				this->highlight_activate[cur_part_pos.x][cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
-			}
+				for (int itr = 0; itr <= range; ++itr)
+				{
+					if (cur_part_pos.x + itr < MAX_I)
+					{
+						cbsptr->get_selected_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
+						this->highlight_activate[cur_part_pos.x + itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+					}
+					if (cur_part_pos.x - itr >= 0)
+					{
+						cbsptr->get_selected_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
+						this->highlight_activate[cur_part_pos.x - itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+					}
+					if (cur_part_pos.y + itr < MAX_J)
+					{
+						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
+						this->highlight_activate[cur_part_pos.x][cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+					}
+					if (cur_part_pos.y - itr >= 0)
+					{
+						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
+						this->highlight_activate[cur_part_pos.x][cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+					}
 
 
+				}
+			}
+			else
+			{
+				auto try_highlight = [&](int x, int y)
+					{
+						if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+							return;
+						Components::RGBA& cell = this->highlight_activate[x][y];
+						cell = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+						cbsptr->get_selected_cell().push_back({ f32(x), f32(y) });
+					};
+
+				for (int i = -range; i <= range; ++i)
+				{
+					int j_range = range - std::abs(i);
+					for (int j = -j_range; j <= j_range; ++j)
+					{
+						try_highlight(cur_part_pos.x + i, cur_part_pos.y + j);
+					}
+				}
+			}
+			break;
 		}
-	}
-	else
-	{
-		auto try_highlight = [&](int x, int y)
-			{
-				if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
-					return;
-				Components::RGBA& cell = this->highlight_activate[x][y];
-				/*if (cell != highlight_tag::UNHIGHLIGHTED)
-					return;*/
-				cell = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
-				cbsptr->get_selected_cell().push_back({ f32(x), f32(y) });
-			};
-
-		for (int i = -range; i <= range; ++i)
+	case highlight_tag::MOVE_HIGHLIGHT:
 		{
-			int j_range = range - std::abs(i);
-			for (int j = -j_range; j <= j_range; ++j)
+			for (int i = -range; i <= range; ++i)
 			{
-				try_highlight(cur_part_pos.x + i, cur_part_pos.y + j);
-			}
+				int j_range = range - std::abs(i);
+				for (int j = -j_range; j <= j_range; ++j)
+				{
+					int tx = cur_part_pos.x + i;
+					int ty = cur_part_pos.y + j;
+
+					if (tx < 0 || tx >= MAX_I || ty < 0 || ty >= MAX_J)
+						continue;
+
+					//// Run A* from player to (tx, ty)
+					//std::vector<AEVec2> path = astar(cur_part_pos, { tx, ty }, gbptr);
+					Components::GridCell s{ s32(cur_part_pos.x), s32(cur_part_pos.y)};
+					Components::GridCell g{ tx, ty };
+					Components::AStarResult astar = AStar_FindPath_Grid4(MAX_I, MAX_J, gbptr->walkable, s, g);
+					
+
+					if (!astar.path.empty() && (int)astar.path.size() - 1 <= range)
+					{
+						this->highlight_activate[tx][ty] = HIGHLIGHT_MOV;
+						cbsptr->get_selected_cell().push_back(AEVec2{ (f32)tx, (f32)ty });
+					}
+				}
+			}		
+
+			break;
 		}
+	case highlight_tag::COUNT:
+		break;
+	default:
+		break;
 	}
 	//=========================================================================
 }

@@ -81,6 +81,8 @@ namespace Grid
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
 		void updateCell(s32 x, s32 y);
+
+		void draw_movement_trail(s32 x, s32 y);
 		void func_aoe_hightlight_cells(s32 x, s32 y);
 
 
