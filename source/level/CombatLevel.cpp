@@ -5,7 +5,7 @@
 #include "../UI/UI.h"
 
 Scene scene;
-UI::UIManager UIM;
+static UI::UIManager UIM;
 //Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
@@ -60,7 +60,7 @@ void LevelStateCombat_init()
 
 
 	scene.init(CS, UIM);
-	UIM.init(scene);
+	UIM.combat_init(scene);
 
 	PS.particleDataStream(ecs, mf);
 	PS.particleReverseStream(ecs, mf);

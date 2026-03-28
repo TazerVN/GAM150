@@ -24,6 +24,7 @@
 #include "UI/Text.h"
 
 
+
 #define PLAYER_MAX_HEALTH 100;
 
 extern size_t playerID;
@@ -34,7 +35,6 @@ extern bool player_died;
 extern EntityComponent::Registry ecs;
 extern TextureFactory::TextureFactory TF;
 extern MeshFactory mf;
-
 
 extern CardSystem card_system;
 extern Beastiary beastiary;

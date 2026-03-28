@@ -63,6 +63,7 @@
     <ClCompile Include="source\UI\IntentionDisplay.cpp" />
     <ClCompile Include="source\level\Gameover.cpp" />
     <ClCompile Include="source\system\ScoringSystem.cpp" />
+    <ClCompile Include="source\UI\MenuUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -129,6 +130,7 @@
     <ClInclude Include="source\UI\IntentionDisplay.h" />
     <ClInclude Include="source\level\Gameover.h" />
     <ClInclude Include="source\system\ScoringSystem.h" />
+    <ClInclude Include="source\UI\MenuUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />
