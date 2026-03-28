@@ -16,7 +16,7 @@ namespace UI
 		s32 w_height = AEGfxGetWindowHeight();
 
 		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-										 , scene.getGBS(), info);
+										 , scene.getGBS(), info,scene.getCombatSystem());
 
 
 		//========================================== buttons ======================================
@@ -107,7 +107,7 @@ namespace UI
 		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
-		hand.update_logic(scene.getTBS(),dt);
+		hand.update_logic(dt);
 		info.update();
 		vicSelect.update();
 

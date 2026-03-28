@@ -71,7 +71,7 @@ namespace CardResolver
 			//-----------------------------------
 		case 1:
 		{
-			combatSystem.play_attack_card(ecs, caster, cardID, target, targetPos);
+			combatSystem.play_attack_card(caster, cardID, target, targetPos);
 			return PC_RETURN_TAG::VALID;
 		}
 

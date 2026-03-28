@@ -31,6 +31,7 @@
 namespace PhaseSystem { class GameBoardState; }
 namespace TBS { class TurnBasedSystem; }
 namespace Grid { class GameBoard; }
+namespace CombatNameSpace{class CombatSystem;}
 
 namespace CardInteraction
 {
@@ -51,11 +52,11 @@ namespace CardInteraction
 		s32 z{ 1000 };
 
 		TBS::TurnBasedSystem* tbsptr = nullptr;
-		
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		MeshFactory* mfptr = nullptr;
 		Grid::GameBoard* gbptr = nullptr;
 		TextureFactory::TextureFactory* tfptr = nullptr;
+		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 		CardInformation::CardDisplay* cdptr = nullptr;
 
 
@@ -63,12 +64,16 @@ namespace CardInteraction
 		CardHand(f32 x, f32 y, f32 width, f32 height);
 		CardHand(f32 x, f32 y, f32 width, f32 height, TBS::TurnBasedSystem& tbs);
 		CardHand(f32 x, f32 y, f32 width, f32 height, 
-			TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd);
+			TBS::TurnBasedSystem& tbs, 
+			Grid::GameBoard& gb, 
+			PhaseSystem::GameBoardState& gbs, 
+			CardInformation::CardDisplay& cd,
+			CombatNameSpace::CombatSystem& cbs);
 
 		CardHand();
 
 		void generateCards();
-		void update_logic(TBS::TurnBasedSystem& tbs, f32 dt);
+		void update_logic(f32 dt);
 		void update_pos(EntityComponent::Registry& ecs, f32 dt);
 		void activate_card(Entity e);
 		void remove_card(EntityComponent::Registry&, int);

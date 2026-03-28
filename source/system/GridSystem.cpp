@@ -7,6 +7,7 @@
 #include "../util/Pathfinding.h"
 #include "../global.h"
 #include "../ECS/Components.h"
+#include "../system/HightlightSystem.h"
 
 float offset = 1.0f;
 
@@ -22,33 +23,6 @@ namespace Grid
 		cur_x = x;
 		cur_y = y;
 
-		/*if (*win && pos[x][y] != playerID)
-		{
-			if (pos[x][y] != -1 && *ecs.getComponent<Components::Tag>(pos[x][y]) == Components::Tag::OTHERS)
-			{
-				s32 px, py;
-				findEntityCell(playerID, px, py);
-				if (grid_dist_chebyshev(x, y, px, py) == 1)
-				{
-					switch (*ecs.getComponent<Components::VictoryNodeTag>(pos[x][y]))
-					{
-					case Components::VictoryNodeTag::COMBAT :
-					{
-						std::cout << "Teleporting to combat" << std::endl;
-						return;
-					}
-					case Components::VictoryNodeTag::BOSS :
-					{
-						std::cout << "Teleporting to Boss" << std::endl;
-						return;
-					}
-					default:
-						break;
-					}
-						
-				}
-			}
-		}*/
 		if (!(gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)) return;
 		if (tbsptr->current() != playerID) return;
 
@@ -82,7 +56,7 @@ namespace Grid
 			{
 				if (tbsptr->is_current_selected_card())
 				{
-					Entity cardID = tbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
+					Entity cardID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
 					Targetting targettingType = ecs.getComponent<Components::Targetting_Component>(cardID)->targetting_type;
 
 					int serialID = ecs.getComponent<Components::Card_ID>(cardID)->value;
@@ -209,7 +183,7 @@ namespace Grid
 		this->moveEntity(this->cur, x, y);
 		unselect_movement();
 
-		tbsptr->show_stats(*ecsptr);
+		tbsptr->show_stats(ecs);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 	}
 
@@ -307,13 +281,13 @@ namespace Grid
 			{
 				cell_onHover(id, this->pos[x][y]);
 
-				if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::PLAYER_RESOLUTION)
+				if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 				{
-					for (AEVec2 a :this->aoe_highlighted_cells)
+					for (AEVec2 a :hlptr->aoe_highlighted_cells)
 					{
-						aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
+						hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
-					this->aoe_highlighted_cells.clear();
+					hlptr->aoe_highlighted_cells.clear();
 				}
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
@@ -343,13 +317,13 @@ namespace Grid
 		return id;
 	}
 	void GameBoard::init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
-		CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win)
+		CombatNameSpace::CombatSystem& cbs,HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win)
 	{
 		tbsptr = tbsys;
-		ecsptr = &ecs;
 		evsptr = &evs;
 		gbsptr = &gb;
 		cbsptr = &cbs;
+		hlptr = &hl;
 
 		win = &_win;
 		this->offset.x = ox;
@@ -364,7 +338,6 @@ namespace Grid
 				cells[i][j] = create_cells({ x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
 				this->pos[i][j] = -1;
 				//this->activate[i][j] = false;
-				this->highlight_activate[i][j] = highlight_tag::UNHIGHLIGHTED;
 				walkable[j * MAX_I + i] = 1;
 			}
 		}
@@ -462,7 +435,7 @@ namespace Grid
 			int idx = tbsptr->get_selected_cardhand_index();
 			if (idx >= 0)
 			{
-				Entity cardID = tbsptr->draw_card(playerID, idx);
+				Entity cardID = cbsptr->draw_card(playerID, idx);
 				if (cardID != Components::NULL_INDEX)
 				{
 					Components::Card_ID* idComp = ecs.getComponent<Components::Card_ID>(cardID);
@@ -497,11 +470,11 @@ namespace Grid
 			{
 				placementDirection = (placementDirection + 1) % 4;
 
-				for (AEVec2 a : this->aoe_highlighted_cells)
+				for (AEVec2 a : hlptr->aoe_highlighted_cells)
 				{
-					aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
+					hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 				}
-				this->aoe_highlighted_cells.clear();
+				hlptr->aoe_highlighted_cells.clear();
 
 				std::cout << "Direction = " << placementDirection << std::endl;
 			}
@@ -518,7 +491,7 @@ namespace Grid
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
-				switch (this->highlight_activate[i][j])
+				/*switch (hlptr->highlight_activate[i][j])
 				{
 					case highlight_tag::ATTACK_HIGHLIGHT:
 					{
@@ -536,15 +509,18 @@ namespace Grid
 					}
 					default:
 						break;
-				}
+				}*/
+				color->d_color.r = color->d_color.r + hlptr->highlight_activate[i][j].r;
+				color->d_color.g = color->d_color.g + hlptr->highlight_activate[i][j].g;
+				color->d_color.b = color->d_color.b + hlptr->highlight_activate[i][j].b;
 
 
-				if (this->aoe_highlight_activate[i][j])
-			{
-					color->d_color.r -= (aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4f;
+				if (hlptr->aoe_highlight_activate[i][j])
+				{
+					color->d_color.r -= (hlptr->aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4f;
 					color->d_color.g -= 0.8f;
 					color->d_color.b -= 0.8f;
-			}
+				}
 
 				//======================update entity cell=====================================
 				if (this->pos[i][j] != -1)
@@ -600,15 +576,15 @@ namespace Grid
 		return pos;
 	}
 
-	std::array<std::array<highlight_tag, MAX_J>, MAX_I>& GameBoard::activate_highlight()
+	/*std::array<std::array<highlight_tag, MAX_J>, MAX_I>& GameBoard::activate_highlight()
 	{
 		return highlight_activate;
-	}
+	}*/
 
-	std::array<std::array<int, MAX_J>, MAX_I>& GameBoard::activate_aoe_highlight()
+	/*std::array<std::array<int, MAX_J>, MAX_I>& GameBoard::activate_aoe_highlight()
 	{
 		return aoe_highlight_activate;
-	}
+	}*/
 
 	bool GameBoard::selected_player() const
 	{
@@ -691,8 +667,13 @@ namespace Grid
 				}
 			}
 		}
-		aoe_highlighted_cells.clear();
+		hlptr->aoe_highlighted_cells.clear();
 		win = nullptr;
+		tbsptr = nullptr;
+		gbsptr = nullptr;
+		evsptr = nullptr;
+		cbsptr = nullptr;
+		hlptr = nullptr;
 	}
 	
 	bool GameBoard::moveEntityAI(Entity e, s32 x, s32 y, int max_move)
@@ -757,7 +738,7 @@ namespace Grid
 
 	void GameBoard::func_aoe_hightlight_cells(s32 x, s32 y)
 	{
-		Entity card_ID = tbsptr->draw_card(tbsptr->current(), tbsptr->get_selected_cardhand_index());
+		Entity card_ID = cbsptr->draw_card(tbsptr->current(), tbsptr->get_selected_cardhand_index());
 		f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
 		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
@@ -783,40 +764,40 @@ namespace Grid
 				{
 					if (i + j <= gustRange && x + i < MAX_I && y + j < MAX_J)
 					{
-						if (!this->aoe_highlight_activate[x + i][y + j])
+						if (!hlptr->aoe_highlight_activate[x + i][y + j])
 						{
-							this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
-							this->aoe_highlight_activate[x + i][y + j] = 1;
+							hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
+							hlptr->aoe_highlight_activate[x + i][y + j] = 1;
 						}
 					}
 					if (i + j <= gustRange && x - i >= 0 && y - j >= 0)
 					{
-						if (!this->aoe_highlight_activate[x - i][y - j])
+						if (!hlptr->aoe_highlight_activate[x - i][y - j])
 						{
-							this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
-							this->aoe_highlight_activate[x - i][y - j] = 1;
+							hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
+							hlptr->aoe_highlight_activate[x - i][y - j] = 1;
 						}
 					}
 					if (i + j <= gustRange && x + i < MAX_I && y - j >= 0)
 					{
-						if (!this->aoe_highlight_activate[x + i][y - j])
+						if (!hlptr->aoe_highlight_activate[x + i][y - j])
 						{
-							this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
-							this->aoe_highlight_activate[x + i][y - j] = 1;
+							hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
+							hlptr->aoe_highlight_activate[x + i][y - j] = 1;
 						}
 					}
 					if (i + j <= gustRange && x - i >= 0 && y + j < MAX_J)
 					{
-						if (!this->aoe_highlight_activate[x - i][y + j])
+						if (!hlptr->aoe_highlight_activate[x - i][y + j])
 						{
-							this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
-							this->aoe_highlight_activate[x - i][y + j] = 1;
+							hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
+							hlptr->aoe_highlight_activate[x - i][y + j] = 1;
 						}
 					}
 				}
 			}
 
-			this->aoe_highlight_activate[x][y] = 2;
+			hlptr->aoe_highlight_activate[x][y] = 2;
 			return;
 		}
 		
@@ -850,14 +831,14 @@ namespace Grid
 				if (nx < 0 || nx >= MAX_I || ny < 0 || ny >= MAX_J)
 					continue;
 
-				if (!this->aoe_highlight_activate[nx][ny])
+				if (!hlptr->aoe_highlight_activate[nx][ny])
 				{
-					this->aoe_highlighted_cells.push_back({ (f32)nx, (f32)ny });
-					this->aoe_highlight_activate[nx][ny] = 1;
+					hlptr->aoe_highlighted_cells.push_back({ (f32)nx, (f32)ny });
+					hlptr->aoe_highlight_activate[nx][ny] = 1;
 				}
 			}
 
-			this->aoe_highlight_activate[x][y] = 2;
+			hlptr->aoe_highlight_activate[x][y] = 2;
 			return;
 		}
 
@@ -867,40 +848,40 @@ namespace Grid
 			{
 				if (i + j <= aoe_range && x + i < MAX_I && y + j < MAX_J)
 				{
-					if (!this->aoe_highlight_activate[x + i][y + j])
+					if (!hlptr->aoe_highlight_activate[x + i][y + j])
 					{
-						this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
-						this->aoe_highlight_activate[x + i][y + j] = 1;
+						hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
+						hlptr->aoe_highlight_activate[x + i][y + j] = 1;
 					}
 				}
 				if (i + j <= aoe_range && x - i >= 0 && y - j >= 0)
 				{
-					if (!this->aoe_highlight_activate[x - i][y - j])
+					if (!hlptr->aoe_highlight_activate[x - i][y - j])
 					{
-						this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
-						this->aoe_highlight_activate[x - i][y - j] = 1;
+						hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
+						hlptr->aoe_highlight_activate[x - i][y - j] = 1;
 					}
 				}
 				if (i + j <= aoe_range && x + i < MAX_I && y - j >= 0)
 				{
-					if (!this->aoe_highlight_activate[x + i][y - j])
+					if (!hlptr->aoe_highlight_activate[x + i][y - j])
 					{
-						this->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
-						this->aoe_highlight_activate[x + i][y - j] = 1;
+						hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
+						hlptr->aoe_highlight_activate[x + i][y - j] = 1;
 					}
 				}
 				if (i + j <= aoe_range && x - i >= 0 && y + j < MAX_J)
 				{
-					if (!this->aoe_highlight_activate[x - i][y + j])
+					if (!hlptr->aoe_highlight_activate[x - i][y + j])
 					{
-						this->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
-						this->aoe_highlight_activate[x - i][y + j] = 1;
+						hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
+						hlptr->aoe_highlight_activate[x - i][y + j] = 1;
 					}
 				}
 			}
 		}
 
-		this->aoe_highlight_activate[x][y] = 2;
+		hlptr->aoe_highlight_activate[x][y] = 2;
 	}
 
 	void GameBoard::setEnemyAnimationPhase()

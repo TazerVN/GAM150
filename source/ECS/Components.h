@@ -99,6 +99,7 @@ namespace Components
 		f32 g;
 		f32 b;
 		f32 a;
+		RGBA();
 		RGBA(f32 r, f32 g, f32 b, f32 a);
 	};
 

@@ -46,7 +46,7 @@ namespace TBS
 		void round_end();
 	public:
 		//===========Set Ups============================
-		void init(EntityComponent::Registry&, EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
+		void init(EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
 			, CardSystem&, CardInteraction::CardHand& ,Entity);
 		void add_participant(EntityComponent::Registry& ecs,Entity parti);
 		void remove_participant(EntityComponent::Registry& ecs, Entity parti);
@@ -84,8 +84,6 @@ namespace TBS
 		void select_hand_index(size_t index);
 		//by pressing U player select his card
 		void select_card(EntityComponent::Registry& ecs);
-		//return the cardID inside the hand
-		Entity draw_card(Entity player, size_t chIndex);
 
 		bool update();
 		void tbs_free();

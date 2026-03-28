@@ -5,6 +5,7 @@
 #include "../system/GridSystem.h"
 #include "../system/CameraSystem.h"
 #include "../system/CardSystem.h"
+#include "../system/HightlightSystem.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
 #include "../UI/IntentionDisplay.h"
@@ -38,7 +39,6 @@ private:
 	CombatNameSpace::CombatSystem cbs;
 	//Text::NameTag nameTags;
 	EntityFactory::InteractableNode iNodes;
-
 	Camera::CameraSystem* cameraSys;
 	UI::UIManager* UIptr;
 
@@ -46,6 +46,7 @@ private:
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	IntentionDisplaySystem intentDisplaySystem;
 
+	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
 	bool _win = false;
 
 public:

@@ -138,9 +138,9 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 
 
-	cbs.init(ecs, gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool);
-	TBSys.init(ecs,eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
-	BattleGrid.init(&TBSys, eventPool, gbs, cbs, TF.getTextureFloor(0), 0, w_height / 3,_win);
+	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem);
+	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem ,TF.getTextureFloor(0), 0, w_height / 3,_win);
 
 	for (Entity rock : rocks)
 	{
@@ -335,40 +335,7 @@ void Scene::update()
 	iNodes.update();
 	//==================Handle Events===============================
 
-	if (eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered)
-	{
-		unhighlight_cells(BattleGrid, cbs);
-		eventPool.template_pool[UNHIGHLIGHT_EVENT].triggered = false;
-	}
-
-	if (eventPool.template_pool[HIGHLIGHT_EVENT].triggered)
-	{
-		highlight_tag highlight_type = eventPool.template_pool[HIGHLIGHT_EVENT].returned_value;
-
-		switch (highlight_type)
-		{
-		case highlight_tag::ATTACK_HIGHLIGHT:
-		{
-			Entity card_ID = TBSys.draw_card(TBSys.current(), TBSys.get_selected_cardhand_index());
-			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
-
-			Targetting targetting = ecs.getComponent<Components::Targetting_Component>(card_ID)->targetting_type;
-			highlight_cells(targetting == Targetting::LINE,TBSys, BattleGrid, cbs, card_range, highlight_type);
-
-			break;
-		}
-		case highlight_tag::MOVE_HIGHLIGHT:
-		{
-			f32& range = ecs.getComponent<Components::TurnBasedStats>(TBSys.current())->cur_movSpd;
-			highlight_cells(false,TBSys, BattleGrid, cbs, range, highlight_type);
-		}
-		break;
-		default:
-			break;
-		}
-
-		eventPool.template_pool[HIGHLIGHT_EVENT].triggered = false;
-	}
+	highlightSystem.update();
 	//==============================================================
 }
 
@@ -424,88 +391,4 @@ CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 bool Scene::win()const
 {
 	return _win;
-}
-void highlight_cells(bool line,TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs ,int range,highlight_tag type)
-{
-	//=========================Highlight_cells=================================
-
-	AEVec2 cur_part_pos = gb.Get_CurPart_gridPos();
-
-	if (line)
-	{
-		for (int itr = 0; itr <= range; ++itr)
-		{
-			if (cur_part_pos.x + itr < MAX_I)
-			{
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
-				gb.activate_highlight()[cur_part_pos.x + itr][cur_part_pos.y] = type;
-			}
-			if (cur_part_pos.x - itr >= 0)
-			{
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
-				gb.activate_highlight()[cur_part_pos.x - itr][cur_part_pos.y] = type;
-			}
-			if (cur_part_pos.y + itr < MAX_J)
-			{
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
-				gb.activate_highlight()[cur_part_pos.x][cur_part_pos.y + itr] = type;
-			}
-			if (cur_part_pos.y - itr >= 0)
-			{
-				cbs.get_highlighted_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
-				gb.activate_highlight()[cur_part_pos.x][cur_part_pos.y - itr] = type;
-			}
-
-
-		}
-	}
-	else 
-	{
-		for (int i = 0; i <= range; ++i)
-		{
-			for (int j = 0; j <= range; ++j)
-			{
-				//if (i + j == 0) continue;
-				if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y + j < MAX_J)
-				{
-					if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
-						continue;
-					cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y + j });
-					gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y + j] = type;
-				}
-				if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y - j >= 0)
-				{
-					if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
-						continue;
-					cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y - j });
-					gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y - j] = type;
-				}
-				if (i + j <= range && cur_part_pos.x + i < MAX_I && cur_part_pos.y - j >= 0)
-				{
-					if (gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] != highlight_tag::UNHIGHLIGHTED)
-						continue;
-					cbs.get_highlighted_cell().push_back({ cur_part_pos.x + i , cur_part_pos.y - j });
-					gb.activate_highlight()[cur_part_pos.x + i][cur_part_pos.y - j] = type;
-				}
-				if (i + j <= range && cur_part_pos.x - i >= 0 && cur_part_pos.y + j < MAX_J)
-				{
-					if (gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] != highlight_tag::UNHIGHLIGHTED)
-						continue;
-					cbs.get_highlighted_cell().push_back({ cur_part_pos.x - i , cur_part_pos.y + j });
-					gb.activate_highlight()[cur_part_pos.x - i][cur_part_pos.y + j] = type;
-				}
-			}
-		}
-	}
-	//=========================================================================
-}
-
-void unhighlight_cells(Grid::GameBoard& gb,CombatNameSpace::CombatSystem& cbs)
-{
-	if(cbs.get_highlighted_cell().empty()) return;
-	for (AEVec2 a : cbs.get_highlighted_cell())
-	{
-		gb.activate_highlight()[int(a.x)][int(a.y)] = highlight_tag::UNHIGHLIGHTED;
-	}
-	cbs.get_highlighted_cell().clear();
 }

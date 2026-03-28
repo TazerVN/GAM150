@@ -1,20 +1,21 @@
 #include "pch.h"
 
 #include "CombatSystem.h"
-#include "../system/TurnBasedSystem.h"
+#include "TurnBasedSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../system/PhaseSystem.h"
 #include "../UI/cardInteraction.h"
-#include "../system/GridSystem.h"
-#include "system/CardResolver.h"
+#include "GridSystem.h"
+#include "CardResolver.h"
+#include "HightlightSystem.h"
 #include <set>
 #include <utility>
 #include "../global.h"
 
 //==================Helpers=================
-std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_highlighted_cell()
+std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_selected_cell()
 {
-	return highlighted_cells;
+	return selected_cells;
 }
 
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_aoe_selected_cell()
@@ -62,8 +63,8 @@ bool is_valid_grid_pos(int x, int y)
 }
 
 //-============END OF HELPERS=============
-void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
-	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem)
+void CombatNameSpace::CombatSystem::init(PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
+	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem,HighlightSystem& hl)
 {
 	gbsptr = &gbs;
 	gbptr = &gb;
@@ -72,6 +73,7 @@ void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSy
 	evsptr = &eventSystem;
 	mfptr = &mf;
 	tfptr = &TF;
+	hlptr = &hl;
 
 	this->total_attack_cards_played = 0;
 	this->total_def_cards_played = 0;
@@ -82,7 +84,7 @@ void CombatNameSpace::CombatSystem::init(EntityComponent::Registry& ecs, PhaseSy
 
 bool CombatNameSpace::CombatSystem::check_within_range(s32 const& x, s32 const& y)
 {
-	for (AEVec2 ite : highlighted_cells)
+	for (AEVec2 ite : selected_cells)
 	{
 		if (x == s32(ite.x) && y == s32(ite.y))
 		{
@@ -92,7 +94,7 @@ bool CombatNameSpace::CombatSystem::check_within_range(s32 const& x, s32 const& 
 	return false;
 }
 
-void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& ecs, Entity caster, Entity cardID, Entity target, AEVec2 pos)
+void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardID, Entity target, AEVec2 pos)
 {
 	EntityComponent::ComponentTypeID card_value_ID = EntityComponent::getComponentTypeID<Components::Card_Value>();
 	if (!ecs.getBitMask()[cardID].test(card_value_ID))
@@ -184,7 +186,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(EntityComponent::Registry& 
 		}
 		for (AEVec2 a : aoe_selected_cells)
 		{
-			gbptr->activate_aoe_highlight()[int(a.x)][int(a.y)] = 0;
+			hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 		}
 		aoe_selected_cells.clear();
 		break;
@@ -716,7 +718,7 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 {
 	PC_RETURN_TAG ret = PC_RETURN_TAG::INVALID;
 
-	Entity cardID = tbsptr->draw_card(player, index);
+	Entity cardID = this->draw_card(player, index);
 	if (cardID == Components::NULL_INDEX) // Added a guard 
 		return PC_RETURN_TAG::INVALID;
 
@@ -806,12 +808,13 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 	tbsptr = nullptr;
 	cardHandptr = nullptr;
 	evsptr = nullptr;
+	hlptr = nullptr;
 
 	targetted_entity = -1;
 	targetted_x = -1; targetted_y= -1;
 	play_card_triggered = false;
 
-	if(!highlighted_cells.empty())highlighted_cells.clear();
+	if(!selected_cells.empty())selected_cells.clear();
 	if(!aoe_selected_cells.empty())aoe_selected_cells.clear();
 	if(!graveyard.empty())graveyard.clear();
 }
@@ -819,4 +822,12 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 std::vector<std::pair<AEVec2, Entity>>& CombatNameSpace::CombatSystem::get_graveyard()
 {
 	return graveyard;
+}
+
+//return the cardID inside the hand
+Entity CombatNameSpace::CombatSystem::draw_card(Entity player, size_t chIndex)
+{
+	Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
+	if (player_storage->data_card_hand.empty()) return -1;
+	return player_storage->data_card_hand[chIndex];
 }

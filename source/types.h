@@ -9,7 +9,8 @@ enum class highlight_tag
 {
 	UNHIGHLIGHTED = 0,
 	ATTACK_HIGHLIGHT = 1,
-	MOVE_HIGHLIGHT = 2
+	MOVE_HIGHLIGHT = 2,
+	COUNT
 };
 
 enum class PC_RETURN_TAG

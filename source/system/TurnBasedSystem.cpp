@@ -48,7 +48,7 @@ namespace TBS
 		if (!is_active && participants.size() >= 2) start(ecs);
 	}
 
-	void TurnBasedSystem::init(EntityComponent::Registry& ecs, EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
+	void TurnBasedSystem::init(EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
 		CombatNameSpace::CombatSystem& cbs, CardSystem& cs, CardInteraction::CardHand& ch, Entity horde)
 	{
 		evsptr = &eventPool;
@@ -231,12 +231,14 @@ namespace TBS
 
 	void TurnBasedSystem::select_card(EntityComponent::Registry& ecs)
 	{
-		gameBoardptr->unselect_card();
+		if(this->is_current_selected_card())
+			gameBoardptr->unselect_card();
+		
 		gameBoardptr->unselect_movement();
 		int index = get_selected_cardhand_index();
 
 		Entity current_entt = current();
-		Entity card = this->draw_card(current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
+		Entity card = cbsptr->draw_card(current_entt, index); //draw_card(ecs, current_entt, participant_hand[index]);
 
 		if (card == Components::NULL_INDEX)
 		{
@@ -264,14 +266,6 @@ namespace TBS
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::AOE_GRID_SELECT);
 		else 
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
-	}
-	
-	//return the cardID inside the hand
-	Entity TurnBasedSystem::draw_card(Entity player, size_t chIndex)
-	{
-		Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
-		if(player_storage->data_card_hand.empty()) return -1;
-		return player_storage->data_card_hand[chIndex];
 	}
 	//DEBUG PRINT
 	void TurnBasedSystem::debug_print(EntityComponent::Registry& ecs) const

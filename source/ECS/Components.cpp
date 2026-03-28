@@ -65,7 +65,7 @@ Components::Input::Input(u8 type, bool hover,
 Components::Text::Text(std::string text, s8 fontID, s32 z) : text{ text }, fontID{ fontID }, z{ z } {}
 
 
-
+Components::RGBA::RGBA() : r{0.f}, g{0.f}, b{0.f}, a{0.f} {};
 Components::RGBA::RGBA(f32 r, f32 g, f32 b, f32 a) : r{ r }, g{ g }, b{ b }, a{ a } {};
 Components::Color::Color(f32 r, f32 g, f32 b, f32 a) : c_color{ r,g,b,a }, d_color{ r,g,b,a } {}
 

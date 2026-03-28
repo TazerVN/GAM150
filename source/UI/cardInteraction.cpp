@@ -64,7 +64,9 @@ namespace CardInteraction
 	}
 
 	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height,
-					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd)
+					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, 
+						PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd,
+						CombatNameSpace::CombatSystem& cbs)
 		: CardHand()
 	{
 		this->reset = true;
@@ -81,9 +83,10 @@ namespace CardInteraction
 		mfptr = &mf;
 		tfptr = &TF;
 		cdptr = &cd;
+		cbsptr = &cbs;
 	}
 
-	void CardHand::update_logic(TBS::TurnBasedSystem& tbs, f32 dt)
+	void CardHand::update_logic(f32 dt)
 	{
 		//guard against gbsptr being null
 		this->update_pos(ecs, dt);
@@ -100,7 +103,7 @@ namespace CardInteraction
 		{
 			if ((gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::GRID_SELECT || gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT))
 			{
-				if (tbs.get_selected_cardhand_index() == i)
+				if (tbsptr->get_selected_cardhand_index() == i)
 				{
 					card_onClick(ecs, this->curr_hand_display[i]);
 				}
@@ -114,7 +117,7 @@ namespace CardInteraction
 			{
 				this->activate[i] = false;
 
-				Entity cardID = tbsptr->draw_card(playerID, i);
+				Entity cardID = cbsptr->draw_card(playerID, i);
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
 				
@@ -260,6 +263,9 @@ namespace CardInteraction
 
 	void CardHand::remove_card(EntityComponent::Registry& ecs, int index)
 	{
+		if (this->curr_hand_display.empty() || this->curr_card_id.empty() ||
+			this->activate.empty()) return;
+
 		selectableCard_delete(ecs, this->curr_hand_display[index]);
 		this->curr_hand_display.erase(this->curr_hand_display.begin() + index);
 		this->curr_card_id.erase(this->curr_card_id.begin() + index);
@@ -301,6 +307,7 @@ namespace CardInteraction
 		mfptr = nullptr;
 		gbptr = nullptr;
 		tfptr = nullptr;
+		cbsptr = nullptr;
 
 		for (std::pair<Entity, Entity> i : curr_hand_display)
 		{

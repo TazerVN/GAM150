@@ -24,19 +24,24 @@
 namespace TBS { class TurnBasedSystem; }
 namespace PhaseSystem { class GameBoardState; }
 namespace CombatNameSpace {class CombatSystem;}
+class HighlightSystem;
 
 namespace Grid
 {
 	class GameBoard
 	{
-		private:
+	private:
+		size_t MAX_i = 0;
+		size_t MAX_j = 0;
+
 		std::vector<Entity> cells_entity_id;
 
-		EntityComponent::Registry* ecsptr = nullptr;
 		TBS::TurnBasedSystem* tbsptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
 		CombatNameSpace::CombatSystem* cbsptr = nullptr;
+		HighlightSystem* hlptr = nullptr;
+
 		bool* win = nullptr;
 
 		Entity cur, prev_cur;
@@ -45,12 +50,9 @@ namespace Grid
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
 		//=============Data for A* Star====================
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
-		//std::array<std::array<bool, MAX_J>, MAX_I> activate;
-
-		std::array<std::array<highlight_tag, MAX_J>, MAX_I> highlight_activate;
-
-		std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
-		std::vector<AEVec2> aoe_highlighted_cells;
+		
+		/*std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
+		std::vector<AEVec2> aoe_highlighted_cells;*/
 
 		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z);
 
@@ -62,10 +64,10 @@ namespace Grid
 		s32 cur_x, cur_y, prev_x, prev_y;
 		uint8_t walkable[MAX_I * MAX_J]{};
 
-		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb, 
-			CombatNameSpace::CombatSystem& cbs, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
+		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
+			CombatNameSpace::CombatSystem& cbs, HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
 		void placeEntity(Entity e, s32 x, s32 y);
-		
+
 		void trigger_play_card(s32 x, s32 y);
 		void unselect_card();
 		void move_trigger(s32 const& x, s32 const& y);
@@ -79,13 +81,13 @@ namespace Grid
 
 		void update(EntityComponent::Registry& ecs, Entity camera);
 		void updateCell(s32 x, s32 y);
-		void func_aoe_hightlight_cells(s32 x , s32 y);
-		
+		void func_aoe_hightlight_cells(s32 x, s32 y);
+
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
-		std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
-		std::array<std::array<int, MAX_J>, MAX_I>& activate_aoe_highlight();
+		//std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
+		//std::array<std::array<int, MAX_J>, MAX_I>& activate_aoe_highlight();
 
 		bool selected_player() const;
 		void unselect_movement();
@@ -96,40 +98,4 @@ namespace Grid
 
 		void gameboard_free();
 	};
-	
-	//class Grid
-	//{
-	//	public:
-	//	//Shape2D::Rectangle cells[MAX_I][MAX_J];
-	//	int cells_color[MAX_I][MAX_J];
-	//	f32 cells_alpha[MAX_I][MAX_J];
-	//	Grid();		//default constructor
-	//	void update(float camX, float camY, int winW, int winH); //so grid takes parameters of the world
-	//	//void render() override;
-
-	//	// A* click state
-	//	bool hasStart = false;
-	//	bool hasGoal = false;
-	//	int start_i = -1, start_j = -1;
-	//	int goal_i = -1, goal_j = -1;
-
-	//	//std::vector<Cell> path;
-
-	//	// Optional walls (leave all false for now)
-	//	bool blocked[MAX_I][MAX_J]{};
-	//	uint8_t walkable[MAX_I * MAX_J]{};
-
-	//	private:
-	//	//zejin this is ur old A star code
-	//	/*bool PickCellNearest(float worldX, float worldY, int& outI, int& outJ) const;
-	//	void RebuildWalkable();
-	//	void ComputePath();
-	//	void ResetColors();
-	//	void PaintStartGoalPath();
-	//	void ToggleBlocked(int i, int j);*/
-	//};
-
 }
-
-//void cells_init(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);
-//void draw_cells(Shape2D::Rectangle(&cells)[MAX_I][MAX_J]);
