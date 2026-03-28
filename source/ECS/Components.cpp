@@ -67,6 +67,14 @@ Components::Text::Text(std::string text, s8 fontID, s32 z) : text{ text }, fontI
 
 Components::RGBA::RGBA() : r{0.f}, g{0.f}, b{0.f}, a{0.f} {};
 Components::RGBA::RGBA(f32 r, f32 g, f32 b, f32 a) : r{ r }, g{ g }, b{ b }, a{ a } {};
+Components::RGBA::RGBA(unsigned int hex)
+{
+	this->r = static_cast<f32>((hex >> 24) & 0xFF) / 255.f;
+	this->g = static_cast<f32>((hex >> 16) & 0xFF) / 255.f;
+	this->b = static_cast<f32>((hex >> 8) & 0xFF) / 255.f;
+	this->a = static_cast<f32>((hex >> 0) & 0xFF) / 255.f;
+}
+
 Components::Color::Color(f32 r, f32 g, f32 b, f32 a) : c_color{ r,g,b,a }, d_color{ r,g,b,a } {}
 
 Components::Timer::Timer() : seconds{ 0 }, max_seconds{ 0 }, start{ false }, reset{ false } {}

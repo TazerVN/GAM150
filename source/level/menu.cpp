@@ -4,9 +4,11 @@
 #include <iostream>
 #include "AEEngine.h"
 #include "../util/GameStateManager.h"
+#include "../UI/UIObject.h"
+#include "../UI/UI.h"
 //#include "../system/particleSystem.h"
 
-
+static UI::UIManager UIM;
 // PROXY CODE
 // NEED CLEAN UP
 //Particle::ParticleSystem PS;
@@ -29,9 +31,12 @@ void GameStateMainMenu_init()
 
     //Sam here is the example to use it below call that function whenever u are done VV
     //AEGfxTextureUnload(bgTexture);
-    playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
-    quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
+    //playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
+    //quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
 
+    UIM.menu_init();
+
+    ecs.remove_empty_groups();
     shouldQuit = false;
 }
 void GameStateMainMenu_update()
@@ -43,10 +48,11 @@ void GameStateMainMenu_update()
 
     if (AEInputCheckTriggered(AEVK_LBUTTON))
     {
-        if (IsMouseOver(playBtn)) //leaveGameState();
-            gGameStateNext = GameStates::GS_Game;
-        if (IsMouseOver(quitBtn)) shouldQuit = true;
+        //if (IsMouseOver(playBtn)) //leaveGameState();
+        //    gGameStateNext = GameStates::GS_Game;
+        //if (IsMouseOver(quitBtn)) shouldQuit = true;
     }
+
     
     AEGfxSetBackgroundColor(0.f, 0.f, 0.f);
 
@@ -71,19 +77,22 @@ void GameStateMainMenu_update()
         return;
     }
     */
+    UIM.menu.update();
+
 
     // DataBub HERE
     //PS.particleDataBubble(ecs, mf);
 
-    DrawButton(playBtn);
-    DrawButton(quitBtn);
+    //DrawButton(playBtn);
+    //DrawButton(quitBtn);
 
-    AEGfxPrint(menuFont, "Beyond the Nexus", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
+    //AEGfxPrint(menuFont, "Beyond the Nexus", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
 
 }
 void GameStateMainMenu_free()
 {
 	std::cout << "Main menu free" << std::endl;
+    UIM.menu.free();
 }
 void GameStateMainMenu_unload()
 {

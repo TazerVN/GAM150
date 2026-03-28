@@ -24,7 +24,6 @@ void GameState_game_init()
 void GameState_game_update()
 {
 	//==============(Logic Update)==============
-	TS.update(ecs);
 
 	if (gLevelStateNext != LevelStates::LS_QUIT)
 	{

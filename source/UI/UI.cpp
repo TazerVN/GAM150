@@ -9,8 +9,17 @@ namespace UI
 	{
 	}
 
-	void UIManager::init(Scene& scene)
+	void UIManager::menu_init()
 	{
+		this->menu.init();
+		auto play = ecs.getComponent<Components::Input>(this->menu.play.button);
+		play->onClick = [] { gGameStateNext = GameStates::GS_Game; };
+	}
+
+	void UIManager::combat_init(Scene& scene)
+	{
+		this->st = UIO::ScreenTransition(true);
+
 		//hand
 		s32 w_width = AEGfxGetWindowWidth();
 		s32 w_height = AEGfxGetWindowHeight();
@@ -194,6 +203,8 @@ namespace UI
 			child_trans->pos_onscreen.y = parent_trans->pos_onscreen.y + child_trans->pos.y;
 		}
 
+		this->st.update();
+
 	}
 
 	CardInteraction::CardHand& UIManager::getCardHand()
@@ -216,6 +227,8 @@ namespace UI
 
 	void UIManager::free()
 	{
+		//menu.free();
+
 		hand.card_interaction_free();
 		info.free(ecs);
 		pause.free();

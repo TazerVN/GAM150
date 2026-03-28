@@ -11,22 +11,44 @@
 #include "../UI/PauseMenu.h"
 #include "../UI/Victory_Select.h"
 
+#include "../UI/MenuUI.h"
+
 #include <functional>
 #include "AEEngine.h"
 #include <vector>
 
+namespace UIO
+{
+	struct ScreenTransition;
+}
+
 namespace UI
 {
+	
+	class CombatUI
+	{
+	};
+
 	class UIManager
 	{
+		private:
+		s32 z{1000};
+
+		//fade in
+		UIO::ScreenTransition st;
+
+		// ============ MENU ===============
+		public:
+		MenuUI menu;
+
+
+		// ============ COMBAT ===============
 		private:
 		std::vector<std::pair<Entity, Entity>> hp_children_list;
 		std::vector<std::pair<Entity, Entity>> mana_children_list;
 		std::vector<std::pair<Entity, Entity>> intention_children_list;
 		Entity player_effect{0};
 		std::vector<Entity> current_ui;
-
-		s32 z{1000};
 
 		//card
 		CardInformation::CardDisplay info;
@@ -48,10 +70,14 @@ namespace UI
 		void drawpile_update();
 		void discardpile_update();
 		void player_effect_update();
+
+
 		public:
+
 		UIManager();
 		void update(Scene& scene, f32 dt);
-		void init(Scene& scene);
+		void combat_init(Scene& scene);
+		void menu_init();
 		void free();
 
 		CardInteraction::CardHand& getCardHand();
