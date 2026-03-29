@@ -186,7 +186,6 @@ namespace Grid
 
 	void GameBoard::move_select(s32 const& x, s32 const& y)
 	{
-		prev_x = x, prev_y = y;
 		if (pos[x][y] != tbsptr->current())
 		{
 			std::cout << "Cannot select this entity! " << pos[x][y] << std::endl;
@@ -742,7 +741,7 @@ namespace Grid
 	}
 	void GameBoard::draw_movement_trail(s32 x, s32 y)
 	{
-		Components::GridCell s{ s32(prev_x), s32(prev_y) };
+		Components::GridCell s{ s32(cur_x), s32(cur_y) };
 		Components::GridCell g{ x, y };
 		Components::AStarResult astar = AStar_FindPath_Grid4(MAX_I, MAX_J, this->walkable, s, g);
 
