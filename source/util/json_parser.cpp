@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "rapidjson/document.h"
+#include "document.h"
 #include <fstream>
 #include <iostream>
 #include <array>
 
 #include "json_parser.h"
-#include "rapidjson/document.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/ostreamwrapper.h"
+#include "document.h"
+#include "prettywriter.h"
+#include "ostreamwrapper.h"
 
 
 JSON_RET parse_date_to_file(unsigned int value ,char const* file_loc)
