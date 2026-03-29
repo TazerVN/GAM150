@@ -188,8 +188,8 @@ namespace TBS
 			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
 		}
 		
-		gameBoardptr->unselect_card();
-		gameBoardptr->unselect_movement();
+		//gameBoardptr->unselect_card();
+		//gameBoardptr->unselect_movement();
 		debug_print(ecs);
 	}
 
@@ -231,10 +231,12 @@ namespace TBS
 
 	void TurnBasedSystem::select_card(EntityComponent::Registry& ecs)
 	{
-		if(this->is_current_selected_card())
+		if (this->is_current_selected_card())
 			gameBoardptr->unselect_card();
-		
-		gameBoardptr->unselect_movement();
+		if (gameBoardptr->selected_player())
+			gameBoardptr->unselect_movement();
+
+		//gameBoardptr->unselect_movement();
 		int index = get_selected_cardhand_index();
 
 		Entity current_entt = current();

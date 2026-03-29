@@ -92,7 +92,6 @@ namespace Grid
 					if (targettingType != Targetting::SELF && pos[x][y] == tbsptr->current())
 					{
 						std::cout << "Selected Player initializing Movement" << std::endl;
-						unselect_card();
 						move_select(x, y);
 						return;
 					}
@@ -151,7 +150,7 @@ namespace Grid
 	{
 		tbsptr->set_selected_card(false);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		hlptr->unhighlight_atk_cells();
 		placementDirection = 0;
 		
 	}
@@ -186,6 +185,7 @@ namespace Grid
 
 	void GameBoard::move_select(s32 const& x, s32 const& y)
 	{
+		if(tbsptr->is_current_selected_card())this->unselect_card();
 		if (pos[x][y] != tbsptr->current())
 		{
 			std::cout << "Cannot select this entity! " << pos[x][y] << std::endl;
@@ -199,12 +199,12 @@ namespace Grid
 			return;
 		}
 
-		if(tbsptr->is_current_selected_card())this->unselect_card();
 
 		this->cur = this->pos[x][y];
 		selected_part = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
+		
 	}
 	void cell_onHover(Entity id, Entity character)
 	{
@@ -449,14 +449,14 @@ namespace Grid
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_RBUTTON))
 		{
-			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
+			/*gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
 			tbsptr->set_selected_card(false);
-			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;*/
+			unselect_card();
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
 		{
 			unselect_movement();
-			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
 		}
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_R))
@@ -511,6 +511,12 @@ namespace Grid
 				color->d_color.g = color->d_color.g + hlptr->highlight_activate[i][j].g;
 				color->d_color.b = color->d_color.b + hlptr->highlight_activate[i][j].b;
 
+				if (hlptr->enemy_attack_highlight_activate[i][j])
+				{
+					color->d_color.r -= 0.f;
+					color->d_color.g -= 1.f;
+					color->d_color.b -= 1.f;
+				}
 
 				if (hlptr->aoe_highlight_activate[i][j])
 				{
@@ -525,6 +531,8 @@ namespace Grid
 					color->d_color.g -= 0.99f;
 					color->d_color.b -= 0.4f;
 				}
+
+				
 
 				//======================update entity cell=====================================
 				if (this->pos[i][j] != -1)
@@ -598,7 +606,8 @@ namespace Grid
 	void GameBoard::unselect_movement()
 	{
 		if (!selected_part) return;
-		evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;
+		hlptr->unhighlight_mov_cells();
+
 		selected_part = false;
 	}
 

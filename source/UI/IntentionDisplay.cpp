@@ -2,6 +2,7 @@
 
 #include "IntentionDisplay.h"
 #include "../system/EnemyDirector.h"
+#include "../system/HightlightSystem.h"
 #include "ECS/Scene.h"
 
 Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z)
@@ -23,9 +24,10 @@ Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f3
 }
 
 
-void IntentionDisplaySystem::init(EnemyDirector& enemyDirector)
+void IntentionDisplaySystem::init(EnemyDirector& enemyDirector,HighlightSystem& hl)
 {
 	this->ptr_enemyDirector = &enemyDirector;
+	this->hlptr = &hl;
 
 	for (auto it = this->ptr_enemyDirector->get_map().begin(); it != this->ptr_enemyDirector->get_map().end(); ++it)
 	{
@@ -96,6 +98,8 @@ void IntentionDisplaySystem::update(Scene& scene)
 							break;
 						}
 					}
+
+
 				}
 				else if (intent == "MOVE")
 				{
@@ -147,13 +151,13 @@ void IntentionDisplaySystem::trigger()
 
 void IntentionDisplaySystem::intentionSystem_free()
 {
-	ptr_enemyDirector = nullptr;
+	if(ptr_enemyDirector != nullptr)ptr_enemyDirector = nullptr;
+	if(hlptr != nullptr)hlptr = nullptr;
 	triggered = false;
 
 	for (std::pair<Entity, Entity> pair : intentionDisplay_list)
 	{
 		ecs.destroyEntity(pair.second);
 	}
-
 	intentionDisplay_list.clear();
 }

@@ -15,13 +15,17 @@ private:
 	TBS::TurnBasedSystem* tbsptr;
 
 	void highlight_cells(Targetting targetting, int range, highlight_tag type);
-	void unhighlight_cells();
 
 public:
-	std::array<std::array<bool, MAX_J>, MAX_I> mov_highlight_activate;
+	void unhighlight_cells();
+	void unhighlight_atk_cells();
+	void unhighlight_mov_cells();
+	void unhighlight_enemy_cells(Entity target);
+
+	void highlight_enemy_attack(Entity target,f32 range);
+
 	std::vector<AEVec2> mov_highlighted_cells;
 
-	std::array<std::array<bool, MAX_J>, MAX_I> atk_highlight_activate;
 	std::vector<AEVec2> atk_highlighted_cells;
 
 	std::array<std::array<bool, MAX_J>, MAX_I> aoe_highlight_activate;
@@ -30,12 +34,16 @@ public:
 	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate;
 	std::vector<AEVec2> move_trail_highlighted_cells;
 
+	std::array<std::array<bool, MAX_J>, MAX_I> enemy_attack_highlight_activate;
+	std::unordered_map<Entity,std::vector<AEVec2>> enemy_attack_highlighted_cells;
+
 	std::array<std::array<Components::RGBA, MAX_J>, MAX_I> highlight_activate;
 
 	HighlightSystem(EventPool<highlight_tag>& eventPool, 
 					Grid::GameBoard& gb,
 					CombatNameSpace::CombatSystem& cbs,
 					TBS::TurnBasedSystem& tbs);
+	
 	void update();
 	void free();
 };
