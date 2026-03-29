@@ -1,14 +1,25 @@
 #include "pch.h"
 #include "UIObject.h"
+#include <string>
 
 namespace UIO
 {
 
-	TextButton::TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, const char* a, std::function<void()> func, Components::RGBA rgba)
+	TextButton::TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba)
 	{
 		this->z = z;
 		this->button = ui_button(x, y, width, height, 0, z, func, {1.f - rgba.r, 1.f - rgba.g, 1.f - rgba.b, 1 - rgba.a });
 		this->text = UIO::TextShadow{ x - 64.f * text_size, y - 64.f * text_size / 2.f, x - 64.f * text_size, y - 100.f * text_size / 2.f ,text_size, z + 1, a, {1.f, 1.f, 1.f, 1.f} };
+	}
+
+	TextureButton::TextureButton(AEGfxTexture* texture, f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba)
+	{
+		f32 char_size = text_size * 66.f;
+		f32 offset_x = (char_size * a.size()/2.f) / -2.f;
+		f32 offset_y = -height/2 * text_size/2.f;
+		this->z = z;
+		this->button = ui_button_texture(texture, x, y, width, height, 0, z, func);
+		this->text = UIO::TextShadow{ x + offset_x, y + offset_y, x + offset_x, y + offset_y - 10.f ,text_size, z + 1, a, {1.f, 1.f, 1.f, 1.f} };
 	}
 
 	void TextButton::free()
@@ -18,13 +29,21 @@ namespace UIO
 		this->button = 0;
 	}
 
+	void TextureButton::free()
+	{
+		if(this->button != 0) ecs.destroyEntity(this->button);
+		this->button = 0;
+		this->text.free();
+	}
 
-	TextShadow::TextShadow(f32 x, f32 y, f32 s_x, f32 s_y ,f32 text_size, s32 z, const char* a, Components::RGBA rgba)
+
+	TextShadow::TextShadow(f32 x, f32 y, f32 s_x, f32 s_y ,f32 text_size, s32 z, std::string a, Components::RGBA rgba)
 	{
 		this->z = z;
 		this->text = ui_interactive_text(x, y, text_size, text_size, 0, z + 1, a, { 1.f, 1.f, 1.f, 1.f });
 		this->text_shadow = ui_text(s_x, s_y, text_size, text_size, 0, z + 1, a, { 0.f, 0.f, 0.f, 1.f });
 	}
+
 	void TextShadow::free()
 	{
 		if(this->text != 0) ecs.destroyEntity(this->text);
@@ -195,7 +214,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_text(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, const char* a, Components::RGBA rgba)
+	Entity ui_text(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, std::string a, Components::RGBA rgba)
 
 	{
 		Entity id = ecs.createEntity();
@@ -213,7 +232,7 @@ namespace UIO
 		return id;
 	}
 
-	Entity ui_interactive_text(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, const char* a, Components::RGBA rgba)
+	Entity ui_interactive_text(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, std::string a, Components::RGBA rgba)
 
 	{
 		Entity id = ecs.createEntity();

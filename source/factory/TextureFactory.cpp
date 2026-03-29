@@ -81,6 +81,8 @@ namespace TextureFactory
 		this->addTextureUI(AEGfxTextureLoad("Assets/UI/turnCounter.png"));	//8
 		this->addTextureUI(AEGfxTextureLoad("Assets/UI/pauseButton.png"));	//9
 		this->addTextureUI(AEGfxTextureLoad("Assets/UI/moveButton.png"));	//10
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/Button_1.png"));	//11
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/Button_2.png"));	//12
 
 		//Others
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Rock.png"));
@@ -92,6 +94,7 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Barrier.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Barrier+.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Gradient.png"));
+		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Beyond_the_NeXus_title.png"));
 
 		//MIS
 		//this->fontID = AEGfxCreateFont("Assets/font/cool.ttf", 64.F);

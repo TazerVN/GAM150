@@ -67,7 +67,7 @@ namespace RenderSystem
 	void RenderSystem::RM_render(EntityComponent::Registry& ecs, Entity camera)
 	{
 
-		AEGfxSetBackgroundColor(0.125f, 0.125f, 0.125f);
+		AEGfxSetBackgroundColor(0.f, 0.f, 0.f);
 
 
 		RenderSystem_init(ecs);

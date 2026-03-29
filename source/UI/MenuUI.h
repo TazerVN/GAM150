@@ -4,10 +4,11 @@
 class MenuUI
 {
 	public:
-	UIO::TextShadow title;
-	UIO::TextButton play;
-	UIO::TextButton option;
-	UIO::TextButton exit;
+	Entity title;
+	UIO::TextureButton play;
+	UIO::TextureButton option;
+	UIO::TextureButton credit;
+	UIO::TextureButton exit;
 	UIO::ScreenTransition fade;
 	MenuUI();
 	void init();
