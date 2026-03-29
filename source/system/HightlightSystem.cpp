@@ -51,29 +51,27 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					if (cur_part_pos.x + itr < MAX_I)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
-						atk_highlighted_cells.push_back({ cur_part_pos.x + itr, cur_part_pos.y });
+						atk_highlighted_cells.push_back({ s32(cur_part_pos.x) + itr, s32(cur_part_pos.y) });
 						this->highlight_activate[cur_part_pos.x + itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.x - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
-						atk_highlighted_cells.push_back({ cur_part_pos.x - itr, cur_part_pos.y });
+						atk_highlighted_cells.push_back({ s32(cur_part_pos.x) - itr, s32(cur_part_pos.y) });
 						this->highlight_activate[cur_part_pos.x - itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y + itr < MAX_J)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
-						atk_highlighted_cells.push_back({ cur_part_pos.x, cur_part_pos.y + itr });
+						atk_highlighted_cells.push_back({ s32(cur_part_pos.x), s32(cur_part_pos.y) + itr });
 						this->highlight_activate[cur_part_pos.x][cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
-						atk_highlighted_cells.push_back({ cur_part_pos.x, cur_part_pos.y - itr });
+						atk_highlighted_cells.push_back({ s32(cur_part_pos.x), s32(cur_part_pos.y) - itr });
 						this->highlight_activate[cur_part_pos.x][cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
-
-
 				}
 			}
 			else
@@ -85,7 +83,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 						Components::RGBA& cell = this->highlight_activate[x][y];
 						cell = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 						cbsptr->get_selected_cell().push_back({ f32(x), f32(y) });
-						atk_highlighted_cells.push_back({ f32(x), f32(y) });
+						atk_highlighted_cells.push_back({ x, y });
 					};
 
 				for (int i = -range; i <= range; ++i)
@@ -123,7 +121,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					{
 						this->highlight_activate[tx][ty] = HIGHLIGHT_MOV;
 						cbsptr->get_selected_cell().push_back(AEVec2{ (f32)tx, (f32)ty });
-						mov_highlighted_cells.push_back(AEVec2{ (f32)tx, (f32)ty });
+						mov_highlighted_cells.push_back(Components::GridCell{ tx, ty });
 					}
 				}
 			}		
@@ -140,7 +138,6 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 
 void HighlightSystem::unhighlight_cells()
 {
-	if (cbsptr->get_selected_cell().empty()) return;
 	for (AEVec2 a : cbsptr->get_selected_cell())
 	{
 		this->highlight_activate[int(a.x)][int(a.y)] = HIGHTLIGHT_UNHIGHLIGHT;
@@ -150,13 +147,33 @@ void HighlightSystem::unhighlight_cells()
 		this->atk_highlighted_cells.clear();
 	if (!mov_highlighted_cells.empty())
 		this->mov_highlighted_cells.clear();
-	if (!enemy_attack_highlighted_cells.empty())
-		this->enemy_attack_highlighted_cells.clear();
+	if (!enemy_mov_highlighted_cells.empty())
+	{
+		for (auto itr : enemy_mov_highlighted_cells)
+		{
+			for (Components::GridCell& cell : itr.second)
+			{
+				enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
+			}
+		}
+		enemy_mov_highlighted_cells.clear();
+	}
+	if (!enemy_atk_highlighted_cells.empty())
+	{
+		for (auto itr : enemy_atk_highlighted_cells)
+		{
+			for (Components::GridCell& cell : itr.second)
+			{
+				enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
+			}
+		}
+		enemy_atk_highlighted_cells.clear();
+	}
 }
 
 void HighlightSystem::unhighlight_atk_cells()
 {
-	for (AEVec2 a : atk_highlighted_cells)
+	for (Components::GridCell& a : atk_highlighted_cells)
 	{
 		Components::RGBA& rgba = this->highlight_activate[int(a.x)][int(a.y)];
 
@@ -169,7 +186,7 @@ void HighlightSystem::unhighlight_atk_cells()
 }
 void HighlightSystem::unhighlight_mov_cells()
 {
-	for (AEVec2 a : mov_highlighted_cells)
+	for (Components::GridCell& a : mov_highlighted_cells)
 	{
 		Components::RGBA& rgba = this->highlight_activate[int(a.x)][int(a.y)];
 
@@ -183,21 +200,21 @@ void HighlightSystem::unhighlight_mov_cells()
 
 void HighlightSystem::unhighlight_enemy_cells(Entity target)
 {
-	if (enemy_attack_highlighted_cells.find(target) != enemy_attack_highlighted_cells.end())
+	if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
 	{
-		std::vector<AEVec2>& vec = enemy_attack_highlighted_cells[target];
-		for (AEVec2& cell : vec)
+		std::vector<Components::GridCell>& vec = enemy_mov_highlighted_cells[target];
+		for (Components::GridCell& cell : vec)
 		{
-			enemy_attack_highlight_activate[int(cell.x)][int(cell.y)] = 0;
+			enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = 0;
 		}
 		vec.clear();
 	}
 }
 
-void HighlightSystem::highlight_enemy_attack(Entity target,f32 range)
-{
-
-}
+//void HighlightSystem::highlight_enemy_attack(Entity target,f32 range)
+//{
+//
+//}
 
 void HighlightSystem::update()
 {

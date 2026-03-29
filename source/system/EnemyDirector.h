@@ -10,7 +10,8 @@
 #include "../system/GridSystem.h"   // GameBoard (Grid::GameBoard)
 #include "../UI/IntentionDisplay.h"
 
-
+#define meleeRange 1
+#define rangedRange 3
 // Loads lines like: "E0 MOVE FRONT" and executes one line per enemy turn.
 // refer to /Assets/Level/TEST_level.txt for script structure
 class EnemyDirector
@@ -37,10 +38,23 @@ public:
     int getMapObjectCount() const; 
 
 private:
+
+    struct PendingAttack
+    {
+        Entity actor = Components::NULL_INDEX;
+        Entity target = Components::NULL_INDEX;
+        int damage = 0;
+        bool isRanged = false;
+        bool canAttack = false;
+        std::vector<std::pair<int, int>> cells; // cells that will be hit
+    };
+
     // Number of enemies listed in the SPAWN section
     int spawnCount_ = 0;
     int rangedSpawnCount_ = 0;
     int mapObjectCount = 0;
+
+    PendingAttack pendingAttack_;
 
     // Global behaviour timeline read in exact file order
     std::vector<Tokens> timeline_;
@@ -54,7 +68,6 @@ private:
 private:
     static bool isCommentOrEmpty(const std::string& line);
     static Tokens tokenize(const std::string& line);
-    bool isRangedActor(const std::string& actorId) const;
 
     // ============== Command executors =============
 
@@ -70,11 +83,17 @@ private:
         Entity actor,
         Entity playerID,
         const Tokens& t);
-
     // More to come!!!
     // Cast soon >>>>> 
 
 public:
+    bool planATTACK(Grid::GameBoard& board,
+        Entity actor,
+        Entity playerID,
+        const Tokens& t);
+    bool isRangedActor(const std::string& actorId) const;
+
+    const std::vector<std::pair<int, int>>& getPendingCells() const;
     const std::vector<Tokens>& get_timeline() const;
     std::unordered_map<std::string, Entity>& get_map(); // "E0" -> entity
     void print_current_instruction() const;

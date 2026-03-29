@@ -229,9 +229,9 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		}
 	}
 
+	intentDisplaySystem.init(enemyDirector,highlightSystem,BattleGrid);
 
-
-	intentDisplaySystem.init(enemyDirector,highlightSystem);
+	intentDisplaySystem.trigger();
 }
 
 void Scene::update()

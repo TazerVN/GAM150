@@ -269,13 +269,13 @@ namespace Grid
 
 				if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 				{
-					for (AEVec2 a :hlptr->aoe_highlighted_cells)
+					for (Components::GridCell a :hlptr->aoe_highlighted_cells)
 					{
 						hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
 					hlptr->aoe_highlighted_cells.clear();
 
-					for (AEVec2 a : hlptr->move_trail_highlighted_cells)
+					for (Components::GridCell& a : hlptr->move_trail_highlighted_cells)
 					{
 						hlptr->move_trail_highlight_activate[int(a.x)][int(a.y)] = 0;
 					}
@@ -467,7 +467,7 @@ namespace Grid
 			{
 				placementDirection = (placementDirection + 1) % 4;
 
-				for (AEVec2 a : hlptr->aoe_highlighted_cells)
+				for (Components::GridCell& a : hlptr->aoe_highlighted_cells)
 				{
 					hlptr->aoe_highlight_activate[int(a.x)][int(a.y)] = 0;
 				}
@@ -507,16 +507,30 @@ namespace Grid
 					default:
 						break;
 				}*/
+
+				if (hlptr->enemy_mov_highlight_activate[i][j])
+				{
+					color->d_color.r = 1.f;
+					color->d_color.g = 1.f;
+					color->d_color.b = 0.f;
+				}
+				if (hlptr->enemy_atk_highlight_activate[i][j])
+				{
+					if (hlptr->enemy_mov_highlight_activate[i][j])
+					{
+						color->d_color.g -= 0.5f;
+					}
+					else
+					{
+						color->d_color.r = 1.f;
+						color->d_color.g = 0.f;
+						color->d_color.b = 0.f;
+					}
+				}
+
 				color->d_color.r = color->d_color.r + hlptr->highlight_activate[i][j].r;
 				color->d_color.g = color->d_color.g + hlptr->highlight_activate[i][j].g;
 				color->d_color.b = color->d_color.b + hlptr->highlight_activate[i][j].b;
-
-				if (hlptr->enemy_attack_highlight_activate[i][j])
-				{
-					color->d_color.r -= 0.f;
-					color->d_color.g -= 1.f;
-					color->d_color.b -= 1.f;
-				}
 
 				if (hlptr->aoe_highlight_activate[i][j])
 				{
@@ -756,7 +770,7 @@ namespace Grid
 
 		for (Components::GridCell cell : astar.path)
 		{
-			hlptr->move_trail_highlighted_cells.push_back({ f32(cell.x) , f32(cell.y) });
+			hlptr->move_trail_highlighted_cells.push_back({ cell.x , cell.y });
 			hlptr->move_trail_highlight_activate[cell.x][cell.y] = 1;
 		}
 	}
@@ -790,7 +804,7 @@ namespace Grid
 					{
 						if (!hlptr->aoe_highlight_activate[x + i][y + j])
 						{
-							hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
+							hlptr->aoe_highlighted_cells.push_back({ x + i, y + j });
 							hlptr->aoe_highlight_activate[x + i][y + j] = 1;
 						}
 					}
@@ -798,7 +812,7 @@ namespace Grid
 					{
 						if (!hlptr->aoe_highlight_activate[x - i][y - j])
 						{
-							hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
+							hlptr->aoe_highlighted_cells.push_back({ x - i, y - j });
 							hlptr->aoe_highlight_activate[x - i][y - j] = 1;
 						}
 					}
@@ -806,7 +820,7 @@ namespace Grid
 					{
 						if (!hlptr->aoe_highlight_activate[x + i][y - j])
 						{
-							hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
+							hlptr->aoe_highlighted_cells.push_back({ x + i, y - j });
 							hlptr->aoe_highlight_activate[x + i][y - j] = 1;
 						}
 					}
@@ -814,7 +828,7 @@ namespace Grid
 					{
 						if (!hlptr->aoe_highlight_activate[x - i][y + j])
 						{
-							hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
+							hlptr->aoe_highlighted_cells.push_back({ x - i,y + j });
 							hlptr->aoe_highlight_activate[x - i][y + j] = 1;
 						}
 					}
@@ -857,7 +871,7 @@ namespace Grid
 
 				if (!hlptr->aoe_highlight_activate[nx][ny])
 				{
-					hlptr->aoe_highlighted_cells.push_back({ (f32)nx, (f32)ny });
+					hlptr->aoe_highlighted_cells.push_back({ nx, ny });
 					hlptr->aoe_highlight_activate[nx][ny] = 1;
 				}
 			}
@@ -874,7 +888,7 @@ namespace Grid
 				{
 					if (!hlptr->aoe_highlight_activate[x + i][y + j])
 					{
-						hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y + j) });
+						hlptr->aoe_highlighted_cells.push_back({ x + i, y + j});
 						hlptr->aoe_highlight_activate[x + i][y + j] = 1;
 					}
 				}
@@ -882,7 +896,7 @@ namespace Grid
 				{
 					if (!hlptr->aoe_highlight_activate[x - i][y - j])
 					{
-						hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y - j) });
+						hlptr->aoe_highlighted_cells.push_back({ x - i, y - j });
 						hlptr->aoe_highlight_activate[x - i][y - j] = 1;
 					}
 				}
@@ -890,7 +904,7 @@ namespace Grid
 				{
 					if (!hlptr->aoe_highlight_activate[x + i][y - j])
 					{
-						hlptr->aoe_highlighted_cells.push_back({ f32(x + i), f32(y - j) });
+						hlptr->aoe_highlighted_cells.push_back({ x + i, y - j });
 						hlptr->aoe_highlight_activate[x + i][y - j] = 1;
 					}
 				}
@@ -898,7 +912,7 @@ namespace Grid
 				{
 					if (!hlptr->aoe_highlight_activate[x - i][y + j])
 					{
-						hlptr->aoe_highlighted_cells.push_back({ f32(x - i), f32(y + j) });
+						hlptr->aoe_highlighted_cells.push_back({ x - i, y + j });
 						hlptr->aoe_highlight_activate[x - i][y + j] = 1;
 					}
 				}

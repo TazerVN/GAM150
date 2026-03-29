@@ -22,20 +22,23 @@ public:
 	void unhighlight_mov_cells();
 	void unhighlight_enemy_cells(Entity target);
 
-	void highlight_enemy_attack(Entity target,f32 range);
+	/*void highlight_enemy_attack(Entity target,f32 range);*/
 
-	std::vector<AEVec2> mov_highlighted_cells;
+	std::vector<Components::GridCell> mov_highlighted_cells;
 
-	std::vector<AEVec2> atk_highlighted_cells;
+	std::vector<Components::GridCell> atk_highlighted_cells;
 
 	std::array<std::array<bool, MAX_J>, MAX_I> aoe_highlight_activate;
-	std::vector<AEVec2> aoe_highlighted_cells;
+	std::vector<Components::GridCell> aoe_highlighted_cells;
 
 	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate;
-	std::vector<AEVec2> move_trail_highlighted_cells;
+	std::vector<Components::GridCell> move_trail_highlighted_cells;
 
-	std::array<std::array<bool, MAX_J>, MAX_I> enemy_attack_highlight_activate;
-	std::unordered_map<Entity,std::vector<AEVec2>> enemy_attack_highlighted_cells;
+	std::array<std::array<bool, MAX_J>, MAX_I> enemy_mov_highlight_activate;
+	std::unordered_map<Entity,std::vector<Components::GridCell>> enemy_mov_highlighted_cells;
+
+	std::array<std::array<bool, MAX_J>, MAX_I> enemy_atk_highlight_activate;
+	std::unordered_map<Entity, std::vector<Components::GridCell>> enemy_atk_highlighted_cells;
 
 	std::array<std::array<Components::RGBA, MAX_J>, MAX_I> highlight_activate;
 

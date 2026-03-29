@@ -214,7 +214,6 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     IntentionDisplaySystem& intent)
 {
     (void)gbs;
-
     if (timeline_.empty()) return;
 
     Entity cur = tbs.current();
@@ -238,6 +237,9 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
         hordeTurnActive_ = true;
         gbs.set_GBPhase(PhaseSystem::GBPhase::ENEMY_PHASE);
         gbs.debug_print();
+
+        intent.trigger();
+
         std::cout << "\n[ED] ===== HORDE TIMELINE BEGIN =====\n";
     }
 
@@ -296,6 +298,11 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     }
 
     ++timelineIp_;
+}
+
+const std::vector<std::pair<int, int>>& EnemyDirector::getPendingCells() const
+{
+    return pendingAttack_.cells;
 }
 
 const std::vector<EnemyDirector::Tokens>& EnemyDirector::get_timeline() const
@@ -390,7 +397,7 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 
     if (t[2] == "FRONT")
     {
-        int steps = 5;
+        int steps = std::stoi(t[3]);
 
         // refresh positions
         if (!board.findEntityCell(actor, ax, ay)) return;
@@ -414,6 +421,12 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
             return;
         }
 
+
+        Components::GridCell start{ ax, ay };
+        Components::GridCell goal{ tx, ty };
+
+        board.moveEntityAI(actor, tx, ty, steps);
+        return;
         //// build walkable grid for A*
         //std::vector<uint8_t> walkable(MAX_I * MAX_J, 1);
 
@@ -428,11 +441,6 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         //        }
         //    }
         //}
-
-        Components::GridCell start{ ax, ay };
-        Components::GridCell goal{ tx, ty };
-
-        board.moveEntityAI(actor, tx, ty, steps);
 
         /*Components::AStarResult result =
             AStar_FindPath_Grid4(MAX_I, MAX_J, walkable.data(), start, goal);
@@ -464,7 +472,6 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         //}
 
         //std::cout << "[ED] FRONT path moved " << maxMoves << " step(s).\n";
-        return;
     }
 
     // IN_RANGE PLAYER R: if dist <= R do nothing; else step closer
@@ -598,40 +605,213 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
     std::cout << "[EnemyDirector] MOVE args not recognized.\n";
 }
 
+//void EnemyDirector::execATTACK(Grid::GameBoard& board,
+//                               PhaseSystem::GameBoardState& gbs,
+//    Entity actor,
+//    Entity playerID,
+//    const Tokens& t)
+//{
+//    if (t.size() < 3)
+//    {
+//        std::cout << "[ED] ATTACK missing damage value.\n";
+//        return;
+//    }
+//
+//    s32 ax, ay, px, py;
+//    if (!board.findEntityCell(actor, ax, ay))
+//    {
+//        std::cout << "[ED] ATTACK could not find actor on board.\n";
+//        return;
+//    }
+//
+//    if (!board.findEntityCell(playerID, px, py))
+//    {
+//        std::cout << "[ED] ATTACK could not find player on board.\n";
+//        return;
+//    }
+//
+//    int damage = 0;
+//    try
+//    {
+//        damage = std::stoi(t[2]);
+//    }
+//    catch (...)
+//    {
+//        std::cout << "[ED] ATTACK invalid damage value: " << t[2] << "\n";
+//        return;
+//    }
+//
+//    auto manhattan = [](int x1, int y1, int x2, int y2)
+//        {
+//            return std::abs(x1 - x2) + std::abs(y1 - y2);
+//        };
+//
+//    int dist = manhattan(ax, ay, px, py);
+//
+//    // identify actor type from bound script ID
+//    bool isRanged = false;
+//
+//    auto it = entityToId_.find(actor);
+//    if (it != entityToId_.end())
+//    {
+//        isRanged = isRangedActor(it->second);
+//    }
+//
+//    bool canAttack = false;
+//
+//    if (isRanged)
+//    {
+//
+//        // cardinal line attack only
+//        const int rangedRange = 5;
+//        bool sameRow = (ay == py);
+//        bool sameCol = (ax == px);
+//
+//        if ((sameRow || sameCol) && dist <= rangedRange)
+//        {
+//            int dx = (px > ax) ? 1 : (px < ax ? -1 : 0);
+//            int dy = (py > ay) ? 1 : (py < ay ? -1 : 0);
+//
+//            bool blocked = false;
+//
+//            int cx = ax + dx;
+//            int cy = ay + dy;
+//
+//            // walk from enemy to player
+//            while (cx != px || cy != py)
+//            {
+//                if (board.get_pos()[cx][cy] != Components::NULL_INDEX)
+//                {
+//                    blocked = true;
+//                    break;
+//                }
+//
+//                cx += dx;
+//                cy += dy;
+//            }
+//
+//            if (!blocked)
+//            {
+//                canAttack = true;
+//            }
+//            else
+//            {
+//                std::cout << "[ED] RANGED ATTACK blocked by obstacle.\n";
+//            }
+//        }
+//
+//        if (!canAttack)
+//        {
+//            std::cout << "[ED] RANGED ATTACK skipped: not lined up or out of range. "
+//                << "Dist=" << dist << " Range=" << rangedRange
+//                << " sameRow=" << sameRow << " sameCol=" << sameCol << "\n";
+//        }
+//    }
+//    else
+//    {
+//        const int meleeRange = 2;
+//        if (dist <= meleeRange)
+//            canAttack = true;
+//        else
+//        {
+//            std::cout << "[ED] MELEE ATTACK skipped: player out of range. Dist="
+//                << dist << " Range=" << meleeRange << "\n";
+//        }
+//    }
+//
+//    if (!canAttack)
+//        return;
+//
+//    auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
+//    aa->setType(Components::AnimationType::ENEMY_ATTACK);
+//    gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
+//
+//    COMBAT_SYSTEM_RETURN_TAG result =
+//        Call_AttackSystem(playerID, static_cast<f32>(damage), board);
+//
+//    if (result == COMBAT_SYSTEM_RETURN_TAG::VALID)
+//    {
+//        std::cout << "[ED] ATTACK success: actor " << actor
+//            << (isRanged ? " [RANGED]" : " [MELEE]")
+//            << " dealt " << damage << "\n";
+//    }
+//    else
+//    {
+//        std::cout << "[ED] ATTACK failed: player cannot take damage.\n";
+//    }
+//}
 void EnemyDirector::execATTACK(Grid::GameBoard& board,
-                               PhaseSystem::GameBoardState& gbs,
+    PhaseSystem::GameBoardState& gbs,
     Entity actor,
     Entity playerID,
     const Tokens& t)
 {
+    // Make up mind first if not already planned for this actor
+    if (pendingAttack_.actor != actor)
+    {
+        planATTACK(board, actor, playerID, t);
+    }
+
+    if (!pendingAttack_.canAttack)
+    {
+        pendingAttack_ = PendingAttack{}; // clear
+        return;
+    }
+
+    auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
+    aa->setType(Components::AnimationType::ENEMY_ATTACK);
+    gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
+
+    COMBAT_SYSTEM_RETURN_TAG result =
+        Call_AttackSystem(pendingAttack_.target,
+            static_cast<f32>(pendingAttack_.damage),
+            board);
+
+    if (result == COMBAT_SYSTEM_RETURN_TAG::VALID)
+    {
+        std::cout << "[ED] ATTACK success: actor " << actor
+            << (pendingAttack_.isRanged ? " [RANGED]" : " [MELEE]")
+            << " dealt " << pendingAttack_.damage << "\n";
+    }
+    else
+    {
+        std::cout << "[ED] ATTACK failed.\n";
+    }
+
+    pendingAttack_ = PendingAttack{}; // clear after execution
+}
+
+bool EnemyDirector::planATTACK(Grid::GameBoard& board,
+    Entity actor,
+    Entity playerID,
+    const Tokens& t)
+{
+    pendingAttack_ = PendingAttack{}; // reset
+
     if (t.size() < 3)
     {
-        std::cout << "[ED] ATTACK missing damage value.\n";
-        return;
+        std::cout << "[ED] PLAN ATTACK missing damage value.\n";
+        return false;
     }
 
     s32 ax, ay, px, py;
     if (!board.findEntityCell(actor, ax, ay))
     {
-        std::cout << "[ED] ATTACK could not find actor on board.\n";
-        return;
+        std::cout << "[ED] PLAN ATTACK could not find actor.\n";
+        return false;
     }
-
     if (!board.findEntityCell(playerID, px, py))
     {
-        std::cout << "[ED] ATTACK could not find player on board.\n";
-        return;
+        std::cout << "[ED] PLAN ATTACK could not find player.\n";
+        return false;
     }
 
     int damage = 0;
-    try
-    {
-        damage = std::stoi(t[2]);
-    }
+    try { damage = std::stoi(t[2]); }
     catch (...)
     {
-        std::cout << "[ED] ATTACK invalid damage value: " << t[2] << "\n";
-        return;
+        std::cout << "[ED] PLAN ATTACK invalid damage: " << t[2] << "\n";
+        return false;
     }
 
     auto manhattan = [](int x1, int y1, int x2, int y2)
@@ -641,22 +821,18 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
 
     int dist = manhattan(ax, ay, px, py);
 
-    // identify actor type from bound script ID
     bool isRanged = false;
-
     auto it = entityToId_.find(actor);
     if (it != entityToId_.end())
-    {
         isRanged = isRangedActor(it->second);
-    }
 
-    bool canAttack = false;
+    pendingAttack_.actor = actor;
+    pendingAttack_.target = playerID;
+    pendingAttack_.damage = damage;
+    pendingAttack_.isRanged = isRanged;
 
     if (isRanged)
     {
-
-        // cardinal line attack only
-        const int rangedRange = 5;
         bool sameRow = (ay == py);
         bool sameCol = (ax == px);
 
@@ -666,11 +842,10 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
             int dy = (py > ay) ? 1 : (py < ay ? -1 : 0);
 
             bool blocked = false;
-
             int cx = ax + dx;
             int cy = ay + dy;
 
-            // walk from enemy to player
+            // collect cells along the line
             while (cx != px || cy != py)
             {
                 if (board.get_pos()[cx][cy] != Components::NULL_INDEX)
@@ -678,58 +853,43 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
                     blocked = true;
                     break;
                 }
-
+                pendingAttack_.cells.push_back({ cx, cy });
                 cx += dx;
                 cy += dy;
             }
 
             if (!blocked)
             {
-                canAttack = true;
+                pendingAttack_.cells.push_back({ px, py }); // include player cell
+                pendingAttack_.canAttack = true;
             }
             else
             {
-                std::cout << "[ED] RANGED ATTACK blocked by obstacle.\n";
+                pendingAttack_.cells.clear();
+                std::cout << "[ED] PLAN RANGED blocked by obstacle.\n";
             }
         }
-
-        if (!canAttack)
-        {
-            std::cout << "[ED] RANGED ATTACK skipped: not lined up or out of range. "
-                << "Dist=" << dist << " Range=" << rangedRange
-                << " sameRow=" << sameRow << " sameCol=" << sameCol << "\n";
-        }
-    }
-    else
-    {
-        const int meleeRange = 2;
-        if (dist <= meleeRange)
-            canAttack = true;
         else
         {
-            std::cout << "[ED] MELEE ATTACK skipped: player out of range. Dist="
-                << dist << " Range=" << meleeRange << "\n";
+            std::cout << "[ED] PLAN RANGED not lined up or out of range.\n";
         }
-    }
-
-    if (!canAttack)
-        return;
-
-    auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
-    aa->setType(Components::AnimationType::ENEMY_ATTACK);
-    gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
-
-    COMBAT_SYSTEM_RETURN_TAG result =
-        Call_AttackSystem(playerID, static_cast<f32>(damage), board);
-
-    if (result == COMBAT_SYSTEM_RETURN_TAG::VALID)
-    {
-        std::cout << "[ED] ATTACK success: actor " << actor
-            << (isRanged ? " [RANGED]" : " [MELEE]")
-            << " dealt " << damage << "\n";
     }
     else
     {
-        std::cout << "[ED] ATTACK failed: player cannot take damage.\n";
+        
+        if (dist <= meleeRange)
+        {
+            pendingAttack_.cells.push_back({ px, py });
+            pendingAttack_.canAttack = true;
+        }
+        else
+        {
+            std::cout << "[ED] PLAN MELEE out of range. Dist=" << dist << "\n";
+        }
     }
+
+    std::cout << "[ED] PLAN ATTACK decided: canAttack=" << pendingAttack_.canAttack
+        << " cells=" << pendingAttack_.cells.size() << "\n";
+
+    return pendingAttack_.canAttack;
 }
