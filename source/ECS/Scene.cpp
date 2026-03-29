@@ -231,7 +231,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 
 
-	intentDisplaySystem.init(enemyDirector);
+	intentDisplaySystem.init(enemyDirector,highlightSystem);
 }
 
 void Scene::update()

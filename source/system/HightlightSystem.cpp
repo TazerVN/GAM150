@@ -51,21 +51,25 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					if (cur_part_pos.x + itr < MAX_I)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
+						atk_highlighted_cells.push_back({ cur_part_pos.x + itr, cur_part_pos.y });
 						this->highlight_activate[cur_part_pos.x + itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.x - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
+						atk_highlighted_cells.push_back({ cur_part_pos.x - itr, cur_part_pos.y });
 						this->highlight_activate[cur_part_pos.x - itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y + itr < MAX_J)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
+						atk_highlighted_cells.push_back({ cur_part_pos.x, cur_part_pos.y + itr });
 						this->highlight_activate[cur_part_pos.x][cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
+						atk_highlighted_cells.push_back({ cur_part_pos.x, cur_part_pos.y - itr });
 						this->highlight_activate[cur_part_pos.x][cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 
@@ -81,6 +85,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 						Components::RGBA& cell = this->highlight_activate[x][y];
 						cell = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 						cbsptr->get_selected_cell().push_back({ f32(x), f32(y) });
+						atk_highlighted_cells.push_back({ f32(x), f32(y) });
 					};
 
 				for (int i = -range; i <= range; ++i)
@@ -118,6 +123,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					{
 						this->highlight_activate[tx][ty] = HIGHLIGHT_MOV;
 						cbsptr->get_selected_cell().push_back(AEVec2{ (f32)tx, (f32)ty });
+						mov_highlighted_cells.push_back(AEVec2{ (f32)tx, (f32)ty });
 					}
 				}
 			}		
@@ -140,14 +146,84 @@ void HighlightSystem::unhighlight_cells()
 		this->highlight_activate[int(a.x)][int(a.y)] = HIGHTLIGHT_UNHIGHLIGHT;
 	}
 	cbsptr->get_selected_cell().clear();
+	if(!atk_highlighted_cells.empty())
+		this->atk_highlighted_cells.clear();
+	if (!mov_highlighted_cells.empty())
+		this->mov_highlighted_cells.clear();
+	if (!enemy_attack_highlighted_cells.empty())
+		this->enemy_attack_highlighted_cells.clear();
+}
+
+void HighlightSystem::unhighlight_atk_cells()
+{
+	for (AEVec2 a : atk_highlighted_cells)
+	{
+		Components::RGBA& rgba = this->highlight_activate[int(a.x)][int(a.y)];
+
+		rgba.r = 0.f;
+		rgba.g = 0.f;
+		rgba.b = 0.f;
+	}
+	if(!cbsptr->get_selected_cell().empty())cbsptr->get_selected_cell().clear();
+	atk_highlighted_cells.clear();
+}
+void HighlightSystem::unhighlight_mov_cells()
+{
+	for (AEVec2 a : mov_highlighted_cells)
+	{
+		Components::RGBA& rgba = this->highlight_activate[int(a.x)][int(a.y)];
+
+		rgba.r = 0.f;
+		rgba.g = 0.f;
+		rgba.b = 0.f;
+	}
+	if (!cbsptr->get_selected_cell().empty())cbsptr->get_selected_cell().clear();
+	mov_highlighted_cells.clear();
+}
+
+void HighlightSystem::unhighlight_enemy_cells(Entity target)
+{
+	if (enemy_attack_highlighted_cells.find(target) != enemy_attack_highlighted_cells.end())
+	{
+		std::vector<AEVec2>& vec = enemy_attack_highlighted_cells[target];
+		for (AEVec2& cell : vec)
+		{
+			enemy_attack_highlight_activate[int(cell.x)][int(cell.y)] = 0;
+		}
+		vec.clear();
+	}
+}
+
+void HighlightSystem::highlight_enemy_attack(Entity target,f32 range)
+{
+
 }
 
 void HighlightSystem::update()
 {
 	if (evntptr->template_pool[UNHIGHLIGHT_EVENT].triggered)
 	{
-		unhighlight_cells();
 		evntptr->template_pool[UNHIGHLIGHT_EVENT].triggered = false;
+		highlight_tag highlight_type = evntptr->template_pool[HIGHLIGHT_EVENT].returned_value;
+		switch (highlight_type)
+		{
+
+			case highlight_tag::ATTACK_HIGHLIGHT: 
+			{
+				unhighlight_atk_cells();
+				break;
+			}
+			case highlight_tag::MOVE_HIGHLIGHT :
+			{
+				unhighlight_mov_cells();
+				break;
+			}
+			default :
+			{
+				unhighlight_cells();
+				break;
+			}
+		}
 	}
 
 	if (evntptr->template_pool[HIGHLIGHT_EVENT].triggered)
@@ -178,4 +254,9 @@ void HighlightSystem::update()
 
 		evntptr->template_pool[HIGHLIGHT_EVENT].triggered = false;
 	}
+}
+
+void HighlightSystem::free()
+{
+	
 }
