@@ -1,4 +1,4 @@
-﻿*.ipch
+*.ipch
 *.suo
 *.db
 *.pdb
@@ -18,3 +18,4 @@ Debug
 Release
 Debug-x64
 /world.c
+Assets/levels/cur_seed.json
