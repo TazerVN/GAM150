@@ -19,7 +19,7 @@ void LevelStateCombat_load()
 			EntityFactory::create_player();
 		unsigned int seed = rand()*323123;
 		std::srand(seed);
-		if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+		if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
 		{
 			std::cout << " put data fail";
 		}

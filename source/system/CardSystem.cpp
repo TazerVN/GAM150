@@ -148,7 +148,7 @@ Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_car
 void CardSystem::init_cards()
 {
 	std::vector<JSON_CARD> vec;
-	if(parse_bible_card_data(vec, "../../Assets/cards/cards_bible.json") != JSON_RET::OK)
+	if(parse_bible_card_data(vec, "Assets/cards/cards_bible.json") != JSON_RET::OK)
 		return;
 
 	for (JSON_CARD card : vec)
@@ -166,7 +166,7 @@ void CardSystem::init_cards()
 		cards_vec.push_back(cardECSID);
 	}
 
-	if (parse_starter_decks(start_decks, "../../Assets/cards/cards_starterDecks.json") != JSON_RET::OK)
+	if (parse_starter_decks(start_decks, "Assets/cards/cards_starterDecks.json") != JSON_RET::OK)
 		return;
 };
 

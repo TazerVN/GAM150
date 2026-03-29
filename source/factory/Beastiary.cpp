@@ -32,7 +32,7 @@ Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_e
 void Beastiary::init_data()
 {
 	std::vector<JSON_ENEMY> vec;
-	JSON_RET ret = parse_enemy_data(vec, "../../Assets/misc/enemies.json");
+	JSON_RET ret = parse_enemy_data(vec, "Assets/misc/enemies.json");
 
 	for (JSON_ENEMY enemy : vec)
 	{

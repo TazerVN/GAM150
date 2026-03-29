@@ -29,7 +29,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	unsigned int seed;
 
-	if (parse_seed(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+	if (parse_seed(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
 	{
 		seed = static_cast<unsigned int>(time(nullptr));
 	}
@@ -318,7 +318,7 @@ void Scene::update()
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			unsigned int seed = static_cast<unsigned int>(time(nullptr));
-			if (parse_date_to_file(seed, "../../Assets/levels/cur_seed.json") != JSON_RET::OK)
+			if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
 			{
 				std::cout << " put data fail";
 			}

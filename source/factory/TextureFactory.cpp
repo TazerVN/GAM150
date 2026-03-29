@@ -36,7 +36,7 @@ namespace TextureFactory
 		//CARDS
 		for (Entity card : card_system.cards_vec)
 		{
-			std::string tex = "../../Assets/cards/";
+			std::string tex = "Assets/cards/";
 			std::string loc = ecs.getComponent<Components::image_location>(card)->location;
 			tex += loc;
 			if (card_texture_map.find(loc) == card_texture_map.end())
@@ -49,14 +49,14 @@ namespace TextureFactory
 		
 
 		//FLOOR
-		this->addTextureFloor(AEGfxTextureLoad("../../Assets/floor/floor4.png"));
+		this->addTextureFloor(AEGfxTextureLoad("Assets/floor/floor4.png"));
 
 		//CHAR
-		this->addTextureChar(AEGfxTextureLoad("../../Assets/character/Hero_sprite_sheet_new.png"));	//first must always be hero or creator actor spritesheet will fail
+		this->addTextureChar(AEGfxTextureLoad("Assets/character/Hero_sprite_sheet_new.png"));	//first must always be hero or creator actor spritesheet will fail
 		//add textures for enemies
 		for (Entity enemy : beastiary.enemies_vec)
 		{
-			std::string tex = "../../Assets/character/";
+			std::string tex = "Assets/character/";
 			Components::image_location* i = ecs.getComponent<Components::image_location>(enemy);
 			std::string loc = i->location;
 			tex += loc;
@@ -70,17 +70,17 @@ namespace TextureFactory
 
 		//UI
 
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/binButton.png"));         //0
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/deckButton.png"));        //1
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/endturnButton.png"));     //2
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaEmpty.png"));         //3
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaholderElement.png"));	//4
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaOne.png"));	//5
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/manaTwo.png"));	//6
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/skillWindow.png"));	//7
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/turnCounter.png"));	//8
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/pauseButton.png"));	//9
-		this->addTextureUI(AEGfxTextureLoad("../../Assets/UI/moveButton.png"));	//10
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/binButton.png"));         //0
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/deckButton.png"));        //1
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/endturnButton.png"));     //2
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/manaEmpty.png"));         //3
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/manaholderElement.png"));	//4
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/manaOne.png"));	//5
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/manaTwo.png"));	//6
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/skillWindow.png"));	//7
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/turnCounter.png"));	//8
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/pauseButton.png"));	//9
+		this->addTextureUI(AEGfxTextureLoad("Assets/UI/moveButton.png"));	//10
 
 		//Others
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Rock.png"));
@@ -94,7 +94,7 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Gradient.png"));
 
 		//MIS
-		//this->fontID = AEGfxCreateFont("../../Assets/font/cool.ttf", 64.F);
+		//this->fontID = AEGfxCreateFont("Assets/font/cool.ttf", 64.F);
 		this->fontID = AEGfxCreateFont("Assets/font/TahomaBd.ttf", 64.F);
 	}
 

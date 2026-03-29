@@ -8,17 +8,17 @@ namespace AudioFactory
 
 	void AudioFactory::init()
 	{
-		this->bgm.add(false, "../../Assets/audio/battle.mp3");
+		this->bgm.add(false, "Assets/audio/battle.mp3");
 
-		this->sfx.add(true, "../../Assets/audio/sfx/card.mp3");
-		this->sfx.add(true, "../../Assets/audio/sfx/click.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/attack.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/attack2.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/shoot.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/damage.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/damage2.wav");
-		this->sfx.add(true, "../../Assets/audio/sfx/laser.wav");   // 7
-		this->sfx.add(true, "../../Assets/audio/sfx/sniper.wav");  // 8
+		this->sfx.add(true, "Assets/audio/sfx/card.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/click.wav");
+		this->sfx.add(true, "Assets/audio/sfx/attack.wav");
+		this->sfx.add(true, "Assets/audio/sfx/attack2.wav");
+		this->sfx.add(true, "Assets/audio/sfx/shoot.wav");
+		this->sfx.add(true, "Assets/audio/sfx/damage.wav");
+		this->sfx.add(true, "Assets/audio/sfx/damage2.wav");
+		this->sfx.add(true, "Assets/audio/sfx/laser.wav");   // 7
+		this->sfx.add(true, "Assets/audio/sfx/sniper.wav");  // 8
 
 		std::cout << "AUDIO INITIALIZE" << std::endl;
 	}
