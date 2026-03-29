@@ -138,7 +138,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 
 
-	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem);
+	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem,intentDisplaySystem);
 	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
 	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem ,TF.getTextureFloor(0), 0, w_height / 3,_win);
 

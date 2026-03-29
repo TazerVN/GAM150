@@ -11,6 +11,7 @@
 #include <set>
 #include <utility>
 #include "../global.h"
+#include "UI/IntentionDisplay.h"
 
 //==================Helpers=================
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_selected_cell()
@@ -64,7 +65,8 @@ bool is_valid_grid_pos(int x, int y)
 
 //-============END OF HELPERS=============
 void CombatNameSpace::CombatSystem::init(PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
-	CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem,HighlightSystem& hl)
+										CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem,
+										HighlightSystem& hl,IntentionDisplaySystem& intent)
 {
 	gbsptr = &gbs;
 	gbptr = &gb;
@@ -74,6 +76,7 @@ void CombatNameSpace::CombatSystem::init(PhaseSystem::GameBoardState& gbs, Grid:
 	mfptr = &mf;
 	tfptr = &TF;
 	hlptr = &hl;
+	intentptr = &intent;
 
 	this->total_attack_cards_played = 0;
 	this->total_def_cards_played = 0;
@@ -763,6 +766,7 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 		*this,
 		*gbptr,
 		*tbsptr,
+		*intentptr,
 		*mfptr,
 		*tfptr,
 		player,
@@ -809,6 +813,7 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 	cardHandptr = nullptr;
 	evsptr = nullptr;
 	hlptr = nullptr;
+	intentptr = nullptr;
 
 	targetted_entity = -1;
 	targetted_x = -1; targetted_y= -1;

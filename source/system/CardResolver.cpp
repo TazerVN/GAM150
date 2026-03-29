@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CardResolver.h"
-#include "../system/GridSystem.h"
+#include "UI/IntentionDisplay.h"
 #include <algorithm>
 namespace
 {
@@ -32,6 +32,7 @@ namespace CardResolver
 		CombatNameSpace::CombatSystem& combatSystem,
 		Grid::GameBoard& board,
 		TBS::TurnBasedSystem& tbs,
+		IntentionDisplaySystem& intent,
 		Entity caster,
 		Entity cardID,
 		Entity target,
@@ -299,6 +300,8 @@ namespace CardResolver
 					board.setEnemyAnimationPhase();
 				}
 
+				intent.trigger();
+
 				return PC_RETURN_TAG::VALID;
 			}
 			case 1: // Push
@@ -423,7 +426,7 @@ namespace CardResolver
 				{
 					board.setEnemyAnimationPhase();
 				}
-
+				intent.trigger();
 				return PC_RETURN_TAG::VALID;
 			}
 
@@ -449,6 +452,7 @@ namespace CardResolver
 		CombatNameSpace::CombatSystem& combatSystem,
 		Grid::GameBoard& board,
 		TBS::TurnBasedSystem& tbs,
+		IntentionDisplaySystem& intent,
 		MeshFactory& mf,
 		TextureFactory::TextureFactory& TF,
 		Entity caster,
@@ -534,6 +538,6 @@ namespace CardResolver
 		}
 
 		// all normal cards use the old resolver
-		return resolve(ecs, combatSystem, board, tbs, caster, cardID, target, targetPos);
+		return resolve(ecs, combatSystem, board, tbs, intent , caster, cardID, target, targetPos);
 	}
 }

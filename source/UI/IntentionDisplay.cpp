@@ -310,6 +310,7 @@ void IntentionDisplaySystem::update(Scene& scene)
                             Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
                             int atkRange = (isRanger) ? rangedRange : meleeRange;
                             int movRange = enemyRange[ent];
+
                             auto isOutermost = [&](int x, int y, int originX, int originY, int range) -> bool
                             {
                                 // check all 4 neighbours
@@ -327,14 +328,13 @@ void IntentionDisplaySystem::update(Scene& scene)
                                 return false;
                             };
 
+                            
+                            if (hlptr->enemy_mov_highlighted_cells[ent].empty())
+                            {
+                                hlptr->enemy_mov_highlighted_cells[ent].push_back({gd->x,gd->y});
+                            }
                             for (Components::GridCell& cell : hlptr->enemy_mov_highlighted_cells[ent])
                             {
-                               
-                                /*if (isOutermost(cell.x, cell.y, gd->x, gd->y, movRange))
-                                {
-                                    
-                                }*/
-
                                 if (isRanger)
                                 {
                                     for (int itr = 0; itr <= atkRange; ++itr)
@@ -363,7 +363,23 @@ void IntentionDisplaySystem::update(Scene& scene)
                                 }
                                 else
                                 {
+                                    auto try_highlight = [&](int x, int y)
+                                        {
+                                            if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+                                                return;
+                                            bool& cell = this->hlptr->enemy_atk_highlight_activate[x][y];
+                                            cell = true;
+                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ x, y });
+                                        };
 
+                                    for (int i = -atkRange; i <= atkRange; ++i)
+                                    {
+                                        int j_range = atkRange - std::abs(i);
+                                        for (int j = -j_range; j <= j_range; ++j)
+                                        {
+                                            try_highlight(cell.x + i, cell.y + j);
+                                        }
+                                    }
                                 }
                             }
 							break;

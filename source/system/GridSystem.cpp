@@ -449,9 +449,6 @@ namespace Grid
 		if (tbsptr->is_current_selected_card()
 			&& AEInputCheckTriggered(AEVK_RBUTTON))
 		{
-			/*gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_EXPLORE);
-			tbsptr->set_selected_card(false);
-			evsptr->template_pool[UNHIGHLIGHT_EVENT].triggered = true;*/
 			unselect_card();
 		}
 		if (selected_part && AEInputCheckTriggered(AEVK_RBUTTON))
@@ -488,25 +485,6 @@ namespace Grid
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
-				/*switch (hlptr->highlight_activate[i][j])
-				{
-					case highlight_tag::ATTACK_HIGHLIGHT:
-					{
-						color->d_color.r = color->d_color.r + 0.5f;
-						color->d_color.g = color->d_color.g - 0.3f;
-						color->d_color.b = color->d_color.b - 0.3f;
-						break;
-					}
-					case highlight_tag::MOVE_HIGHLIGHT:
-					{
-						color->d_color.r = color->d_color.r - 0.2f;
-						color->d_color.g = color->d_color.g - 0.2f;
-						color->d_color.b = color->d_color.b + 0.4f;
-						break;
-					}
-					default:
-						break;
-				}*/
 
 				if (hlptr->enemy_mov_highlight_activate[i][j])
 				{
@@ -528,9 +506,19 @@ namespace Grid
 					}
 				}
 
-				color->d_color.r = color->d_color.r + hlptr->highlight_activate[i][j].r;
-				color->d_color.g = color->d_color.g + hlptr->highlight_activate[i][j].g;
-				color->d_color.b = color->d_color.b + hlptr->highlight_activate[i][j].b;
+				//uncommment this and comment the below code if you want normal messy ahh color
+				//color->d_color.r = color->d_color.r + hlptr->highlight_activate[i][j].r;
+				//color->d_color.g = color->d_color.g + hlptr->highlight_activate[i][j].g;
+				//color->d_color.b = color->d_color.b + hlptr->highlight_activate[i][j].b;
+
+				//uncomment this if you dont like dim but dont forget to uncomment the above or the CODE WILL BERAK
+				//base to 0.5f if you want to dim
+				if (selected_part || tbsptr->is_current_selected_card())
+				{
+					color->d_color.r = 0.5f + hlptr->highlight_activate[i][j].r;
+					color->d_color.g = 0.5f + hlptr->highlight_activate[i][j].g;
+					color->d_color.b = 0.5f + hlptr->highlight_activate[i][j].b;
+				}
 
 				if (hlptr->aoe_highlight_activate[i][j])
 				{
