@@ -79,7 +79,12 @@ void Particle::ParticleSystem::update(f32 dt)
 				break;
 
 			case Components::ParticleType::Datastream:
-				color->d_color.a = (1.0f - (timer->seconds / timer->max_seconds)) * color->c_color.a;
+			{
+
+				f32 lerp = timer->seconds / (timer->max_seconds * 0.5f) >= 1.f 
+					? 1.f - timer->seconds/timer->max_seconds 
+					: timer->seconds / timer->max_seconds;
+				color->d_color.a = lerp * 2.f * color->c_color.a;
 
 				// When timer ends - it reset but dosent die
 				if (timer->start == false)
@@ -100,6 +105,7 @@ void Particle::ParticleSystem::update(f32 dt)
 
 				}
 				break;
+			}
 
 			case Components::ParticleType::Reversestream:
 			{
