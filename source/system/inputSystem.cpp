@@ -42,7 +42,7 @@ namespace InputSystem
 
 
 		this->buffer.sort(IM_CMP);
-		bool active_hover = false;
+		Entity active_hover = 0;
 
 		for (std::pair<s32, Entity> temp : this->buffer)
 		{
@@ -104,13 +104,14 @@ namespace InputSystem
 						if (in->onClick != nullptr) in->onClick();
 						cur_drag = 0;
 					}
-					else if (active_hover == false && in->hover == true)
+					else if (active_hover == 0 && in->allow_hover == true)
 					{
 						if (in->onHover != nullptr)
 						{
 							in->onHover();
+							active_hover = e;
 						}
-						active_hover = true;
+						continue;
 					}
 				}
 				else{
@@ -133,13 +134,14 @@ namespace InputSystem
 					{
 						if (in->onClick != nullptr) in->onClick();
 					}
-					else if (active_hover == false && in->hover == true)
+					else if (active_hover == 0 && in->allow_hover == true)
 					{
 						if (in->onHover != nullptr)
 						{
 							in->onHover();
+							active_hover = e;
+							continue;
 						}
-						active_hover = true;
 					}
 				}
 			}
@@ -157,8 +159,7 @@ namespace InputSystem
 			}
 			else
 			{
-
-				if (in->offHover != nullptr) in->offHover();
+				if (in->offHover != nullptr && active_hover != e) in->offHover();
 
 			}
 		}

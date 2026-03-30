@@ -1,4 +1,6 @@
 #pragma once
+#include "UI/UIObject.h"
+
 class Victory_Select
 {
 private: 
@@ -6,8 +8,8 @@ private:
 	Entity create_Victory_card(Entity cardID, f32 x, f32 y);
 public:
 	std::vector<Entity>victory_cards;
-	Entity dim;
-	s32 z{1200};
+	UIO::ScreenTransition dim;
+	s32 z{1301};
 	bool on = false;
 	void update();
 	void free();

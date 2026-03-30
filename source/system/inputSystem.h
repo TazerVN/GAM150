@@ -21,6 +21,7 @@ namespace InputSystem
 		std::list<std::pair<s32, Entity>> buffer;
 		public:
 		Entity cur_drag{};
+		Entity cur_hover{};
 		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();

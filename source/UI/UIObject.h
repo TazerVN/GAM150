@@ -16,20 +16,21 @@ namespace UIO
 	{
 		public:
 		s32 z;
+		Entity timer;
 		Entity button{ 0 };
 		UIO::TextShadow text;
 		TextButton() = default;
 		TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba);
+
 		void free();
 
 	};
 
-	struct TextureButton
+	struct TextureButton : public TextButton
 	{
 		public:
-		s32 z;
-		Entity button{ 0 };
-		UIO::TextShadow text;
+		TextureButton(const TextureButton&);
+		TextureButton& operator=(const TextureButton&);
 		TextureButton() = default;
 		TextureButton(AEGfxTexture* texture ,f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba);
 		void free();
@@ -45,8 +46,9 @@ namespace UIO
 		Entity dim{0};
 		bool fadeIn;
 		bool finished;
+		f32 max;
 		ScreenTransition() = default;
-		ScreenTransition(bool fadeIn);
+		ScreenTransition(bool fadeIn, f32 max = 0.f);
 		bool update();
 		void free();
 	};

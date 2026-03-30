@@ -1,21 +1,17 @@
 #include "types.h"
+#include "UI/UIObject.h"
 
 
 class PauseMenu
 {
 	private:
-	struct TextButton
-	{
-		Entity text{};
-		Entity button{};
-		void free();
-	};
 
 	s32 z{1200};
 	Entity dim;
-	TextButton continue_button;
-	TextButton abandon_button;
-	TextButton leave_button;
+	UIO::TextureButton continue_button;
+	UIO::TextureButton abandon_button;
+	UIO::TextureButton setting_button;
+	UIO::TextureButton leave_button;
 	bool on{false};
 	bool created{false};
 

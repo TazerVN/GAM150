@@ -8,11 +8,11 @@ void Victory_Select::update()
 	{
 		this->on = false;
 
-		this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, this->z, 0.0f, 0.0f, 0.0f, 0.5f);
+		this->dim = UIO::ScreenTransition(false, 0.5f);
 		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
-		ecs.addComponent(dim, tag);
-		ecs.addComponent(dim, in);
+		ecs.addComponent(dim.dim, tag);
+		ecs.addComponent(dim.dim, in);
 
 		for(int i = 0; i < 3; i++)
 		{
@@ -25,7 +25,7 @@ void Victory_Select::update()
 			victory_cards.push_back(create_Victory_card(cardBibleID, x, 0.f));
 		}
 	}
-
+	this->dim.update();
 
 }
 void Victory_Select::free()
@@ -34,7 +34,7 @@ void Victory_Select::free()
 	{
 		ecs.destroyEntity(vc);
 	}
-	ecs.destroyEntity(dim);
+	dim.free();
 	victory_cards.clear();
 }
 

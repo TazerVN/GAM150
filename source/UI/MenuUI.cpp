@@ -41,6 +41,8 @@ void MenuUI::init()
     f32 title_s_x = 1.f;
     f32 title_s_y = 1.f;
 
+    f32 text_size = 0.5f;
+
     /*f32 start_y = -50.f;
     f32 offset_x = AEGfxGetWinMaxX();
     f32 offset_y = -100.f;
@@ -51,10 +53,10 @@ void MenuUI::init()
     f32 title_s_y = 1.f;*/
 
     this->fade = UIO::ScreenTransition(true);
-    this->play = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + start_x,  start_y, 256.f * size_x, 61.f * size_y, 0.6f, 0.f, 1200, "PLAY", nullptr, 0xFF12CCFF };
-    this->option = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() +  start_x + offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, 0.6f, 0.f, 1200, "SETTING", nullptr, 0xFF12CCFF };
-    this->credit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() +  start_x + offset_x * 2, start_y + offset_y * 2, 256.f * size_x, 61.f * size_y, 0.6f, 0.f, 1200, "CREDIT", nullptr, 0xFF12CCFF };
-    this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + start_x + offset_x * 3, start_y + offset_y * 3,256.f * size_x, 61.f * size_y, 0.6f ,0.f, 1200, "EXIT", nullptr, 0xFFCC66FF };
+    this->play = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + start_x,  start_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "PLAY", nullptr, 0xFF12CCFF };
+    this->option = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() +  start_x + offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "SETTING", nullptr, 0xFF12CCFF };
+    this->credit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() +  start_x + offset_x * 2, start_y + offset_y * 2, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "CREDIT", nullptr, 0xFF12CCFF };
+    this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + start_x + offset_x * 3, start_y + offset_y * 3,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "EXIT", nullptr, 0xFFCC66FF };
 
     //this->play = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + offset_x,  start_y, 256.f * size_x, 61.f * size_y, 0.6f, 0.f, 1200, "PLAY", nullptr, 0xFF12CCFF };
     //this->option = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() +  offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, 0.6f, 0.f, 1200, "SETTING", nullptr, 0xFF12CCFF };
