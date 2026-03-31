@@ -317,7 +317,7 @@ std::unordered_map<std::string, Entity>& EnemyDirector::get_map()
 
 void EnemyDirector::print_current_instruction() const
 {
-    std::cout << "\nCurrent Instruction VV" << std::endl;
+    std::cout << "\nCurrent Instruction VV" << '\n';
     size_t index = timelineIp_;
     bool brake = true;
     while (brake)

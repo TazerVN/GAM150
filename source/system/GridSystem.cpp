@@ -43,7 +43,7 @@ namespace Grid
 					}
 					else
 					{
-						std::cout << "Selected cell is outside range" << std::endl;
+						std::cout << "Selected cell is outside range" << '\n';
 						PUT << 0 << "Out of Range";
 						unselect_card();
 						return;
@@ -61,11 +61,11 @@ namespace Grid
 				int category = serialID / 1000;
 				bool isEventCard = (category == 4);
 
-				std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
+				std::cout << "Selected card :" << ecs.getComponent<Components::Name>(cardID)->value << '\n';
 
 				if (!cbsptr->check_within_range(x, y))
 				{
-					std::cout << "Target is outside range" << std::endl;
+					std::cout << "Target is outside range" << '\n';
 					PUT << 0 << "Out of range!";
 					unselect_card();
 					return;
@@ -76,7 +76,7 @@ namespace Grid
 					// Mana Wall is placed on empty cells, not entities
 					if (pos[x][y] != -1)
 					{
-						std::cout << "Mana Wall requires an empty cell" << std::endl;
+						std::cout << "Mana Wall requires an empty cell" << '\n';
 						PUT << 0 << "Select an empty cell";
 						unselect_card();
 						return;
@@ -91,7 +91,7 @@ namespace Grid
 				{
 					if (targettingType != Targetting::SELF && pos[x][y] == tbsptr->current())
 					{
-						std::cout << "Selected Player initializing Movement" << std::endl;
+						std::cout << "Selected Player initializing Movement" << '\n';
 						move_select(x, y);
 						return;
 					}
@@ -100,7 +100,7 @@ namespace Grid
 				}
 				else
 				{
-					std::cout << "Select a valid cell with entity" << std::endl;
+					std::cout << "Select a valid cell with entity" << '\n';
 					unselect_card();
 				}
 				break;
@@ -161,7 +161,7 @@ namespace Grid
 
 		if (!cbsptr->check_within_range(x, y))
 		{
-			std::cout << "Outside movement range" << std::endl;
+			std::cout << "Outside movement range" << '\n';
 			PUT << 0 << "Outside range";
 			unselect_movement();
 			return;
@@ -169,7 +169,7 @@ namespace Grid
 
 		if (this->pos[x][y] != -1)
 		{
-			std::cout << "Cannot move onto another entity" << std::endl;
+			std::cout << "Cannot move onto another entity" << '\n';
 			PUT << 0 << "Already Occupied";
 			unselect_movement();
 			return;
@@ -188,7 +188,7 @@ namespace Grid
 		if(tbsptr->is_current_selected_card())this->unselect_card();
 		if (pos[x][y] != tbsptr->current())
 		{
-			std::cout << "Cannot select this entity! " << pos[x][y] << std::endl;
+			std::cout << "Cannot select this entity! " << pos[x][y] << '\n';
 			PUT << 0 << "Cannot select this Entity";
 			return;
 		}
@@ -414,7 +414,7 @@ namespace Grid
 			}
 			else
 			{
-				std::cout << "Cant find path!!" << std::endl;
+				std::cout << "Cant find path!!" << '\n';
 			}
 		}
 		// update grid data
@@ -470,7 +470,7 @@ namespace Grid
 				}
 				hlptr->aoe_highlighted_cells.clear();
 
-				std::cout << "Direction = " << placementDirection << std::endl;
+				std::cout << "Direction = " << placementDirection << '\n';
 			}
 		}
 
@@ -658,11 +658,11 @@ namespace Grid
 
 	void GameBoard::debug_print()
 	{
-		std::cout << "===BattleGrid===" << std::endl;
-		std::cout << "Movement Selected : " << selected_part << std::endl;
-		std::cout << "Previous Pos : " << prev_x << ',' << prev_y << std::endl;
-		std::cout << "Current Pos : " << cur_x << ',' << cur_y << std::endl;
-		std::cout << "================" << std::endl;
+		std::cout << "===BattleGrid===" << '\n';
+		std::cout << "Movement Selected : " << selected_part << '\n';
+		std::cout << "Previous Pos : " << prev_x << ',' << prev_y << '\n';
+		std::cout << "Current Pos : " << cur_x << ',' << cur_y << '\n';
+		std::cout << "================" << '\n';
 	}
 
 	void  GameBoard::gameboard_free()
@@ -775,8 +775,8 @@ namespace Grid
 		AEVec2 cur_part_pos = Get_CurPart_gridPos();
 		int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
 
-		//std::cout << "Hovered card serialID = " << serialID << std::endl;
-		//std::cout << "isManaWall = " << isManaWall << std::endl;
+		//std::cout << "Hovered card serialID = " << serialID << '\n';
+		//std::cout << "isManaWall = " << isManaWall << '\n';
 
 		
 

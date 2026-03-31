@@ -142,7 +142,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 
 		if (Call_AttackSystem(target, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 		{
-			std::cout << "Cannot damage the entity" << std::endl;
+			std::cout << "Cannot damage the entity" << '\n';
 		}
 		else
 		{
@@ -170,10 +170,10 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 					continue; // skip rocks / mana wall / map objects
 				}
 
-				std::cout << "Hit Entity :" << ent << std::endl;
+				std::cout << "Hit Entity :" << ent << '\n';
 				if (Call_AttackSystem(ent, final_damage, *gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 				{
-					std::cout << "Cannot damage the entity" << std::endl;
+					std::cout << "Cannot damage the entity" << '\n';
 				}
 				else
 				{
@@ -241,7 +241,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 				{
 					if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 					{
-						std::cout << "Cannot damage the entity" << std::endl;
+						std::cout << "Cannot damage the entity" << '\n';
 					}
 					else
 					{
@@ -274,7 +274,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 				{
 					if (Call_AttackSystem(ent, final_damage,*gbptr) != COMBAT_SYSTEM_RETURN_TAG::VALID)
 					{
-						std::cout << "Cannot damage the entity" << std::endl;
+						std::cout << "Cannot damage the entity" << '\n';
 					}
 					else
 					{
@@ -353,7 +353,6 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 			if(anim->prev_type == Components::AnimationType::DEATH){
 				gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
 				ecs.destroyEntity(gra.second);
-
 				if(graveyard.size() > 1){
 
 					std::pair<AEVec2, Entity> temp = graveyard[graveyard.size() - 1];
@@ -553,7 +552,7 @@ void CombatNameSpace::CombatSystem::update()
 
 		if (tag != PC_RETURN_TAG::INVALID)
 		{
-			std::cout << "Played an invalid cardtype" << std::endl;
+			std::cout << "Played an invalid cardtype" << '\n';
 			tbsptr->set_selected_card(false);
 		}
 
@@ -580,7 +579,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 		{
 		case PhaseSystem::GBPhase::START_PHASE:
 		{
-			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << '\n';
 			gbsptr->GBPTriggered()[index] = false;
 
 			//=============rest shit for player in start phase===============
@@ -599,7 +598,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 		}
 		case PhaseSystem::GBPhase::STANDBY_PHASE:
 		{
-			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << '\n';
 			gbsptr->GBPTriggered()[index] = false;
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
@@ -607,7 +606,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 		}
 		case PhaseSystem::GBPhase::DRAW_PHASE:
 		{
-			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << '\n';
 			gbsptr->GBPTriggered()[index] = false;
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
@@ -615,7 +614,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 		}
 		case PhaseSystem::GBPhase::MAIN_PHASE:
 		{
-			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << std::endl;
+			//std::cout << "triggered " << PhaseSystem::GBPhaseNames[index] << '\n';
 			gbsptr->GBPTriggered()[index] = false;
 
 			if(tbsptr->active())
@@ -649,7 +648,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		{
 		case PhaseSystem::GBPhase::START_PHASE:
 		{
-			//std::cout << "Starting" << std::endl;
+			//std::cout << "Starting" << '\n';
 			gbsptr->nextGBPhase();
 			index = static_cast<size_t>(gbsptr->getGBPhase());
 			gbsptr->GBPTriggered()[index] = true;
@@ -657,7 +656,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 		}
 		case PhaseSystem::GBPhase::STANDBY_PHASE:
 		{
-			//std::cout << "Standing By"<< std::endl;
+			//std::cout << "Standing By"<< '\n';
 			gbsptr->nextGBPhase();
 			index = static_cast<size_t>(gbsptr->getGBPhase());
 			gbsptr->GBPTriggered()[index] = true;
@@ -688,7 +687,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 			{
 				if (!play_card_triggered)
 				{
-					std::cout << "Card Animating" << std::endl;
+					std::cout << "Card Animating" << '\n';
 				}
 				if (play_card_triggered)
 				{
@@ -757,7 +756,7 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 
 	if (card_cost > player_curMana) // Added a not enough mana condition
 	{
-		std::cout << "Not enough mana!!" << std::endl;
+		std::cout << "Not enough mana!!" << '\n';
 		return PC_RETURN_TAG::INVALID;
 	}
 

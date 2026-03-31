@@ -59,6 +59,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 	if (SS.firstLevel())
 	{
+		//enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
 		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
 	}
 	else
@@ -286,7 +287,7 @@ void Scene::update()
 			
 		}*/
 		std::cout << "Original Deck size : " << ecs.getComponent<Components::Card_Storage>(playerID)->original_draw_pile.size() 
-			<< std::endl;
+			<< '\n';
 	}
 	if (AEInputCheckTriggered(AEVK_UP))
 	{
@@ -301,7 +302,7 @@ void Scene::update()
 	{
 		if (TBSys.update())
 		{
-			std::cout << "WIN!!!!" << std::endl;
+			std::cout << "WIN!!!!" << '\n';
 			TBSys.active() = false;
 			_win = true;
 

@@ -36,10 +36,10 @@ void Beastiary::init_data()
 
 	for (JSON_ENEMY enemy : vec)
 	{
-		std::cout << "Name : " << enemy.name.c_str() << std::endl;
-		std::cout << "HP : " << enemy.hp << std::endl;
-		std::cout << "Value : " << enemy.value << std::endl;
-		std::cout << "Enemy Image : " << enemy.png << '\n' << std::endl;
+		std::cout << "Name : " << enemy.name.c_str() << '\n';
+		std::cout << "HP : " << enemy.hp << '\n';
+		std::cout << "Value : " << enemy.value << '\n';
+		std::cout << "Enemy Image : " << enemy.png << '\n' << '\n';
 		Entity enemyECSID = create_ECS_enemy(ecs, enemy);
 		enemies_map[enemy.name] = enemyECSID;
 		enemies_vec.push_back(enemyECSID);

@@ -121,12 +121,12 @@ namespace CardInteraction
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
 				
-				std::cout << "Checking for card mana. card name : " << ecs.getComponent<Components::Name>(cardID)->value << std::endl;
-				std::cout << "Card Mana : " << card_cost << std::endl;
+				std::cout << "Checking for card mana. card name : " << ecs.getComponent<Components::Name>(cardID)->value << '\n';
+				std::cout << "Card Mana : " << card_cost << '\n';
 
 				if (card_cost > player_curMana)
 				{
-					std::cout << "Not enough mana!!" << std::endl;
+					std::cout << "Not enough mana!!" << '\n';
 					PUT << 0 << "Not enough mana!!";
 					return;
 				}
@@ -151,7 +151,7 @@ namespace CardInteraction
 
 			this->generateCards();
 			this->reset = false;
-			std::cout << "Shuffle New Cards" << std::endl;
+			std::cout << "Shuffle New Cards" << '\n';
 
 			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
 			in->onClick = [this] { this->reset_hand(); };*/

@@ -21,7 +21,7 @@ namespace TBS
 
 		std::cout << "\n=== ROUND " << cur_round << " START ===\n";
 		std::string& nm = ecs.getComponent<Components::Name>(participants[cur_player])->value;
-		std::cout << nm << " Turn" << std::endl;
+		std::cout << nm << " Turn" << '\n';
 	}
 	void TurnBasedSystem::round_end()
 	{
@@ -34,13 +34,13 @@ namespace TBS
 		}
 
 		//show discard pile
-		std::cout << "Discard Pile" << std::endl;
+		std::cout << "Discard Pile" << '\n';
 		for (Entity e : ecsptr->getComponent<Components::Card_Storage>(playerID)->data_discard_pile)
 		{
 			std::cout << e;
 		}
 
-		std::cout<< std::endl;
+		std::cout<< '\n';
 		++cur_round;
 	}
 	void TurnBasedSystem::force_start_if_ready(EntityComponent::Registry& ecs)
@@ -80,14 +80,14 @@ namespace TBS
 
 		if (!(ecs.getBitMask()[parti].test(tbs_id)))
 		{
-			std::cout << "Error entity without TurnBasedStats cannot be added to the turn order!!" << std::endl;
+			std::cout << "Error entity without TurnBasedStats cannot be added to the turn order!!" << '\n';
 			return;
 		}
 		participants.push_back(parti);
 		participant_hand.push_back(0);	//initialize the card at index 0 as selected by default
 		selected_card.push_back(false);
 
-		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << std::endl;
+		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << '\n';
 	}
 
 	void TurnBasedSystem::remove_participant(EntityComponent::Registry& ecs, Entity parti)
@@ -114,14 +114,14 @@ namespace TBS
 		//check for edge cases
 		if (participants.empty())
 		{
-			std::cout << "Can't start no participants" << std::endl;
+			std::cout << "Can't start no participants" << '\n';
 			return;
 		}
 		//^I dont think this is necessary - Zejin
 
 		else if (participants.size() < 2)
 		{
-			std::cout << "Need more than 1 participant to start" << std::endl;
+			std::cout << "Need more than 1 participant to start" << '\n';
 			return;
 		}
 
@@ -129,13 +129,13 @@ namespace TBS
 		cur_round = 1;
 		cur_player = 0;
 
-		std::cout << "Started Combat" << std::endl;
-		std::cout << std::left << std::setw(30) << "Participants" <<  ':' << "Entity ID"<< std::endl;
+		std::cout << "Started Combat" << '\n';
+		std::cout << std::left << std::setw(30) << "Participants" <<  ':' << "Entity ID"<< '\n';
 
 		for (size_t i = 0; i < participants.size(); ++i)
 		{
 			std::cout << std::left << std::setw(30) << ecs.getComponent<Components::Name>(participants[i])->value << ":(ID = "
-				<< participants[i] << ')' << std::endl;
+				<< participants[i] << ')' << '\n';
 		}
 
 		cur_round = 1;
@@ -244,11 +244,11 @@ namespace TBS
 
 		if (card == Components::NULL_INDEX)
 		{
-			std::cout << "Cannot select invalid index" << std::endl;
+			std::cout << "Cannot select invalid index" << '\n';
 			return;
 		}
 
-		std::cout << "Select Enemy to use card on" << std::endl;
+		std::cout << "Select Enemy to use card on" << '\n';
 		set_selected_card(true);	//set current participant's selected card to true
 
 		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
@@ -258,7 +258,7 @@ namespace TBS
 		EntityComponent::ComponentTypeID targCompID = EntityComponent::getComponentTypeID<Components::Targetting_Component>();
 		if (!ecs.getBitMask()[card].test(targCompID))
 		{
-			std::cout << "This card does not have targetting" << std::endl;
+			std::cout << "This card does not have targetting" << '\n';
 			return;
 		}
 
@@ -273,15 +273,15 @@ namespace TBS
 	void TurnBasedSystem::debug_print(EntityComponent::Registry& ecs) const
 	{
 		//print out info every action
-		std::cout << "======================Turn based Stats======================" << std::endl;
+		std::cout << "======================Turn based Stats======================" << '\n';
 		//show deck cards
-		std::cout << "Current Actor : " << ecs.getComponent<Components::Name>(current())->value << std::endl;
+		std::cout << "Current Actor : " << ecs.getComponent<Components::Name>(current())->value << '\n';
 		show_deck(ecs);
 		show_hand(ecs);
 		show_discard(ecs);
 		show_stats(ecs);
 		show_HP(ecs);
-		std::cout << "============================================================" << std::endl;
+		std::cout << "============================================================" << '\n';
 	}
 
 	void TurnBasedSystem::show_HP(EntityComponent::Registry& ecs) const
@@ -290,7 +290,7 @@ namespace TBS
 		{
 			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
 			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
-			std::cout << name << "'s HP : " << HP << " | " << std::endl;*/
+			std::cout << name << "'s HP : " << HP << " | " << '\n';*/
 			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 			EntityComponent::ComponentTypeID hordeTagID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
@@ -299,7 +299,7 @@ namespace TBS
 			if (ecs.getBitMask()[participants[i]].test(hpID))
 			{
 				f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-				std::cout << name << "'s HP : " << HP << " | " << std::endl;
+				std::cout << name << "'s HP : " << HP << " | " << '\n';
 			}
 			else
 			{
@@ -310,12 +310,12 @@ namespace TBS
 					{
 						std::string gname = ecs.getComponent<Components::Name>(goon)->value;
 						f32 HP = ecs.getComponent<Components::HP>(goon)->c_value;
-						std::cout << gname << "'s HP : " << HP << " | " << std::endl;
+						std::cout << gname << "'s HP : " << HP << " | " << '\n';
 					}
 				}
 				else
 				{
-					std::cout << name << " (no HP)" << std::endl;
+					std::cout << name << " (no HP)" << '\n';
 				}
 			}
 		}
@@ -323,7 +323,7 @@ namespace TBS
 
 	void TurnBasedSystem::show_deck(EntityComponent::Registry& ecs) const
 	{
-		std::cout << "---------Player's Deck---------" << std::endl;
+		std::cout << "---------Player's Deck---------" << '\n';
 
 		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
 		size_t sz = playerStorage->data_draw_pile.size();
@@ -333,13 +333,13 @@ namespace TBS
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
 			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
-		std::cout << "-------------------------------" << std::endl;
+		std::cout << "-------------------------------" << '\n';
 	}
 
 	void TurnBasedSystem::show_hand(EntityComponent::Registry& ecs) const
 	{
 		//disolay player hands
-		std::cout << "---------Player's Hand---------" << std::endl;
+		std::cout << "---------Player's Hand---------" << '\n';
 		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
 		size_t sz = playerStorage->data_card_hand.size();
 		for (size_t i = 0; i < sz; ++i)
@@ -348,13 +348,13 @@ namespace TBS
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
 			std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
-		std::cout << "------------------------------" << std::endl;
+		std::cout << "------------------------------" << '\n';
 	}
 
 	void TurnBasedSystem::show_discard(EntityComponent::Registry& ecs) const
 	{
 		//disolay player hands
-		std::cout << "---------Player's Discard Piler---------" << std::endl;
+		std::cout << "---------Player's Discard Piler---------" << '\n';
 		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
 		size_t sz = playerStorage->data_discard_pile.size();
 		for (size_t i = 0; i < sz; ++i)
@@ -363,17 +363,17 @@ namespace TBS
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
 			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
 		}
-		std::cout << "----------------------------------------" << std::endl;
+		std::cout << "----------------------------------------" << '\n';
 	}
 
 	void TurnBasedSystem::show_stats(EntityComponent::Registry& ecs) const
 	{
-		std::cout << "---------Player's Stats---------" << std::endl;
+		std::cout << "---------Player's Stats---------" << '\n';
 		Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
-		std::cout << "Points : " << stats->points << '/' << stats->maxPoints << std::endl;
-		std::cout << "SPD : " << stats->cur_movSpd << std::endl;
-		std::cout << "Shields : " << stats->shields << std::endl;
-		std::cout << "--------------------------------" << std::endl;
+		std::cout << "Points : " << stats->points << '/' << stats->maxPoints << '\n';
+		std::cout << "SPD : " << stats->cur_movSpd << '\n';
+		std::cout << "Shields : " << stats->shields << '\n';
+		std::cout << "--------------------------------" << '\n';
 	}
 
 	void TurnBasedSystem::DrawPhase_add_card(EntityComponent::Registry& ecs)
@@ -388,7 +388,7 @@ namespace TBS
 
 			if (drawPile.empty())
 			{
-				std::cout << "Error" << std::endl;
+				std::cout << "Error" << '\n';
 				return;
 			}
 		}

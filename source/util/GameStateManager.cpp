@@ -63,6 +63,6 @@ void GameStateMgrUpdate()
 		break;
 	}
 	default:
-		std::cout << "invalid state!!" << std::endl;;
+		std::cout << "invalid state!!" << '\n';;
 	}
 }

@@ -50,7 +50,7 @@ JSON_RET parse_seed(unsigned int& seed, char const* file_loc)
 	doc.Parse(json.c_str());
 	if (doc.HasParseError()) {
 		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << std::endl;
+			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
 	}
 	if (doc.HasMember("Seed"))
@@ -76,7 +76,7 @@ JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 	doc.Parse(json.c_str());
 	if (doc.HasParseError()) {
 		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << std::endl;
+			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
 	}
 
@@ -119,7 +119,7 @@ JSON_RET parse_starter_decks(std::vector<JSON_DECK>& decks, char const* str)
 	doc.Parse(json.c_str());
 	if (doc.HasParseError()) {
 		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << std::endl;
+			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
 	}
 
@@ -154,7 +154,7 @@ JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str)
 	doc.Parse(json.c_str());
 	if (doc.HasParseError()) {
 		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << std::endl;
+			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
 	}
 

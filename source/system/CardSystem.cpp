@@ -153,14 +153,14 @@ void CardSystem::init_cards()
 
 	for (JSON_CARD card : vec)
 	{
-		std::cout << "Name : " << card.name.c_str() << std::endl;
-		std::cout << "ID : " << card.id << std::endl;
-		std::cout << "Cost : " << card.cost << std::endl;
-		//std::cout << "Type : " << static_cast<int>(card.card_type) << std::endl;
-		std::cout << "Value : " << card.value << std::endl;
-		std::cout << "AOE : " << card.aoe << std::endl;
-		std::cout << "Description : " << card.description << std::endl;
-		std::cout << "Card Image : " << card.card_image << '\n' << std::endl;
+		std::cout << "Name : " << card.name.c_str() << '\n';
+		std::cout << "ID : " << card.id << '\n';
+		std::cout << "Cost : " << card.cost << '\n';
+		//std::cout << "Type : " << static_cast<int>(card.card_type) << '\n';
+		std::cout << "Value : " << card.value << '\n';
+		std::cout << "AOE : " << card.aoe << '\n';
+		std::cout << "Description : " << card.description << '\n';
+		std::cout << "Card Image : " << card.card_image << '\n' << '\n';
 		Entity cardECSID = create_ECS_card(ecs, card);
 		cards_map[card.name] = cardECSID;
 		cards_vec.push_back(cardECSID);

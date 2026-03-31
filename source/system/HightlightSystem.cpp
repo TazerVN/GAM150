@@ -200,14 +200,27 @@ void HighlightSystem::unhighlight_mov_cells()
 
 void HighlightSystem::unhighlight_enemy_cells(Entity target)
 {
-	if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
+	if (!enemy_mov_highlighted_cells.empty())
 	{
-		std::vector<Components::GridCell>& vec = enemy_mov_highlighted_cells[target];
-		for (Components::GridCell& cell : vec)
+		if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
 		{
-			enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = 0;
+			for (Components::GridCell& cell : enemy_mov_highlighted_cells.at(target))
+			{
+				enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
+			}
+			enemy_mov_highlighted_cells.erase(target);
 		}
-		vec.clear();
+	}
+	if (!enemy_atk_highlighted_cells.empty())
+	{
+		if (enemy_atk_highlighted_cells.find(target) != enemy_atk_highlighted_cells.end())
+		{
+			for (Components::GridCell& cell : enemy_atk_highlighted_cells.at(target))
+			{
+				enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
+			}
+			enemy_atk_highlighted_cells.erase(target);
+		}
 	}
 }
 

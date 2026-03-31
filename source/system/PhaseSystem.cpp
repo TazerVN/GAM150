@@ -147,10 +147,10 @@ namespace PhaseSystem
 
 	void GameBoardState::debug_print()
 	{
-		std::cout << "\n==================Gameboard State==================" << std::endl;
-		std::cout << "GB Phase     : " << GBPhaseNames[static_cast<size_t>(gb_curr)] << std::endl;
-		std::cout << "Player Phase : " << PlayerPhaseNames[static_cast<size_t>(player_curr)] << std::endl;
-		std::cout << "===================================================" << std::endl;
+		std::cout << "\n==================Gameboard State==================" << '\n';
+		std::cout << "GB Phase     : " << GBPhaseNames[static_cast<size_t>(gb_curr)] << '\n';
+		std::cout << "Player Phase : " << PlayerPhaseNames[static_cast<size_t>(player_curr)] << '\n';
+		std::cout << "===================================================" << '\n';
 	}
 
 	void GameBoardState::gbs_free()

@@ -63,7 +63,7 @@ namespace CardResolver
 			<< " | category: " << category
 			<< " | family: " << family
 			<< " | target: " << targettingCode
-			<< " | variant: " << variant << std::endl;
+			<< " | variant: " << variant << '\n';
 
 		switch (category)
 		{

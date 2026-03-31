@@ -3,11 +3,11 @@
 
 void LevelStateEncounter_load()
 {
-	std::cout << "Encounter Loaded!" << std::endl;
+	std::cout << "Encounter Loaded!" << '\n';
 }
 void LevelStateEncounter_init()
 {
-	std::cout << "Encounter Loaded!" << std::endl;
+	std::cout << "Encounter Loaded!" << '\n';
 }
 void LevelStateEncounter_update()
 {
@@ -19,9 +19,9 @@ void LevelStateEncounter_update()
 }
 void LevelStateEncounter_free()
 {
-	std::cout << "Encounter Freed!" << std::endl;
+	std::cout << "Encounter Freed!" << '\n';
 }
 void LevelStateEncounter_unload()
 {
-	std::cout << "Encounter unloaded!" << std::endl;
+	std::cout << "Encounter unloaded!" << '\n';
 }

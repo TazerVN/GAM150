@@ -130,14 +130,14 @@ Components::AStarResult AStar_FindPath_Grid4(
 //
 //    if (!inBounds(start.x, start.y) || !inBounds(goal.x, goal.y))
 //    {
-//        std::cout << "Not in bounds" << std::endl;
+//        std::cout << "Not in bounds" << '\n';
 //        return out;
 //    }
 //
 //
 //    if (/*!walkable[Id(start.x, start.y, height)] || */!walkable[Id(goal.x, goal.y, height)])
 //    {
-//        std::cout << "start and end is not walkable" << std::endl;
+//        std::cout << "start and end is not walkable" << '\n';
 //        return out;
 //    }
 //
@@ -198,7 +198,7 @@ Components::AStarResult AStar_FindPath_Grid4(
 //
 //    if (parent[goalId] == -1 && goalId != startId)
 //    {
-//        std::cout << "Astar no path" << std::endl;
+//        std::cout << "Astar no path" << '\n';
 //        return out; // no path
 //    }
 //

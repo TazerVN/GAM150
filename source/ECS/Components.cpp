@@ -22,7 +22,7 @@ void Components::Card_Storage::remove_card_from_hand(int index)
 
 void Components::Card_Storage::reshuffle_discard2deck()
 {
-	if (data_discard_pile.empty()) { std::cout << "Discard Pile Empty" << std::endl; return; }
+	if (data_discard_pile.empty()) { std::cout << "Discard Pile Empty" << '\n'; return; }
 	for (Entity card : data_discard_pile)
 	{
 		data_draw_pile.push_back(card);
