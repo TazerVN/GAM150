@@ -143,6 +143,7 @@ namespace UIO
 		AEGfxGetPrintSize(TF.getFontID(), a.c_str(), text_size, &text_width, &text_height);
 		f32 offset_x = -text_width * width;
 		f32 offset_y = -height/2.f * text_size/2.f;
+
 		this->z = z;
 		this->button = ui_button_texture(texture, x, y, width, height, 0, z, func);
 		this->text = UIO::TextShadow{ x + offset_x, y + offset_y, x + offset_x, y + offset_y - 10.f ,text_size, z + 1, a, rgba};
@@ -304,7 +305,7 @@ namespace UIO
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Texture tex{ texture };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Input in(AEVK_LBUTTON, true, func, [id] { button_onHover(id); }, [id] { button_offHover(id); }, 10);	//add input system for grid
+		Components::Input in(AEVK_LBUTTON, true, func, [id] { button_onHover(id); }, [id] { button_offHover(id); }, z);	//add input system for grid
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid
 		Components::Timer timer{ 1.f, 0.5f, true, true };
 		ecs.addComponent(id, trans);

@@ -13,29 +13,31 @@ PauseMenu::PauseMenu(s32 z)
 	f32 start_y = 250.f;
 	f32 start_x =/* AEGfxGetWinMinX() + 200.f * size_x*/ 0.f ;
 	f32 offset_y = 100.f * size_y;
-	Components::TagClass tag{ Components::Tag::UI };
-	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40};
 
 	this->dim = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth() * 1.5f, AEGfxGetWindowHeight() * 1.5f, 0, z, 0.0f, 0.0f, 0.0f, 0.5f);
 
+	Components::TagClass tag{ Components::Tag::UI };
+	Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, z, true};
 
 	/*this->continue_button.button = UIO::ui_button(0, AEGfxGetWinMaxY() * 0.50f, 300.f, 100.f, 0, z, nullptr);
 	this->continue_button.text = UIO::ui_text(-70.f, AEGfxGetWinMaxY() * 0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Continue" );*/
-	this->continue_button = UIO::TextureButton(TF.getTextureUI(12),start_x, start_y - offset_y * 0, 314.f * size_x, 65.f * size_y, 0.5f ,0, z,  "Continue" ,nullptr, {1.f,1.f,1.f,1.f});
+	this->continue_button = UIO::TextureButton(TF.getTextureUI(12),start_x, start_y - offset_y * 0, 314.f * size_x, 65.f * size_y, 0.5f ,0, z + 1,  "Continue" ,nullptr, {1.f,1.f,1.f,1.f});
 
 
 	/*this->abandon_button.button = UIO::ui_button(0, 0, 300.f, 100.f, 0, z,nullptr);
 	this->abandon_button.text = UIO::ui_text(-100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");*/
-	this->abandon_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 1, 314.f * size_x, 65.f * size_y, 0.5f, 0, z, "Abandon", nullptr, { 1.f,1.f,1.f,1.f });
+	this->abandon_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 1, 314.f * size_x, 65.f * size_y, 0.5f, 0, z + 1, "Abandon", nullptr, { 1.f,1.f,1.f,1.f });
 	/*this->abandon_button.button = UIO::ui_button(0, 0, 300.f, 100.f, 0, z,nullptr);
 	this->abandon_button.text = UIO::ui_text(-100.f, -10.f, 0.5f, 100.f, 0, z + 1, "Abandon Run");*/
-	this->setting_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 2, 314.f * size_x, 65.f * size_y, 0.5f, 0, z, "Setting", nullptr, { 1.f,1.f,1.f,1.f });
+	this->setting_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 2, 314.f * size_x, 65.f * size_y, 0.5f, 0, z + 1, "Setting", nullptr, { 1.f,1.f,1.f,1.f });
 
 
 	//this->leave_button.button = UIO::ui_button(0, AEGfxGetWinMaxY() * -0.50f, 300.f, 100.f, 0, z, nullptr);
 	//this->leave_button.text = UIO::ui_text(-40.f, AEGfxGetWinMaxY() * -0.50f - 10.f, 0.5f, 100.f, 0, z + 1, "Exit");
-	this->leave_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 3, 314.f * size_x, 65.f * size_y, 0.5f, 0, z, "Exit", nullptr, { 1.f,1.f,1.f,1.f });
+	this->leave_button = UIO::TextureButton(TF.getTextureUI(12), start_x, start_y - offset_y * 3, 314.f * size_x, 65.f * size_y, 0.5f, 0, z + 1, "Exit", nullptr, { 1.f,1.f,1.f,1.f });
 
+	ecs.addComponent(this->dim, tag);
+	ecs.addComponent(this->dim, in);
 }
 
 PauseMenu& PauseMenu::operator=(const PauseMenu& rhs)

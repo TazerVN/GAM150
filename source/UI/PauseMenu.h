@@ -6,7 +6,7 @@ class PauseMenu
 {
 	private:
 
-	s32 z{1200};
+	s32 z{1300};
 	Entity dim;
 	UIO::TextureButton continue_button;
 	UIO::TextureButton abandon_button;

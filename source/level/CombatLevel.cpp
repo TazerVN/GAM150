@@ -49,7 +49,7 @@ void LevelStateCombat_load()
 
 		std::cout << "New start! Reset Player" << std::endl;
 	}
-	AF.bgm.play(0);
+	//AF.bgm.play(0);
 }
 void LevelStateCombat_init()
 {
@@ -66,7 +66,7 @@ void LevelStateCombat_init()
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
-	AF.bgm.play(0);
+	//AF.bgm.play(0);
 	ecs.remove_empty_groups();
 
 }
@@ -97,7 +97,7 @@ void LevelStateCombat_update()
 	else if(!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
 		PauseMenu& p = UIM.getPauseMenu();
-		p = PauseMenu(1200);
+		p = PauseMenu(1300);
 	}
 
 	if (AEInputCheckTriggered(AEVK_F5)) gLevelStateNext = LevelStates::LS_RESTART;
