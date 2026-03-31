@@ -69,6 +69,8 @@ namespace Components
 		AEVec2 size_og{ 0,0 };
 		AEMtx33 mtx{};
 		float rotation{ 0.f };
+
+
 	};
 
 	struct gridData
@@ -168,7 +170,8 @@ namespace Components
 		public:
 		bool on;
 		u8 type; //for AE internal input system check
-		bool hover;
+		bool allow_hover;
+		bool cur_hover;
 		bool drag;
 		bool col;
 		s32 z;

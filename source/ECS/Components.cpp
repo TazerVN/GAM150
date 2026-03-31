@@ -57,8 +57,8 @@ Components::Input::Input(u8 type, bool hover,
 	std::function<void()> offHover, s32 z, bool drag, bool col, 
 						 std::function<void()> onDrag, 
 						 std::function<void()> offDrag)
-	: type(type), hover(hover), onClick(onClick),
-	onHover(onHover), offHover(offHover), on(true), z{ z }, drag{ drag }, col{ col }, onDrag{onDrag}, offDrag{offDrag}
+	: type(type), allow_hover(hover), onClick(onClick),
+	onHover(onHover), offHover(offHover), on(true), z{ z }, drag{ drag }, col{ col }, onDrag{onDrag}, offDrag{offDrag}, cur_hover{false}
 {
 }
 

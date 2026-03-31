@@ -12,8 +12,11 @@ namespace UI
 	void UIManager::menu_init()
 	{
 		this->menu.init();
-		auto play = ecs.getComponent<Components::Input>(this->menu.play.button);
-		play->onClick = [] { gGameStateNext = GameStates::GS_Game; };
+
+		auto play = ecs.getComponent<Components::Input>(this->menu.main.play.button);
+		play->onClick = [this] { this->menu.main.leave();};
+
+
 	}
 
 	void UIManager::combat_init(Scene& scene)
