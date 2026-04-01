@@ -269,6 +269,9 @@ namespace CardResolver
 					{
 						anyMoved = true;
 						movedEnemies.push_back(e);
+
+						auto aa = ecs.getComponent<Components::Animation_Actor>(e);
+						aa->setType(Components::AnimationType::TAKING_DAMAGE);
 					}
 				}
 

@@ -37,6 +37,7 @@ namespace TextureFactory
 		for (Entity card : card_system.cards_vec)
 		{
 			std::string tex = "Assets/cards/";
+			//bug found here when you die/lose.
 			std::string loc = ecs.getComponent<Components::image_location>(card)->location;
 			tex += loc;
 			if (card_texture_map.find(loc) == card_texture_map.end())

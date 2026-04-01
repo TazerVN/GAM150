@@ -4,39 +4,70 @@
 class BaseMenu
 {
 	public:
-	bool isLeaving;
-	UIO::ScreenTransition fade;
+
+	enum class DESTINATION
+	{
+		GAME, SETTING, CREDIT, MAIN, NONE
+	};
+	DESTINATION dest;
+	void to_main();
+	void to_game();
+	void to_setting();
+	void to_credit();
 	BaseMenu();
 };
 
 class MainMenu : public BaseMenu
 {
 	public:
-	Entity title;
+	Entity title{};
 	UIO::TextureButton play;
-	UIO::TextureButton option;
+	UIO::TextureButton setting;
 	UIO::TextureButton credit;
 	UIO::TextureButton exit;
 	MainMenu();
-	void update();
 	void init();
 	void free();
-	void leave();
 };
 
 class CreditMenu : public BaseMenu
 {
-
+	public:
+	UIO::TextureButton exit;
+	void init();
+	void free();
 };
 
 class SettingMenu : public BaseMenu
 {
+	public:
+	UIO::TextShadow bgm_text;
+	UIO::TextShadow amb_text;
+	UIO::TextShadow sfx_text;
 
+	UIO::Slider bgm_slider;
+	UIO::Slider amb_slider;
+	UIO::Slider sfx_slider;
+
+	UIO::TextureButton exit;
+	void init();
+	void free();
 };
 
 class MenuUI
 {
 	public:
+
+	enum class CURRENT_MENU : char 
+	{
+		MAIN, SETTING, CREDIT
+	};
+
+	UIO::ScreenTransition fade;
+
+	CURRENT_MENU cur;
+	bool transition;
+
 	MainMenu main;
 	SettingMenu setting;
 	CreditMenu credit;
@@ -44,7 +75,6 @@ class MenuUI
 	void init();
 	void update();
 	void free();
-	void leave();
 };
 
 

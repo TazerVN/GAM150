@@ -16,8 +16,7 @@ static UI::UIManager UIM;
 void GameStateMainMenu_load()
 {
 	std::cout << "Main menu loaded" << '\n';
-    TF.textureInit();      
-    mf.MeshFactoryInit();
+
 }
 void GameStateMainMenu_init()
 {

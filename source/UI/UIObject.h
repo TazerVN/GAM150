@@ -8,7 +8,7 @@ namespace UIO
 		Entity text{ 0 };
 		Entity text_shadow{ 0 };
 		TextShadow() = default;
-		TextShadow(f32 x, f32 y, f32 s_x, f32 s_y, f32 text_size, s32 z, std::string a, Components::RGBA rgba);
+		TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba);
 		void free();
 	};
 
@@ -16,9 +16,10 @@ namespace UIO
 	{
 		public:
 		s32 z;
+		bool on;
 		Entity timer;
 		Entity button{ 0 };
-		UIO::TextShadow text;
+		Entity text;
 		TextButton() = default;
 		TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba);
 
@@ -50,6 +51,17 @@ namespace UIO
 		ScreenTransition() = default;
 		ScreenTransition(bool fadeIn, f32 max = 0.f);
 		bool update();
+		void free();
+	};
+
+	struct Slider{
+		f32 current{};
+		f32 max{};
+		Entity blank{};
+		Entity fill{};
+		Entity button{};
+		Slider() = default;
+		Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func);
 		void free();
 	};
 

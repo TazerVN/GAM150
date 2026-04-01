@@ -11,12 +11,8 @@ namespace UI
 
 	void UIManager::menu_init()
 	{
+		this->menu.cur = MenuUI::CURRENT_MENU::MAIN;
 		this->menu.init();
-
-		auto play = ecs.getComponent<Components::Input>(this->menu.main.play.button);
-		play->onClick = [this] { this->menu.main.leave();};
-
-
 	}
 
 	void UIManager::combat_init(Scene& scene)
@@ -104,7 +100,7 @@ namespace UI
 
 	void UIManager::update(Scene& scene, f32 dt)
 	{
-
+		if(this->pause.isOn()) return;
 		if(this->info.isOn() && !this->info.isCreated())
 		{
 			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, this->z);
@@ -235,6 +231,9 @@ namespace UI
 		hand.card_interaction_free();
 		info.free(ecs);
 		pause.free();
+		st.free();
+		vicSelect.free();
+
 
 		for (std::pair<Entity, Entity> p : this->hp_children_list)
 		{

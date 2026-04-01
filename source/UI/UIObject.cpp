@@ -46,8 +46,8 @@ namespace UIO
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(button->timer);
 		Components::Transform* tb = ecs.getComponent<Components::Transform>(button->button);
-		Components::Transform* tt = ecs.getComponent<Components::Transform>(button->text.text);
-		Components::Text* text = ecs.getComponent<Components::Text>(button->text.text);
+		Components::Transform* tt = ecs.getComponent<Components::Transform>(button->text);
+		Components::Text* text = ecs.getComponent<Components::Text>(button->text);
 
 		timer->start = true;
 		f32 lerp = timer->seconds / (timer->max_seconds);
@@ -64,7 +64,7 @@ namespace UIO
 		tt->size.x = tt->size_og.x + tt->size_og.x * scale_factor * lerp;
 
 		button_onHover(button->button);
-		button_onHover(button->text.text);
+		button_onHover(button->text);
 	}
 
 	void textbutton_offHover(UIO::TextureButton* button)
@@ -72,7 +72,7 @@ namespace UIO
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(button->timer);
 		Components::Transform* tb = ecs.getComponent<Components::Transform>(button->button);
-		Components::Transform* tt = ecs.getComponent<Components::Transform>(button->text.text);
+		Components::Transform* tt = ecs.getComponent<Components::Transform>(button->text);
 
 		f32 lerp = 1.f - (timer->seconds / timer->max_seconds);
 		/*timer->start = true;*/
@@ -91,14 +91,15 @@ namespace UIO
 		}
 
 		button_offHover(button->button);
-		//button_offHover(button->text.text);
+		button_offHover(button->text);
 	}
 	
 	TextButton::TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba)
 	{
 		this->z = z;
 		this->button = ui_button(x, y, width, height, 0, z, func, {1.f - rgba.r, 1.f - rgba.g, 1.f - rgba.b, 1 - rgba.a });
-		this->text = UIO::TextShadow{ x - 64.f * text_size, y - 64.f * text_size / 2.f, x - 64.f * text_size, y - 100.f * text_size / 2.f ,text_size, z + 1, a, {1.f, 1.f, 1.f, 1.f} };
+		this->text = UIO::ui_text( x - 64.f * text_size, y - 64.f * text_size / 2.f, text_size, text_size,0, z + 1, a, {1.f, 1.f, 1.f, 1.f} );
+		this->on = false;
 	}
 
 	TextureButton& TextureButton::operator=(const TextureButton& rhs)
@@ -107,10 +108,11 @@ namespace UIO
 		this->text = rhs.text;
 		this->z = rhs.z;
 		this->timer = rhs.timer;
+		this->on = rhs.on;
 
 
 		Components::Timer timer{ 1.f, 0.f, true, true };
-		ecs.addComponent(this->text.text, timer);
+		ecs.addComponent(this->text, timer);
 		ecs.addComponent(this->button, timer);
 
 		auto in = ecs.getComponent<Components::Input>(this->button);
@@ -125,9 +127,10 @@ namespace UIO
 		this->text = rhs.text;
 		this->z = rhs.z;
 		this->timer = rhs.timer;
+		this->on = rhs.on;
 
 		Components::Timer timer{ 1.f, 0.f, true, true };
-		ecs.addComponent(this->text.text, timer);
+		ecs.addComponent(this->text, timer);
 		ecs.addComponent(this->button, timer);
 
 		auto in = ecs.getComponent<Components::Input>(this->button);
@@ -142,11 +145,12 @@ namespace UIO
 
 		AEGfxGetPrintSize(TF.getFontID(), a.c_str(), text_size, &text_width, &text_height);
 		f32 offset_x = -text_width * width;
-		f32 offset_y = -height/2.f * text_size/2.f;
+		f32 offset_y = -height * text_height;
 
+		this->on = false;
 		this->z = z;
 		this->button = ui_button_texture(texture, x, y, width, height, 0, z, func);
-		this->text = UIO::TextShadow{ x + offset_x, y + offset_y, x + offset_x, y + offset_y - 10.f ,text_size, z + 1, a, rgba};
+		this->text = UIO::ui_text( x + offset_x, y + offset_y, text_size, text_size ,0, z + 1, a, rgba);
 		//========= timer ==============
 		this->timer = ecs.createEntity(); 
 		Components::Timer timer{ 0.2f, 0.f, false, false };
@@ -158,23 +162,26 @@ namespace UIO
 	void TextButton::free()
 	{
 		if(this->button != 0) ecs.destroyEntity(this->button);
-		this->text.free();
+		if(this->text != 0) ecs.destroyEntity(this->text);
 		this->button = 0;
+		this->text = 0;
 	}
 
 	void TextureButton::free()
 	{
-		if(this->button != 0) ecs.destroyEntity(this->button);
+		if (this->button != 0) ecs.destroyEntity(this->button);
+		if (this->text != 0) ecs.destroyEntity(this->text);
 		this->button = 0;
-		this->text.free();
+		this->text = 0;
 	}
 
 
-	TextShadow::TextShadow(f32 x, f32 y, f32 s_x, f32 s_y ,f32 text_size, s32 z, std::string a, Components::RGBA rgba)
+
+	TextShadow::TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba)
 	{
 		this->z = z;
 		this->text = ui_interactive_text(x, y, text_size, text_size, 0, z + 1, a, { 1.f, 1.f, 1.f, 1.f });
-		//this->text_shadow = ui_text(s_x, s_y, text_size, text_size, 0, z + 1, a, { 0.f, 0.f, 0.f, 1.f });
+		this->text_shadow = ui_text(x + 5.f, y - 5.f, text_size, text_size, 0, z, a, { 0.f, 0.f, 0.f, 0.f });
 	}
 
 	void TextShadow::free()
@@ -184,6 +191,8 @@ namespace UIO
 		this->text = 0;
 		this->text_shadow = 0;
 	}
+	
+
 
 	ScreenTransition::ScreenTransition(bool fadeIn, f32 max) : z{1300}
 	{
@@ -192,7 +201,7 @@ namespace UIO
 		this->max = max;
 		if(fadeIn){
 			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 1.f);
-			Components::Timer timer{ 2.f, 0.f, true, false};
+			Components::Timer timer{ 0.5f, 0.f, true, false};
 			Components::TagClass tag{Components::Tag::UI};
 			ecs.addComponent(this->dim, timer);
 			ecs.addComponent(this->dim, tag);
@@ -200,7 +209,7 @@ namespace UIO
 		else
 		{
 			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 0.f);
-			Components::Timer timer{ 2.f, 0.f, true, false };
+			Components::Timer timer{ 0.2f, 0.f, true, false };
 			Components::TagClass tag{ Components::Tag::UI };
 			ecs.addComponent(this->dim, timer);
 			ecs.addComponent(this->dim, tag);
@@ -237,6 +246,31 @@ namespace UIO
 	{
 		if(this->dim != 0) ecs.destroyEntity(this->dim);
 		this->dim = 0;
+	}
+
+
+	Slider::Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func)
+	{
+		this->current = 100.f;
+		this->max = 100.f;
+		this->blank = ui_blank_solid_corner(x, y, width, height, 0, z, 1.f, 0.f, 0.f, 1.f);
+		this->fill = ui_blank_solid_corner(x, y, width, height, 0, z + 1, 0.290f, 0.640f, 0.710f, 1.f);
+		this->button = ui_button(x + width, y - height / 2, 20.f, 100.f, 0, z + 2, nullptr, { 1.f, 1.f, 1.f, 1.f });
+
+		Components::TagClass tag{ Components::Tag::UI };
+		ecs.addComponent(this->blank, tag);
+		ecs.addComponent(this->fill, tag);
+		ecs.addComponent(this->button, tag);
+	}
+
+	void Slider::free()
+	{
+		if(this->blank != 0) ecs.destroyEntity(this->blank);
+		if(this->fill != 0) ecs.destroyEntity(this->fill);
+		if(this->button != 0) ecs.destroyEntity(this->button);
+		this->blank = 0;
+		this->fill = 0;
+		this->button = 0;
 	}
 
 
