@@ -9,7 +9,7 @@ private:
 public:
 	std::vector<Entity>victory_cards;
 	UIO::ScreenTransition dim;
-	s32 z{1301};
+	s32 z{1350};
 	bool on = false;
 	void update();
 	void free();

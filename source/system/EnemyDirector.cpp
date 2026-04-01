@@ -216,6 +216,7 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     (void)gbs;
     if (timeline_.empty()) return;
 
+
     Entity cur = tbs.current();
     if (cur == Components::NULL_INDEX) return;
 
@@ -749,7 +750,15 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
     // Make up mind first if not already planned for this actor
     if (pendingAttack_.actor != actor)
     {
-        planATTACK(board, actor, playerID, t);
+        if (planATTACK(board, actor, playerID, t) == false){
+            PUT << 2;
+            PUT.display(actor, "MISS");
+
+            auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
+            aa->setType(Components::AnimationType::TAKING_DAMAGE);
+            //gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
+
+        }
     }
 
     if (!pendingAttack_.canAttack)
@@ -776,6 +785,7 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
     else
     {
         std::cout << "[ED] ATTACK failed.\n";
+        PUT << "I FUCKED UP";
     }
 
     pendingAttack_ = PendingAttack{}; // clear after execution

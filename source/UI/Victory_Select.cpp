@@ -38,6 +38,8 @@ void Victory_Select::free()
 	victory_cards.clear();
 }
 
+
+
 Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 {
 	Entity _card = card_system.get_bible_id(cardname);

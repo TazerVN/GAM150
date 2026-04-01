@@ -5,7 +5,7 @@ namespace Text
 {
 	void PopUpText::display(Entity pos, const char* text)
 	{
-		*this << 0;
+		//*this << 0;
 		this->current.push_back(this->text_create_attached(pos, text, c_color.r, c_color.g, c_color.b, c_color.a));
 	}
 
@@ -96,6 +96,7 @@ namespace Text
 		ecs->addComponent(id, color);
 		ecs->addComponent(id, time);
 		ecs->addComponent(id, vel);
+		PUT << 0;
 		return id;
 	}
 
