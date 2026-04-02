@@ -26,7 +26,10 @@ void Victory_Select::update()
 		}
 	}
 	this->dim.update();
-
+	if (AEInputCheckTriggered(AEVK_ESCAPE))
+	{
+		this->free();
+	}
 }
 void Victory_Select::free()
 {

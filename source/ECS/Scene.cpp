@@ -209,7 +209,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 void Scene::update()
 {
 
-	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered)
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered || AEInputCheckTriggered(AEVK_MINUS))
 	{
 		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered = false;
 		for (Entity goon : ecs.getComponent<Components::Horde_Tag>(TBSys.get_participant()[1])->goons)
