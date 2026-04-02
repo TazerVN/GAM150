@@ -78,12 +78,13 @@ namespace Text
 
 		Components::Transform* pos = ecs->getComponent<Components::Transform>(e);
 
-		/*f32 x = pos->pos_onscreen.x - 64.f;
-		f32 y = pos->pos_onscreen.y + 32.f;*/
-		f32 x = pos->pos_onscreen.x;
-		f32 y = pos->pos_onscreen.y + 100.f;
+		f32 x{}, y{};
 
-
+		if (pos != nullptr)
+		{
+			x = pos->pos_onscreen.x;
+			y = pos->pos_onscreen.y + 100.f;
+		}
 
 		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };
 		Components::Text text{ t, TF.getFontID(), this->z };

@@ -58,18 +58,20 @@ void IntentionDisplaySystem::update(Scene& scene)
 			auto find = std::find(horde->goons.begin(), horde->goons.end(), enemy);
 			if (find != horde->goons.end()) continue;
 		}
-        hlptr->unhighlight_enemy_cells(enemy);
 		ecs.destroyEntity(this->intentionDisplay_list[i].second);
 		this->intentionDisplay_list[i] = this->intentionDisplay_list[this->intentionDisplay_list.size() - 1];
 		this->intentionDisplay_list.pop_back();
+        i--;
 	}
 
 
 	if (triggered)
 	{
 		triggered = false;
-        hlptr->unhighlight_cells();
         enemyRange.clear();
+
+        hlptr->clear_enemy_cells();
+
 		size_t index = this->ptr_enemyDirector->index();
 		const std::vector<EnemyDirector::Tokens>& timeline_ = this->ptr_enemyDirector->get_timeline();
 
@@ -77,35 +79,38 @@ void IntentionDisplaySystem::update(Scene& scene)
 		{
 			if (index >= timeline_.size()) index = 0;
 
-			for (std::string a : timeline_[index])
-			{
-				Entity ent;
-				std::string key = timeline_[index][0];
-				std::unordered_map<std::string, Entity>& map = ptr_enemyDirector->get_map();
-				if (map.find(key) != map.end())
-				{
-					ent = map[key];
-				}
-				else ent = -1;
+            Entity ent;
+            std::string key = timeline_[index][0];
+            std::unordered_map<std::string, Entity>& map = ptr_enemyDirector->get_map();
+            if (map.find(key) != map.end())
+            {
+                ent = map[key];
+            }
+            else ent = -1;
 
-				if (ent == -1) continue;
+            if (ent == -1)
+            {
+                index++;
+                continue;
+            }
 
-				std::string intent = timeline_[index][1];
-				if (intent == "ATTACK")
-				{
-					for (auto it : intentionDisplay_list)
-					{
-						if (ent == it.first)
-						{
-							Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
-							intentionDisp->texture = TF.getTextureOthers(3);
+            std::string intent = timeline_[index][1];
+            if (intent == "ATTACK")
+            {
+                for (auto it : intentionDisplay_list)
+                {
+                    if (ent == it.first)
+                    {
+                        Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
+                        intentionDisp->texture = TF.getTextureOthers(3);
 
-                            bool isRanger = ecs.getComponent<Components::Name>(ent)->value == "Ranger";
-                            Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
-                            int atkRange = (isRanger) ? rangedRange : meleeRange;
-                            int movRange = enemyRange[ent];
+                        bool isRanger = ecs.getComponent<Components::Name>(ent)->value == "Ranger";
+                        Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
+                        int atkRange = (isRanger) ? rangedRange : meleeRange;
+                        int movRange = (enemyRange.find(ent) != enemyRange.end()) ? enemyRange[ent] : 0;
 
-                            auto isOutermost = [&](int x, int y, int originX, int originY, int range) -> bool
+
+                        auto isOutermost = [&](int x, int y, int originX, int originY, int range) -> bool
                             {
                                 // check all 4 neighbours
                                 const int dirs[4][2] = { {1,0},{-1,0},{0,1},{0,-1} };
@@ -122,139 +127,137 @@ void IntentionDisplaySystem::update(Scene& scene)
                                 return false;
                             };
 
-                            
-                            if (hlptr->enemy_mov_highlighted_cells[ent].empty())
-                            {
-                                hlptr->enemy_mov_highlighted_cells[ent].push_back({gd->x,gd->y});
-                            }
-                            for (Components::GridCell& cell : hlptr->enemy_mov_highlighted_cells[ent])
-                            {
-                                if (isRanger)
-                                {
-                                    for (int itr = 0; itr <= atkRange; ++itr)
-                                    {
-                                        if (cell.x + itr < MAX_I)
-                                        {
-                                            hlptr->enemy_atk_highlight_activate[cell.x + itr][cell.y] = true;
-                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x + itr,cell.y });
-                                        }
-                                        if (cell.x - itr >= 0)
-                                        {
-                                            hlptr->enemy_atk_highlight_activate[cell.x - itr][cell.y] = true;
-                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x - itr,cell.y });
-                                        }
-                                        if (cell.y + itr < MAX_J)
-                                        {
-                                            hlptr->enemy_atk_highlight_activate[cell.x][cell.y + itr] = true;
-                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y + itr });
-                                        }
-                                        if (cell.y - itr >= 0)
-                                        {
-                                            hlptr->enemy_atk_highlight_activate[cell.x][cell.y - itr] = true;
-                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y - itr });
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    auto try_highlight = [&](int x, int y)
-                                        {
-                                            if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
-                                                return;
-                                            bool& cell = this->hlptr->enemy_atk_highlight_activate[x][y];
-                                            cell = true;
-                                            hlptr->enemy_atk_highlighted_cells[ent].push_back({ x, y });
-                                        };
 
-                                    for (int i = -atkRange; i <= atkRange; ++i)
+                        if (hlptr->enemy_mov_highlighted_cells[ent].empty())
+                        {
+                            hlptr->enemy_mov_highlighted_cells[ent].push_back({ gd->x,gd->y });
+                        }
+                        for (Components::GridCell& cell : hlptr->enemy_mov_highlighted_cells[ent])
+                        {
+                            if (isRanger)
+                            {
+                                for (int itr = 0; itr <= atkRange; ++itr)
+                                {
+                                    if (cell.x + itr < MAX_I)
                                     {
-                                        int j_range = atkRange - std::abs(i);
-                                        for (int j = -j_range; j <= j_range; ++j)
-                                        {
-                                            try_highlight(cell.x + i, cell.y + j);
-                                        }
+                                        hlptr->enemy_atk_highlight_activate[cell.x + itr][cell.y] = true;
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x + itr,cell.y });
+                                    }
+                                    if (cell.x - itr >= 0)
+                                    {
+                                        hlptr->enemy_atk_highlight_activate[cell.x - itr][cell.y] = true;
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x - itr,cell.y });
+                                    }
+                                    if (cell.y + itr < MAX_J)
+                                    {
+                                        hlptr->enemy_atk_highlight_activate[cell.x][cell.y + itr] = true;
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y + itr });
+                                    }
+                                    if (cell.y - itr >= 0)
+                                    {
+                                        hlptr->enemy_atk_highlight_activate[cell.x][cell.y - itr] = true;
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y - itr });
                                     }
                                 }
                             }
-							break;
-						}
-					}
-				}
-				else if (intent == "MOVE")
-				{
-                    if (timeline_.empty())
-                    {
-                        std::cout << "Intention insert failed !" << '\n';
-                        return;
-                    }
-                    //determine if its normal or in range
-                    int range = 0;
-                    if (timeline_[index][2] == "IN_RANGE")
-                    {
-                        if (timeline_[index].size() < 5) return;
-                        std::string token = timeline_[index][4];
-                        range = std::stoi(token);
-                    }
-                    else
-                    {
-                        if (timeline_[index].size() < 4) return;
-                        std::string token = timeline_[index][3];
-                        range = std::stoi(token);
-                    }
-                       
-
-                    if (enemyRange.find(ent) == enemyRange.end())
-                    {
-                        enemyRange.emplace(ent, range);
-                    }
-                    else 
-                    {
-                        enemyRange.at(ent) = range;
-                    }
-
-					for (auto it : intentionDisplay_list)
-					{
-
-						if (ent == it.first)
-						{
-							Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
-							intentionDisp->texture = TF.getTextureOthers(4);
-                            
-                            //display the movement range on grid
-                            Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
-                            Components::GridCell pos = Components::GridCell{ gd->x,gd->y };
-                            
-                            for (int i = -range; i <= range; ++i)
+                            else
                             {
-                                int j_range = range - std::abs(i);
-                                for (int j = -j_range; j <= j_range; ++j)
-                                {
-                                    int tx = pos.x + i;
-                                    int ty = pos.y + j;
-
-                                    if (tx < 0 || tx >= MAX_I || ty < 0 || ty >= MAX_J)
-                                        continue;
-
-                                    Components::GridCell s{ s32(pos.x), s32(pos.y) };
-                                    Components::GridCell g{ tx, ty };
-                                    Components::AStarResult astar = AStar_FindPath_Grid4(MAX_I, MAX_J, gbptr->walkable, s, g);
-
-
-                                    if (!astar.path.empty() && (int)astar.path.size() - 1 <= range)
+                                auto try_highlight = [&](int x, int y)
                                     {
-                                        hlptr->enemy_mov_highlight_activate[tx][ty] = true;
-                                        hlptr->enemy_mov_highlighted_cells[ent].push_back({ tx,ty });
+                                        if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
+                                            return;
+                                        bool& cell = this->hlptr->enemy_atk_highlight_activate[x][y];
+                                        cell = true;
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ x, y });
+                                    };
+
+                                for (int i = -atkRange; i <= atkRange; ++i)
+                                {
+                                    int j_range = atkRange - std::abs(i);
+                                    for (int j = -j_range; j <= j_range; ++j)
+                                    {
+                                        try_highlight(cell.x + i, cell.y + j);
                                     }
                                 }
                             }
-							break;
-						}
+                        }
+                        break;
+                    }
+                }
+            }
+            else if (intent == "MOVE")
+            {
+                if (timeline_.empty())
+                {
+                    std::cout << "Intention insert failed !" << '\n';
+                    return;
+                }
+                //determine if its normal or in range
+                int range = 0;
+                if (timeline_[index][2] == "IN_RANGE")
+                {
+                    if (timeline_[index].size() < 5) return;
+                    std::string token = timeline_[index][4];
+                    range = std::stoi(token);
+                }
+                else
+                {
+                    if (timeline_[index].size() < 4) return;
+                    std::string token = timeline_[index][3];
+                    range = std::stoi(token);
+                }
 
-					}
-				}
 
-				index++;
-			}
+                if (enemyRange.find(ent) == enemyRange.end())
+                {
+                    enemyRange.emplace(ent, range);
+                }
+                else
+                {
+                    enemyRange.at(ent) = range;
+                }
+
+                for (auto it : intentionDisplay_list)
+                {
+
+                    if (ent == it.first)
+                    {
+                        Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
+                        intentionDisp->texture = TF.getTextureOthers(4);
+
+                        //display the movement range on grid
+                        Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
+                        Components::GridCell pos = Components::GridCell{ gd->x,gd->y };
+
+                        for (int i = -range; i <= range; ++i)
+                        {
+                            int j_range = range - std::abs(i);
+                            for (int j = -j_range; j <= j_range; ++j)
+                            {
+                                int tx = pos.x + i;
+                                int ty = pos.y + j;
+
+                                if (tx < 0 || tx >= MAX_I || ty < 0 || ty >= MAX_J)
+                                    continue;
+
+                                Components::GridCell s{ s32(pos.x), s32(pos.y) };
+                                Components::GridCell g{ tx, ty };
+                                Components::AStarResult astar = AStar_FindPath_Grid4(MAX_I, MAX_J, gbptr->walkable, s, g);
+
+
+                                if (!astar.path.empty() && (int)astar.path.size() - 1 <= range)
+                                {
+                                    hlptr->enemy_mov_highlight_activate[tx][ty] = true;
+                                    hlptr->enemy_mov_highlighted_cells[ent].push_back({ tx,ty });
+                                }
+                            }
+                        }
+                        break;
+                    }
+
+                }
+            }
+			index++;
 
 			if (timeline_[index][0] == "STOP") break;
 		}

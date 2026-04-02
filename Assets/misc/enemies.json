@@ -1,7 +1,7 @@
 [
   {
     "name": "Melee",
-    "hp":  100.0,
+    "hp":  30.0,
     "value":  20.0,
     "range": 1.0,
     "png" :  "enemy2.png"

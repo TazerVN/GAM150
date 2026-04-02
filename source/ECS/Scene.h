@@ -65,7 +65,3 @@ public:
 	bool win() const;
 
 };
-
-void highlight_cells(bool,TBS::TurnBasedSystem&, Grid::GameBoard&, CombatNameSpace::CombatSystem&, int, highlight_tag);
-void unhighlight_cells(Grid::GameBoard& gb, CombatNameSpace::CombatSystem& cbs);
-//AEVec2& Get_CurPart_gridPos(AEVec2 const& worldPos);

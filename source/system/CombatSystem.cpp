@@ -340,6 +340,8 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 				// Already destroyed somehow, just remove from graveyard
 				graveyard[i] = graveyard.back();
 				graveyard.pop_back();
+				edptr->removeEnemy(gra.second);
+				hlptr->unhighlight_enemy_cells(gra.second);
 				continue;
 			}
 			
@@ -355,12 +357,13 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 			if(anim->prev_type == Components::AnimationType::DEATH){
 				gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
 				ecs.destroyEntity(gra.second);
-				if(graveyard.size() > 1){
+				if(graveyard.size() > 0){
 
 					std::pair<AEVec2, Entity> temp = graveyard[graveyard.size() - 1];
 					graveyard[graveyard.size() - 1] = gra;
 					graveyard[i] = temp;
 					graveyard.pop_back();
+					hlptr->unhighlight_enemy_cells(gra.second);
 					edptr->removeEnemy(gra.second);
 					}
 				else

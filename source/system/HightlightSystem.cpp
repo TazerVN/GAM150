@@ -147,6 +147,11 @@ void HighlightSystem::unhighlight_cells()
 		this->atk_highlighted_cells.clear();
 	if (!mov_highlighted_cells.empty())
 		this->mov_highlighted_cells.clear();
+	
+}
+
+void HighlightSystem::clear_enemy_cells()
+{
 	if (!enemy_mov_highlighted_cells.empty())
 	{
 		for (auto itr : enemy_mov_highlighted_cells)
@@ -220,6 +225,25 @@ void HighlightSystem::unhighlight_enemy_cells(Entity target)
 				enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
 			}
 			enemy_atk_highlighted_cells.erase(target);
+		}
+	}
+	refresh_enmey_cells();
+}
+
+void HighlightSystem::refresh_enmey_cells()
+{
+	for (auto it : enemy_atk_highlighted_cells)
+	{
+		for (Components::GridCell cell : it.second)
+		{
+			enemy_atk_highlight_activate[cell.x][cell.y] = true;
+		}
+	}
+	for (auto it : enemy_mov_highlighted_cells)
+	{
+		for (Components::GridCell cell : it.second)
+		{
+			enemy_mov_highlight_activate[cell.x][cell.y] = true;
 		}
 	}
 }
