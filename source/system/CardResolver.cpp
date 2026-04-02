@@ -265,15 +265,53 @@ namespace CardResolver
 				for (const auto& t : targets)
 				{
 					Entity e = t.second;
-					if (board.moveEntityAI(e, cx, cy, 5))
+
+					s32 ex, ey;
+					if (!board.findEntityCell(e, ex, ey))
+						continue;
+
+					int bestX = ex;
+					int bestY = ey;
+					int bestDist = grid_dist_manhattan(ex, ey, cx, cy);
+					bool foundBetter = false;
+
+					// Search all empty tiles in the AOE and pick the closest one to center
+					// that is strictly closer than current position.
+					for (int x = 0; x < MAX_I; ++x)
+					{
+						for (int y = 0; y < MAX_J; ++y)
+						{
+							if (grid_dist_manhattan(x, y, cx, cy) > aoe)
+								continue;
+
+							if (board.get_pos()[x][y] != Components::NULL_INDEX)
+								continue;
+
+							int d = grid_dist_manhattan(x, y, cx, cy);
+
+							if (d < bestDist)
+							{
+								bestDist = d;
+								bestX = x;
+								bestY = y;
+								foundBetter = true;
+							}
+						}
+					}
+
+					if (!foundBetter)
+						continue;
+
+					if (board.moveEntityAI(e, bestX, bestY, 5))
 					{
 						anyMoved = true;
 						movedEnemies.push_back(e);
 
-						auto aa = ecs.getComponent<Components::Animation_Actor>(e);
-						aa->setType(Components::AnimationType::TAKING_DAMAGE);
+						// Do NOT replace ENEMY_MOVING here.
+						// If you want tremor/hit feedback, do it with VFX or a separate flag.
 					}
 				}
+
 
 				if (!movedEnemies.empty())
 				{

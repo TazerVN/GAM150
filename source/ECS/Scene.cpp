@@ -58,8 +58,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
 	if (SS.firstLevel())
 	{
-		//enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
-		enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
+		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+		//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
 	}
 	else
 	{
