@@ -10,6 +10,20 @@
 #include <cstdlib>   // std::stoi
 #include <cmath>     // std::abs
 
+//ranger helper
+
+auto blocksRangedShot = [&](Entity occupant) -> bool
+    {
+        if (occupant == Components::NULL_INDEX)
+            return false;
+
+        Components::Tag* tag = ecs.getComponent<Components::Tag>(occupant);
+        if (tag && *tag == Components::Tag::OTHERS)
+            return true;   // rock / wall / placed object blocks
+
+        return false;      // enemies do not block
+    };
+
 // remove leading white spaces
 // normalises the lines read from the script
 static std::string ltrim_copy(std::string s)
@@ -407,7 +421,8 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 
             while (cx != px || cy != py)
             {
-                if (pos[cx][cy] != Components::NULL_INDEX)
+                Entity occupant = pos[cx][cy];
+                if (blocksRangedShot(occupant))
                     return false;
 
                 cx += dx;
@@ -480,7 +495,13 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         Components::GridCell start{ ax, ay };
         Components::GridCell goal{ tx, ty };
 
-        board.moveEntityAI(actor, tx, ty, steps);
+        ;
+        if (board.moveEntityAI(actor, tx, ty, steps) == 0)
+        {
+            PUT << 2;
+            PUT.display(actor, "LOST??");
+        }
+
         return;
         //// build walkable grid for A*
         //std::vector<uint8_t> walkable(MAX_I * MAX_J, 1);
@@ -609,10 +630,10 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
             return;
         }
 
-        bool ok = board.moveEntityAI(actor, bestX, bestY, steps);
-        std::cout << "[ED] IN_RANGE move " << (ok ? "OK" : "FAIL")
-            << " -> " << bestX << "," << bestY
-            << " using " << steps << " step(s).\n";
+        if (board.moveEntityAI(actor, bestX, bestY, steps) == 0) {
+            PUT << 2;
+            PUT.display(actor, "LOST??");
+        }
         return;
     }
 
@@ -929,7 +950,8 @@ bool EnemyDirector::planATTACK(Grid::GameBoard& board,
             // collect cells along the line
             while (cx != px || cy != py)
             {
-                if (board.get_pos()[cx][cy] != Components::NULL_INDEX)
+                Entity occupant = board.get_pos()[cx][cy];
+                if (blocksRangedShot(occupant))
                 {
                     blocked = true;
                     break;
