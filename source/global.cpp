@@ -23,4 +23,6 @@ Text::PopUpText PUT;
 Particle::ParticleSystem PS;
 AudioFactory::AudioFactory AF;
 ScoringSystem SS;
+Console console;
+EventPool<CommandTypes> ConsoleEvents;
 //=======================================================================================

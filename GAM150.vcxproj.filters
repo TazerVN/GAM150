@@ -65,6 +65,7 @@
     <ClCompile Include="source\system\ScoringSystem.cpp" />
     <ClCompile Include="source\system\HightlightSystem.cpp" />
     <ClCompile Include="source\UI\MenuUI.cpp" />
+    <ClCompile Include="source\system\ConsoleComands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -133,6 +134,8 @@
     <ClInclude Include="source\system\ScoringSystem.h" />
     <ClInclude Include="source\system\HightlightSystem.h" />
     <ClInclude Include="source\UI\MenuUI.h" />
+    <ClInclude Include="source\system\ConsoleConstants.h" />
+    <ClInclude Include="source\system\ConsoleCommands.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />

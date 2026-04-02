@@ -216,16 +216,24 @@ void MenuUI::update()
 		{
 			switch (this->main.dest)
 			{
+
 				case(BaseMenu::DESTINATION::GAME):
 				{
-					auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
-					if (!this->fade.update())
+					if (!new_Start)
 					{
-						gGameStateNext = GameStates::GS_Game;
-						this->cur = CURRENT_MENU::MAIN;
-						this->main.dest = BaseMenu::DESTINATION::NONE;
-						this->transition = false;
+						//draw pop up
+					}
+					else
+					{
+						auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
+						if (!this->fade.update())
+						{
+							gGameStateNext = GameStates::GS_Game;
+							this->cur = CURRENT_MENU::MAIN;
+							this->main.dest = BaseMenu::DESTINATION::NONE;
+							this->transition = false;
 
+						}
 					}
 					break;
 				}

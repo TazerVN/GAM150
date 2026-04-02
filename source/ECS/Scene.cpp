@@ -26,7 +26,6 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
-
 	unsigned int seed;
 
 	if (parse_seed(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
@@ -136,9 +135,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		rocks.push_back(rock);
 	}
 
-
-
-
 	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem,intentDisplaySystem);
 	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
 	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem ,TF.getTextureFloor(0), 0, w_height / 3,_win);
@@ -161,12 +157,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
 		{
 			BattleGrid.placeEntity(rock, x, y);
-
-			/*Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(rock);
-			if (mesh)
-			{
-				mesh->z = 0;
-			}*/
 		}
 		else
 		{
@@ -176,25 +166,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
-
-	//Shield display - steven canu draw shield here
-	/*this->playerBarrier = EntityFactory::create_grid_object(
-		ecs,
-		mf,
-		{ 0.0f, 0.0f },
-		{ 192.0f, 192.0f },
-		"Barrier",
-		TF.getTextureOthers(5),
-		1.0f
-	);
-
-	Components::Mesh* barrierMesh = ecs.getComponent<Components::Mesh>(this->playerBarrier);
-	if (barrierMesh)
-	{
-		barrierMesh->on = false;
-	}*/
-
-	//nameTags.create_static_nametag(playerID, "Player");
 
 	//place entitities
 	for (size_t i = 0; i < entities.size(); ++i)
@@ -237,14 +208,10 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
-	if (AEInputCheckTriggered(AEVK_MINUS))
+
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered)
 	{
-		/*for (auto it : enemyDirector.get_map())
-		{
-			AEVec2 pos = { f32(ecs.getComponent<Components::gridData>(it.second)->x),
-						   f32(ecs.getComponent<Components::gridData>(it.second)->y) };
-			cbs.get_graveyard().push_back({pos,it.second});
-		}*/
+		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered = false;
 		for (Entity goon : ecs.getComponent<Components::Horde_Tag>(TBSys.get_participant()[1])->goons)
 		{
 			AEVec2 pos = { f32(ecs.getComponent<Components::gridData>(goon)->x),
@@ -253,24 +220,26 @@ void Scene::update()
 		}
 	}
 
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_HIGHLIGHT_WALKABLE)].triggered)
+	{
+		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_HIGHLIGHT_WALKABLE)].triggered = false;
+		BattleGrid.in_walkable_debug = !BattleGrid.in_walkable_debug;
+	}
+
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_HIGHLIGHT_POSITION)].triggered)
+	{
+		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_HIGHLIGHT_POSITION)].triggered = false;
+		BattleGrid.in_pos_debug = !BattleGrid.in_pos_debug;
+	}
+
 	if (AEInputCheckTriggered(AEVK_RCTRL)) // test particle
 	{
 		f32 x; f32 width = 40.f;
 		f32 y; f32 height = 40.f;
 		translate_To_Isometric(BattleGrid.GetOffsetPos(), height, x, y, BattleGrid.cur_x, BattleGrid.cur_y);
-
 		PS.particleShield(x,y + 50.f,0.2f,0.f,1.f,1.f,2.f,50);
 	}
-
-	if (AEInputCheckTriggered(AEVK_F1))
-	{
-		BattleGrid.in_walkable_debug = !BattleGrid.in_walkable_debug;
-	}
-
-	if (AEInputCheckTriggered(AEVK_F2))
-	{
-		BattleGrid.in_pos_debug = !BattleGrid.in_pos_debug;
-	}
+	
 
 	if (AEInputCheckTriggered(AEVK_BACKSLASH))
 	{
@@ -311,11 +280,11 @@ void Scene::update()
 			UIptr->getVictoryMenu().on = true;
 
 			Entity firstNode;
-			firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(1),
+			firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			Entity secondNode;
-			secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 192.0f,192.0f }, TF.getTextureOthers(2),
+			secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			unsigned int seed = static_cast<unsigned int>(time(nullptr));

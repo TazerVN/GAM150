@@ -21,6 +21,8 @@
 #include "system/particleSystem.h"
 #include "system/CardSystem.h"
 #include "system/ScoringSystem.h"
+#include "system/ConsoleCommands.h"
+#include "system/ConsoleConstants.h"
 #include "UI/Text.h"
 
 
@@ -49,3 +51,5 @@ extern Text::PopUpText PUT;
 extern Particle::ParticleSystem PS;
 extern AudioFactory::AudioFactory AF;
 extern ScoringSystem SS;
+extern Console console;
+extern EventPool<CommandTypes> ConsoleEvents;

@@ -87,7 +87,7 @@ namespace TextureFactory
 
 		//Others
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Rock.png"));
-		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Combat.png"));
+		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Portal.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Encounter.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Enemy_atk_icon.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Enemy_move_icon.png"));

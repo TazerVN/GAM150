@@ -59,9 +59,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			IM.update(ecs, CS.id());
 			GameStateUpdate();
 			//========(Render)====================
+			console.update();
+
 			PS.update(0.2);
 			TS.update(ecs);
 			RM.RM_render(ecs, CS.id());
+
 			AESysFrameEnd();
 
 			// check if forcing the application to quit
@@ -79,6 +82,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	mf.MeshFree();
 	AF.free();
+	console.free();
 	// reset the system modules
 	AESysReset();
 	AESysExit();
@@ -87,6 +91,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 void load_Sys_Comp()
 {
+	for (int itr = 0; itr < commandCount; ++itr)
+	{
+		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});
+	}
+
 	card_system.init_cards();
 	beastiary.init_data();
 	AF = AudioFactory::AudioFactory();
