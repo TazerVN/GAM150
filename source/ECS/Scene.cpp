@@ -55,149 +55,169 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	st->max_movSpd = st->ini_movSpd;
 	st->cur_movSpd = st->max_movSpd;
 
-	//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
-	if (SS.firstLevel())
+	std::vector<Entity> rocks;
+
+	if (tutorial_active)
 	{
-		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
-		//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
+		std::cout << "[Tutorial] Movement stage init\n";
+
+		// Reset player stamina
+		Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+		st->max_movSpd = 5.f;   // small for teaching
+		st->cur_movSpd = 5.f;
+
+		tutorial_stage = TutorialStage::MOVEMENT;
+		tutorial_substep = 0;
+		tutorial_goal_reached = false;
+
+		tutorial_goal_x = (MAX_I / 2) + 3;
+		tutorial_goal_y = MAX_J / 2;
+
+		std::cout << "Select player, then click this tile to move.\n";
 	}
 	else
 	{
-		hardcoded_levels.reserve(sizeof(std::string) * 3);
-		hardcoded_levels.push_back("Clutter");
-		hardcoded_levels.push_back("TEST_level");
-		hardcoded_levels.push_back("TrollAllEnemy");
-		hardcoded_levels.push_back("ONESHOTWONDER");
-		hardcoded_levels.push_back("FistFight");
 
-		int upper_bound = static_cast<int>(hardcoded_levels.size()) - 1;
-		int lower_bound = 0;
-		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
-		
-		std::string loc = "Assets/levels/";
-		std::string end = ".txt";
-		loc += hardcoded_levels[index] += end;
-
-		enemyDirector.loadScriptFile(loc);//load enemy instrucitons
-
-		hardcoded_levels.clear();
-	}
-
-	for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
-	{
-		std::string actorId = "E" + std::to_string(i);
-		std::string enemyName = "Enemy" + std::to_string(i);
-
-		AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
-
-		const int totalEnemies = enemyDirector.getSpawnCount();
-		const int rangedEnemies = enemyDirector.getRangedSpawnCount();
-
-		bool isRanged = (i >= totalEnemies - rangedEnemies);
-		const std::string beastKey = isRanged ? "Ranger" : "Melee";
-
-		Entity temp = beastiary.generate_enemy_from_beastiary(
-			beastKey,
-			spawnPos,
-			{ 192.0f,192.0f },
-			Components::AnimationType::IDLE
-		);
-
-		add_entity_to_scene(temp);
-		ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);
-		enemyDirector.bindActor(actorId, temp);
-	}
-
-	std::vector<Entity> rocks;
-
-	for (int i = 0; i < enemyDirector.getMapObjectCount(); ++i)
-	{
-		Entity rock = EntityFactory::create_grid_object(
-			ecs,
-			mf,
-			{ 0.0f, 0.0f },
-			{ 298.0f, 258.0f },
-			"Rock",
-			TF.getTextureOthers(0),
-			1.0f,
-			1
-		);
-
-		Components::Color* rockColor = ecs.getComponent<Components::Color>(rock);
-		if (rockColor)
+		//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
+		if (SS.firstLevel())
 		{
-			rockColor->c_color.r = 0.5f;
-			rockColor->c_color.g = 0.7f;
-			rockColor->c_color.b = 1.0f;
-			rockColor->d_color = rockColor->c_color;
-		}
-
-		rocks.push_back(rock);
-	}
-
-	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem,intentDisplaySystem,enemyDirector);
-	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
-	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem ,TF.getTextureFloor(0), 0, w_height / 3,_win);
-
-	for (Entity rock : rocks)
-	{
-		s32 x = 0;
-		s32 y = 0;
-
-		const int maxAttempts = 100;
-		int attempts = 0;
-
-		do
-		{
-			x = std::rand() % MAX_I;
-			y = std::rand() % MAX_J;
-			++attempts;
-		} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
-
-		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
-		{
-			BattleGrid.placeEntity(rock, x, y);
+			enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+			//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
 		}
 		else
 		{
-			std::cout << "[Scene] Failed to place rock " << rock << " on empty tile.\n";
+			hardcoded_levels.reserve(sizeof(std::string) * 3);
+			hardcoded_levels.push_back("Clutter");
+			hardcoded_levels.push_back("TEST_level");
+			hardcoded_levels.push_back("TrollAllEnemy");
+			hardcoded_levels.push_back("ONESHOTWONDER");
+			hardcoded_levels.push_back("FistFight");
+
+			int upper_bound = static_cast<int>(hardcoded_levels.size()) - 1;
+			int lower_bound = 0;
+			int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+
+			std::string loc = "Assets/levels/";
+			std::string end = ".txt";
+			loc += hardcoded_levels[index] += end;
+
+			enemyDirector.loadScriptFile(loc);//load enemy instrucitons
+
+			hardcoded_levels.clear();
 		}
 	}
 
+	cbs.init(gbs, BattleGrid, TBSys, _UI.getCardHand(), eventPool, highlightSystem, intentDisplaySystem, enemyDirector);
+	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem, TF.getTextureFloor(0), 0, w_height / 3, _win);
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
-	//place entitities
-	for (size_t i = 0; i < entities.size(); ++i)
+	if (!tutorial_active)
 	{
-		s32 x = 0;
-		s32 y = 0;
-
-		const int maxAttempts = 100;
-		int attempts = 0;
-
-		do
+		for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
 		{
-			x = std::rand() % MAX_I;
-			y = std::rand() % MAX_J;
-			++attempts;
-		} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
+			std::string actorId = "E" + std::to_string(i);
+			std::string enemyName = "Enemy" + std::to_string(i);
 
-		if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
-		{
-			BattleGrid.placeEntity(entities[i], x, y);
+			AEVec2 spawnPos = { 100.f + 100.f * i, 100.f };
 
-			Components::Tag* tag = ecs.getComponent<Components::Tag>(entities[i]);
-			Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(entities[i]);
+			const int totalEnemies = enemyDirector.getSpawnCount();
+			const int rangedEnemies = enemyDirector.getRangedSpawnCount();
 
-			//if (tag && mesh && *tag == Components::Tag::OTHERS)
-			//{
-			//	mesh->z = 0; // keep rocks under most other visuals
-			//}
+			bool isRanged = (i >= totalEnemies - rangedEnemies);
+			const std::string beastKey = isRanged ? "Ranger" : "Melee";
+
+			Entity temp = beastiary.generate_enemy_from_beastiary(
+				beastKey,
+				spawnPos,
+				{ 192.0f,192.0f },
+				Components::AnimationType::IDLE
+			);
+
+			add_entity_to_scene(temp);
+			ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(temp);
+			enemyDirector.bindActor(actorId, temp);
 		}
-		else
+
+		for (int i = 0; i < enemyDirector.getMapObjectCount(); ++i)
 		{
-			std::cout << "[Scene] Failed to place entity " << entities[i] << " on empty tile.\n";
+			Entity rock = EntityFactory::create_grid_object(
+				ecs,
+				mf,
+				{ 0.0f, 0.0f },
+				{ 298.0f, 258.0f },
+				"Rock",
+				TF.getTextureOthers(0),
+				1.0f,
+				1
+			);
+
+			Components::Color* rockColor = ecs.getComponent<Components::Color>(rock);
+			if (rockColor)
+			{
+				rockColor->c_color.r = 0.5f;
+				rockColor->c_color.g = 0.7f;
+				rockColor->c_color.b = 1.0f;
+				rockColor->d_color = rockColor->c_color;
+			}
+
+			rocks.push_back(rock);
+		}
+	}
+
+
+	if (tutorial_active)
+	{
+		// ===== TUTORIAL PLACEMENT =====
+		s32 centerX = MAX_I / 2;
+		s32 centerY = MAX_J / 2;
+
+		BattleGrid.placeEntity(playerID, centerX, centerY);
+	}
+	else
+	{
+		// ===== NORMAL ENTITY PLACEMENT =====
+		for (size_t i = 0; i < entities.size(); ++i)
+		{
+			s32 x = 0;
+			s32 y = 0;
+
+			const int maxAttempts = 100;
+			int attempts = 0;
+
+			do
+			{
+				x = std::rand() % MAX_I;
+				y = std::rand() % MAX_J;
+				++attempts;
+			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
+
+			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+			{
+				BattleGrid.placeEntity(entities[i], x, y);
+			}
+		}
+
+		for (Entity rock : rocks)
+		{
+			s32 x = 0;
+			s32 y = 0;
+
+			const int maxAttempts = 100;
+			int attempts = 0;
+
+			do
+			{
+				x = std::rand() % MAX_I;
+				y = std::rand() % MAX_J;
+				++attempts;
+			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
+
+			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+			{
+				BattleGrid.placeEntity(rock, x, y);
+			}
 		}
 	}
 
@@ -208,6 +228,10 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
+	if (tutorial_active)
+	{
+		update_tutorial();
+	}
 
 	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered || AEInputCheckTriggered(AEVK_MINUS))
 	{
@@ -267,40 +291,47 @@ void Scene::update()
 		enemyDirector.print_current_instruction();
 	}
 	//nameTags.update();
-	if (TBSys.active())
+	if (!tutorial_active && TBSys.active())
 	{
-		if (TBSys.update())
-		{
-			std::cout << "WIN!!!!" << '\n';
-			TBSys.active() = false;
-			_win = true;
-
-			ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100.f;
-			ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
-			UIptr->getVictoryMenu().on = true;
-
-			Entity firstNode;
-			firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
-				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
-
-			Entity secondNode;
-			secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
-				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
-
-			unsigned int seed = static_cast<unsigned int>(time(nullptr));
-			if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
+		
+			if (TBSys.update())
 			{
-				std::cout << " put data fail";
+				std::cout << "WIN!!!!" << '\n';
+				TBSys.active() = false;
+				_win = true;
+
+				ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100.f;
+				ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
+				UIptr->getVictoryMenu().on = true;
+
+				Entity firstNode;
+				firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
+					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
+
+				Entity secondNode;
+				secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
+					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
+
+				unsigned int seed = static_cast<unsigned int>(time(nullptr));
+				if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
+				{
+					std::cout << " put data fail";
+				}
+
+				BattleGrid.placeEntity(firstNode, 0, 0);
+				BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
+
+				SS.incrementLevelCleared();
 			}
-
-			BattleGrid.placeEntity(firstNode, 0, 0);
-			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
-
-			SS.incrementLevelCleared();
-		}
+		
 	}
+	
+	if (!tutorial_active)
+	{
+		enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
+	}
+
 	cbs.update();
-	enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
 	intentDisplaySystem.update(*this);
 	iNodes.update();
 	//==================Handle Events===============================
@@ -337,6 +368,85 @@ void Scene::scene_free()
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
 }
+
+void Scene::advance_tutorial_stage(TutorialStage nextStage)
+{
+	tutorial_stage = nextStage;
+	tutorial_substep = 0;
+	tutorial_goal_reached = false;
+	tutorial_goal_x = 0;
+	tutorial_goal_y = 0;
+}
+
+void Scene::update_tutorial()
+{
+	switch (tutorial_stage)
+	{
+	case TutorialStage::MOVEMENT:
+		update_tutorial_movement();
+		break;
+
+	case TutorialStage::ATTACK_CARD:
+		// later
+		break;
+
+	case TutorialStage::DEFENSE_CARD:
+		// later
+		break;
+
+	case TutorialStage::ITEM_CARD:
+		// later
+		break;
+
+	case TutorialStage::EVENT_CARD:
+		// later
+		break;
+
+	case TutorialStage::WIN_TRANSITION:
+		// later
+		break;
+
+	case TutorialStage::DONE:
+		break;
+	}
+}
+
+void Scene::update_tutorial_movement()
+{
+	Components::gridData* gd = ecs.getComponent<Components::gridData>(playerID);
+	if (!gd)
+		return;
+
+	switch (tutorial_substep)
+	{
+	case 0:
+	{
+		// Show this in UI later:
+		// "Select player, then click this tile to move."
+
+		if (!tutorial_goal_reached &&
+			gd->x == tutorial_goal_x &&
+			gd->y == tutorial_goal_y)
+		{
+			tutorial_goal_reached = true;
+			tutorial_substep = 1;
+			std::cout << "Stamina bar determines how far you can move. Press Space to continue.\n";
+		}
+		break;
+	}
+
+	case 1:
+	{
+		if (AEInputCheckTriggered(AEVK_SPACE))
+		{
+			std::cout << "[Tutorial] Movement stage complete.\n";
+			advance_tutorial_stage(TutorialStage::ATTACK_CARD);
+		}
+		break;
+	}
+	}
+}
+
 
 PhaseSystem::GameBoardState& Scene::getGBS(){
 	return gbs;

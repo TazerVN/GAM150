@@ -533,9 +533,35 @@ namespace Grid
 
 				if (hlptr->aoe_highlight_activate[i][j])
 				{
-					color->d_color.r -= (hlptr->aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4f;
-					color->d_color.g -= 0.8f;
-					color->d_color.b -= 0.8f;
+					if (isGust)
+					{
+						int gustLevel = hlptr->aoe_highlight_activate[i][j];
+
+						if (gustLevel == 1) // shaft
+						{
+							color->d_color.r = 0.35f;
+							color->d_color.g = 0.75f;
+							color->d_color.b = 0.95f;
+						}
+						else if (gustLevel == 2) // arrow head
+						{
+							color->d_color.r = 0.70f;
+							color->d_color.g = 0.90f;
+							color->d_color.b = 1.00f;
+						}
+						else if (gustLevel >= 3) // tip
+						{
+							color->d_color.r = 1.00f;
+							color->d_color.g = 1.00f;
+							color->d_color.b = 1.00f;
+						}
+					}
+					else
+					{
+						color->d_color.r -= (hlptr->aoe_highlight_activate[i][j] == 2) ? 0.6f : 0.4f;
+						color->d_color.g -= 0.8f;
+						color->d_color.b -= 0.8f;
+					}
 				}
 
 				if (hlptr->move_trail_highlight_activate[i][j])
@@ -793,48 +819,175 @@ namespace Grid
 
 		if (isGust)
 		{
-			int gustRange = 25;
-
-			for (int i = 0; i <= gustRange; ++i)
-			{
-				for (int j = 0; j <= gustRange; ++j)
+			auto mark_gust = [&](int gx, int gy, int value)
 				{
-					if (i + j <= gustRange && x + i < MAX_I && y + j < MAX_J)
+					if (gx < 0 || gx >= MAX_I || gy < 0 || gy >= MAX_J)
+						return;
+
+					if (!hlptr->aoe_highlight_activate[gx][gy])
 					{
-						if (!hlptr->aoe_highlight_activate[x + i][y + j])
-						{
-							hlptr->aoe_highlighted_cells.push_back({ x + i, y + j });
-							hlptr->aoe_highlight_activate[x + i][y + j] = 1;
-						}
+						hlptr->aoe_highlighted_cells.push_back({ gx, gy });
 					}
-					if (i + j <= gustRange && x - i >= 0 && y - j >= 0)
+
+					if (hlptr->aoe_highlight_activate[gx][gy] < value)
 					{
-						if (!hlptr->aoe_highlight_activate[x - i][y - j])
-						{
-							hlptr->aoe_highlighted_cells.push_back({ x - i, y - j });
-							hlptr->aoe_highlight_activate[x - i][y - j] = 1;
-						}
+						hlptr->aoe_highlight_activate[gx][gy] = value;
 					}
-					if (i + j <= gustRange && x + i < MAX_I && y - j >= 0)
+				};
+
+			int cx = MAX_I / 2;
+			int cy = MAX_J / 2;
+
+			switch (placementDirection)
+			{
+			case 0: // EAST
+			{
+				int shaftEnd = MAX_I - 5;
+
+				// shaft
+				for (int gx = 0; gx < shaftEnd; ++gx)
+				{
+					for (int gy = cy - 1; gy <= cy + 1; ++gy)
 					{
-						if (!hlptr->aoe_highlight_activate[x + i][y - j])
-						{
-							hlptr->aoe_highlighted_cells.push_back({ x + i, y - j });
-							hlptr->aoe_highlight_activate[x + i][y - j] = 1;
-						}
-					}
-					if (i + j <= gustRange && x - i >= 0 && y + j < MAX_J)
-					{
-						if (!hlptr->aoe_highlight_activate[x - i][y + j])
-						{
-							hlptr->aoe_highlighted_cells.push_back({ x - i,y + j });
-							hlptr->aoe_highlight_activate[x - i][y + j] = 1;
-						}
+						mark_gust(gx, gy, 1);
 					}
 				}
+
+				// head base
+				for (int gy = cy - 1; gy <= cy + 1; ++gy)
+				{
+					mark_gust(shaftEnd, gy, 2);
+				}
+
+				// head flare
+				for (int gy = cy - 2; gy <= cy + 2; ++gy)
+				{
+					mark_gust(shaftEnd + 1, gy, 2);
+				}
+
+				// narrowing
+				for (int gy = cy - 1; gy <= cy + 1; ++gy)
+				{
+					mark_gust(shaftEnd + 2, gy, 2);
+				}
+
+				// tip
+				mark_gust(shaftEnd + 3, cy, 3);
+				break;
 			}
 
-			hlptr->aoe_highlight_activate[x][y] = 2;
+			case 1: // SOUTH
+			{
+				int shaftEnd = MAX_J - 5;
+
+				// shaft
+				for (int gy = 0; gy < shaftEnd; ++gy)
+				{
+					for (int gx = cx - 1; gx <= cx + 1; ++gx)
+					{
+						mark_gust(gx, gy, 1);
+					}
+				}
+
+				// head base
+				for (int gx = cx - 1; gx <= cx + 1; ++gx)
+				{
+					mark_gust(gx, shaftEnd, 2);
+				}
+
+				// head flare
+				for (int gx = cx - 2; gx <= cx + 2; ++gx)
+				{
+					mark_gust(gx, shaftEnd + 1, 2);
+				}
+
+				// narrowing
+				for (int gx = cx - 1; gx <= cx + 1; ++gx)
+				{
+					mark_gust(gx, shaftEnd + 2, 2);
+				}
+
+				// tip
+				mark_gust(cx, shaftEnd + 3, 3);
+				break;
+			}
+
+			case 2: // WEST
+			{
+				int shaftStart = 4;
+
+				// shaft
+				for (int gx = shaftStart; gx < MAX_I; ++gx)
+				{
+					for (int gy = cy - 1; gy <= cy + 1; ++gy)
+					{
+						mark_gust(gx, gy, 1);
+					}
+				}
+
+				// head base
+				for (int gy = cy - 1; gy <= cy + 1; ++gy)
+				{
+					mark_gust(shaftStart - 1, gy, 2);
+				}
+
+				// head flare
+				for (int gy = cy - 2; gy <= cy + 2; ++gy)
+				{
+					mark_gust(shaftStart - 2, gy, 2);
+				}
+
+				// narrowing
+				for (int gy = cy - 1; gy <= cy + 1; ++gy)
+				{
+					mark_gust(shaftStart - 3, gy, 2);
+				}
+
+				// tip
+				mark_gust(shaftStart - 4, cy, 3);
+				break;
+			}
+
+			case 3: // NORTH
+			{
+				int shaftStart = 4;
+
+				// shaft
+				for (int gy = shaftStart; gy < MAX_J; ++gy)
+				{
+					for (int gx = cx - 1; gx <= cx + 1; ++gx)
+					{
+						mark_gust(gx, gy, 1);
+					}
+				}
+
+				// head base
+				for (int gx = cx - 1; gx <= cx + 1; ++gx)
+				{
+					mark_gust(gx, shaftStart - 1, 2);
+				}
+
+				// head flare
+				for (int gx = cx - 2; gx <= cx + 2; ++gx)
+				{
+					mark_gust(gx, shaftStart - 2, 2);
+				}
+
+				// narrowing
+				for (int gx = cx - 1; gx <= cx + 1; ++gx)
+				{
+					mark_gust(gx, shaftStart - 3, 2);
+				}
+
+				// tip
+				mark_gust(cx, shaftStart - 4, 3);
+				break;
+			}
+
+			default:
+				break;
+			}
+
 			return;
 		}
 		

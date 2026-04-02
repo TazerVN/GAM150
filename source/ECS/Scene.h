@@ -49,6 +49,30 @@ private:
 	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
 	bool _win = false;
 
+	enum class TutorialStage
+	{
+		MOVEMENT = 0,
+		ATTACK_CARD,
+		DEFENSE_CARD,
+		ITEM_CARD,
+		EVENT_CARD,
+		WIN_TRANSITION,
+		DONE
+	};
+
+	bool tutorial_active = false;	// Tuan, tutorial toggle bool -Zejin
+	TutorialStage tutorial_stage = TutorialStage::MOVEMENT;
+	int tutorial_substep = 0;		//progression
+
+	s32 tutorial_goal_x = 0;
+	s32 tutorial_goal_y = 0;
+	bool tutorial_goal_reached = false;
+
+	//helpers for tutorial progression
+	void update_tutorial();
+	void update_tutorial_movement();
+	void advance_tutorial_stage(TutorialStage nextStage);
+
 public:
 	void init(Camera::CameraSystem&, UI::UIManager&);
 	void update();

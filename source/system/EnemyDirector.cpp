@@ -391,6 +391,31 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         return std::abs(x1 - x2) + std::abs(y1 - y2);
         };
 
+    auto hasClearShotToPlayer = [&](int fromX, int fromY) -> bool
+        {
+            bool sameRow = (fromY == py);
+            bool sameCol = (fromX == px);
+
+            if (!sameRow && !sameCol)
+                return false;
+
+            int dx = (px > fromX) ? 1 : (px < fromX ? -1 : 0);
+            int dy = (py > fromY) ? 1 : (py < fromY ? -1 : 0);
+
+            int cx = fromX + dx;
+            int cy = fromY + dy;
+
+            while (cx != px || cy != py)
+            {
+                if (pos[cx][cy] != Components::NULL_INDEX)
+                    return false;
+
+                cx += dx;
+                cy += dy;
+            }
+
+            return true;
+        };
     //
     auto pickAdjacentToPlayer = [&]() -> std::pair<int, int>
         {
@@ -411,7 +436,23 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 
     if (t[2] == "FRONT")
     {
-        int steps = std::stoi(t[3]);
+        int steps = 5; // default fallback
+
+        if (t.size() >= 4)
+        {
+            try
+            {
+                steps = std::stoi(t[3]);
+
+                if (steps <= 0)
+                    steps = 1; // safety clamp
+            }
+            catch (...)
+            {
+                std::cout << "[ED] FRONT invalid steps, using default.\n";
+                steps = 5;
+            }
+        }
 
         // refresh positions
         if (!board.findEntityCell(actor, ax, ay)) return;
@@ -515,10 +556,12 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
         bool sameRow = (ay == py);
         bool sameCol = (ax == px);
 
-        // only stay if already aligned AND close enough
-        if ((sameRow || sameCol) && curDist >= minDist && curDist <= preferredDist)
+        // only stay if already aligned, close enough, AND has clear shot
+        if ((sameRow || sameCol) &&
+            curDist >= minDist && curDist <= preferredDist &&
+            hasClearShotToPlayer(ax, ay))
         {
-            std::cout << "[ED] IN_RANGE already aligned and in desired range.\n";
+            std::cout << "[ED] IN_RANGE already aligned and in desired range with clear shot.\n";
             return;
         }
 
@@ -540,6 +583,9 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 
                 // only accept tiles that are 2 or 3 away from player
                 if (distToPlayer < minDist || distToPlayer > preferredDist)
+                    continue;
+
+                if (!hasClearShotToPlayer(x, y))
                     continue;
 
                 int distFromActor = manhattan(ax, ay, x, y);
@@ -829,12 +875,24 @@ bool EnemyDirector::planATTACK(Grid::GameBoard& board,
         return false;
     }
 
-    int damage = 0;
-    try { damage = std::stoi(t[2]); }
-    catch (...)
+    int damage = 10; // default
+
+    if (t.size() >= 3)
     {
-        std::cout << "[ED] PLAN ATTACK invalid damage: " << t[2] << "\n";
-        return false;
+        try
+        {
+            damage = std::stoi(t[2]);
+            if (damage <= 0) damage = 1;
+        }
+        catch (...)
+        {
+            std::cout << "[ED] ATTACK invalid damage, using default.\n";
+            damage = 10;
+        }
+    }
+    else
+    {
+        std::cout << "[ED] ATTACK missing damage, using default.\n";
     }
 
     auto manhattan = [](int x1, int y1, int x2, int y2)
