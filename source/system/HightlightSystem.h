@@ -20,6 +20,7 @@ public:
 	void unhighlight_cells();
 	void unhighlight_atk_cells();
 	void unhighlight_mov_cells();
+	void highlight_enemy_cells(Entity target);
 	void unhighlight_enemy_cells(Entity target);
 
 	void clear_enemy_cells();

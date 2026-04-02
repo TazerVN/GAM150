@@ -136,6 +136,25 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 	//=========================================================================
 }
 
+void HighlightSystem::highlight_enemy_cells(Entity target)
+{
+	if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
+	{
+		for (Components::GridCell& cell : enemy_mov_highlighted_cells.at(target))
+		{
+			enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = true;
+		}
+	}
+
+	if (enemy_atk_highlighted_cells.find(target) != enemy_atk_highlighted_cells.end())
+	{
+		for (Components::GridCell& cell : enemy_atk_highlighted_cells.at(target))
+		{
+			enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = true;
+		}
+	}
+}
+
 void HighlightSystem::unhighlight_cells()
 {
 	for (AEVec2 a : cbsptr->get_selected_cell())
@@ -205,29 +224,21 @@ void HighlightSystem::unhighlight_mov_cells()
 
 void HighlightSystem::unhighlight_enemy_cells(Entity target)
 {
-	if (!enemy_mov_highlighted_cells.empty())
+	if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
 	{
-		if (enemy_mov_highlighted_cells.find(target) != enemy_mov_highlighted_cells.end())
+		for (Components::GridCell& cell : enemy_mov_highlighted_cells.at(target))
 		{
-			for (Components::GridCell& cell : enemy_mov_highlighted_cells.at(target))
-			{
-				enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
-			}
-			enemy_mov_highlighted_cells.erase(target);
+			enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
 		}
 	}
-	if (!enemy_atk_highlighted_cells.empty())
+
+	if (enemy_atk_highlighted_cells.find(target) != enemy_atk_highlighted_cells.end())
 	{
-		if (enemy_atk_highlighted_cells.find(target) != enemy_atk_highlighted_cells.end())
+		for (Components::GridCell& cell : enemy_atk_highlighted_cells.at(target))
 		{
-			for (Components::GridCell& cell : enemy_atk_highlighted_cells.at(target))
-			{
-				enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
-			}
-			enemy_atk_highlighted_cells.erase(target);
+			enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
 		}
 	}
-	refresh_enmey_cells();
 }
 
 void HighlightSystem::refresh_enmey_cells()

@@ -97,6 +97,8 @@ void IntentionDisplaySystem::update(Scene& scene)
             std::string intent = timeline_[index][1];
             if (intent == "ATTACK")
             {
+                hlptr->enemy_atk_highlighted_cells[ent].clear();
+
                 for (auto it : intentionDisplay_list)
                 {
                     if (ent == it.first)
@@ -140,22 +142,22 @@ void IntentionDisplaySystem::update(Scene& scene)
                                 {
                                     if (cell.x + itr < MAX_I)
                                     {
-                                        hlptr->enemy_atk_highlight_activate[cell.x + itr][cell.y] = true;
+                                        //hlptr->enemy_atk_highlight_activate[cell.x + itr][cell.y] = true;
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x + itr,cell.y });
                                     }
                                     if (cell.x - itr >= 0)
                                     {
-                                        hlptr->enemy_atk_highlight_activate[cell.x - itr][cell.y] = true;
+                                        //hlptr->enemy_atk_highlight_activate[cell.x - itr][cell.y] = true;
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x - itr,cell.y });
                                     }
                                     if (cell.y + itr < MAX_J)
                                     {
-                                        hlptr->enemy_atk_highlight_activate[cell.x][cell.y + itr] = true;
+                                        //hlptr->enemy_atk_highlight_activate[cell.x][cell.y + itr] = true;
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y + itr });
                                     }
                                     if (cell.y - itr >= 0)
                                     {
-                                        hlptr->enemy_atk_highlight_activate[cell.x][cell.y - itr] = true;
+                                        //hlptr->enemy_atk_highlight_activate[cell.x][cell.y - itr] = true;
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y - itr });
                                     }
                                 }
@@ -166,8 +168,7 @@ void IntentionDisplaySystem::update(Scene& scene)
                                     {
                                         if (x < 0 || x >= MAX_I || y < 0 || y >= MAX_J)
                                             return;
-                                        bool& cell = this->hlptr->enemy_atk_highlight_activate[x][y];
-                                        cell = true;
+
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ x, y });
                                     };
 
@@ -187,6 +188,7 @@ void IntentionDisplaySystem::update(Scene& scene)
             }
             else if (intent == "MOVE")
             {
+
                 if (timeline_.empty())
                 {
                     std::cout << "Intention insert failed !" << '\n';
@@ -216,6 +218,8 @@ void IntentionDisplaySystem::update(Scene& scene)
                 {
                     enemyRange.at(ent) = range;
                 }
+
+                hlptr->enemy_atk_highlighted_cells[ent].clear();
 
                 for (auto it : intentionDisplay_list)
                 {
@@ -247,7 +251,7 @@ void IntentionDisplaySystem::update(Scene& scene)
 
                                 if (!astar.path.empty() && (int)astar.path.size() - 1 <= range)
                                 {
-                                    hlptr->enemy_mov_highlight_activate[tx][ty] = true;
+                                    //hlptr->enemy_mov_highlight_activate[tx][ty] = true;
                                     hlptr->enemy_mov_highlighted_cells[ent].push_back({ tx,ty });
                                 }
                             }

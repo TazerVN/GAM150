@@ -467,7 +467,7 @@ namespace CardInteraction
 		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
 
 		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-		mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+		mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
 
 	
 		t1->pos_onscreen.x = f32(mousex);
