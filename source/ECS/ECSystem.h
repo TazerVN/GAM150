@@ -95,6 +95,7 @@ namespace EntityComponent
 	class Registry
 	{
 		private:
+			//starting entity ID starts at 1 so that 0 can be used as null
 		Entity nextEntity = 0;
 		std::vector<ComponentBitMask> entitySignatures;
 		std::unordered_map<ComponentTypeID, std::unique_ptr<IComponentStorage>> componentStorage;
@@ -158,6 +159,7 @@ namespace EntityComponent
 		void destroyEntity(Entity e)
 		{
 			// must remove first before removing component
+			if (e <= 0) return;
 			remove_from_group(e);
 			//i represent ComponentTypeID
 			for (size_t i = 0; i < entitySignatures[e].size(); ++i)

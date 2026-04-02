@@ -30,7 +30,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysSetWindowTitle("Yes!");
 	AESysSetWindowTitle("Beyond the Nexus! You should checkout Zombat");
 
-	/*SetGameState(game_init,game_update,game_free);*/
+	#ifdef _DEBUG
+		AllocConsole();
+		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+		freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
+		std::cout.clear();
+	#endif
 
 	load_Sys_Comp();
 
@@ -91,6 +96,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 void load_Sys_Comp()
 {
+	//NULL ENTITY INDEX;
+	Entity null = ecs.createEntity();
+
 	for (int itr = 0; itr < commandCount; ++itr)
 	{
 		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});

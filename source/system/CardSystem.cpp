@@ -180,7 +180,8 @@ Entity CardSystem::generate_card_from_bible(std::string key)
 
 	Entity bibleID = cards_map[key];
 
-	Components::Name nm{ ecs.getComponent<Components::Name>(bibleID)->value};
+	Components::Name* ptr = ecs.getComponent<Components::Name>(bibleID);
+	Components::Name nm{ ptr->value};
 	CardTag cardTag = *(ecs.getComponent<CardTag>(bibleID));
 	Components::Card_Value card_val{ ecs.getComponent<Components::Card_Value>(bibleID)->value,
 									 ecs.getComponent<Components::Card_Value>(bibleID)->type };

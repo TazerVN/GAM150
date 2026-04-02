@@ -12,7 +12,6 @@ void LevelStateCombat_load()
 {
 	if (new_Start)
 	{
-		
 		new_Start = false;
 
 		if(playerID == -1)
@@ -110,8 +109,8 @@ void LevelStateCombat_free()
 	PS.particle_system_free();
 	PUT.free();
 	AF.bgm.stop();
-	ecs.remove_empty_groups();
 }
 void LevelStateCombat_unload()
 {
+	ecs.remove_empty_groups();
 }

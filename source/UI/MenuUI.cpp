@@ -50,6 +50,11 @@ void BaseMenu::to_main()
 	this->dest = DESTINATION::MAIN;
 }
 
+void BaseMenu::to_continue()
+{
+	this->dest = DESTINATION::CONTINUE;
+}
+
 void MainMenu::init()
 {
 	f32 start_y = -300.f;
@@ -93,6 +98,11 @@ void MenuUI::free()
 			this->main.free();
 			break;
 		}
+		case(CURRENT_MENU::CONTINUE_LAST_RUN) :
+		{
+			this->continueLastRun.free();
+			break;
+		}
 		case (MenuUI::CURRENT_MENU::SETTING):
 		{
 			this->setting.free();
@@ -124,12 +134,25 @@ void MenuUI::init()
 			auto play = ecs.getComponent<Components::Input>(this->main.play.button);
 			play->onClick = [this]
 				{
-					if (!this->transition)
+					if (!new_Start)
 					{
-						this->fade.free();
-						this->fade = UIO::ScreenTransition{ false, 1.f };
-						this->main.to_game();
-						this->transition = true;
+						if (!this->transition)
+						{
+							this->fade.free();
+							this->fade = UIO::ScreenTransition{ false, 1.f };
+							this->main.to_continue();
+							this->transition = true;
+						}
+					}
+					else
+					{
+						if (!this->transition)
+						{
+							this->fade.free();
+							this->fade = UIO::ScreenTransition{ false, 1.f };
+							this->main.to_game();
+							this->transition = true;
+						}
 					}
 				};
 			auto setting = ecs.getComponent<Components::Input>(this->main.setting.button);
@@ -164,6 +187,39 @@ void MenuUI::init()
 				};
 			break;
 		}
+		
+		case(CURRENT_MENU::CONTINUE_LAST_RUN) :
+		{
+			this->continueLastRun.init();
+			this->continueLastRun.dest = BaseMenu::DESTINATION::NONE;
+
+			auto yes = ecs.getComponent<Components::Input>(this->continueLastRun.yes.button);
+			yes->onClick = [this]()
+				{
+					if (!this->transition)
+					{
+						this->fade.free();
+						this->fade = UIO::ScreenTransition{ false, 1.f };
+						this->setting.to_main();
+						this->transition = true;
+					}
+				};
+
+			auto no = ecs.getComponent<Components::Input>(this->continueLastRun.no.button);
+			no->onClick = [this]()
+				{
+					if (!this->transition)
+					{
+						this->fade.free();
+						this->fade = UIO::ScreenTransition{ false, 1.f };
+						this->setting.to_main();
+						this->transition = true;
+					}
+				};
+
+			break;
+		}
+
 		case (MenuUI::CURRENT_MENU::SETTING):
 		{
 			this->setting.init();
@@ -219,21 +275,28 @@ void MenuUI::update()
 
 				case(BaseMenu::DESTINATION::GAME):
 				{
-					if (!new_Start)
+					auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
+					if (!this->fade.update())
 					{
-						//draw pop up
+						gGameStateNext = GameStates::GS_Game;
+						this->cur = CURRENT_MENU::MAIN;
+						this->main.dest = BaseMenu::DESTINATION::NONE;
+						this->transition = false;
 					}
-					else
-					{
-						auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
-						if (!this->fade.update())
-						{
-							gGameStateNext = GameStates::GS_Game;
-							this->cur = CURRENT_MENU::MAIN;
-							this->main.dest = BaseMenu::DESTINATION::NONE;
-							this->transition = false;
+					break;
+				}
 
-						}
+				case(BaseMenu::DESTINATION::CONTINUE):
+				{
+					auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
+					if (!this->fade.update())
+					{
+						this->free();
+						this->cur = CURRENT_MENU::CONTINUE_LAST_RUN;
+						this->main.dest = BaseMenu::DESTINATION::NONE;
+						this->init();
+						this->transition = false;
+
 					}
 					break;
 				}
@@ -404,5 +467,19 @@ void CreditMenu::init()
 void CreditMenu::free()
 {
 	exit.free();
+}
+
+void ContinueLastRun::init()
+{
+	f32 size_x = 1.3f;
+	f32 size_y = 1.5f;
+
+	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "Yes", nullptr, 0xFFFFFFFF };
+	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "No", nullptr, 0xFFFFFFFF };
+}
+void ContinueLastRun::free()
+{
+	yes.free();
+	no.free();
 }
 

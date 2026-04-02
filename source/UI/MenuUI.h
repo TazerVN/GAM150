@@ -7,10 +7,11 @@ class BaseMenu
 
 	enum class DESTINATION
 	{
-		GAME, SETTING, CREDIT, MAIN, NONE
+		GAME, CONTINUE ,SETTING, CREDIT, MAIN, NONE
 	};
 	DESTINATION dest;
 	void to_main();
+	void to_continue();
 	void to_game();
 	void to_setting();
 	void to_credit();
@@ -54,13 +55,22 @@ class SettingMenu : public BaseMenu
 	void free();
 };
 
+class ContinueLastRun : public BaseMenu
+{
+public:
+	UIO::TextureButton yes;
+	UIO::TextureButton no;
+	void init();
+	void free();
+};
+
 class MenuUI
 {
 	public:
 
 	enum class CURRENT_MENU : char 
 	{
-		MAIN, SETTING, CREDIT
+		MAIN, CONTINUE_LAST_RUN , SETTING, CREDIT
 	};
 
 	UIO::ScreenTransition fade;
@@ -69,6 +79,7 @@ class MenuUI
 	bool transition;
 
 	MainMenu main;
+	ContinueLastRun continueLastRun;
 	SettingMenu setting;
 	CreditMenu credit;
 	MenuUI();
