@@ -93,6 +93,8 @@ public:
         const Tokens& t);
     bool isRangedActor(const std::string& actorId) const;
 
+    void removeEnemy(Entity id);
+
     const std::vector<std::pair<int, int>>& getPendingCells() const;
     const std::vector<Tokens>& get_timeline() const;
     std::unordered_map<std::string, Entity>& get_map(); // "E0" -> entity

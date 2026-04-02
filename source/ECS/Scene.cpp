@@ -59,7 +59,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	if (SS.firstLevel())
 	{
 		//enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
-		enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
+		enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
 	}
 	else
 	{
@@ -135,7 +135,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		rocks.push_back(rock);
 	}
 
-	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem,intentDisplaySystem);
+	cbs.init(gbs, BattleGrid ,TBSys, _UI.getCardHand(), eventPool,highlightSystem,intentDisplaySystem,enemyDirector);
 	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
 	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem ,TF.getTextureFloor(0), 0, w_height / 3,_win);
 

@@ -11,6 +11,7 @@ namespace CardInteraction { class CardHand; }
 namespace Grid { class GameBoard; };
 class IntentionDisplaySystem;
 class HighlightSystem;
+class EnemyDirector;
 
 namespace CombatNameSpace
 {
@@ -25,6 +26,7 @@ namespace CombatNameSpace
 		EventPool<highlight_tag>* evsptr = nullptr;
 		HighlightSystem* hlptr = nullptr;
 		IntentionDisplaySystem* intentptr = nullptr;
+		EnemyDirector* edptr = nullptr;
 
 		Entity targetted_entity = -1;
 		int targetted_x{ -1 }, targetted_y{ -1 };
@@ -38,7 +40,7 @@ namespace CombatNameSpace
 	public:
 		void init(PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb ,TBS::TurnBasedSystem& tbs,
 				  CardInteraction::CardHand& cardhand,EventPool<highlight_tag>& eventSystem, 
-				  HighlightSystem& hl, IntentionDisplaySystem& intnent);
+				  HighlightSystem& hl, IntentionDisplaySystem& intnent, EnemyDirector& enemyDirector);
 
 		int total_attack_cards_played = 0;
 		int total_def_cards_played = 0;

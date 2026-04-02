@@ -301,6 +301,17 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     ++timelineIp_;
 }
 
+void EnemyDirector::removeEnemy(Entity id)
+{
+    if (this->entityToId_.find(id) != this->entityToId_.end())
+    {
+        std::string EID = entityToId_[id];
+        entityToId_.erase(id);
+        if (this->idToEntity_.find(EID) != this->idToEntity_.end())
+            idToEntity_.erase(EID);
+    }
+}
+
 const std::vector<std::pair<int, int>>& EnemyDirector::getPendingCells() const
 {
     return pendingAttack_.cells;
@@ -315,6 +326,8 @@ std::unordered_map<std::string, Entity>& EnemyDirector::get_map()
 {
     return idToEntity_;
 }
+
+
 
 void EnemyDirector::print_current_instruction() const
 {

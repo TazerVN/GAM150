@@ -12,6 +12,7 @@
 #include <utility>
 #include "../global.h"
 #include "UI/IntentionDisplay.h"
+#include "system/EnemyDirector.h"
 
 //==================Helpers=================
 std::vector<AEVec2>& CombatNameSpace::CombatSystem::get_selected_cell()
@@ -66,7 +67,7 @@ bool is_valid_grid_pos(int x, int y)
 //-============END OF HELPERS=============
 void CombatNameSpace::CombatSystem::init(PhaseSystem::GameBoardState& gbs, Grid::GameBoard& gb, TBS::TurnBasedSystem& tbs,
 										CardInteraction::CardHand& cardhand, EventPool<highlight_tag>& eventSystem,
-										HighlightSystem& hl,IntentionDisplaySystem& intent)
+										HighlightSystem& hl,IntentionDisplaySystem& intent, EnemyDirector& enemyDirector)
 {
 	gbsptr = &gbs;
 	gbptr = &gb;
@@ -77,6 +78,7 @@ void CombatNameSpace::CombatSystem::init(PhaseSystem::GameBoardState& gbs, Grid:
 	tfptr = &TF;
 	hlptr = &hl;
 	intentptr = &intent;
+	edptr = &enemyDirector;
 
 	this->total_attack_cards_played = 0;
 	this->total_def_cards_played = 0;
@@ -359,6 +361,7 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 					graveyard[graveyard.size() - 1] = gra;
 					graveyard[i] = temp;
 					graveyard.pop_back();
+					edptr->removeEnemy(gra.second);
 					}
 				else
 				{
@@ -813,6 +816,7 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 	evsptr = nullptr;
 	hlptr = nullptr;
 	intentptr = nullptr;
+	edptr = nullptr;
 
 	targetted_entity = -1;
 	targetted_x = -1; targetted_y= -1;
