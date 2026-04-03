@@ -16,4 +16,6 @@ namespace Animation
 		void init(EntityComponent::Registry& ecs);
 		void update(EntityComponent::Registry& ecs, Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs,CombatNameSpace::CombatSystem& cs);
 	};
+
+	void init_animation_for_entity(EntityComponent::Registry& ecs, Entity ent);
 };

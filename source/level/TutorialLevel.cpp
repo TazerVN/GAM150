@@ -6,6 +6,24 @@
 
 extern Scene scene;
 static UI::UIManager UIM;
+TutorialFlowStage gTutorialStage = TutorialFlowStage::BASICS;
+int gTutorialSubstep = 0;
+
+// gettign step helper
+static int GetTutorialSubstepCount(TutorialFlowStage stage)
+{
+	switch (stage)
+	{
+	case TutorialFlowStage::BASICS:      return 2;
+	case TutorialFlowStage::MOVEMENT:    return 2;
+	case TutorialFlowStage::ATTACK_CARD: return 5;
+	case TutorialFlowStage::DEFENSE_CARD:return 7;
+	case TutorialFlowStage::ITEM_CARD:   return 5;
+	case TutorialFlowStage::EVENT_CARD:  return 6;
+	case TutorialFlowStage::DONE:        return 1;
+	default:                             return 1;
+	}
+}
 
 void LevelStateTutorial_load()
 {
@@ -35,8 +53,10 @@ void LevelStateTutorial_init()
 	}
 
 	scene.set_tutorial_active(true);
+	scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
 	std::cout << "[TutorialLevel_init] set tutorial_active = "
 		<< scene.is_tutorial_active() << '\n';
+	scene.set_tutorial_substep(gTutorialSubstep);
 
 	scene.init(CS, UIM);
 	UIM.combat_init(scene);
@@ -52,6 +72,45 @@ void LevelStateTutorial_init()
 void LevelStateTutorial_update()
 {
 	f32 dt = AEFrameRateControllerGetFrameTime();
+
+	if (AEInputCheckTriggered(AEVK_SPACE))
+	{
+		int maxSubsteps = GetTutorialSubstepCount(gTutorialStage);
+
+		if (gTutorialSubstep < maxSubsteps - 1)
+		{
+			++gTutorialSubstep;
+			scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
+			scene.set_tutorial_substep(gTutorialSubstep);
+			scene.refresh_tutorial_text_only();
+			return;
+		}
+
+		// finished this stage, move to next stage
+		if (gTutorialStage != TutorialFlowStage::DONE)
+		{
+			gTutorialStage = static_cast<TutorialFlowStage>(static_cast<int>(gTutorialStage) + 1);
+			gTutorialSubstep = 0;
+			gLevelStateNext = LevelStates::LS_RESTART;
+			return;
+		}
+	}
+
+	if (AEInputCheckTriggered(AEVK_E))
+	{
+		if (gTutorialStage != TutorialFlowStage::BASICS)
+		{
+			gTutorialStage = static_cast<TutorialFlowStage>(static_cast<int>(gTutorialStage) - 1);
+			gLevelStateNext = LevelStates::LS_RESTART;
+			return;
+		}
+	}
+
+	if (AEInputCheckTriggered(AEVK_Q))
+	{
+		gLevelStateNext = LevelStates::LS_RESTART;
+		return;
+	}
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON))
 	{
@@ -88,7 +147,7 @@ void LevelStateTutorial_update()
 void LevelStateTutorial_free()
 {
 	scene.set_tutorial_active(false);
-	gLevelStateNext = LevelStates::LS_QUIT;
+	//gLevelStateNext = LevelStates::LS_QUIT;
 	scene.scene_free();
 	UIM.free();
 	PS.particle_system_free();

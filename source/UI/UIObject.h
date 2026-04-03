@@ -13,6 +13,8 @@ namespace UIO
 		void free();
 	};
 
+
+	
 	struct TextButton
 	{
 		public:
@@ -63,7 +65,8 @@ namespace UIO
 		Entity fill{};
 		Entity button{};
 		Slider() = default;
-		Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func);
+		Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func, f32 current, f32 max);
+		void update();
 		void free();
 	};
 

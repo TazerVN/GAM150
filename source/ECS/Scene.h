@@ -45,13 +45,15 @@ private:
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	IntentionDisplaySystem intentDisplaySystem;
+	std::vector<Entity> tutorial_spawned_entities; // for tutorial enemies
 
 	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
 	bool _win = false;
 
 	enum class TutorialStage
 	{
-		MOVEMENT = 0,
+		BASICS = 0,
+		MOVEMENT,
 		ATTACK_CARD,
 		DEFENSE_CARD,
 		ITEM_CARD,
@@ -61,25 +63,41 @@ private:
 	};
 
 	bool tutorial_active = false;
-	TutorialStage tutorial_stage = TutorialStage::MOVEMENT;
+	TutorialStage tutorial_stage = TutorialStage::BASICS;
 	int tutorial_substep = 0;
 
 	s32 tutorial_goal_x = 0;
 	s32 tutorial_goal_y = 0;
-	bool tutorial_goal_reached = false;
+
 
 	void update_tutorial();
-	void update_tutorial_movement();
-	void advance_tutorial_stage(TutorialStage nextStage);
+
+	void setup_tutorial_stage();
+	void setup_tutorial_basics();
+	void setup_tutorial_movement();
+	void setup_tutorial_attack();
+	void setup_tutorial_defense();
+	void setup_tutorial_item();
+	void setup_tutorial_event();
+
+	void clear_tutorial_spawned_entities();
+
+	void print_tutorial_stage_text() const;
+
 
 public:
 	void init(Camera::CameraSystem&, UI::UIManager&);
 	void update();
 	void add_entity_to_scene(Entity e);
 	std::vector<Entity>& entities_store();
-
 	void scene_free();
 
+	void set_tutorial_stage(int stage);
+	void set_tutorial_substep(int substep);
+	void reset_tutorial_player_state();
+	void refresh_tutorial_text_only();
+
+	void load_deck_for_tutorial(const std::string& deck_name);
 	void set_tutorial_active(bool active);
 	bool is_tutorial_active() const;
 

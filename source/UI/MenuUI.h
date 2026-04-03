@@ -1,5 +1,6 @@
 #include "UIObject.h"
 #include "util/GameStateManager.h"
+#include <vector>
 
 class BaseMenu
 {
@@ -10,6 +11,7 @@ class BaseMenu
 		GAME, CONFIRM, PLAY, TUTORIAL ,SETTING, CREDIT, MAIN, NONE
 	};
 	DESTINATION dest;
+	s32 z;
 	void to_main();
 	void to_play();
 	void to_confirm();
@@ -20,6 +22,8 @@ class BaseMenu
 	BaseMenu();
 	virtual void init() = 0;
 	virtual void free() = 0;
+	virtual void update(){};
+	virtual ~BaseMenu() = default;
 };
 
 class MainMenu : public BaseMenu
@@ -50,9 +54,13 @@ class PlayMenu : public BaseMenu
 class CreditMenu : public BaseMenu
 {
 	public:
+	int speed;
+	f32 offset_y;
+	std::vector<UIO::TextShadow*> list;
 	UIO::TextureButton exit;
 	void init();
 	void free();
+	void update() override;
 };
 
 class SettingMenu : public BaseMenu
@@ -69,6 +77,7 @@ class SettingMenu : public BaseMenu
 	UIO::TextureButton exit;
 	void init();
 	void free();
+	void update() override;
 };
 
 class ConfirmMenu : public BaseMenu
