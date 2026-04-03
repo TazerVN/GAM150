@@ -3,6 +3,20 @@
 
 namespace Text
 {
+	InstructionText& operator<<(InstructionText& lhs, const char* text)
+	{
+		f32 s = 0.7f;
+		f32 w,h;
+		AEGfxGetPrintSize(TF.getFontID(), text, s, &w, &h);
+		lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + 300.f, s, lhs.z, text, {1.f,1.f,1.f,1.f} };
+		return lhs;
+	}
+
+	void InstructionText::free()
+	{
+		text.free();
+	}
+
 	void PopUpText::display(Entity pos, const char* text)
 	{
 		//*this << 0;

@@ -68,6 +68,7 @@ void LevelStateCombat_init()
 	//AF.bgm.play(0);
 	ecs.remove_empty_groups();
 
+
 }
 void LevelStateCombat_update()
 {
@@ -109,6 +110,7 @@ void LevelStateCombat_free()
 	PS.particle_system_free();
 	PUT.free();
 	AF.bgm.stop();
+	IT.free();
 }
 void LevelStateCombat_unload()
 {

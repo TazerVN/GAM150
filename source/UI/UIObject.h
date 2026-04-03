@@ -9,6 +9,7 @@ namespace UIO
 		Entity text_shadow{ 0 };
 		TextShadow() = default;
 		TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba);
+		TextShadow& operator=(TextShadow const& );
 		void free();
 	};
 
