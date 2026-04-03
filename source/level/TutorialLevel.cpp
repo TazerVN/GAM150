@@ -17,8 +17,8 @@ static int GetTutorialSubstepCount(TutorialFlowStage stage)
 	case TutorialFlowStage::BASICS:      return 2;
 	case TutorialFlowStage::MOVEMENT:    return 2;
 	case TutorialFlowStage::ATTACK_CARD: return 4;
-	case TutorialFlowStage::DEFENSE_CARD:return 2;
-	case TutorialFlowStage::ITEM_CARD:   return 2;
+	case TutorialFlowStage::DEFENSE_CARD:return 7;
+	case TutorialFlowStage::ITEM_CARD:   return 4;
 	case TutorialFlowStage::EVENT_CARD:  return 2;
 	case TutorialFlowStage::DONE:        return 1;
 	default:                             return 1;
@@ -56,9 +56,6 @@ void LevelStateTutorial_init()
 	scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
 	std::cout << "[TutorialLevel_init] set tutorial_active = "
 		<< scene.is_tutorial_active() << '\n';
-
-	scene.set_tutorial_active(true);
-	scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
 	scene.set_tutorial_substep(gTutorialSubstep);
 
 	scene.init(CS, UIM);

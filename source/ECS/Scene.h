@@ -76,6 +76,8 @@ private:
 	void setup_tutorial_basics();
 	void setup_tutorial_movement();
 	void setup_tutorial_attack();
+	void setup_tutorial_defense();
+	void setup_tutorial_item();
 
 	void clear_tutorial_spawned_entities();
 
