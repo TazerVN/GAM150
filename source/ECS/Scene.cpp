@@ -447,8 +447,7 @@ void Scene::setup_tutorial_stage()
 		break;
 
 	case TutorialStage::EVENT_CARD:
-		std::cout << "[Tutorial] Event stage not set up yet.\n";
-		print_tutorial_stage_text();
+		setup_tutorial_event();
 		break;
 
 	case TutorialStage::DONE:
@@ -497,6 +496,21 @@ void Scene::print_tutorial_stage_text() const
 		std::cout << "[Tutorial - Basics]\n";
 		std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
 		std::cout << "Use the mouse wheel to zoom in and out.\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
+			break;
+		case 1:
+			std::cout << "Use the mouse wheel to zoom in and out.\n";
+			std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
+			break;
+		}
+
 		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
 		break;
 
@@ -510,6 +524,8 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 1:
 			std::cout << "The stamina bar on the right determines how far you can go.\n";
+			std::cout << "The blue stamina bar on the right determines how far you can go.\n";
+			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
@@ -535,6 +551,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 3:
 			std::cout << "Try the cards given to you. PRESS E to refresh\n";
+			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
@@ -547,18 +564,99 @@ void Scene::print_tutorial_stage_text() const
 	case TutorialStage::DEFENSE_CARD:
 		std::cout << "[Tutorial - Defense Cards]\n";
 		std::cout << "Defense card tutorial coming next.\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Defense cards are blue and are self-cast only.\n Drag and drop the card onto the player to cast";
+			break;
+		case 1:
+			std::cout << "Barrier provides shield, and Aura Farm gives invincibility.\n";
+			break;
+		case 2:
+			std::cout << "Enemy intentions are displayed as icons above their heads.\n";
+			std::cout << "Sword: ATTACK, Boots: MOVE, Loading: IDLE.\n";
+			break;
+		case 3:
+			std::cout << "You may also hover enemies to see their plan.\n";
+			std::cout << "Red: ATTACK, Green: MOVE, Yellow: BOTH.\n";
+			break;
+		case 4:
+			std::cout << "Use any defense card to mitigate or reduce damage, then press END TURN.\n";
+			break;
+		case 5:
+			std::cout << "You can also try running away... if you can... (heh)\n";
+			break;
+		case 6:
+			std::cout << "Try the cards given to you. Press Q to reset.\n";
+			std::cout << "Press SPACE to continue to ITEM CARDS.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue to ITEM CARDS.\n";
+			break;
+		}
+
 		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
 		break;
 
 	case TutorialStage::ITEM_CARD:
 		std::cout << "[Tutorial - Item Cards]\n";
 		std::cout << "Item card tutorial coming next.\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Item cards are green and are self-cast only.\n";
+			std::cout << "Drag and drop the card onto the player to cast.\n";
+			break;
+		case 1:
+			std::cout << "Item cards update your stats and/or give special buffs.\n";
+			std::cout << "(i.e. PP, Health, DMG, Stamina)\n";
+			break;
+		case 2:
+			std::cout << "Some are stackable, and some pair well with other cards.\n";
+			break;
+		case 3:
+			std::cout << "Read card descriptions for more.\n";
+			std::cout << "Press SPACE to continue to EVENT CARDS.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue to EVENT CARDS.\n";
+			break;
+		}
+
 		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
 		break;
 
 	case TutorialStage::EVENT_CARD:
 		std::cout << "[Tutorial - Event Cards]\n";
-		std::cout << "Event card tutorial coming next.\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Event Cards are purple with a special World Interaction Cast.\n";
+			std::cout << "Drag and drop these cards onto the board.\n";
+			break;
+		case 1:
+			std::cout << "These cards manipulate the world by:\n";
+			std::cout << "placing objects, pulling enemies in, and pushing them away.\n";
+			break;
+		case 2:
+			std::cout << "There are only three event cards, each with their own unique abilities.\n";
+			break;
+		case 3:
+			std::cout << "Some cards require a change of orientation. Press 'R' to rotate.\n";
+			std::cout << "Applicable in: Mana Wall, Gust of Wind.\n";
+			break;
+		case 4:
+			std::cout << "But be careful using the Black Hole! There are consequences...\n";
+			std::cout << "P.S. The developer of this card LOVES gambling.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue.\n";
+			break;
+		}
+
 		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
 		break;
 
@@ -656,6 +754,156 @@ void Scene::setup_tutorial_attack()
 
 		if (px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
 			BattleGrid.placeEntity(e2, px + 3, py);
+	}
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_defense()
+{
+	std::cout << "[Tutorial] Defense stage init\n";
+
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	load_deck_for_tutorial("Tutorial Defense Deck");
+
+	// load tutorial defense script
+	enemyDirector.loadScriptFile("Assets/levels/Tutorial_DEFENSE.txt");
+
+	// rebuild tutorial enemies from script
+	if (TBSys.get_participant().size() > 1)
+	{
+		Entity horde = TBSys.get_participant()[1];
+		Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+
+		if (hordeTag)
+		{
+			hordeTag->goons.clear();
+
+			for (int i = 0; i < enemyDirector.getSpawnCount(); ++i)
+			{
+				std::string actorId = "E" + std::to_string(i);
+
+				const int totalEnemies = enemyDirector.getSpawnCount();
+				const int rangedEnemies = enemyDirector.getRangedSpawnCount();
+
+				bool isRanged = (i >= totalEnemies - rangedEnemies);
+				const std::string beastKey = isRanged ? "Ranger" : "Melee";
+
+				Entity temp = beastiary.generate_enemy_from_beastiary(
+					beastKey,
+					{ 0.f, 0.f },
+					{ 192.f, 192.f },
+					Components::AnimationType::IDLE
+				);
+
+				Animation::init_animation_for_entity(ecs, temp);
+				add_entity_to_scene(temp);
+				tutorial_spawned_entities.push_back(temp);
+				hordeTag->goons.push_back(temp);
+				enemyDirector.bindActor(actorId, temp);
+			}
+		}
+	}
+
+	// place them in front of player simply
+	s32 px, py;
+	if (BattleGrid.findEntityCell(playerID, px, py))
+	{
+		int placed = 0;
+		for (Entity e : tutorial_spawned_entities)
+		{
+			if (placed == 0 && px + 2 < MAX_I && BattleGrid.get_pos()[px + 2][py] == Components::NULL_INDEX)
+			{
+				BattleGrid.placeEntity(e, px + 2, py);
+				placed++;
+			}
+			else if (placed == 1 && px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
+			{
+				BattleGrid.placeEntity(e, px + 3, py);
+				placed++;
+			}
+		}
+	}
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_item()
+{
+	std::cout << "[Tutorial] Item stage init\n";
+
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	load_deck_for_tutorial("Item Deck");
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_event()
+{
+	std::cout << "[Tutorial] Event stage init\n";
+
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	load_deck_for_tutorial("Event Deck");
+
+	s32 px, py;
+	if (BattleGrid.findEntityCell(playerID, px, py))
+	{
+		Entity e1 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e2 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e3 = beastiary.generate_enemy_from_beastiary(
+			"Ranger",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Animation::init_animation_for_entity(ecs, e1);
+		Animation::init_animation_for_entity(ecs, e2);
+		Animation::init_animation_for_entity(ecs, e3);
+
+		add_entity_to_scene(e1);
+		add_entity_to_scene(e2);
+		add_entity_to_scene(e3);
+
+		tutorial_spawned_entities.push_back(e1);
+		tutorial_spawned_entities.push_back(e2);
+		tutorial_spawned_entities.push_back(e3);
+
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+			if (hordeTag)
+			{
+				hordeTag->goons.push_back(e1);
+				hordeTag->goons.push_back(e2);
+				hordeTag->goons.push_back(e3);
+			}
+		}
+
+		if (px + 2 < MAX_I && BattleGrid.get_pos()[px + 2][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e1, px + 2, py);
+
+		if (px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e2, px + 3, py);
+
+		if (py + 1 < MAX_J && BattleGrid.get_pos()[px + 2][py + 1] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e3, px + 2, py + 1);
 	}
 
 	print_tutorial_stage_text();
