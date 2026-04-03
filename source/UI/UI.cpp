@@ -5,7 +5,7 @@
 
 namespace UI
 {
-	UIManager::UIManager() : hp_children_list{}, mana_children_list{}, current_ui{}
+	UIManager::UIManager() : hp_children_list{}, mana_children_list{}, current_ui{}, menu{}
 	{
 	}
 

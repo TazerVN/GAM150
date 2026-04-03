@@ -50,6 +50,7 @@ namespace UIO
 		f32 max;
 		ScreenTransition() = default;
 		ScreenTransition(bool fadeIn, f32 max = 0.f);
+		ScreenTransition& operator=(ScreenTransition const&);
 		bool update();
 		void free();
 	};

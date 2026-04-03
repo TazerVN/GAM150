@@ -7,15 +7,18 @@ class BaseMenu
 
 	enum class DESTINATION
 	{
-		GAME, CONTINUE ,SETTING, CREDIT, MAIN, NONE
+		GAME, CONFIRM, PLAY ,SETTING, CREDIT, MAIN, NONE
 	};
 	DESTINATION dest;
 	void to_main();
-	void to_continue();
+	void to_play();
+	void to_confirm();
 	void to_game();
 	void to_setting();
 	void to_credit();
 	BaseMenu();
+	virtual void init() = 0;
+	virtual void free() = 0;
 };
 
 class MainMenu : public BaseMenu
@@ -26,7 +29,19 @@ class MainMenu : public BaseMenu
 	UIO::TextureButton setting;
 	UIO::TextureButton credit;
 	UIO::TextureButton exit;
-	MainMenu();
+	void init();
+	void free();
+};
+
+class PlayMenu : public BaseMenu
+{
+	public:
+	Entity title{};
+	UIO::TextureButton new_game;
+	UIO::TextureButton continue_game;
+	UIO::TextureButton tutorial;
+	UIO::TextureButton exit;
+
 	void init();
 	void free();
 };
@@ -55,7 +70,7 @@ class SettingMenu : public BaseMenu
 	void free();
 };
 
-class ContinueLastRun : public BaseMenu
+class ConfirmMenu : public BaseMenu
 {
 public:
 	UIO::TextureButton yes;
@@ -70,19 +85,18 @@ class MenuUI
 
 	enum class CURRENT_MENU : char 
 	{
-		MAIN, CONTINUE_LAST_RUN , SETTING, CREDIT
+		MAIN, PLAY, CONFIRM, SETTING, CREDIT
 	};
 
 	UIO::ScreenTransition fade;
+	Entity background{0};
 
 	CURRENT_MENU cur;
 	bool transition;
 
-	MainMenu main;
-	ContinueLastRun continueLastRun;
-	SettingMenu setting;
-	CreditMenu credit;
-	MenuUI();
+	BaseMenu* current_menu;
+
+	MenuUI() = default;
 	void init();
 	void update();
 	void free();

@@ -145,7 +145,7 @@ namespace UIO
 
 		AEGfxGetPrintSize(TF.getFontID(), a.c_str(), text_size, &text_width, &text_height);
 		f32 offset_x = -text_width * width;
-		f32 offset_y = -height * text_height;
+		f32 offset_y = -height * text_height - 5.f;
 
 		this->on = false;
 		this->z = z;
@@ -192,7 +192,17 @@ namespace UIO
 		this->text_shadow = 0;
 	}
 	
+	ScreenTransition& ScreenTransition::operator=(ScreenTransition const& rhs)
+	{
+		this->free();
 
+		this->fadeIn = rhs.fadeIn;
+		this->finished = rhs.finished;
+		this->max = rhs.max;
+		this->z = rhs.z;
+		this->dim = rhs.dim;
+		return *this;
+	}
 
 	ScreenTransition::ScreenTransition(bool fadeIn, f32 max) : z{1300}
 	{
