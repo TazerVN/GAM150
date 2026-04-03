@@ -146,6 +146,7 @@ void LevelStateTutorial_update()
 
 void LevelStateTutorial_free()
 {
+	IT.free();
 	scene.set_tutorial_active(false);
 	//gLevelStateNext = LevelStates::LS_QUIT;
 	scene.scene_free();
