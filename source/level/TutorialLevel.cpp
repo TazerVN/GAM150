@@ -27,6 +27,9 @@ static int GetTutorialSubstepCount(TutorialFlowStage stage)
 
 void LevelStateTutorial_load()
 {
+	gTutorialStage = TutorialFlowStage::BASICS;
+	gTutorialSubstep = 0;
+
 	scene.set_tutorial_active(true);
 
 	if (playerID == -1)
