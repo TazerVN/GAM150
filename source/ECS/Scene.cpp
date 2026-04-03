@@ -503,6 +503,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 1:
 			std::cout << "Use the mouse wheel to zoom in and out.\n";
+			std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
@@ -522,6 +523,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 1:
 			std::cout << "The blue stamina bar on the right determines how far you can go.\n";
+			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
@@ -550,6 +552,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 4:
 			std::cout << "Try the cards given to you. PRESS E to refresh\n";
+			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
@@ -586,6 +589,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 6:
 			std::cout << "Try the cards given to you. Press Q to reset.\n";
+			std::cout << "Press SPACE to continue to ITEM CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to ITEM CARDS.\n";
@@ -613,6 +617,7 @@ void Scene::print_tutorial_stage_text() const
 			break;
 		case 3:
 			std::cout << "Read card descriptions for more.\n";
+			std::cout << "Press SPACE to continue to EVENT CARDS.\n";
 			break;
 		default:
 			std::cout << "Press SPACE to continue to EVENT CARDS.\n";

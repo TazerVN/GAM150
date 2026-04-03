@@ -16,10 +16,10 @@ static int GetTutorialSubstepCount(TutorialFlowStage stage)
 	{
 	case TutorialFlowStage::BASICS:      return 2;
 	case TutorialFlowStage::MOVEMENT:    return 2;
-	case TutorialFlowStage::ATTACK_CARD: return 4;
+	case TutorialFlowStage::ATTACK_CARD: return 5;
 	case TutorialFlowStage::DEFENSE_CARD:return 7;
-	case TutorialFlowStage::ITEM_CARD:   return 4;
-	case TutorialFlowStage::EVENT_CARD:  return 5;
+	case TutorialFlowStage::ITEM_CARD:   return 5;
+	case TutorialFlowStage::EVENT_CARD:  return 6;
 	case TutorialFlowStage::DONE:        return 1;
 	default:                             return 1;
 	}
