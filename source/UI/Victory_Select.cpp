@@ -62,7 +62,7 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 			ecs.getComponent<Components::Card_Storage>(playerID)->add_card_to_deck(actual_card);
 			this->free();
 		},
-		nullptr, nullptr, 40);
+		nullptr, nullptr, this->z);
 	Components::Texture texture{ pTex };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, this->z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
@@ -96,7 +96,7 @@ Entity Victory_Select::create_Victory_card(Entity cardID, f32 x, f32 y)
 			ecs.getComponent<Components::Card_Storage>(playerID)->add_card_to_deck(actual_card);
 			this->free();
 		},
-		nullptr, nullptr, 40);
+		nullptr, nullptr, this->z);
 	Components::Texture texture{ pTex };
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, this->z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
