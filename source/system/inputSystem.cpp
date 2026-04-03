@@ -71,13 +71,26 @@ namespace InputSystem
             f32 newsize_x = t->size_og.x * zoom;
             f32 newsize_y = t->size_og.y * zoom;
 
-            if (AEInputCheckReleased(in->type))
+           
+
+            if (cur_drag == e)
             {
-                if (in->offDrag != nullptr) in->offDrag();
-                cur_drag = 0;
+
+                if (AEInputCheckReleased(in->type))
+                {
+                    if (in->offDrag != nullptr) in->offDrag();
+                    if (in->onClick != nullptr) in->onClick();
+                    cur_drag = 0;
+                }
+
+                if (AEInputCheckCurr(in->type))
+                {
+                    if (in->onDrag != nullptr) in->onDrag();
+                    continue;
+                }
+
             }
 
-            // cur_drag always fires regardless of active_hover or z-order
 
             if (in->col && point2rect_intersect(newpos_x, newpos_y, newsize_x, newsize_y, f32(this->mousex), f32(this->mousey)))
             {
@@ -151,15 +164,7 @@ namespace InputSystem
                 if (in->offHover != nullptr) in->offHover();
             }
 
-            if (cur_drag == e)
-            {
-                if (AEInputCheckCurr(in->type))
-                {
-                    if (in->onDrag != nullptr) in->onDrag();
-                    continue;
-                }
-
-            }
+           
         }
 
 
