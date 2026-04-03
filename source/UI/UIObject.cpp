@@ -265,19 +265,62 @@ namespace UIO
 		this->dim = 0;
 	}
 
-
-	Slider::Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func)
+	void slider_onDrag(Entity button, Entity container, Entity fill)
 	{
-		this->current = 100.f;
-		this->max = 100.f;
-		this->blank = ui_blank_solid_corner(x, y, width, height, 0, z, 1.f, 0.f, 0.f, 1.f);
-		this->fill = ui_blank_solid_corner(x, y, width, height, 0, z + 1, 0.290f, 0.640f, 0.710f, 1.f);
-		this->button = ui_button(x + width, y - height / 2, 20.f, 100.f, 0, z + 2, nullptr, { 1.f, 1.f, 1.f, 1.f });
+
+		s32 mousex, mousey;
+
+		AEInputGetCursorPosition(&mousex, &mousey);
+
+		mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
+		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+
+		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+		mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+
+
+		auto pos_button = ecs.getComponent<Components::Transform>(button);
+		auto pos_container = ecs.getComponent<Components::Transform>(container);
+		auto pos_fill = ecs.getComponent<Components::Transform>(fill);
+
+		pos_button->pos.x = AEClamp(mousex, pos_container->pos.x,pos_container->pos.x + pos_container->size.x);
+		pos_button->pos_onscreen.x = pos_button->pos.x;
+
+		pos_fill->size.x = (pos_button->pos.x - pos_container->pos.x)/pos_container->size.x * pos_container->size.x;
+
+
+	}
+
+	void Slider::update()
+	{
+		auto pos_button = ecs.getComponent<Components::Transform>(button);
+		auto pos_container = ecs.getComponent<Components::Transform>(blank);
+		this->current = (pos_button->pos_onscreen.x - pos_container->pos.x)/ pos_container->size.x;
+	}
+
+	Slider::Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func, f32 current, f32 max)
+	{
+		this->current = current;
+		this->max = max;
+		this->blank = ui_blank_solid_corner(x, y, width, height, 0, z, 0.1f, 0.f, 0.f, 1.f);
+		this->fill = ui_blank_solid_corner(x, y, current * width, height, 0, z + 1, 0.290f, 0.640f, 0.710f, 1.f);
+
+		f32 button_x = x + current/max * width;
+
+		this->button = ui_button(button_x, y - height / 2, 50.f, 100.f, 0, z + 2, nullptr, { 1.f, 1.f, 1.f, 1.f });
 
 		Components::TagClass tag{ Components::Tag::UI };
 		ecs.addComponent(this->blank, tag);
 		ecs.addComponent(this->fill, tag);
 		ecs.addComponent(this->button, tag);
+
+		Entity button = this->button;
+		Entity container = this->blank;
+		Entity fill = this->fill;
+
+		auto button_in = ecs.getComponent<Components::Input>(this->button);
+		button_in->onDrag = [button, container, fill]() { slider_onDrag(button, container, fill); };
+		button_in->drag = true;
 	}
 
 	void Slider::free()

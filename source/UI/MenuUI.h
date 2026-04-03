@@ -77,6 +77,7 @@ class SettingMenu : public BaseMenu
 	UIO::TextureButton exit;
 	void init();
 	void free();
+	void update() override;
 };
 
 class ConfirmMenu : public BaseMenu
