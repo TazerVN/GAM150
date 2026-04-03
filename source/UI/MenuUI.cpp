@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "MenuUI.h"
+#include <vector>
 
 
-
-BaseMenu::BaseMenu() : dest{ DESTINATION::NONE }{}
+BaseMenu::BaseMenu() : dest{ DESTINATION::NONE } {}
 
 
 
@@ -76,7 +76,8 @@ void GameOverUI::init()
 
 	auto game = [this]()
 		{
-			if(!this->transition){
+			if (!this->transition)
+			{
 				this->fade.free();
 				this->fade = UIO::ScreenTransition{ false, 1.f };
 				this->transition = true;
@@ -118,13 +119,13 @@ void GameOverUI::init()
 	this->new_game = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + start_x,  start_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "New Game", game, 0xFFFFFFFF };
 	this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + start_x + offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "Go Back", menu, 0xFFFFFFFF };
 
-	
+
 }
 
 void GameOverUI::update()
 {
 
-	switch(this->dest)
+	switch (this->dest)
 	{
 		case NEXT::NONE:
 		{
@@ -136,7 +137,7 @@ void GameOverUI::update()
 		}
 		case NEXT::MENU:
 		{
-			if(!this->fade.update())
+			if (!this->fade.update())
 			{
 				gGameStateNext = GameStates::GS_MAINMENU;
 				this->transition = false;
@@ -179,13 +180,21 @@ void GameOverUI::free()
 
 void MenuUI::init()
 {
+
+	if (this->current_menu != nullptr)
+	{
+		this->current_menu->free();
+		delete this->current_menu;
+		this->current_menu = nullptr;
+	}
+
 	this->fade.free();
 	this->fade = UIO::ScreenTransition(true);
 	this->transition = true;
 
-	if(background == 0)
+	if (background == 0)
 	{
-		background = UIO::ui_blank_texture(TF.getTextureOthers(8), 0,0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 1100);
+		background = UIO::ui_blank_texture(TF.getTextureOthers(8), 0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 1100);
 	}
 
 	switch (this->cur)
@@ -251,9 +260,9 @@ void MenuUI::init()
 			auto playmenu = dynamic_cast<PlayMenu*>(this->current_menu);
 
 			auto continue_game = ecs.getComponent<Components::Input>(playmenu->continue_game.button);
-			
 
-			if(new_Start)
+
+			if (new_Start)
 			{
 				auto continue_game_color = ecs.getComponent<Components::Color>(playmenu->continue_game.button);
 				continue_game_color->c_color.a = 0.3f;
@@ -322,38 +331,6 @@ void MenuUI::init()
 				};
 			break;
 		}
-
-		/*case(CURRENT_MENU::CONTINUE_LAST_RUN) :
-		{
-			this->continueLastRun.init();
-			this->continueLastRun.dest = BaseMenu::DESTINATION::NONE;
-
-			auto yes = ecs.getComponent<Components::Input>(this->continueLastRun.yes.button);
-			yes->onClick = [this]()
-				{
-					if (!this->transition)
-					{
-						this->fade.free();
-						this->fade = UIO::ScreenTransition{ false, 1.f };
-						this->setting.to_main();
-						this->transition = true;
-					}
-				};
-
-			auto no = ecs.getComponent<Components::Input>(this->continueLastRun.no.button);
-			no->onClick = [this]()
-				{
-					if (!this->transition)
-					{
-						this->fade.free();
-						this->fade = UIO::ScreenTransition{ false, 1.f };
-						this->setting.to_main();
-						this->transition = true;
-					}
-				};
-
-			break;
-		}*/
 
 		case (MenuUI::CURRENT_MENU::SETTING):
 		{
@@ -552,6 +529,7 @@ void MenuUI::update()
 			break;
 
 	}
+	this->current_menu->update();
 
 }
 
@@ -608,14 +586,96 @@ void SettingMenu::free()
 
 void CreditMenu::init()
 {
+	   
+	this->list.reserve(30);
+	std::vector<const char*> buffer
+	{
+		"BEYOND THE NEXUS", //0
+		"by Immaculate Js", 
+
+		"Team Members:", //2
+		"Pham Minh Tuan",
+		"Wai Pyoo Ooo",
+		"Zejin Kendreich Dayap Chen",
+		"Tio Chun Yi",
+
+		"Faculty and Advisors:", //7
+		"Prof. Gerald Wong Han Feng",
+		"Prof. Tommy Tan Chee Wei",
+		"Dr. Soroor Malekmohammadai Faradounbeh",
+
+		"Create at:", //11
+		"DIGIPEN", //12
+		"All content (c) 2026 DigiPen Institute of Technology Singapore. All Rights Reserved",
+
+		"PRESIDENTS:", //14
+		"CLAUDE COMAIR",
+		"EXECUTIVES:",
+		"JASON CHU - SAMIR ABOU SAMRA - MICHELE COMAIR",
+		"ANGELA KUGLER - ERIK MOHRMANN",
+		"BENJAMIN ELLINGER - MELVIN GONSALVEZ",
+
+		"SFX/Music composed by:", //20
+		"PHAM MINH TUAN",
+		"Art Assets by:",//22
+		"Tio Chun Yi",
+		//24
+		"SPECIAL THANKS TO YOU", "THANK YOU FOR PLAYING THE GAME", "See you in the future!"
+
+	};
+
+	this->offset_y = 0;
+	this->speed = 100.f;
+
+	f32 start_y = AEGfxGetWinMinY();
+	f32 gap_y = 64.f * 2.f;
 	f32 size_x = 1.3f;
 	f32 size_y = 1.5f;
+
+	int i = 0;
+	for(const char* s : buffer)
+	{
+		f32 text_size = 0.5f;
+		if(i == 0 || i == 2 || i == 7|| i == 11|| i == 12 ||  i == 14 || i == 16 || i == 20|| i == 22 || i > 24 ) text_size = 1.f;
+		
+		f32 text_w, text_h;
+		AEGfxGetPrintSize(TF.getFontID(), s, text_size, &text_w, &text_h);
+
+		this->list.push_back( new UIO::TextShadow( -text_w * AEGfxGetWinMaxX() * 0.5f , start_y - gap_y * i, text_size, this->z, s, {1.f, 1.f, 1.f, 1.f} ));
+		i++;
+	}
+
 
 	this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "GO BACK", nullptr, 0xFFFFFFFF };
 
 }
+
+void CreditMenu::update()
+{
+	if(this->offset_y >= AEGfxGetWindowHeight() + 64.f * 2.f * this->list.size()) this->dest = DESTINATION::MAIN;
+	this->offset_y += AEFrameRateControllerGetFrameTime() * this->speed;
+	for(UIO::TextShadow* t : this->list)
+	{
+		auto transform = ecs.getComponent<Components::Transform>(t->text);
+		auto transform2 = ecs.getComponent<Components::Transform>(t->text_shadow);
+
+		transform->pos_onscreen.y = transform->pos.y + this->offset_y;
+		transform2->pos_onscreen.y = transform2->pos.y + this->offset_y;
+
+	}
+}
+
+
 void CreditMenu::free()
 {
+
+	std::cout << "CreditMenu::free() called, list size: " << this->list.size() << '\n';
+	for(UIO::TextShadow* t : this->list)
+	{
+		t->free();
+		delete t;
+	}
+	this->list.clear();
 	exit.free();
 }
 
@@ -643,10 +703,10 @@ void ConfirmMenu::init()
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;
 
 	f32 win_h = AEGfxGetWindowHeight();
-	AEGfxGetPrintSize(TF.getFontID(), warning_text, text_size_warning, &warning_w, &warning_h );
-	AEGfxGetPrintSize(TF.getFontID(), description_text, text_size, &description_w, &description_h );
+	AEGfxGetPrintSize(TF.getFontID(), warning_text, text_size_warning, &warning_w, &warning_h);
+	AEGfxGetPrintSize(TF.getFontID(), description_text, text_size, &description_w, &description_h);
 	//AEGfxGetPrintSize(TF.getFontID(), description_text2, text_size, &description2_w, &description2_h );
-	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h );
+	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h);
 
 	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1;
 
@@ -677,7 +737,8 @@ void MenuUI::free()
 
 	this->fade.free();
 
-	if(this->background != 0){
+	if (this->background != 0)
+	{
 		ecs.destroyEntity(this->background);
 		this->background = 0;
 	}
