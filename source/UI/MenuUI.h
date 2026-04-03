@@ -72,11 +72,37 @@ class SettingMenu : public BaseMenu
 
 class ConfirmMenu : public BaseMenu
 {
-public:
+	public:
+	UIO::TextShadow warning;
+	UIO::TextShadow description;
+	//UIO::TextShadow description2;
+	UIO::TextShadow question;
+
+
 	UIO::TextureButton yes;
 	UIO::TextureButton no;
 	void init();
 	void free();
+};
+
+class GameOverUI
+{
+	enum class NEXT{
+		MENU, GAME, NONE
+	};
+
+	bool transition{false};
+	NEXT dest;
+	UIO::ScreenTransition fade;
+	Entity background{0};
+	UIO::TextButton new_game;
+	UIO::TextButton exit;
+
+	public:
+	void init();
+	void free();
+	void update();
+
 };
 
 class MenuUI

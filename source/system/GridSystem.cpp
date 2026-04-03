@@ -206,10 +206,10 @@ namespace Grid
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
 		
 	}
-	void cell_onHover(Entity id, Entity character)
+	void cell_onHover(Entity cell_id, Entity character)
 	{
-		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
+		Components::Color* c = ecs.getComponent<Components::Color>(cell_id);
+		Components::Timer* t = ecs.getComponent<Components::Timer>(cell_id);
 
 		f32 lerp = t->seconds / (t->max_seconds / 2.f) >= 1.f ? t->max_seconds - t->seconds : t->seconds;
 		f32 minimum = 0.6f;
@@ -229,10 +229,10 @@ namespace Grid
 		}
 	}
 
-	void cell_offHover( Entity id, Entity character)
+	void cell_offHover( Entity cell_id, Entity character)
 	{
-		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		Components::Timer* t = ecs.getComponent<Components::Timer>(id);
+		Components::Color* c = ecs.getComponent<Components::Color>(cell_id);
+		Components::Timer* t = ecs.getComponent<Components::Timer>(cell_id);
 
 		c->d_color.r = c->c_color.r;
 		c->d_color.g = c->c_color.g;
@@ -349,6 +349,10 @@ namespace Grid
 				walkable[j * MAX_I + i] = 1;
 			}
 		}
+		auto cell = ecs.getComponent<Components::Input>(this->cells[0][0]);
+
+		
+
 	}
 
 	void GameBoard::placeEntity(Entity e, s32 x, s32 y)
@@ -367,6 +371,7 @@ namespace Grid
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
 		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
 		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
+		Components::Input* input = ecs.getComponent<Components::Input>(e);
 
 		gd->prev_x = x;
 		gd->prev_y = y;
@@ -386,6 +391,41 @@ namespace Grid
 		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
 		color->d_color.g = 0.5f;
 		color->d_color.r = 0.5f;
+
+
+		auto actor_in = ecs.getComponent<Components::Input>(e);
+		auto actor_pos = ecs.getComponent<Components::gridData>(e);
+
+		if(actor_in != nullptr && actor_pos != nullptr){
+
+			auto cell = ecs.getComponent<Components::Input>(this->cells[actor_pos->x][actor_pos->y]);
+			actor_in->onClick = [this, e]()
+				{
+					auto actor_pos = ecs.getComponent<Components::gridData>(e); // fresh fetch
+					//if (actor_pos == nullptr) return;
+					this->updateCell(actor_pos->x, actor_pos->y);
+				};
+			actor_in->onHover = [this, e]()
+				{
+					auto actor_pos = ecs.getComponent<Components::gridData>(e); // fresh fetch
+					auto cell = ecs.getComponent<Components::Input>(this->cells[actor_pos->x][actor_pos->y]);
+					//if (actor_pos == nullptr) return;
+					if (cell != nullptr) cell->allow_hover = false;
+					cell_onHover(this->cells[actor_pos->x][actor_pos->y] ,e);
+				};
+			actor_in->offHover = [this, e]()
+				{
+					auto actor_pos = ecs.getComponent<Components::gridData>(e); // fresh fetch
+					auto cell = ecs.getComponent<Components::Input>(this->cells[actor_pos->x][actor_pos->y]);
+					if(cell != nullptr) cell->allow_hover = true;
+					//if (actor_pos == nullptr) return;
+					cell_offHover(this->cells[actor_pos->x][actor_pos->y], e);
+				};
+				actor_in->z = cell->z + 1;
+
+
+		}
+
 	}
 
 	void GameBoard::moveEntity(Entity e, s32 x, s32 y)
@@ -716,6 +756,13 @@ namespace Grid
 				if (pos[i][j] != -1 && pos[i][j] != playerID)
 				{
 					ecs.destroyEntity(pos[i][j]);
+				}
+				if (pos[i][j] == playerID)
+				{
+					auto in = ecs.getComponent<Components::Input>(playerID);
+					in->onClick = nullptr;
+					in->onHover = nullptr;
+					in->offHover = nullptr;
 				}
 			}
 		}

@@ -180,7 +180,7 @@ namespace UIO
 	TextShadow::TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba)
 	{
 		this->z = z;
-		this->text = ui_interactive_text(x, y, text_size, text_size, 0, z + 1, a, { 1.f, 1.f, 1.f, 1.f });
+		this->text = ui_interactive_text(x, y, text_size, text_size, 0, z + 1, a, rgba);
 		this->text_shadow = ui_text(x + 5.f, y - 5.f, text_size, text_size, 0, z, a, { 0.f, 0.f, 0.f, 0.f });
 	}
 
