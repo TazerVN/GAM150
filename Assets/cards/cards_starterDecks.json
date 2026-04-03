@@ -1,11 +1,17 @@
 {
 	"Decks" :
 	[
-                 {
-			"name" : "Tutorial Deck",
-			"cards" : 
-			[
-			]
+                {
+		       "name": "Tutorial Movement Deck",
+		       "cards": []
+		},
+		{
+		       "name": "Tutorial Attack Deck",
+		       "cards": ["Slash", "Shoot", "Snipe", "Firebolt"]
+		},
+		{
+		        "name": "Tutorial Defense Deck",
+		        "cards": ["Barrier", "Aura Farm"]
 		},
 		{
 
@@ -65,7 +71,8 @@
 			[
 				"PP up",
 				"Recovery",
-				"STR Disk"
+				"STR Disk",
+				"Swift foot"
 			]
 		},
 		{
