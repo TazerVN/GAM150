@@ -9,6 +9,7 @@ static UI::UIManager UIM;
 TutorialFlowStage gTutorialStage = TutorialFlowStage::BASICS;
 int gTutorialSubstep = 0;
 
+
 // gettign step helper
 static int GetTutorialSubstepCount(TutorialFlowStage stage)
 {

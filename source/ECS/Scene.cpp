@@ -9,6 +9,7 @@
 
 std::vector<std::string> hardcoded_levels;
 
+
 // Tutorial helper
 
 static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
@@ -389,10 +390,6 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
-	for (Entity e : tutorial_spawned_entities)
-	{
-		ecs.destroyEntity(e);
-	}
 	tutorial_spawned_entities.clear();
 
 	TBSys.tbs_free();
@@ -669,8 +666,8 @@ void Scene::print_tutorial_stage_text() const
 
 void Scene::setup_tutorial_basics()
 {
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	clear_player_cards_for_tutorial(playerID, UIptr);
 
 	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -685,8 +682,8 @@ void Scene::setup_tutorial_basics()
 
 void Scene::setup_tutorial_movement()
 {
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	clear_player_cards_for_tutorial(playerID, UIptr);
 
 	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -710,8 +707,8 @@ void Scene::setup_tutorial_attack()
 {
 	std::cout << "[Tutorial] Attack stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Tutorial Attack Deck");
 
 	s32 px, py;
@@ -761,8 +758,8 @@ void Scene::setup_tutorial_defense()
 {
 	std::cout << "[Tutorial] Defense stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Tutorial Defense Deck");
 
 	// load tutorial defense script
@@ -831,8 +828,8 @@ void Scene::setup_tutorial_item()
 {
 	std::cout << "[Tutorial] Item stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Item Deck");
 
 	print_tutorial_stage_text();
@@ -842,8 +839,8 @@ void Scene::setup_tutorial_event()
 {
 	std::cout << "[Tutorial] Event stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Event Deck");
 
 	s32 px, py;
