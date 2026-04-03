@@ -95,8 +95,11 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	ecs.addComponent(horde, Components::Horde_Tag{});
 	
 	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
-	st->max_movSpd = st->ini_movSpd;
-	st->cur_movSpd = st->max_movSpd;
+	if (st)
+	{
+		st->max_movSpd = st->ini_movSpd;
+		st->cur_movSpd = st->max_movSpd;
+	}
 
 	std::vector<Entity> rocks;
 
@@ -208,8 +211,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		s32 centerX = MAX_I / 2;
 		s32 centerY = MAX_J / 2;
 		
-		setup_tutorial_stage();
 		BattleGrid.placeEntity(playerID, centerX, centerY);
+		setup_tutorial_stage();
 	}
 	else
 	{
@@ -386,6 +389,10 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
+	for (Entity e : tutorial_spawned_entities)
+	{
+		ecs.destroyEntity(e);
+	}
 	tutorial_spawned_entities.clear();
 
 	TBSys.tbs_free();
@@ -398,7 +405,7 @@ void Scene::scene_free()
 	intentDisplaySystem.intentionSystem_free();
 	_win = false;
 	gbs.gbs_free();
-	//EntityFactory::free_Player();
+	EntityFactory::free_Player();
 	
 	playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
@@ -431,13 +438,11 @@ void Scene::setup_tutorial_stage()
 		break;
 
 	case TutorialStage::DEFENSE_CARD:
-		std::cout << "[Tutorial] Defense stage not set up yet.\n";
-		print_tutorial_stage_text();
+		setup_tutorial_defense();
 		break;
 
 	case TutorialStage::ITEM_CARD:
-		std::cout << "[Tutorial] Item stage not set up yet.\n";
-		print_tutorial_stage_text();
+		setup_tutorial_item();
 		break;
 
 	case TutorialStage::EVENT_CARD:
