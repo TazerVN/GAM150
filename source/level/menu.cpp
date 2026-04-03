@@ -25,13 +25,6 @@ void GameStateMainMenu_init()
     // Load font (second param is font size)
     menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
     bgTexture = AEGfxTextureLoad("Assets/others/Gradient.png");
-    //PS.particleDataFlow(ecs, mf);
-    //PS.particleDataBubble(ecs, mf);
-
-    //Sam here is the example to use it below call that function whenever u are done VV
-    //AEGfxTextureUnload(bgTexture);
-    //playBtn = { 0.f,  -50.f, 200.f, 60.f, 0xFF44AA44, 0xFF66CC66 };  // green
-    //quitBtn = { 0.f, -150.f, 200.f, 60.f, 0xFFAA4444, 0xFFCC6666 };  // red
 
     UIM.menu_init();
 
@@ -45,47 +38,16 @@ void GameStateMainMenu_update()
 	if (AEInputCheckTriggered(AEVK_Q))
 		gGameStateNext = GameStates::GS_QUIT;
 
-    if (AEInputCheckTriggered(AEVK_LBUTTON))
-    {
-        //if (IsMouseOver(playBtn)) //leaveGameState();
-        //    gGameStateNext = GameStates::GS_Game;
-        //if (IsMouseOver(quitBtn)) shouldQuit = true;
-    }
+  
 
     
     AEGfxSetBackgroundColor(0.f, 0.f, 0.f);
 
-    // DataFlow HERE
-    //PS.particleDataFlow(ecs, mf);
-
-    //AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-    //AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-    //AEGfxSetTransparency(1.0f);
-    //AEGfxSetColorToMultiply(1.f, 1.f, 1.f, 1.f);
-    //AEGfxTextureSet(bgTexture, 0.f, 0.f);
-
-    //AEMtx33 bg;
-    //AEMtx33Scale(&bg, f32(AEGfxGetWindowWidth()), f32(AEGfxGetWindowHeight()));
-    //AEMtx33TransApply(&bg, &bg, 0.f, 0.f);   // Å© 0,0 = center of screen
-    //AEGfxSetTransform(bg.m);
-    //AEGfxMeshDraw(mf.MeshGet(MESH_RECTANGLE_CENTER), AE_GFX_MDM_TRIANGLES);
-    /*
-    if (shouldQuit || 0 == AESysDoesWindowExist())
-    {
-        AESysExit();
-        return;
-    }
-    */
+   
     UIM.menu.update();
 
 
-    // DataBub HERE
-    //PS.particleDataBubble(ecs, mf);
 
-    //DrawButton(playBtn);
-    //DrawButton(quitBtn);
-
-    //AEGfxPrint(menuFont, "Beyond the Nexus", -0.7f, 0.3f, 1.0f, 1.f, 1.f, 1.f, 1.f);
 
 }
 void GameStateMainMenu_free()

@@ -149,6 +149,7 @@ namespace InputSystem
             else
             {
                 // mouse is not over this entity, always fires offHover
+                if(in->allow_hover == false) continue;
                 if (in->offHover != nullptr) in->offHover();
             }
         }

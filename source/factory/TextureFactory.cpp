@@ -96,6 +96,7 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Barrier+.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Gradient.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Beyond_the_NeXus_title.png"));
+		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Game_Over.png"));
 
 		//MIS
 		//this->fontID = AEGfxCreateFont("Assets/font/cool.ttf", 64.F);

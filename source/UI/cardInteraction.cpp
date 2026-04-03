@@ -445,7 +445,7 @@ namespace CardInteraction
 		c1->d_color.r = minimum + (1.f - minimum) * lerp;
 		c1->d_color.b = minimum + (1.f - minimum) * lerp;
 		c1->d_color.g = minimum + (1.f - minimum) * lerp;
-		c1->d_color.a = 0.2f;
+		c1->d_color.a = 0.4f;
 
 
 		t1->size.y = t1->size_og.y * 1.2f;
@@ -454,7 +454,7 @@ namespace CardInteraction
 		c2->d_color.r = minimum + (1.f - minimum) * lerp;
 		c2->d_color.b = minimum + (1.f - minimum) * lerp;
 		c2->d_color.g = minimum + (1.f - minimum) * lerp;
-		c2->d_color.a = 0.2f;
+		c2->d_color.a = 0.4f;
 
 		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
 		t2->size.x = t2->size_og.x * 4.f / 3.f;

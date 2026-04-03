@@ -66,6 +66,112 @@ void MainMenu::init()
 
 }
 
+void GameOverUI::init()
+{
+
+
+	auto game = [this]()
+		{
+			if(!this->transition){
+				this->fade.free();
+				this->fade = UIO::ScreenTransition{ false, 1.f };
+				this->transition = true;
+				this->dest = NEXT::GAME;
+			}
+		};
+
+	auto menu = [this]()
+		{
+			if (!this->transition)
+			{
+				this->fade.free();
+				this->fade = UIO::ScreenTransition{ false, 1.f };
+				this->transition = true;
+				this->dest = NEXT::MENU;
+			}
+		};
+
+	f32 start_y = -300.f;
+	f32 start_x = 450.f;
+
+	f32 size_x = 1.3f;
+	f32 size_y = 1.5f;
+
+
+	f32 offset_x = 256.f * size_x * 2.f;
+	f32 offset_y = 0.f;
+	f32 title_s_x = 1.f;
+	f32 title_s_y = 1.f;
+
+	f32 text_size = 0.5f;
+
+	this->transition = true;
+	this->fade = UIO::ScreenTransition(true);
+	this->dest = NEXT::NONE;
+
+	this->background = UIO::ui_blank_texture(TF.getTextureOthers(10), 0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 1100);
+
+	this->new_game = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + start_x,  start_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "New Game", game, 0xFFFFFFFF };
+	this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + start_x + offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "Go Back", menu, 0xFFFFFFFF };
+
+	
+}
+
+void GameOverUI::update()
+{
+
+	switch(this->dest)
+	{
+		case NEXT::NONE:
+		{
+			if (!this->fade.update())
+			{
+				this->transition = false;
+			}
+			break;
+		}
+		case NEXT::MENU:
+		{
+			if(!this->fade.update())
+			{
+				gGameStateNext = GameStates::GS_MAINMENU;
+				this->transition = false;
+			}
+			break;
+		}
+		case NEXT::GAME:
+		{
+			if (!this->fade.update())
+			{
+				gGameStateNext = GameStates::GS_Game;
+				this->transition = false;
+			}
+			break;
+		}
+
+	}
+	//auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
+	//if (!this->fade.update())
+	//{
+	//	this->free()
+	//	gGameStateNext = GameStates::GS_Game;
+	//	//this->current_menu->dest = BaseMenu::DESTINATION::NONE;
+	//	this->transition = false;
+	//}
+}
+
+void GameOverUI::free()
+{
+	this->fade.free();
+	if (this->background != 0)
+	{
+		ecs.destroyEntity(this->background);
+		this->background = 0;
+	}
+	this->new_game.free();
+	this->exit.free();
+}
+
 
 void MenuUI::init()
 {
@@ -496,13 +602,46 @@ void ConfirmMenu::init()
 	f32 size_x = 1.3f;
 	f32 size_y = 1.5f;
 
-	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "Yes", nullptr, 0xFFFFFFFF };
-	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "No", nullptr, 0xFFFFFFFF };
+
+	f32 text_size = 0.5f;
+	f32 text_size_warning = 0.8f;
+
+	const char* warning_text = "Warning!!";
+	const char* description_text = "The following action will permanently delete your existing run";
+	//const char* description_text2 = "existing run";
+	const char* question_text = "Do you want to proceed?";
+
+	f32 offset_y = 64.f * 2.f;
+
+	f32 warning_w, warning_h;
+	f32 description_w, description_h;
+	f32 description2_w, description2_h;
+	f32 question_w, question_h;
+
+	f32 win_w = AEGfxGetWindowWidth() * 0.25f;
+
+	f32 win_h = AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(TF.getFontID(), warning_text, text_size_warning, &warning_w, &warning_h );
+	AEGfxGetPrintSize(TF.getFontID(), description_text, text_size, &description_w, &description_h );
+	//AEGfxGetPrintSize(TF.getFontID(), description_text2, text_size, &description2_w, &description2_h );
+	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h );
+
+	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1;
+
+	this->warning = UIO::TextShadow{ -warning_w * win_w, start_y - offset_y, text_size_warning, 1200, warning_text, {1.f, 0.f, 0.f, 1.f} };
+	this->description = UIO::TextShadow{ -description_w * win_w , start_y - offset_y * 2, text_size, 1200, description_text, {1.f, 1.f, 1.f, 1.f} };
+	this->question = UIO::TextShadow{ -question_w * win_w, start_y - offset_y * 4, text_size, 1200, question_text, {1.f, 0.f, 0.f, 1.f} };
+
+	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "Yes", nullptr, 0xFFFFFFFF };
+	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "No", nullptr, 0xFFFFFFFF };
 }
 void ConfirmMenu::free()
 {
 	yes.free();
 	no.free();
+	warning.free();
+	description.free();
+	question.free();
 }
 
 void MenuUI::free()
@@ -515,8 +654,11 @@ void MenuUI::free()
 	}
 
 	this->fade.free();
-	ecs.destroyEntity(this->background);
-	this->background = 0;
+
+	if(this->background != 0){
+		ecs.destroyEntity(this->background);
+		this->background = 0;
+	}
 }
 
 

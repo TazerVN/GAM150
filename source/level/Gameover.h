@@ -7,6 +7,8 @@ struct GameStats
 
 extern GameStats g_GameStats;
 
+
+
 void GameState_GameOver_load();
 void GameState_GameOver_init();
 void GameState_GameOver_update();

@@ -6,6 +6,7 @@
 namespace EntityFactory {
 	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
+
 		Entity id = ecs.createEntity();
 		//default player values
 		//=====================Stats==========================
@@ -32,6 +33,7 @@ namespace EntityFactory {
 		Components::AStarResult as{};
 		Components::Tag tag{ Components::Tag::ACTOR };
 		Components::gridData gd{};
+		Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -46,6 +48,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, as);
 		ecs.addComponent(id, tag);
 		ecs.addComponent(id, gd);
+		ecs.addComponent(id, in);
 
 		return id;
 	}
@@ -72,6 +75,7 @@ namespace EntityFactory {
 		Components::Animation_Actor aa{at};
 		Components::Tag tag{ Components::Tag::ACTOR };
 		Components::gridData gd{};
+		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
 
 		ecs.addComponent(id, gd);
 		ecs.addComponent(id, nm);
@@ -85,6 +89,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, timer);
 		ecs.addComponent(id, aa);
 		ecs.addComponent(id, tag);
+		ecs.addComponent(id, in);
 
 		return id;
 	}
@@ -130,6 +135,7 @@ namespace EntityFactory {
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Tag tag {Components::Tag::OTHERS};
 		Components::gridData gd{};
+		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
 
 		ecs.addComponent(id, gd);
 		ecs.addComponent(id, mesh);
@@ -137,6 +143,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, trans);
+		ecs.addComponent(id, in);
 		ecs.addComponent(id, at);
 		ecs.addComponent(id, vic);
 
