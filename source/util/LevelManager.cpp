@@ -3,6 +3,7 @@
 #include "LevelManager.h"
 #include "../level/CombatLevel.h"
 #include "../level/EncounterLevel.h"
+#include "../level/TutorialLevel.h"
 #include <iostream>
 
 bool init_triggered = true;
@@ -64,6 +65,15 @@ void LevelMgrUpdate()
 		LevelStateUpdate = LevelStateCombat_update;
 		LevelStateFree = LevelStateCombat_free;
 		LevelStateUnload = LevelStateCombat_unload;
+		break;
+	}
+	case LevelStates::LS_TUTORIAL:
+	{
+		LevelStateLoad = LevelStateTutorial_load;
+		LevelStateInit = LevelStateTutorial_init;
+		LevelStateUpdate = LevelStateTutorial_update;
+		LevelStateFree = LevelStateTutorial_free;
+		LevelStateUnload = LevelStateTutorial_unload;
 		break;
 	}
 	default:

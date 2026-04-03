@@ -57,7 +57,7 @@ void LevelStateCombat_init()
 	//load in player deck
 	ecs.getComponent<Components::Card_Storage>(playerID)->init();
 
-
+	scene.set_tutorial_active(false);
 	scene.init(CS, UIM);
 	UIM.combat_init(scene);
 

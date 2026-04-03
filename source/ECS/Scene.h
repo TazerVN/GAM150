@@ -60,15 +60,14 @@ private:
 		DONE
 	};
 
-	bool tutorial_active = false;	// Tuan, tutorial toggle bool -Zejin
+	bool tutorial_active = false;
 	TutorialStage tutorial_stage = TutorialStage::MOVEMENT;
-	int tutorial_substep = 0;		//progression
+	int tutorial_substep = 0;
 
 	s32 tutorial_goal_x = 0;
 	s32 tutorial_goal_y = 0;
 	bool tutorial_goal_reached = false;
 
-	//helpers for tutorial progression
 	void update_tutorial();
 	void update_tutorial_movement();
 	void advance_tutorial_stage(TutorialStage nextStage);
@@ -80,6 +79,9 @@ public:
 	std::vector<Entity>& entities_store();
 
 	void scene_free();
+
+	void set_tutorial_active(bool active);
+	bool is_tutorial_active() const;
 
 	//GETTER
 	PhaseSystem::GameBoardState& getGBS();

@@ -6,6 +6,7 @@ enum class LevelStates
 	LS_COMBAT = 0,
 	LS_ENCOUNTER = 1,
 	LS_BOSS,
+	LS_TUTORIAL,
 	LS_RESTART,
 	LS_QUIT,
 	LS_NUM

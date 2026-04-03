@@ -532,7 +532,8 @@ void MenuUI::update()
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::MAIN;
-				//ZEJIN: set your state change here
+				gLevelStateNext = LevelStates::LS_TUTORIAL;
+				gGameStateNext = GameStates::GS_Game;
 				this->free();
 				this->init();
 				this->transition = false;

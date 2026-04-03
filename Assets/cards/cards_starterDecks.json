@@ -1,7 +1,14 @@
 {
 	"Decks" :
 	[
+                 {
+			"name" : "Tutorial Deck",
+			"cards" : 
+			[
+			]
+		},
 		{
+
 			"name" : "Melee Deck",
 			"cards" : 
 			[

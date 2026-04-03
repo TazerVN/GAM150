@@ -37,7 +37,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	cameraSys = &cam;
 	UIptr = &_UI;
-	UIptr = &_UI;
 	iNodes.init(BattleGrid,gbs);
 
 	s32 w_width = AEGfxGetWindowWidth();
@@ -365,7 +364,7 @@ void Scene::scene_free()
 	gbs.gbs_free();
 	EntityFactory::free_Player();
 	
-	Entity playerBarrier = Components::NULL_INDEX; // shield display
+	playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
 }
 
@@ -409,6 +408,16 @@ void Scene::update_tutorial()
 	case TutorialStage::DONE:
 		break;
 	}
+}
+
+void Scene::set_tutorial_active(bool active)
+{
+	tutorial_active = active;
+}
+
+bool Scene::is_tutorial_active() const
+{
+	return tutorial_active;
 }
 
 void Scene::update_tutorial_movement()
