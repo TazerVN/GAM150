@@ -759,7 +759,12 @@ namespace Grid
 				}
 			}
 		}
-		hlptr->aoe_highlighted_cells.clear();
+
+		if (hlptr)
+		{
+			hlptr->aoe_highlighted_cells.clear();
+		}
+
 		win = nullptr;
 		tbsptr = nullptr;
 		gbsptr = nullptr;

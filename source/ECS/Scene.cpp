@@ -37,6 +37,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	cameraSys = &cam;
 	UIptr = &_UI;
+	std::cout << "[Scene::init] tutorial_active = " << tutorial_active << '\n';
+
 	iNodes.init(BattleGrid,gbs);
 
 	s32 w_width = AEGfxGetWindowWidth();

@@ -415,9 +415,10 @@ void MenuUI::init()
 
 					if (!this->transition)
 					{
+						new_Start = true;
 						this->fade.free();
 						this->fade = UIO::ScreenTransition{ false, 1.f };
-						this->current_menu->to_main();
+						this->current_menu->to_game();
 						this->transition = true;
 					}
 				};
@@ -453,6 +454,7 @@ void MenuUI::update()
 			{
 				this->free();
 				this->cur = CURRENT_MENU::MAIN;
+				gLevelStateNext = LevelStates::LS_COMBAT;
 				gGameStateNext = GameStates::GS_Game;
 				//this->current_menu->dest = BaseMenu::DESTINATION::NONE;
 				this->transition = false;
@@ -531,11 +533,12 @@ void MenuUI::update()
 			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
+				std::cout << "[MenuUI] Going to tutorial level\n";
 				this->cur = CURRENT_MENU::MAIN;
 				gLevelStateNext = LevelStates::LS_TUTORIAL;
 				gGameStateNext = GameStates::GS_Game;
 				this->free();
-				this->init();
+				//this->init();
 				this->transition = false;
 
 			}

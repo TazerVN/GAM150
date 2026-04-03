@@ -18,7 +18,7 @@ void GameState_game_load()
 
 void GameState_game_init()
 {
-	LevelMgrInit(LevelStates::LS_COMBAT);
+	LevelMgrInit(gLevelStateNext);
 }
 
 void GameState_game_update()

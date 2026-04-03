@@ -9,6 +9,8 @@ static UI::UIManager UIM;
 
 void LevelStateTutorial_load()
 {
+	scene.set_tutorial_active(true);
+
 	if (playerID == -1)
 		EntityFactory::create_player();
 
@@ -24,9 +26,18 @@ void LevelStateTutorial_load()
 
 void LevelStateTutorial_init()
 {
-	ecs.getComponent<Components::Card_Storage>(playerID)->init();
+	auto* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+	if (storage)
+	{
+		storage->reset();
+		storage->free();
+		storage->init();
+	}
 
 	scene.set_tutorial_active(true);
+	std::cout << "[TutorialLevel_init] set tutorial_active = "
+		<< scene.is_tutorial_active() << '\n';
+
 	scene.init(CS, UIM);
 	UIM.combat_init(scene);
 
@@ -76,6 +87,8 @@ void LevelStateTutorial_update()
 
 void LevelStateTutorial_free()
 {
+	scene.set_tutorial_active(false);
+	gLevelStateNext = LevelStates::LS_QUIT;
 	scene.scene_free();
 	UIM.free();
 	PS.particle_system_free();
