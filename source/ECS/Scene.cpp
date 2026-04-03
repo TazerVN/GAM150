@@ -448,8 +448,7 @@ void Scene::setup_tutorial_stage()
 		break;
 
 	case TutorialStage::EVENT_CARD:
-		std::cout << "[Tutorial] Event stage not set up yet.\n";
-		print_tutorial_stage_text();
+		setup_tutorial_event();
 		break;
 
 	case TutorialStage::DONE:
@@ -625,7 +624,33 @@ void Scene::print_tutorial_stage_text() const
 
 	case TutorialStage::EVENT_CARD:
 		std::cout << "[Tutorial - Event Cards]\n";
-		std::cout << "Event card tutorial coming next.\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Event Cards are purple with a special World Interaction Cast.\n";
+			std::cout << "Drag and drop these cards onto the board.\n";
+			break;
+		case 1:
+			std::cout << "These cards manipulate the world by:\n";
+			std::cout << "placing objects, pulling enemies in, and pushing them away.\n";
+			break;
+		case 2:
+			std::cout << "There are only three event cards, each with their own unique abilities.\n";
+			break;
+		case 3:
+			std::cout << "Some cards require a change of orientation. Press 'R' to rotate.\n";
+			std::cout << "Applicable in: Mana Wall, Gust of Wind.\n";
+			break;
+		case 4:
+			std::cout << "But be careful using the Black Hole! There are consequences...\n";
+			std::cout << "P.S. The developer of this card LOVES gambling.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue.\n";
+			break;
+		}
+
 		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
 		break;
 
@@ -805,6 +830,75 @@ void Scene::setup_tutorial_item()
 	clear_tutorial_spawned_entities();
 	reset_tutorial_player_state();
 	load_deck_for_tutorial("Item Deck");
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_event()
+{
+	std::cout << "[Tutorial] Event stage init\n";
+
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	load_deck_for_tutorial("Event Deck");
+
+	s32 px, py;
+	if (BattleGrid.findEntityCell(playerID, px, py))
+	{
+		Entity e1 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e2 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e3 = beastiary.generate_enemy_from_beastiary(
+			"Ranger",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Animation::init_animation_for_entity(ecs, e1);
+		Animation::init_animation_for_entity(ecs, e2);
+		Animation::init_animation_for_entity(ecs, e3);
+
+		add_entity_to_scene(e1);
+		add_entity_to_scene(e2);
+		add_entity_to_scene(e3);
+
+		tutorial_spawned_entities.push_back(e1);
+		tutorial_spawned_entities.push_back(e2);
+		tutorial_spawned_entities.push_back(e3);
+
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+			if (hordeTag)
+			{
+				hordeTag->goons.push_back(e1);
+				hordeTag->goons.push_back(e2);
+				hordeTag->goons.push_back(e3);
+			}
+		}
+
+		if (px + 2 < MAX_I && BattleGrid.get_pos()[px + 2][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e1, px + 2, py);
+
+		if (px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e2, px + 3, py);
+
+		if (py + 1 < MAX_J && BattleGrid.get_pos()[px + 2][py + 1] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e3, px + 2, py + 1);
+	}
 
 	print_tutorial_stage_text();
 }

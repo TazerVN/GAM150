@@ -78,6 +78,7 @@ private:
 	void setup_tutorial_attack();
 	void setup_tutorial_defense();
 	void setup_tutorial_item();
+	void setup_tutorial_event();
 
 	void clear_tutorial_spawned_entities();
 
