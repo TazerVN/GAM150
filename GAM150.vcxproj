@@ -50,7 +50,6 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\factory\MeshFactory.cpp" />
     <ClCompile Include="source\factory\TextureFactory.cpp" />
-    <ClCompile Include="source\system\TargettingSystem.cpp" />
     <ClCompile Include="source\system\TurnBasedSystem.cpp" />
     <ClCompile Include="source\util\Event.cpp" />
     <ClCompile Include="source\util\json_parser.cpp" />
@@ -106,7 +105,6 @@
     <ClInclude Include="source\system\GridSystem.h" />
     <ClInclude Include="source\factory\MeshFactory.h" />
     <ClInclude Include="source\factory\TextureFactory.h" />
-    <ClInclude Include="source\system\TargettingSystem.h" />
     <ClInclude Include="source\system\TurnBasedSystem.h" />
     <ClInclude Include="source\util\Event.h" />
     <ClInclude Include="source\util\json_parser.h" />
