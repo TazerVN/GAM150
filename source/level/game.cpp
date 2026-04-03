@@ -47,7 +47,7 @@ void GameState_game_update()
 			LevelStateUpdate();
 			if (player_died && gGameStateCurr != GameStates::GS_GAMEOVER)
 			{
-				new_Start = true;
+				gameData.new_Start = true;
 				LevelStateFree();
 				gGameStateNext = GameStates::GS_GAMEOVER;
 			}

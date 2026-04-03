@@ -26,14 +26,12 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
-	unsigned int seed;
-
-	if (parse_seed(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
+	/*if (parse_seed(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
 	{
 		seed = static_cast<unsigned int>(time(nullptr));
-	}
+	}*/
 
-	std::srand(seed);
+	std::srand(gameData.seed);
 
 	cameraSys = &cam;
 	UIptr = &_UI;
@@ -80,7 +78,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	{
 
 		//enemyDirector.loadScriptFile("Assets/levels/TEST_level.txt"); //load enemy instrucitons
-		if (SS.firstLevel())
+		if (gameData.scoringSystem.firstLevel())
 		{
 			enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
 			//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
@@ -314,15 +312,11 @@ void Scene::update()
 					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 				unsigned int seed = static_cast<unsigned int>(time(nullptr));
-				if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
-				{
-					std::cout << " put data fail";
-				}
 
 				BattleGrid.placeEntity(firstNode, 0, 0);
 				BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
 
-				SS.incrementLevelCleared();
+				gameData.scoringSystem.incrementLevelCleared();
 			}
 		
 	}

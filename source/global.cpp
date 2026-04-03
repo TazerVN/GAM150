@@ -1,7 +1,6 @@
 #include "pch.h"
 
 size_t playerID = -1;
-bool new_Start = true;
 bool player_died = false;
 
 //=====================One time declaration of extern values============================= 
@@ -24,7 +23,9 @@ Text::PopUpText PUT;
 Text::InstructionText IT;
 Particle::ParticleSystem PS;
 AudioFactory::AudioFactory AF;
-ScoringSystem SS;
+JSON_GAME_DATA gameData;
 Console console;
 EventPool<CommandTypes> ConsoleEvents;
+
+std::string data_path_{ "Data/data.json" };
 //=======================================================================================

@@ -19,10 +19,11 @@ GameOverUI GOU;
 void GameState_GameOver_load()
 {
 	GOU.init();
-	std::cout << "Total levels clea	red : " << SS.getLevelCount() << '\n';
-	SS.reset();
 	//quit = UIO::ui_button_texture(TF.getTextureUI(8), 0.f, -200.f, 225.f, 65.f, 0.f, 30, [] {onClick_Quit(); });
 	//quit_text = UIO::ui_text(0.f, -200.f, 225.f, 65.f, 0.f, 34, "Quit");  // <<<<<< This shit doesn t work
+
+	gameData.scoringSystem.reset();
+	ecs.getComponent <Components::Card_Storage>(playerID)->reset();
 }
 void GameState_GameOver_init()
 {

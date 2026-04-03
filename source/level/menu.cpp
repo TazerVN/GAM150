@@ -46,9 +46,6 @@ void GameStateMainMenu_update()
    
     UIM.menu.update();
 
-
-
-
 }
 void GameStateMainMenu_free()
 {

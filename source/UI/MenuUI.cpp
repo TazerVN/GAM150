@@ -253,7 +253,7 @@ void MenuUI::init()
 			auto continue_game = ecs.getComponent<Components::Input>(playmenu->continue_game.button);
 			
 
-			if(new_Start)
+			if(gameData.new_Start)
 			{
 				auto continue_game_color = ecs.getComponent<Components::Color>(playmenu->continue_game.button);
 				continue_game_color->c_color.a = 0.3f;
@@ -277,7 +277,7 @@ void MenuUI::init()
 			auto new_game = ecs.getComponent<Components::Input>(playmenu->new_game.button);
 			new_game->onClick = [this]
 				{
-					if (!new_Start)
+					if (!gameData.new_Start)
 					{
 						if (!this->transition)
 						{
@@ -415,7 +415,7 @@ void MenuUI::init()
 
 					if (!this->transition)
 					{
-						new_Start = true;
+						gameData.new_Start = true;
 						this->fade.free();
 						this->fade = UIO::ScreenTransition{ false, 1.f };
 						this->current_menu->to_game();

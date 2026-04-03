@@ -88,7 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	mf.MeshFree();
 	AF.free();
 	console.free();
-	// reset the system modules
+	save_game_data();
 	AESysReset();
 	AESysExit();
 }
@@ -104,6 +104,7 @@ void load_Sys_Comp()
 		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});
 	}
 
+
 	card_system.init_cards();
 	beastiary.init_data();
 	AF = AudioFactory::AudioFactory();
@@ -114,9 +115,15 @@ void load_Sys_Comp()
 	CS.init();
 	RM.RenderSystem_init(ecs);
 
+	EntityFactory::create_player();
+
+	if (parse_game_data() != JSON_RET::OK)
+	{
+		std::cout << "Parsing Game Data failed!!" << '\n';
+	}
+
 	Entity t = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 100, 0.0f, 0.0f, 0.3f, 0.15f);
 	Components::TagClass tg{Components::Tag::UI};
 	ecs.addComponent(t, tg);
-	EntityFactory::create_player();
 	//=============================
 }

@@ -30,9 +30,7 @@
 #define PLAYER_MAX_HEALTH 100;
 
 extern size_t playerID;
-extern bool new_Start;
 extern bool player_died;
-
 
 extern EntityComponent::Registry ecs;
 extern TextureFactory::TextureFactory TF;
@@ -51,6 +49,8 @@ extern Text::PopUpText PUT;
 extern Text::InstructionText IT;
 extern Particle::ParticleSystem PS;
 extern AudioFactory::AudioFactory AF;
-extern ScoringSystem SS;
+extern JSON_GAME_DATA gameData;
 extern Console console;
 extern EventPool<CommandTypes> ConsoleEvents;
+
+extern std::string data_path_;
