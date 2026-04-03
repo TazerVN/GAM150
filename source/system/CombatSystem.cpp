@@ -600,6 +600,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
+			IT << "STARTING!";
 			break;
 		}
 		case PhaseSystem::GBPhase::STANDBY_PHASE:
@@ -616,6 +617,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			gbsptr->GBPTriggered()[index] = false;
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
+			IT << "Draw card...";
 			break;
 		}
 		case PhaseSystem::GBPhase::MAIN_PHASE:
@@ -628,6 +630,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
+			IT << "YOUR TURN!";
 			break;
 		}
 		default:
@@ -636,6 +639,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			gbsptr->GBPTriggered()[index] = false;
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
+			IT << "ENEMY TURN!";
 			break;
 		}
 		}

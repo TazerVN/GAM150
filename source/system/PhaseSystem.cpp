@@ -91,11 +91,6 @@ namespace PhaseSystem
 		return this->prev_PlayerPhase;
 	}
 	void GameBoardState::set_GBPhase(GBPhase gbp) {
-		switch (gbp)
-		{
-			case GBPhase::MAIN_PHASE: IT << "YOUR TURN!"; break;
-			case GBPhase::ENEMY_PHASE: IT << "ENEMY TURN!"; break;
-		}
 		prev_GBPhase = gb_curr;
 		this->gb_curr = gbp;
 	}

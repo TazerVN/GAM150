@@ -394,7 +394,10 @@ namespace Grid
 			auto cell = ecs.getComponent<Components::Input>(this->cells[actor_pos->x][actor_pos->y]);
 			actor_in->onClick = [this, e]()
 				{
+
 					auto actor_pos = ecs.getComponent<Components::gridData>(e); // fresh fetch
+					auto actor_in = ecs.getComponent<Components::Input>(e);
+
 					//if (actor_pos == nullptr) return;
 					this->updateCell(actor_pos->x, actor_pos->y);
 				};

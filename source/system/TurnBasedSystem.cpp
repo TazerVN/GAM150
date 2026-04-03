@@ -174,7 +174,10 @@ namespace TBS
 	{
 		if (!is_active) return;
 		if(gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::PLAYER_ANIMATION) return;
+
+		
 		++cur_player;
+
 		if (cur_player >= participants.size())
 		{
 			round_end();
@@ -184,8 +187,13 @@ namespace TBS
 
 		if (current() == playerID)
 		{
+			IT << "YOUR TURN!";
 			gbsptr->resetPlayerPhase();
 			//gbsptr->set_GBPhase(PhaseSystem::GBPhase::MAIN_PHASE);
+		}
+		else
+		{
+			IT << "ENEMY TURN!";
 		}
 		
 		//gameBoardptr->unselect_card();
