@@ -17,7 +17,7 @@ namespace UI
 
 	void UIManager::combat_init(Scene& scene)
 	{
-		this->st = UIO::ScreenTransition(true);
+		this->st = UIO::ScreenTransition(true, 0.f, 2.f);
 
 		//hand
 		s32 w_width = AEGfxGetWindowWidth();
@@ -96,6 +96,7 @@ namespace UI
 			this->mana_children_list.push_back(mana);
 		}
 		this->current_ui.push_back(mana_bar);
+
 	}
 
 	void UIManager::update(Scene& scene, f32 dt)

@@ -37,6 +37,10 @@ void BaseMenu::to_confirm()
 {
 	this->dest = DESTINATION::CONFIRM;
 }
+void BaseMenu::to_tutorial()
+{
+	this->dest = DESTINATION::TUTORIAL;
+}
 
 void MainMenu::init()
 {
@@ -294,14 +298,14 @@ void MenuUI::init()
 						}
 					}
 				};
-			auto credit = ecs.getComponent<Components::Input>(playmenu->tutorial.button);
-			credit->onClick = [this]
+			auto tutorial = ecs.getComponent<Components::Input>(playmenu->tutorial.button);
+			tutorial->onClick = [this]
 				{
 					if (!this->transition)
 					{
 						this->fade.free();
 						this->fade = UIO::ScreenTransition{ false, 1.f };
-						this->current_menu->to_main();
+						this->current_menu->to_tutorial();
 						this->transition = true;
 					}
 				};
@@ -515,6 +519,20 @@ void MenuUI::update()
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::PLAY;
+				this->free();
+				this->init();
+				this->transition = false;
+
+			}
+			break;
+		}
+		case(BaseMenu::DESTINATION::TUTORIAL):
+		{
+			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
+			if (!this->fade.update())
+			{
+				this->cur = CURRENT_MENU::MAIN;
+				//ZEJIN: set your state change here
 				this->free();
 				this->init();
 				this->transition = false;

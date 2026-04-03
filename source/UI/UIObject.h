@@ -49,7 +49,7 @@ namespace UIO
 		bool finished;
 		f32 max;
 		ScreenTransition() = default;
-		ScreenTransition(bool fadeIn, f32 max = 0.f);
+		ScreenTransition(bool fadeIn, f32 max = 0.f, f32 duration = 0.5f);
 		ScreenTransition& operator=(ScreenTransition const&);
 		bool update();
 		void free();

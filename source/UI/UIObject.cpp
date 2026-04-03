@@ -204,14 +204,14 @@ namespace UIO
 		return *this;
 	}
 
-	ScreenTransition::ScreenTransition(bool fadeIn, f32 max) : z{1300}
+	ScreenTransition::ScreenTransition(bool fadeIn, f32 max, f32 duration) : z{1300}
 	{
 		this->fadeIn = fadeIn;
 		this->finished = false;
 		this->max = max;
 		if(fadeIn){
 			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 1.f);
-			Components::Timer timer{ 0.5f, 0.f, true, false};
+			Components::Timer timer{ duration, 0.f, true, false};
 			Components::TagClass tag{Components::Tag::UI};
 			ecs.addComponent(this->dim, timer);
 			ecs.addComponent(this->dim, tag);
@@ -219,7 +219,7 @@ namespace UIO
 		else
 		{
 			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 0.f);
-			Components::Timer timer{ 0.2f, 0.f, true, false };
+			Components::Timer timer{ duration, 0.f, true, false };
 			Components::TagClass tag{ Components::Tag::UI };
 			ecs.addComponent(this->dim, timer);
 			ecs.addComponent(this->dim, tag);

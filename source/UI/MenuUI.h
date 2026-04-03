@@ -7,7 +7,7 @@ class BaseMenu
 
 	enum class DESTINATION
 	{
-		GAME, CONFIRM, PLAY ,SETTING, CREDIT, MAIN, NONE
+		GAME, CONFIRM, PLAY, TUTORIAL ,SETTING, CREDIT, MAIN, NONE
 	};
 	DESTINATION dest;
 	void to_main();
@@ -16,6 +16,7 @@ class BaseMenu
 	void to_game();
 	void to_setting();
 	void to_credit();
+	void to_tutorial();
 	BaseMenu();
 	virtual void init() = 0;
 	virtual void free() = 0;
