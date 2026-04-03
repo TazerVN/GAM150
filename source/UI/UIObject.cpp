@@ -175,7 +175,14 @@ namespace UIO
 		this->text = 0;
 	}
 
-
+	TextShadow& TextShadow::operator=(TextShadow const& rhs)
+	{
+		this->free();
+		this->text = rhs.text;
+		this->text_shadow = rhs.text_shadow;
+		this->z = rhs.z;
+		return *this;
+	}
 
 	TextShadow::TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba)
 	{

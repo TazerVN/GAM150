@@ -12,6 +12,7 @@ MeshFactory mf;
 TextureFactory::TextureFactory TF;
 Beastiary beastiary;
 
+
 InputSystem::InputManager IM;
 Camera::CameraSystem CS;
 RenderSystem::RenderSystem RM;
@@ -20,6 +21,7 @@ TransformSystem::TransformSystem TrS;
 Timer::TimerSystem TS;
 Animation::AnimationSystem AS;
 Text::PopUpText PUT;
+Text::InstructionText IT;
 Particle::ParticleSystem PS;
 AudioFactory::AudioFactory AF;
 ScoringSystem SS;

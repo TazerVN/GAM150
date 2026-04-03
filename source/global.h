@@ -48,6 +48,7 @@ extern Velocity::VelocitySystem VS;
 extern TransformSystem::TransformSystem TrS;
 extern Animation::AnimationSystem AS;
 extern Text::PopUpText PUT;
+extern Text::InstructionText IT;
 extern Particle::ParticleSystem PS;
 extern AudioFactory::AudioFactory AF;
 extern ScoringSystem SS;
