@@ -10,6 +10,7 @@ static UI::UIManager UIM;
 
 void LevelStateCombat_load()
 {
+
 	if (new_Start)
 	{
 		new_Start = false;
