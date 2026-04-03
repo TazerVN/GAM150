@@ -204,7 +204,7 @@ namespace Grid
 		selected_part = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].triggered = true;
 		evsptr->template_pool[HIGHLIGHT_EVENT].returned_value = highlight_tag::MOVE_HIGHLIGHT;
-		
+	
 	}
 	void cell_onHover(Entity cell_id, Entity character)
 	{
@@ -268,10 +268,7 @@ namespace Grid
 				cell_onHover(id, this->pos[x][y]);
 
 				Entity hovered = this->pos[x][y];
-				if (hovered != -1)
-				{
-					hlptr->highlight_enemy_cells(hovered);
-				}
+				hlptr->highlight_enemy_cells(hovered);
 
 				if (gbsptr->getGBPhase() == PhaseSystem::GBPhase::MAIN_PHASE)
 				{
@@ -301,11 +298,7 @@ namespace Grid
 			},
 			[x, y, id, this]
 			{
-				Entity hovered = this->pos[x][y];
-				if (hovered != -1)
-				{
-					hlptr->unhighlight_enemy_cells(hovered);
-				}
+				//hlptr->unhighlight_enemy_cells();
 				cell_offHover(id, this->pos[x][y]);
 			},1
 		);	//add input system for grid

@@ -69,8 +69,12 @@ void IntentionDisplaySystem::update(Scene& scene)
 	{
 		triggered = false;
         enemyRange.clear();
-
         hlptr->clear_enemy_cells();
+        for (auto it : intentionDisplay_list)
+        {
+            Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
+            intentionDisp->texture = TF.getTextureOthers(0);
+        }
 
 		size_t index = this->ptr_enemyDirector->index();
 		const std::vector<EnemyDirector::Tokens>& timeline_ = this->ptr_enemyDirector->get_timeline();

@@ -21,10 +21,12 @@ public:
 	void unhighlight_atk_cells();
 	void unhighlight_mov_cells();
 	void highlight_enemy_cells(Entity target);
+	void unhighlight_enemy_cells();
 	void unhighlight_enemy_cells(Entity target);
 
 	void clear_enemy_cells();
 	void refresh_enmey_cells();
+	void refresh_enmey_cell(Entity);
 	/*void highlight_enemy_attack(Entity target,f32 range);*/
 
 	std::vector<Components::GridCell> mov_highlighted_cells;

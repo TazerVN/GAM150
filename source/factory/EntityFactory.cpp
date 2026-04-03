@@ -134,7 +134,7 @@ namespace EntityFactory {
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Tag tag {Components::Tag::OTHERS};
 		Components::gridData gd{};
-		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
+		//Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
 
 		ecs.addComponent(id, gd);
 		ecs.addComponent(id, mesh);
@@ -142,7 +142,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, texture);
 		ecs.addComponent(id, color);
 		ecs.addComponent(id, trans);
-		ecs.addComponent(id, in);
+		//ecs.addComponent(id, in);
 		ecs.addComponent(id, at);
 		ecs.addComponent(id, vic);
 
