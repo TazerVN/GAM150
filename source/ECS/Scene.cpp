@@ -9,6 +9,50 @@
 
 std::vector<std::string> hardcoded_levels;
 
+// Tutorial helper
+
+static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
+{
+	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(owner);
+	if (!storage)
+		return;
+
+	std::vector<Entity> cards_to_destroy;
+
+	auto add_unique = [&cards_to_destroy](const std::vector<Entity>& src)
+		{
+			for (Entity card : src)
+			{
+				if (std::find(cards_to_destroy.begin(), cards_to_destroy.end(), card) == cards_to_destroy.end())
+				{
+					cards_to_destroy.push_back(card);
+				}
+			}
+		};
+
+	add_unique(storage->data_card_hand);
+	add_unique(storage->data_draw_pile);
+	add_unique(storage->data_discard_pile);
+	add_unique(storage->original_draw_pile);
+
+	for (Entity card : cards_to_destroy)
+	{
+		ecs.destroyEntity(card);
+	}
+
+	storage->data_card_hand.clear();
+	storage->data_draw_pile.clear();
+	storage->data_discard_pile.clear();
+	storage->original_draw_pile.clear();
+
+	if (UIptr)
+	{
+		UIptr->getCardHand().reset_hand();
+	}
+}
+
+
+
 // STEVEN HERE IS THE HELPER - Zejin
 Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 	const std::string& actorId,
@@ -60,21 +104,13 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	if (tutorial_active)
 	{
-		std::cout << "[Tutorial] Movement stage init\n";
+		std::cout << "[Tutorial] Init\n";
 
-		// Reset player stamina
-		Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
-		st->max_movSpd = 5.f;   // small for teaching
-		st->cur_movSpd = 5.f;
+		clear_player_cards_for_tutorial(playerID, UIptr);
 
-		tutorial_stage = TutorialStage::MOVEMENT;
-		tutorial_substep = 0;
-		tutorial_goal_reached = false;
-
-		tutorial_goal_x = (MAX_I / 2) + 3;
-		tutorial_goal_y = MAX_J / 2;
-
-		std::cout << "Select player, then click this tile to move.\n";
+		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+		if (storage)
+			storage->init();
 	}
 	else
 	{
@@ -173,7 +209,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		// ===== TUTORIAL PLACEMENT =====
 		s32 centerX = MAX_I / 2;
 		s32 centerY = MAX_J / 2;
-
+		
+		setup_tutorial_stage();
 		BattleGrid.placeEntity(playerID, centerX, centerY);
 	}
 	else
@@ -330,6 +367,7 @@ void Scene::update()
 	if (!tutorial_active)
 	{
 		enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
+		
 	}
 
 	cbs.update();
@@ -354,6 +392,8 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
+	tutorial_spawned_entities.clear();
+
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
@@ -364,52 +404,61 @@ void Scene::scene_free()
 	intentDisplaySystem.intentionSystem_free();
 	_win = false;
 	gbs.gbs_free();
-	EntityFactory::free_Player();
+	//EntityFactory::free_Player();
 	
 	playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
 }
 
-void Scene::advance_tutorial_stage(TutorialStage nextStage)
+void Scene::set_tutorial_substep(int substep)
 {
-	tutorial_stage = nextStage;
-	tutorial_substep = 0;
-	tutorial_goal_reached = false;
-	tutorial_goal_x = 0;
-	tutorial_goal_y = 0;
+	tutorial_substep = substep;
+}
+
+void Scene::refresh_tutorial_text_only()
+{
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_stage()
+{
+	switch (tutorial_stage)
+	{
+	case TutorialStage::BASICS:
+		setup_tutorial_basics();
+		break;
+
+	case TutorialStage::MOVEMENT:
+		setup_tutorial_movement();
+		break;
+
+	case TutorialStage::ATTACK_CARD:
+		setup_tutorial_attack();
+		break;
+
+	case TutorialStage::DEFENSE_CARD:
+		std::cout << "[Tutorial] Defense stage not set up yet.\n";
+		print_tutorial_stage_text();
+		break;
+
+	case TutorialStage::ITEM_CARD:
+		std::cout << "[Tutorial] Item stage not set up yet.\n";
+		print_tutorial_stage_text();
+		break;
+
+	case TutorialStage::EVENT_CARD:
+		std::cout << "[Tutorial] Event stage not set up yet.\n";
+		print_tutorial_stage_text();
+		break;
+
+	case TutorialStage::DONE:
+		print_tutorial_stage_text();
+		break;
+	}
 }
 
 void Scene::update_tutorial()
 {
-	switch (tutorial_stage)
-	{
-	case TutorialStage::MOVEMENT:
-		update_tutorial_movement();
-		break;
-
-	case TutorialStage::ATTACK_CARD:
-		// later
-		break;
-
-	case TutorialStage::DEFENSE_CARD:
-		// later
-		break;
-
-	case TutorialStage::ITEM_CARD:
-		// later
-		break;
-
-	case TutorialStage::EVENT_CARD:
-		// later
-		break;
-
-	case TutorialStage::WIN_TRANSITION:
-		// later
-		break;
-
-	case TutorialStage::DONE:
-		break;
-	}
 }
 
 void Scene::set_tutorial_active(bool active)
@@ -422,39 +471,278 @@ bool Scene::is_tutorial_active() const
 	return tutorial_active;
 }
 
-void Scene::update_tutorial_movement()
+void Scene::clear_tutorial_spawned_entities()
 {
-	Components::gridData* gd = ecs.getComponent<Components::gridData>(playerID);
-	if (!gd)
+	for (Entity e : tutorial_spawned_entities)
+	{
+		s32 x, y;
+		if (BattleGrid.findEntityCell(e, x, y))
+		{
+			BattleGrid.get_pos()[x][y] = Components::NULL_INDEX;
+		}
+
+		ecs.destroyEntity(e);
+	}
+
+	tutorial_spawned_entities.clear();
+}
+
+void Scene::print_tutorial_stage_text() const
+{
+	std::cout << "\n==============================\n";
+
+	switch (tutorial_stage)
+	{
+	case TutorialStage::BASICS:
+		std::cout << "[Tutorial - Basics]\n";
+		std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
+		std::cout << "Use the mouse wheel to zoom in and out.\n";
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::MOVEMENT: 
+		std::cout << "[Tutorial - Movement]\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Click the player, then click any tile to move.\n";
+			break;
+		case 1:
+			std::cout << "The stamina bar on the right determines how far you can go.\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
+			break;
+		}
+
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::ATTACK_CARD:
+		std::cout << "[Tutorial - Attack Cards]\n";
+
+		switch (tutorial_substep)
+		{
+		case 0:
+			std::cout << "Hover over cards to check their details. Cards are categorised by colour.\n";
+			break;
+		case 1:
+			std::cout << "Attack cards are orange with types: Melee, AOE, Ranged.\n";
+			break;
+		case 2:
+			std::cout << "Drag and drop a card onto the enemy. You must be within range.\n";
+			break;
+		case 3:
+			std::cout << "Try the cards given to you. PRESS E to refresh\n";
+			break;
+		default:
+			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
+			break;
+		}
+
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::DEFENSE_CARD:
+		std::cout << "[Tutorial - Defense Cards]\n";
+		std::cout << "Defense card tutorial coming next.\n";
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::ITEM_CARD:
+		std::cout << "[Tutorial - Item Cards]\n";
+		std::cout << "Item card tutorial coming next.\n";
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::EVENT_CARD:
+		std::cout << "[Tutorial - Event Cards]\n";
+		std::cout << "Event card tutorial coming next.\n";
+		std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
+		break;
+
+	case TutorialStage::DONE:
+		std::cout << "[Tutorial Complete]\n";
+		std::cout << "You have finished the tutorial.\n";
+		break;
+	}
+
+	std::cout << "==============================\n";
+}
+
+void Scene::setup_tutorial_basics()
+{
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	clear_player_cards_for_tutorial(playerID, UIptr);
+
+	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+	if (storage)
+		storage->init();
+
+	tutorial_goal_x = 0;
+	tutorial_goal_y = 0;
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_movement()
+{
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	clear_player_cards_for_tutorial(playerID, UIptr);
+
+	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+	if (storage)
+		storage->init();
+
+	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+	if (st)
+	{
+		st->max_movSpd = 5.f;
+		st->cur_movSpd = 5.f;
+	}
+
+	tutorial_goal_x = (MAX_I / 2) + 3;
+	tutorial_goal_y = MAX_J / 2;
+
+	print_tutorial_stage_text();
+}
+
+void Scene::setup_tutorial_attack()
+{
+	std::cout << "[Tutorial] Attack stage init\n";
+
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
+	load_deck_for_tutorial("Tutorial Attack Deck");
+
+	s32 px, py;
+	if (BattleGrid.findEntityCell(playerID, px, py))
+	{
+		Entity e1 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e2 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Animation::init_animation_for_entity(ecs, e1);
+		Animation::init_animation_for_entity(ecs, e2);
+
+		add_entity_to_scene(e1);
+		add_entity_to_scene(e2);
+		tutorial_spawned_entities.push_back(e1);
+		tutorial_spawned_entities.push_back(e2);
+
+		// add them to horde so combat system recognizes them
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(e1);
+			ecs.getComponent<Components::Horde_Tag>(horde)->goons.push_back(e2);
+		}
+
+		if (px + 2 < MAX_I && BattleGrid.get_pos()[px + 2][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e1, px + 2, py);
+
+		if (px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e2, px + 3, py);
+	}
+
+	print_tutorial_stage_text();
+}
+
+void Scene::set_tutorial_stage(int stage)
+{
+	tutorial_stage = static_cast<TutorialStage>(stage);
+}
+
+void Scene::load_deck_for_tutorial(const std::string& deck_name)
+{
+	clear_player_cards_for_tutorial(playerID, UIptr);
+
+	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+	if (!storage)
 		return;
 
-	switch (tutorial_substep)
+	std::cout << "[Tutorial] start_decks loaded: " << card_system.start_decks.size() << '\n';
+	for (const auto& deck : card_system.start_decks)
 	{
-	case 0:
-	{
-		// Show this in UI later:
-		// "Select player, then click this tile to move."
-
-		if (!tutorial_goal_reached &&
-			gd->x == tutorial_goal_x &&
-			gd->y == tutorial_goal_y)
-		{
-			tutorial_goal_reached = true;
-			tutorial_substep = 1;
-			std::cout << "Stamina bar determines how far you can move. Press Space to continue.\n";
-		}
-		break;
+		std::cout << "[Tutorial] available deck: [" << deck.name << "]\n";
 	}
 
-	case 1:
+	bool found = false;
+
+	for (auto& deck : card_system.start_decks)
 	{
-		if (AEInputCheckTriggered(AEVK_SPACE))
+		if (deck.name == deck_name)
 		{
-			std::cout << "[Tutorial] Movement stage complete.\n";
-			advance_tutorial_stage(TutorialStage::ATTACK_CARD);
+			found = true;
+			std::cout << "[Tutorial] Loading deck: " << deck.name
+				<< " | card count: " << deck.cards.size() << '\n';
+
+			for (const std::string& card_name : deck.cards)
+			{
+				Entity card = card_system.generate_card_from_bible(card_name);
+				EntityFactory::add_card_player_deck(ecs, playerID, card);
+			}
+			break;
 		}
-		break;
 	}
+
+	if (!found)
+	{
+		std::cout << "[Tutorial] Deck NOT found: " << deck_name << '\n';
+		return;
+	}
+
+	storage->init();
+
+	std::vector<Entity> cards_to_hand = storage->data_draw_pile;
+	storage->data_draw_pile.clear();
+
+	for (Entity card : cards_to_hand)
+	{
+		EntityFactory::add_card_player_hand(ecs, playerID, card);
+	}
+
+	std::cout << "[Tutorial] Hand size after load: "
+		<< storage->data_card_hand.size() << '\n';
+
+	if (UIptr)
+	{
+		UIptr->getCardHand().reset_hand();
+	}
+}
+
+void Scene::reset_tutorial_player_state()
+{
+	s32 oldX, oldY;
+	if (BattleGrid.findEntityCell(playerID, oldX, oldY))
+	{
+		BattleGrid.get_pos()[oldX][oldY] = Components::NULL_INDEX;
+	}
+
+	s32 centerX = MAX_I / 2;
+	s32 centerY = MAX_J / 2;
+
+	// only place if grid is already initialized enough to handle it
+	BattleGrid.placeEntity(playerID, centerX, centerY);
+
+	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+	if (st)
+	{
+		st->max_movSpd = 5.f;
+		st->cur_movSpd = 5.f;
 	}
 }
 

@@ -320,17 +320,7 @@ namespace Animation
 			{
 				for (Entity ent : it->second)
 				{
-					Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(ent);
-
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)] = animationTimer(ecs, 0.5f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)] = animationTimer(ecs, 0.5f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)] = animationTimer(ecs, 0.3f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)] = animationTimer(ecs, 1.f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)] = animationTimer(ecs, 0.2f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)] = animationTimer(ecs, 0.2f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)] = animationTimer(ecs, 0.1f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)] = animationTimer(ecs, 0.5f, 0.f, false, true);
-					anim->timer_array[static_cast<size_t>(Components::AnimationType::NONE)] = animationTimer(ecs, 1.f, 0.f, false, true);
+					init_animation_for_entity(ecs, ent);
 				}
 			}
 		}
@@ -481,4 +471,20 @@ namespace Animation
 		}
 	}
 
+	void init_animation_for_entity(EntityComponent::Registry& ecs, Entity ent)
+	{
+		Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(ent);
+		if (!anim)
+			return;
+
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_MELEE)] = animationTimer(ecs, 0.5f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::ATTACK_RANGE)] = animationTimer(ecs, 0.5f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::MOVING)] = animationTimer(ecs, 0.3f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::IDLE)] = animationTimer(ecs, 1.f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::TAKING_DAMAGE)] = animationTimer(ecs, 0.2f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_ATTACK)] = animationTimer(ecs, 0.2f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)] = animationTimer(ecs, 0.1f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)] = animationTimer(ecs, 0.5f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::NONE)] = animationTimer(ecs, 1.f, 0.f, false, true);
+	}
 }
