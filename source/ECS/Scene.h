@@ -48,7 +48,6 @@ private:
 	std::vector<Entity> tutorial_spawned_entities; // for tutorial enemies
 
 	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
-	bool _win = false;
 
 	enum class TutorialStage
 	{

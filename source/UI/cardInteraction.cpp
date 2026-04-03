@@ -227,6 +227,7 @@ namespace CardInteraction
 			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cardID_);
 			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cardID_);
 			Components::image_location* cimg = ecs.getComponent<Components::image_location>(cardID_);
+			std::string val_ = cimg->location;
 			AEGfxTexture* texture = nullptr;
 
 			texture = TF.getTextureFromCardMap(cimg->location);

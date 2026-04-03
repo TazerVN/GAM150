@@ -42,8 +42,6 @@ namespace Grid
 		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 		HighlightSystem* hlptr = nullptr;
 
-		bool* win = nullptr;
-
 		Entity cur, prev_cur;
 		bool selected_part = false;
 		AEVec2 offset;
@@ -65,7 +63,7 @@ namespace Grid
 		uint8_t walkable[MAX_I * MAX_J]{};
 
 		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
-			CombatNameSpace::CombatSystem& cbs, HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win);
+			CombatNameSpace::CombatSystem& cbs, HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy);
 		void placeEntity(Entity e, s32 x, s32 y);
 
 		void trigger_play_card(s32 x, s32 y);

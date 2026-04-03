@@ -69,6 +69,7 @@ struct JSON_GAME_DATA
 	};
 
 	bool new_Start;
+	bool win;
 	unsigned int seed;
 	SoundSettings soundSettings;
 	ScoringSystem scoringSystem;

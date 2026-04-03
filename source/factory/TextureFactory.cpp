@@ -149,6 +149,10 @@ namespace TextureFactory
 	}
 	AEGfxTexture* TextureFactory::getTextureFromCardMap(std::string key)
 	{
+		/*if(this->card_texture_map.find(key) != this->card_texture_map.end())
+			return this->card_texture_map[key];
+
+		return nullptr;*/
 		return this->card_texture_map[key];
 	}
 	AEGfxTexture* TextureFactory::getTextureFromEnemyMap(std::string key)

@@ -318,7 +318,7 @@ namespace Grid
 		return id;
 	}
 	void GameBoard::init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,
-		CombatNameSpace::CombatSystem& cbs,HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy, bool& _win)
+		CombatNameSpace::CombatSystem& cbs,HighlightSystem& hl, AEGfxTexture* pTex, f32 ox, f32 oy)
 	{
 		tbsptr = tbsys;
 		evsptr = &evs;
@@ -326,7 +326,6 @@ namespace Grid
 		cbsptr = &cbs;
 		hlptr = &hl;
 
-		win = &_win;
 		this->offset.x = ox;
 		this->offset.y = oy;
 		for (int i = 0; i < MAX_I; ++i)
@@ -454,7 +453,7 @@ namespace Grid
 				this->pos[x][y] = e;
 				this->walkable[y * MAX_I + x] = 0;
 
-				if (!*win)
+				if (!gameData.win)
 				{
 					ecs.getComponent<Components::TurnBasedStats>(e)->cur_movSpd -= dist;
 				}
@@ -768,7 +767,6 @@ namespace Grid
 			hlptr->aoe_highlighted_cells.clear();
 		}
 
-		win = nullptr;
 		tbsptr = nullptr;
 		gbsptr = nullptr;
 		evsptr = nullptr;

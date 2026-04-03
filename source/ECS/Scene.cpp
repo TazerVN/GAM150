@@ -144,7 +144,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	cbs.init(gbs, BattleGrid, TBSys, _UI.getCardHand(), eventPool, highlightSystem, intentDisplaySystem, enemyDirector);
 	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
-	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem, TF.getTextureFloor(0), 0, w_height / 3, _win);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem, TF.getTextureFloor(0), 0, w_height / 3);
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
@@ -334,7 +334,7 @@ void Scene::update()
 			{
 				std::cout << "WIN!!!!" << '\n';
 				TBSys.active() = false;
-				_win = true;
+				gameData.win = true;
 
 				ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100.f;
 				ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
@@ -396,9 +396,8 @@ void Scene::scene_free()
 	next_entity = 0;
 	PS.particle_system_free();
 	intentDisplaySystem.intentionSystem_free();
-	_win = false;
 	gbs.gbs_free();
-	//EntityFactory::free_Player();
+	EntityFactory::free_Player();
 	
 	playerBarrier = Components::NULL_INDEX; // shield display
 	cbs.combatSystem_free();
@@ -1007,9 +1006,4 @@ Grid::GameBoard& Scene::getBattleGrid()
 CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 {
 	return cbs;
-}
-
-bool Scene::win()const
-{
-	return _win;
 }
