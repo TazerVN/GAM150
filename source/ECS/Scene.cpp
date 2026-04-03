@@ -208,8 +208,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		s32 centerX = MAX_I / 2;
 		s32 centerY = MAX_J / 2;
 		
-		BattleGrid.placeEntity(playerID, centerX, centerY);
 		setup_tutorial_stage();
+		BattleGrid.placeEntity(playerID, centerX, centerY);
 	}
 	else
 	{
@@ -358,13 +358,10 @@ void Scene::update()
 		
 	}
 	
-	bool allowEnemyDirector =
-		(!tutorial_active) ||
-		(tutorial_active && tutorial_stage == TutorialStage::DEFENSE_CARD);
-
-	if (allowEnemyDirector)
+	if (!tutorial_active)
 	{
 		enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
+		
 	}
 
 	cbs.update();
@@ -434,11 +431,13 @@ void Scene::setup_tutorial_stage()
 		break;
 
 	case TutorialStage::DEFENSE_CARD:
-		setup_tutorial_defense();
+		std::cout << "[Tutorial] Defense stage not set up yet.\n";
+		print_tutorial_stage_text();
 		break;
 
 	case TutorialStage::ITEM_CARD:
-		setup_tutorial_item();
+		std::cout << "[Tutorial] Item stage not set up yet.\n";
+		print_tutorial_stage_text();
 		break;
 
 	case TutorialStage::EVENT_CARD:
@@ -489,6 +488,8 @@ void Scene::print_tutorial_stage_text() const
 	{
 	case TutorialStage::BASICS:
 		std::cout << "[Tutorial - Basics]\n";
+		std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
+		std::cout << "Use the mouse wheel to zoom in and out.\n";
 
 		switch (tutorial_substep)
 		{
@@ -516,6 +517,7 @@ void Scene::print_tutorial_stage_text() const
 			std::cout << "Click the player, then click any tile to move.\n";
 			break;
 		case 1:
+			std::cout << "The stamina bar on the right determines how far you can go.\n";
 			std::cout << "The blue stamina bar on the right determines how far you can go.\n";
 			std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
 			break;
@@ -542,9 +544,6 @@ void Scene::print_tutorial_stage_text() const
 			std::cout << "Drag and drop a card onto the enemy. You must be within range.\n";
 			break;
 		case 3:
-			std::cout << "Card costs are the numbers on the card, they consume PP upon cast.\n";
-			break;
-		case 4:
 			std::cout << "Try the cards given to you. PRESS E to refresh\n";
 			std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
 			break;
@@ -558,6 +557,7 @@ void Scene::print_tutorial_stage_text() const
 
 	case TutorialStage::DEFENSE_CARD:
 		std::cout << "[Tutorial - Defense Cards]\n";
+		std::cout << "Defense card tutorial coming next.\n";
 
 		switch (tutorial_substep)
 		{
@@ -595,6 +595,7 @@ void Scene::print_tutorial_stage_text() const
 
 	case TutorialStage::ITEM_CARD:
 		std::cout << "[Tutorial - Item Cards]\n";
+		std::cout << "Item card tutorial coming next.\n";
 
 		switch (tutorial_substep)
 		{

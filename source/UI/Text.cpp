@@ -5,6 +5,7 @@ namespace Text
 {
 	InstructionText& operator<<(InstructionText& lhs, const char* text)
 	{
+		lhs.free();
 		f32 s = 0.7f;
 		f32 w,h;
 		AEGfxGetPrintSize(TF.getFontID(), text, s, &w, &h);
