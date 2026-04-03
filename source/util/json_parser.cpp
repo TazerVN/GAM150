@@ -1,31 +1,245 @@
 #include "pch.h"
 #include "document.h"
 #include <fstream>
+#include <filesystem>
 #include <iostream>
+#include <stdexcept>
 #include <array>
+#include <string>
 
+#include "global.h"
 #include "json_parser.h"
 #include "document.h"
 #include "prettywriter.h"
 #include "ostreamwrapper.h"
 
-
-JSON_RET parse_date_to_file(unsigned int value ,char const* file_loc)
+int& JSON_GAME_DATA::ScoringSystem::LevelCount()
 {
-	std::ofstream file(file_loc);
+	return total_level_cleared;
+}
+
+int JSON_GAME_DATA::ScoringSystem::LevelCount() const
+{
+	return total_level_cleared;
+}
+
+bool JSON_GAME_DATA::ScoringSystem::firstLevel() const
+{
+	return total_level_cleared == 0;
+}
+
+void JSON_GAME_DATA::ScoringSystem::incrementLevelCleared()
+{
+	total_level_cleared++;
+}
+
+void JSON_GAME_DATA::ScoringSystem::reset()
+{
+	//pass data to scorebaord
+	//parse_date_to_file();
+	total_level_cleared = 0;
+}
+
+
+JSON_RET create_game_data()
+{
+	std::filesystem::path filePath(data_path_);
+
+	std::error_code er;
+	auto dir = filePath.parent_path();
+	if (!dir.empty())
+	{
+		std::filesystem::create_directories(dir, er);
+		if (er) return JSON_RET::FILE_OPEN_ERROR;
+	}
+
+	std::ofstream file(data_path_);
 	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
+
 
 	rapidjson::OStreamWrapper osw(file);
 
 	rapidjson::Document doc;
 	doc.SetObject();
 	auto& alloc = doc.GetAllocator();
-	
 
-	doc.AddMember("Seed", value, alloc);
+	doc.AddMember("newStart", true, alloc);
+
+	doc.AddMember("Seed", std::rand() , alloc);
+
+	rapidjson::Value soundSettings(rapidjson::kObjectType);
+
+	soundSettings.AddMember("sfx", 50, alloc);
+	soundSettings.AddMember("music", 50, alloc);
+	soundSettings.AddMember("ambience", 50, alloc);
+	doc.AddMember("SoundSetting", soundSettings, alloc);
+
+
+	rapidjson::Value scoringSystem(rapidjson::kObjectType);
+
+	scoringSystem.AddMember("levelcount", 0, alloc);
+
+
+	doc.AddMember("Score", scoringSystem, alloc);
 
 	rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+	doc.Accept(writer);
 
+	file.close();
+
+	return JSON_RET::OK;
+}
+
+
+JSON_RET parse_game_data()
+{
+	std::filesystem::path filePath(data_path_);
+
+	std::error_code er;
+	auto dir = filePath.parent_path();
+	if (!std::filesystem::exists(dir))
+	{
+		create_game_data();
+	}
+
+	std::ifstream file(data_path_);
+	if (!file.is_open())
+		return JSON_RET::FILE_OPEN_ERROR;
+
+	std::string json
+	(
+		(std::istreambuf_iterator<char>(file)),
+		std::istreambuf_iterator<char>()
+	);
+
+	rapidjson::Document doc;
+	doc.Parse(json.c_str());
+	if (doc.HasParseError()) {
+		std::cerr << "Error parsing JSON: "
+			<< doc.GetParseError() << '\n';
+		return JSON_RET::PARSE_ERROR;
+	}
+	if (doc.HasMember("newStart"))
+		gameData.new_Start = doc["newStart"].GetBool();
+	else
+		return JSON_RET::PARSE_ERROR;
+
+	if (doc.HasMember("Seed"))
+		gameData.seed = doc["Seed"].GetUint();
+	else
+		return JSON_RET::PARSE_ERROR;
+
+	if (doc.HasMember("SoundSetting") && doc["SoundSetting"].IsObject())
+	{
+		const auto& sound = doc["SoundSetting"];
+
+		if (sound.HasMember("sfx"))
+			gameData.soundSettings.sfx = sound["sfx"].GetUint();
+		else
+			return JSON_RET::PARSE_ERROR;
+
+		if (sound.HasMember("music"))
+			gameData.soundSettings.music = sound["music"].GetUint();
+		else
+			return JSON_RET::PARSE_ERROR;
+
+		if (sound.HasMember("ambience"))
+			gameData.soundSettings.ambience = sound["ambience"].GetUint();
+		else
+			return JSON_RET::PARSE_ERROR;
+	}
+	else
+		return JSON_RET::PARSE_ERROR;
+
+	if (doc.HasMember("Score") && doc["Score"].IsObject())
+	{
+		const auto& score = doc["Score"];
+
+		if (score.HasMember("levelcount"))
+			gameData.scoringSystem.LevelCount() = score["levelcount"].GetUint();
+		else
+			return JSON_RET::PARSE_ERROR;
+	}
+	else
+		return JSON_RET::PARSE_ERROR;
+
+	if (doc.HasMember("player_current_cards") && doc["player_current_cards"].IsArray())
+	{
+		Components::Card_Storage* cardStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+		if (cardStorage == nullptr)
+			return JSON_RET::PARSE_ERROR;
+
+		for (auto const& card : doc["player_current_cards"].GetArray())
+		{
+			if (card.IsString())
+			{
+				std::string card_name = card.GetString();
+				EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(card_name));
+			}
+		}
+	}
+	
+
+	return JSON_RET::OK;
+}
+
+JSON_RET save_game_data()
+{
+	std::filesystem::path filePath(data_path_);
+
+	std::error_code er;
+	auto dir = filePath.parent_path();
+	if (!dir.empty())
+	{
+		std::filesystem::create_directories(dir, er);
+		if (er) return JSON_RET::FILE_OPEN_ERROR;
+	}
+
+	std::ofstream file(data_path_);
+	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
+
+		
+	rapidjson::OStreamWrapper osw(file);
+
+	rapidjson::Document doc;
+	doc.SetObject();
+	auto& alloc = doc.GetAllocator();
+
+	doc.AddMember("newStart", gameData.new_Start , alloc);
+	doc.AddMember("Seed", gameData.seed, alloc);
+
+	rapidjson::Value soundSettings(rapidjson::kObjectType);
+
+	soundSettings.AddMember("sfx", gameData.soundSettings.sfx, alloc);
+	soundSettings.AddMember("music", gameData.soundSettings.music, alloc);
+	soundSettings.AddMember("ambience", gameData.soundSettings.ambience, alloc);
+	doc.AddMember("SoundSetting", soundSettings, alloc);
+
+
+	rapidjson::Value scoringSystem(rapidjson::kObjectType);
+	scoringSystem.AddMember("levelcount", gameData.scoringSystem.LevelCount(), alloc);
+	doc.AddMember("Score", scoringSystem, alloc);
+
+	if (!gameData.new_Start)
+	{
+		rapidjson::Value player_cards(rapidjson::kArrayType);
+
+		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+		if (storage != nullptr)
+		{
+			for (Entity const& card : storage->original_draw_pile)
+			{
+				std::string card_name = ecs.getComponent<Components::Name>(card)->value;
+
+				player_cards.PushBack(rapidjson::Value().SetString(card_name.c_str(), alloc), alloc);
+			}
+		}
+
+		doc.AddMember("player_current_cards", player_cards, alloc);
+	}
+
+
+	rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
 	doc.Accept(writer);
 
 	file.close();

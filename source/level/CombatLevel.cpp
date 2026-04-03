@@ -10,19 +10,17 @@ static UI::UIManager UIM;
 
 void LevelStateCombat_load()
 {
-
-	if (new_Start)
+	if (gameData.new_Start)
 	{
-		new_Start = false;
+		gameData.new_Start = false;
+
+		gameData.scoringSystem.reset();
+		ecs.getComponent <Components::Card_Storage>(playerID)->reset();
 
 		if(playerID == -1)
 			EntityFactory::create_player();
-		unsigned int seed = rand()*323123;
-		std::srand(seed);
-		if (parse_date_to_file(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
-		{
-			std::cout << " put data fail";
-		}
+		gameData.seed = rand();
+		std::srand(gameData.seed);
 
 		int upper_bound = static_cast<int>(card_system.start_decks.size()) - 1;
 		int lower_bound = 0;

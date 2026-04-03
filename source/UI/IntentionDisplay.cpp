@@ -73,7 +73,7 @@ void IntentionDisplaySystem::update(Scene& scene)
         for (auto it : intentionDisplay_list)
         {
             Components::Texture* intentionDisp = ecs.getComponent<Components::Texture>(it.second);
-            intentionDisp->texture = TF.getTextureOthers(0);
+            intentionDisp->texture = TF.getTextureOthers(11);
         }
 
 		size_t index = this->ptr_enemyDirector->index();

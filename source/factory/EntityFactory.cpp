@@ -11,7 +11,7 @@ namespace EntityFactory {
 		//default player values
 		//=====================Stats==========================
 		Components::Name nm{ name };
-		Components::Card_Storage card_storage;
+		
 		Components::HP HP{ hp };
 		Components::TurnBasedStats tbstats
 		{	5,	//max points
@@ -36,7 +36,6 @@ namespace EntityFactory {
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
-		ecs.addComponent(id, card_storage);
 		ecs.addComponent(id, tbstats);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -58,7 +57,6 @@ namespace EntityFactory {
 		//default player values
 		//=====================Stats==========================
 		Components::Name nm{ name };
-		Components::Card_Storage card_storage;
 		Components::HP HP{ hp };
 		Components::TurnBasedStats tbstats
 		{	5,	//max points
@@ -79,7 +77,6 @@ namespace EntityFactory {
 		ecs.addComponent(id, gd);
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
-		ecs.addComponent(id, card_storage);
 		ecs.addComponent(id, tbstats);
 		ecs.addComponent(id, trans);
 		ecs.addComponent(id, mesh);
@@ -232,6 +229,9 @@ namespace EntityFactory {
 		//Add player
 		temp = EntityFactory::create_actor_spritesheet({ -10000.f,1000000.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
 		playerID = temp;//important must set the playerID !!!!!!!!!!!
+
+		Components::Card_Storage card_storage;
+		ecs.addComponent(playerID, card_storage);
 	}
 
 	void free_Player()
