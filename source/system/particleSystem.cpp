@@ -397,7 +397,7 @@ void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, Mes
 	}
 }
 
-void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDataStream()
 {
 	// Screen dimensions
 	f32 screenWidth = f32(AEGfxGetWindowWidth());
@@ -441,7 +441,7 @@ void Particle::ParticleSystem::particleDataStream(EntityComponent::Registry& ecs
 	}
 }
 
-void Particle::ParticleSystem::particleReverseStream(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleReverseStream()
 {
 	// Screen dimensions
 	f32 screenWidth = f32(AEGfxGetWindowWidth());

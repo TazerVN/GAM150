@@ -224,7 +224,6 @@ namespace CardInteraction
 			if (ecs.getBitMask()[i].test(aID)) {};
 
 			Components::Name* name = ecs.getComponent<Components::Name>(cardID_);
-			Components::Card_Value* a = ecs.getComponent<Components::Card_Value>(cardID_);
 			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cardID_);
 			Components::image_location* cimg = ecs.getComponent<Components::image_location>(cardID_);
 			std::string val_ = cimg->location;
@@ -464,8 +463,8 @@ namespace CardInteraction
 
 		AEInputGetCursorPosition(&mousex, &mousey);
 
-		mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
-		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+		mousex = mousex  - s32(f32(AEGfxGetWindowWidth()) * 0.5f);
+		mousey = -mousey + s32(f32(AEGfxGetWindowHeight()) * 0.5f);
 
 		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 		mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());

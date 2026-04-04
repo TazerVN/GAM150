@@ -106,6 +106,8 @@ namespace CardInformation
 			auto des_trans = ecs.getComponent<Components::Transform>(this->text.description[0]);
 
 			auto count = std::count(card_des->val.begin(), card_des->val.end(), '\n');
+
+
 			des_trans->size.x = card_des->val.size() <= 30 ? des_trans->size_og.x * 1.2f : des_trans->size_og.x;
 
 			std::string token;

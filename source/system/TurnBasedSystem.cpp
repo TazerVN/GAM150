@@ -232,7 +232,7 @@ namespace TBS
 		return cur_round;
 	}
 
-	void TurnBasedSystem::select_hand_index(size_t index)
+	void TurnBasedSystem::select_hand_index(int index)
 	{
 		participant_hand[cur_player] = index;
 	}

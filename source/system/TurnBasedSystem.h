@@ -81,7 +81,7 @@ namespace TBS
 		//============Combat=======================
 	
 		void DrawPhase_add_card(EntityComponent::Registry& ecs);
-		void select_hand_index(size_t index);
+		void select_hand_index(int index);
 		//by pressing U player select his card
 		void select_card(EntityComponent::Registry& ecs);
 

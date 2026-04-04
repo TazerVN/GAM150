@@ -45,6 +45,7 @@ private:
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	IntentionDisplaySystem intentDisplaySystem;
+
 	std::vector<Entity> tutorial_spawned_entities; // for tutorial enemies
 
 	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
@@ -104,7 +105,6 @@ public:
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
 	CombatNameSpace::CombatSystem& getCombatSystem();
-	bool win() const;
 
 	int get_tutorial_stage() const;
 	int get_tutorial_substep() const;
