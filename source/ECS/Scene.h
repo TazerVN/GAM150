@@ -105,6 +105,7 @@ public:
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
 	CombatNameSpace::CombatSystem& getCombatSystem();
+	HighlightSystem& getHighlightSysten();
 
 	int get_tutorial_stage() const;
 	int get_tutorial_substep() const;

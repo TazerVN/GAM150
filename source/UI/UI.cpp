@@ -28,13 +28,14 @@ namespace UI
 		s32 w_height = AEGfxGetWindowHeight();
 
 		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-										 , scene.getGBS(), info, scene.getCombatSystem());
+										 , scene.getGBS(), info,scene.getCombatSystem(),scene.getHighlightSysten());
 
 
 		//========================================== buttons ======================================
 		//end turn button
 		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, this->z,
 			// the lambda function
+										
 											  [&scene]
 											  {
 												  if (!::pause){

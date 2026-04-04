@@ -72,12 +72,8 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 {
 	gameData.win = false;
 
-	static bool seeded = false;
-	if (!seeded)
-	{
-		std::srand(static_cast<unsigned>(time(nullptr)));
-		seeded = true;
-	}
+	//set seed
+	std::srand(gameData.seed);
 
 	cameraSys = &cam;
 	UIptr = &_UI;
@@ -1322,7 +1318,10 @@ CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 {
 	return cbs;
 }
-
+HighlightSystem& Scene::getHighlightSysten()
+{
+	return highlightSystem;
+}
 
 //tutorial getters
 int Scene::get_tutorial_stage() const

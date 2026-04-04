@@ -18,6 +18,9 @@ private:
 
 public:
 	void unhighlight_cells();
+
+	void unhighlight_aoe_cells();
+
 	void unhighlight_atk_cells();
 	void unhighlight_mov_cells();
 	void highlight_enemy_cells(Entity target);
