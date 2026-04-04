@@ -395,7 +395,6 @@ namespace UI
 		sta_parent->points = player_stats->points;
 
 		int empty_blocks_for_display = 5;
-		int i = 0;
 
 		if (scene.getGBS().getGBPhase() == PhaseSystem::GBPhase::DRAW_PHASE)
 		{
@@ -405,10 +404,23 @@ namespace UI
 				this->mana_children_list.pop_back();
 			}
 		}
+		int i = static_cast<int>(this->mana_children_list.size()) - empty_blocks_for_display;
+
 		while (static_cast<int>(this->mana_children_list.size()) - empty_blocks_for_display < sta_parent->points)
 		{
-			Entity mana = UIO::ui_blank_texture(TF.getTextureUI(5), static_cast<f32>(i) * 40.f - 40.f, 20.f, 49.f, 55.f, 0.f, this->z);
-			std::pair<Entity, Entity> mana_p{ p.first , mana };
+			// Wrap position back to 0 when exceeding maxPoints
+			int displayPos = i % sta_parent->maxPoints;
+
+			AEGfxTexture* manaTex = (i < sta_parent->maxPoints)
+				? TF.getTextureUI(5)   // normal mana
+				: TF.getTextureUI(6);  // bonus mana overlaid on top
+
+			Entity mana = UIO::ui_blank_texture(
+				manaTex,
+				static_cast<f32>(displayPos) * 40.f - 40.f,
+				20.f, 49.f, 55.f, 0.f, this->z + 1
+			);
+			std::pair<Entity, Entity> mana_p{ p.first, mana };
 			this->mana_children_list.push_back(mana_p);
 			i++;
 		}
