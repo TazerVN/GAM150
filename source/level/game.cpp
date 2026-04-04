@@ -42,33 +42,28 @@ void GameState_game_update()
 			LevelStateInit();
 		}
 
-		if (gLevelStateCurr == gLevelStateNext)
+		LevelStateUpdate();
+
+		if (player_died && gGameStateCurr != GameStates::GS_GAMEOVER)
 		{
-			LevelStateUpdate();
-			if (player_died && gGameStateCurr != GameStates::GS_GAMEOVER)
-			{
-				gameData.new_Start = true;
-				LevelStateFree();
-				gGameStateNext = GameStates::GS_GAMEOVER;
-			}
-				
+			gameData.new_Start = true;
+			LevelStateFree();
+			LevelStateUnload();
+			init_triggered = true;
+			gGameStateNext = GameStates::GS_GAMEOVER;
 		}
-		else
+		else if (gLevelStateCurr != gLevelStateNext)
 		{
 			LevelStateFree();
+			LevelStateUnload();
 			init_triggered = true;
-
 			gLevelStatePrev = gLevelStateCurr;
 			gLevelStateCurr = gLevelStateNext;
-
 		}
 	}
 	//if LS_QUIT is set
 	else	
 	{
-		LevelStateFree();
-		LevelStateUnload();
-		init_triggered = true;
 		gGameStateNext = GameStates::GS_MAINMENU;
 	}
 }

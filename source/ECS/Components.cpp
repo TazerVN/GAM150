@@ -49,6 +49,7 @@ void Components::Card_Storage::reset()
 		ecs.destroyEntity(card);
 	}
 	original_draw_pile.clear();
+	this->free();
 }
 
 Components::Input::Input(u8 type, bool hover,

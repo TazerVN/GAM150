@@ -12,13 +12,11 @@ void LevelStateCombat_load()
 {
 	if (gameData.new_Start)
 	{
+
 		gameData.new_Start = false;
 
 		gameData.scoringSystem.reset();
-		ecs.getComponent <Components::Card_Storage>(playerID)->reset();
 
-		if(playerID == -1)
-			EntityFactory::create_player();
 		gameData.seed = rand();
 		std::srand(gameData.seed);
 
@@ -53,20 +51,16 @@ void LevelStateCombat_init()
 
 	//===========Game===============
 	//load in player deck
-	ecs.getComponent<Components::Card_Storage>(playerID)->init();
-
 	scene.set_tutorial_active(false);
 	scene.init(CS, UIM);
 	UIM.combat_init(scene);
+
+	ecs.getComponent<Components::Card_Storage>(playerID)->init();
 
 	PS.particleDataStream();
 	PS.particleReverseStream();
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
-	//AF.bgm.play(0);
-	ecs.remove_empty_groups();
-
-
 }
 void LevelStateCombat_update()
 {
@@ -115,5 +109,4 @@ void LevelStateCombat_free()
 }
 void LevelStateCombat_unload()
 {
-	ecs.remove_empty_groups();
 }

@@ -407,12 +407,10 @@ void Scene::scene_free()
 	UIptr = nullptr;
 	entities.clear();
 	next_entity = 0;
-	PS.particle_system_free();
 	intentDisplaySystem.intentionSystem_free();
 	gbs.gbs_free();
 	EntityFactory::free_Player();
-	
-	playerBarrier = Components::NULL_INDEX; // shield display
+	highlightSystem.free();
 	cbs.combatSystem_free();
 }
 

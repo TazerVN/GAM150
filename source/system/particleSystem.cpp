@@ -623,8 +623,9 @@ void Particle::ParticleSystem::particle_system_free()
 	}*/
 
 	for(Entity p : Particlebuffer)
-	{
-		ecs.destroyEntity(p);
+	{	
+		if (ecs.getBitMask()[p].any()) // guard against already-destroyed
+			ecs.destroyEntity(p);
 	}
 	Particlebuffer.clear();
 }

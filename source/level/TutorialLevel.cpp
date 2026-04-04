@@ -212,5 +212,4 @@ void LevelStateTutorial_unload()
 		stor->original_draw_pile = old_card_buffer;
 		old_card_buffer.clear();
 	}
-	ecs.remove_empty_groups();
 }

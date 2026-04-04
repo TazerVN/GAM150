@@ -270,7 +270,11 @@ namespace UI
 		}
 		this->current_ui.clear();
 
-		ecs.destroyEntity(player_effect);
+		if (player_effect != 0)
+		{
+			ecs.destroyEntity(player_effect);
+			player_effect = 0;
+		}
 	}
 
 	void UIManager::health_update()

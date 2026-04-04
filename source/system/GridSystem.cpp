@@ -796,11 +796,12 @@ namespace Grid
 
 	void  GameBoard::gameboard_free()
 	{
-		for (Entity a : cells_entity_id)
+		for (Entity& a : cells_entity_id)
 		{
 			ecs.destroyEntity(a);
 		}
 		cells_entity_id.clear();
+
 		for (int i = 0; i < MAX_I; ++i)
 		{
 			for (int j = 0; j < MAX_J; ++j)
@@ -808,21 +809,22 @@ namespace Grid
 				if (pos[i][j] != -1 && pos[i][j] != playerID)
 				{
 					ecs.destroyEntity(pos[i][j]);
+					pos[i][j] = -1;
 				}
-				/*if (pos[i][j] == playerID)
-				{
-					auto in = ecs.getComponent<Components::Input>(playerID);
-					in->onClick = nullptr;
-					in->onHover = nullptr;
-					in->offHover = nullptr;
-				}*/
+				pos[i][j] = -1;          // reset ALL cells, not just non-player ones
+				cells[i][j] = -1;        // clear stale cell entity IDs
+				walkable[j * MAX_I + i] = 1; // reset walkability
 			}
 		}
 
-		if (hlptr)
-		{
-			hlptr->aoe_highlighted_cells.clear();
-		}
+		// reset selection state
+		selected_part = false;
+		cur = -1;
+		prev_cur = -1;
+		cur_x = cur_y = 0;
+		prev_x = prev_y = 0;
+		placementDirection = 0;
+		mouse_on_board = false;
 
 		tbsptr = nullptr;
 		gbsptr = nullptr;

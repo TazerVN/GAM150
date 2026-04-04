@@ -374,5 +374,19 @@ void HighlightSystem::update()
 
 void HighlightSystem::free()
 {
-	
+	if (!cbsptr->get_selected_cell().empty())
+	{
+		for (AEVec2 a : cbsptr->get_selected_cell())
+		{
+			this->highlight_activate[int(a.x)][int(a.y)] = HIGHTLIGHT_UNHIGHLIGHT;
+		}
+	}
+	cbsptr->get_selected_cell().clear();
+	if (!atk_highlighted_cells.empty())
+		this->atk_highlighted_cells.clear();
+	if (!mov_highlighted_cells.empty())
+		this->mov_highlighted_cells.clear();
+
+	clear_enemy_cells();
+	unhighlight_aoe_cells();
 }
