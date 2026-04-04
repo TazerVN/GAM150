@@ -15,13 +15,14 @@ static int GetTutorialSubstepCount(TutorialFlowStage stage)
 {
 	switch (stage)
 	{
-	case TutorialFlowStage::BASICS:      return 2;
-	case TutorialFlowStage::MOVEMENT:    return 2;
+	case TutorialFlowStage::BASICS:      return 3;
+	case TutorialFlowStage::MOVEMENT:    return 3;
 	case TutorialFlowStage::ATTACK_CARD: return 5;
-	case TutorialFlowStage::DEFENSE_CARD:return 7;
+	case TutorialFlowStage::DEFENSE_CARD:return 8;
 	case TutorialFlowStage::ITEM_CARD:   return 5;
 	case TutorialFlowStage::EVENT_CARD:  return 6;
-	case TutorialFlowStage::DONE:        return 1;
+	case TutorialFlowStage::WIN_TRANSITION: return 16;
+	case TutorialFlowStage::DONE:           return 1;
 	default:                             return 1;
 	}
 }
@@ -48,6 +49,7 @@ void LevelStateTutorial_load()
 
 void LevelStateTutorial_init()
 {
+	TutorialText.z = 1250;
 	TutorialText.set(300.f, 0.4f);
 	auto* storage = ecs.getComponent<Components::Card_Storage>(playerID);
 	if (storage)
@@ -77,24 +79,43 @@ void LevelStateTutorial_update()
 {
 	f32 dt = AEFrameRateControllerGetFrameTime();
 
+	// Always sync from Scene first so Scene is the real source of truth
+	gTutorialStage = static_cast<TutorialFlowStage>(scene.get_tutorial_stage());
+	gTutorialSubstep = scene.get_tutorial_substep();
+
 	if (AEInputCheckTriggered(AEVK_SPACE))
 	{
+		// block manual skipping while the game is waiting for an action
+		if (gTutorialStage == TutorialFlowStage::WIN_TRANSITION)
+		{
+			if (gTutorialSubstep == 7) // wait for horde to die
+				return;
+
+			// lock the whole victory-card section until selection is done
+			if (gTutorialSubstep >= 8 && gTutorialSubstep <= 12)
+				return;
+		}
+
 		int maxSubsteps = GetTutorialSubstepCount(gTutorialStage);
 
 		if (gTutorialSubstep < maxSubsteps - 1)
 		{
 			++gTutorialSubstep;
+
 			scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
 			scene.set_tutorial_substep(gTutorialSubstep);
 			scene.refresh_tutorial_text_only();
 			return;
 		}
 
-		// finished this stage, move to next stage
 		if (gTutorialStage != TutorialFlowStage::DONE)
 		{
 			gTutorialStage = static_cast<TutorialFlowStage>(static_cast<int>(gTutorialStage) + 1);
 			gTutorialSubstep = 0;
+
+			scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
+			scene.set_tutorial_substep(gTutorialSubstep);
+
 			gLevelStateNext = LevelStates::LS_RESTART;
 			return;
 		}
@@ -105,6 +126,11 @@ void LevelStateTutorial_update()
 		if (gTutorialStage != TutorialFlowStage::BASICS)
 		{
 			gTutorialStage = static_cast<TutorialFlowStage>(static_cast<int>(gTutorialStage) - 1);
+			gTutorialSubstep = 0;
+
+			scene.set_tutorial_stage(static_cast<int>(gTutorialStage));
+			scene.set_tutorial_substep(gTutorialSubstep);
+
 			gLevelStateNext = LevelStates::LS_RESTART;
 			return;
 		}
@@ -118,6 +144,7 @@ void LevelStateTutorial_update()
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON))
 	{
+
 		s32 mouseX, mouseY;
 		AEInputGetCursorPosition(&mouseX, &mouseY);
 

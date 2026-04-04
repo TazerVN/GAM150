@@ -268,10 +268,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
-	if (tutorial_active)
-	{
-		update_tutorial();
-	}
 
 	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered || AEInputCheckTriggered(AEVK_MINUS))
 	{
@@ -362,10 +358,9 @@ void Scene::update()
 		
 	}
 	
-	if (!tutorial_active)
+	if (!tutorial_active || tutorial_stage == TutorialStage::DEFENSE_CARD)
 	{
 		enemyDirector.update(gbs, TBSys, BattleGrid, intentDisplaySystem);
-		
 	}
 
 	cbs.update();
@@ -374,6 +369,10 @@ void Scene::update()
 	//==================Handle Events===============================
 
 	highlightSystem.update();
+	if (tutorial_active)
+	{
+		update_tutorial();
+	}
 	//==============================================================
 }
 
@@ -445,14 +444,94 @@ void Scene::setup_tutorial_stage()
 		setup_tutorial_event();
 		break;
 
+	case TutorialStage::WIN_TRANSITION:
+		setup_tutorial_done();
+		break;
+
 	case TutorialStage::DONE:
 		print_tutorial_stage_text();
+		break;
+	default:
 		break;
 	}
 }
 
 void Scene::update_tutorial()
 {
+	if (!tutorial_active)
+		return;
+
+	if (tutorial_stage != TutorialStage::WIN_TRANSITION)
+		return;
+
+	// Step 2: wait until horde is dead, then show victory cards
+	if (tutorial_substep == 7)
+	{
+		bool anyAlive = false;
+
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+
+			if (hordeTag)
+			{
+				for (Entity goon : hordeTag->goons)
+				{
+					s32 x, y;
+					if (BattleGrid.findEntityCell(goon, x, y))
+					{
+						anyAlive = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!anyAlive)
+		{
+			tutorial_substep = 8;
+
+			Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+			if (st)
+			{
+				st->cur_movSpd = 100.f;
+				st->max_movSpd = 100.f;
+			}
+
+			if (UIptr)
+			{
+				UIptr->getVictoryMenu().on = true;
+			}
+
+			print_tutorial_stage_text();
+		}
+
+		return;
+	}
+
+	// Step 4: wait until player finishes victory card selection
+	if (tutorial_substep == 12)
+	{
+		if (UIptr && !UIptr->getVictoryMenu().on)
+		{
+			tutorial_substep = 13;
+			print_tutorial_stage_text();
+
+			Entity firstNode = iNodes.create_interactable_node(
+				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
+				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
+
+			Entity secondNode = iNodes.create_interactable_node(
+				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
+				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
+
+			BattleGrid.placeEntity(firstNode,0, 0);
+			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
+		}
+
+		return;
+	}
 }
 
 void Scene::set_tutorial_active(bool active)
@@ -489,237 +568,320 @@ void Scene::print_tutorial_stage_text() const
 	{
 		case TutorialStage::BASICS:
 			std::cout << "[Tutorial - Basics]\n";
-			TutorialText << "[Tutorial - Basics]\n";
-			std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
-			TutorialText += "Press and hold the middle mouse button to drag across the screen.\n";
-			std::cout << "Use the mouse wheel to zoom in and out.\n";
-			TutorialText += "Use the mouse wheel to zoom in and out.\n";
+			TutorialText << "[Tutorial - Basics]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
 					std::cout << "Press and hold the middle mouse button to drag across the screen.\n";
-					TutorialText += "Press and hold the middle mouse button to drag across the screen.\n";
+					TutorialText += "Press and hold the middle mouse button to drag across the screen.";
 					break;
+
 				case 1:
 					std::cout << "Use the mouse wheel to zoom in and out.\n";
-					TutorialText += "Use the mouse wheel to zoom in and out.\n";
-					std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
-					TutorialText += "Press SPACE to continue to MOVEMENT CARDS.\n";
+					TutorialText += "Use the mouse wheel to zoom in and out.";
 					break;
+
+				case 2:
+					std::cout << "Press SPACE to continue to MOVEMENT.\n";
+					TutorialText += "Press SPACE to continue to MOVEMENT.";
+					break;
+
 				default:
-					std::cout << "Press SPACE to continue to MOVEMENT CARDS.\n";
-					TutorialText += "Press SPACE to continue to MOVEMENT CARDS.\n";
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::MOVEMENT:
 			std::cout << "[Tutorial - Movement]\n";
-			TutorialText << "[Tutorial - Movement]\n";
+			TutorialText << "[Tutorial - Movement]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
 					std::cout << "Click the player, then click any tile to move.\n";
-					TutorialText += "Click the player, then click any tile to move.\n";
+					TutorialText += "Click the player, then click any tile to move.";
 					break;
+
 				case 1:
-					std::cout << "The stamina bar on the right determines how far you can go.\n";
-					TutorialText += "The stamina bar on the right determines how far you can go.\n";
 					std::cout << "The blue stamina bar on the right determines how far you can go.\n";
-					TutorialText += "The blue stamina bar on the right determines how far you can go.\n";
-					std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
-					TutorialText += "Press SPACE to continue to ATTACK CARDS.\n";
+					TutorialText += "The blue stamina bar on the right determines how far you can go.";
 					break;
-				default:
+
+				case 2:
 					std::cout << "Press SPACE to continue to ATTACK CARDS.\n";
-					TutorialText += "Press SPACE to continue to ATTACK CARDS.\n";
+					TutorialText += "Press SPACE to continue to ATTACK CARDS.";
+					break;
+
+				default:
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::ATTACK_CARD:
 			std::cout << "[Tutorial - Attack Cards]\n";
-			TutorialText << "[Tutorial - Attack Cards]\n";
+			TutorialText << "[Tutorial - Attack Cards]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
 					std::cout << "Hover over cards to check their details. Cards are categorised by colour.\n";
-					TutorialText += "Hover over cards to check their details. Cards are categorised by colour.\n";
+					TutorialText += "Hover over cards to check their details. Cards are categorised by colour.";
 					break;
+
 				case 1:
-					std::cout << "Attack cards are orange with types: Melee, AOE, Ranged.\n";
-					TutorialText += "Attack cards are orange with types: Melee, AOE, Ranged.\n";
+					std::cout << "Attack cards are orange with types: Melee, AOE, and Ranged.\n";
+					TutorialText += "Attack cards are orange with types: Melee, AOE, and Ranged.";
 					break;
+
 				case 2:
-					std::cout << "Drag and drop a card onto the enemy. You must be within range.\n";
-					TutorialText += "Drag and drop a card onto the enemy. You must be within range.\n";
+					std::cout << "Drag and drop an attack card onto the enemy. You must be within range.\n";
+					TutorialText += "Drag and drop an attack card onto the enemy. You must be within range.";
 					break;
+
 				case 3:
-					std::cout << "Try the cards given to you. PRESS E to refresh\n";
-					TutorialText += "Try the cards given to you. PRESS E to refresh\n";
-					std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
-					TutorialText += "Press SPACE to continue to DEFENSE CARDS.\n";
+					std::cout << "Try the cards given to you. Press E to refresh.\n";
+					TutorialText += "Try the cards given to you. Press E to refresh.";
 					break;
-				default:
+
+				case 4:
 					std::cout << "Press SPACE to continue to DEFENSE CARDS.\n";
-					TutorialText += "Press SPACE to continue to DEFENSE CARDS.\n";
+					TutorialText += "Press SPACE to continue to DEFENSE CARDS.";
+					break;
+
+				default:
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::DEFENSE_CARD:
 			std::cout << "[Tutorial - Defense Cards]\n";
-			TutorialText << "[Tutorial - Defense Cards]\n";
-			std::cout << "Defense card tutorial coming next.\n";
-			TutorialText += "Defense card tutorial coming next.\n";
+			TutorialText << "[Tutorial - Defense Cards]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
-					std::cout << "Defense cards are blue and are self-cast only.\n Drag and drop the card onto the player to cast";
-					TutorialText += "Defense cards are blue and are self-cast only.\n Drag and drop the card onto the player to cast";
+					std::cout << "Defense cards are blue and are self-cast only. Drag and drop the card onto the player to cast.\n";
+					TutorialText += "Defense cards are blue and are self-cast only. Drag and drop the card onto the player to cast.";
 					break;
+
 				case 1:
 					std::cout << "Barrier provides shield, and Aura Farm gives invincibility.\n";
-					TutorialText += "Barrier provides shield, and Aura Farm gives invincibility.\n";
+					TutorialText += "Barrier provides shield, and Aura Farm gives invincibility.";
 					break;
+
 				case 2:
-					std::cout << "Enemy intentions are displayed as icons above their heads.\n";
-					TutorialText += "Enemy intentions are displayed as icons above their heads.\n";
-					std::cout << "Sword: ATTACK, Boots: MOVE, Loading: IDLE.\n";
-					TutorialText += "Sword: ATTACK, Boots: MOVE, Loading: IDLE.\n";
+					std::cout << "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Loading for IDLE.\n";
+					TutorialText += "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Loading for IDLE.";
 					break;
+
 				case 3:
-					std::cout << "You may also hover enemies to see their plan.\n";
-					TutorialText += "You may also hover enemies to see their plan.\n";
-					std::cout << "Red: ATTACK, Green: MOVE, Yellow: BOTH.\n";
-					TutorialText += "Red: ATTACK, Green: MOVE, Yellow: BOTH.\n";
+					std::cout << "You may also hover over enemies to see their plan: Red for ATTACK, Green for MOVE, and Yellow for BOTH.\n";
+					TutorialText += "You may also hover over enemies to see their plan: Red for ATTACK, Green for MOVE, and Yellow for BOTH.";
 					break;
+
 				case 4:
-					std::cout << "Use any defense card to mitigate or reduce damage, then press END TURN.\n";
-					TutorialText += "Use any defense card to mitigate or reduce damage, then press END TURN.\n";
+					std::cout << "Use any defense card to reduce or prevent damage, then press END TURN.\n";
+					TutorialText += "Use any defense card to reduce or prevent damage, then press END TURN.";
 					break;
+
 				case 5:
 					std::cout << "You can also try running away... if you can... (heh)\n";
-					TutorialText += "You can also try running away... if you can... (heh)\n";
+					TutorialText += "You can also try running away... if you can... (heh)";
 					break;
+
 				case 6:
 					std::cout << "Try the cards given to you. Press Q to reset.\n";
-					TutorialText += "Try the cards given to you. Press Q to reset.\n";
-					std::cout << "Press SPACE to continue to ITEM CARDS.\n";
-					TutorialText += "Press SPACE to continue to ITEM CARDS.\n";
+					TutorialText += "Try the cards given to you. Press Q to reset.";
 					break;
-				default:
+
+				case 7:
 					std::cout << "Press SPACE to continue to ITEM CARDS.\n";
-					TutorialText += "Press SPACE to continue to ITEM CARDS.\n";
+					TutorialText += "Press SPACE to continue to ITEM CARDS.";
+					break;
+
+				default:
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::ITEM_CARD:
 			std::cout << "[Tutorial - Item Cards]\n";
-			TutorialText << "[Tutorial - Item Cards]\n";
-			std::cout << "Item card tutorial coming next.\n";
-			TutorialText += "Item card tutorial coming next.\n";
+			TutorialText << "[Tutorial - Item Cards]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
-					std::cout << "Item cards are green and are self-cast only.\n";
-					TutorialText += "Item cards are green and are self-cast only.\n";
-					std::cout << "Drag and drop the card onto the player to cast.\n";
-					TutorialText += "Drag and drop the card onto the player to cast.\n";
+					std::cout << "Item cards are green and are self-cast only. Drag and drop the card onto the player to cast.\n";
+					TutorialText += "Item cards are green and are self-cast only. Drag and drop the card onto the player to cast.";
 					break;
+
 				case 1:
-					std::cout << "Item cards update your stats and/or give special buffs.\n";
-					TutorialText += "Item cards update your stats and/or give special buffs.\n";
-					std::cout << "(i.e. PP, Health, DMG, Stamina)\n";
-					TutorialText += "(i.e. PP, Health, DMG, Stamina)\n";
+					std::cout << "Item cards update your stats or give special buffs, such as PP, Health, Damage, or Stamina.\n";
+					TutorialText += "Item cards update your stats or give special buffs, such as PP, Health, Damage, or Stamina.";
 					break;
+
 				case 2:
-					std::cout << "Some are stackable, and some pair well with other cards.\n";
-					TutorialText += "Some are stackable, and some pair well with other cards.\n";
+					std::cout << "Some item cards are stackable, and some pair well with other cards.\n";
+					TutorialText += "Some item cards are stackable, and some pair well with other cards.";
 					break;
+
 				case 3:
-					std::cout << "Read card descriptions for more.\n";
-					TutorialText += "Read card descriptions for more.\n";
-					std::cout << "Press SPACE to continue to EVENT CARDS.\n";
-					TutorialText += "Press SPACE to continue to EVENT CARDS.\n";
+					std::cout << "Read the card descriptions to learn more.\n";
+					TutorialText += "Read the card descriptions to learn more.";
 					break;
-				default:
+				
+				case 4:
 					std::cout << "Press SPACE to continue to EVENT CARDS.\n";
-					TutorialText += "Press SPACE to continue to EVENT CARDS.\n";
+					TutorialText += "Press SPACE to continue to EVENT CARDS.";
+					break;
+
+				default:
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::EVENT_CARD:
 			std::cout << "[Tutorial - Event Cards]\n";
-			TutorialText << "[Tutorial - Event Cards]\n";
+			TutorialText << "[Tutorial - Event Cards]";
 
 			switch (tutorial_substep)
 			{
 				case 0:
-					std::cout << "Event Cards are purple with a special World Interaction Cast.\n";
-					TutorialText += "Event Cards are purple with a special World Interaction Cast.\n";
-					std::cout << "Drag and drop these cards onto the board.\n";
-					TutorialText += "Drag and drop these cards onto the board.\n";
+					std::cout << "Event cards are purple and use a special world interaction cast. Drag and drop these cards onto the board.\n";
+					TutorialText += "Event cards are purple and use a special world interaction cast. Drag and drop these cards onto the board.";
 					break;
+
 				case 1:
-					std::cout << "These cards manipulate the world by:\n";
-					TutorialText += "These cards manipulate the world by:\n";
-					std::cout << "placing objects, pulling enemies in, and pushing them away.\n";
-					TutorialText += "placing objects, pulling enemies in, and pushing them away.\n";
+					std::cout << "These cards manipulate the world by placing objects, pulling enemies in, or pushing them away.\n";
+					TutorialText += "These cards manipulate the world by placing objects, pulling enemies in, or pushing them away.";
 					break;
+
 				case 2:
-					std::cout << "There are only three event cards, each with their own unique abilities.\n";
-					TutorialText += "There are only three event cards, each with their own unique abilities.\n";
+					std::cout << "There are only three event cards, and each has its own unique ability.\n";
+					TutorialText += "There are only three event cards, and each has its own unique ability.";
 					break;
+
 				case 3:
-					std::cout << "Some cards require a change of orientation. Press 'R' to rotate.\n";
-					TutorialText += "Some cards require a change of orientation. Press 'R' to rotate.\n";
-					std::cout << "Applicable in: Mana Wall, Gust of Wind.\n";
-					TutorialText += "Applicable in: Mana Wall, Gust of Wind.\n";
+					std::cout << "Some cards require a change of orientation. Press R to rotate. This applies to Mana Wall and Gust of Wind.\n";
+					TutorialText += "Some cards require a change of orientation. Press R to rotate. This applies to Mana Wall and Gust of Wind.";
 					break;
+
 				case 4:
-					std::cout << "But be careful using the Black Hole! There are consequences...\n";
-					TutorialText += "But be careful using the Black Hole! There are consequences...\n";
-					std::cout << "P.S. The developer of this card LOVES gambling.\n";
-					TutorialText += "P.S. The developer of this card LOVES gambling.\n";
+					std::cout << "Be careful when using Black Hole. There are consequences...\n";
+					TutorialText += "Be careful when using Black Hole. There are consequences...";
 					break;
+
+				case 5:
+					std::cout << "Press SPACE to WINNING.\n";
+					TutorialText += "Press SPACE to WINNING.";
+					break;
+
 				default:
-					std::cout << "Press SPACE to continue.\n";
-					TutorialText += "Press SPACE to continue.\n";
 					break;
 			}
 
 			std::cout << "Press SPACE to continue, E to go back, Q to restart.\n";
-			TutorialText += "Press SPACE to continue, E to go back, Q to restart.\n";
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
+			break;
+
+		case TutorialStage::WIN_TRANSITION:
+			std::cout << "[Tutorial WINNING]\n";
+			TutorialText << "[Tutorial WINNING]";
+
+			switch (tutorial_substep)
+			{
+				case 0:
+					TutorialText += "Great! Now what about winning?";
+					break;
+
+				case 1:
+					TutorialText += "Well sorry... we're generic and you win by eliminating all of the robots.";
+					break;
+
+				case 2:
+					TutorialText += "Ah... looks like we got a bunch.";
+					break;
+
+				case 3:
+					TutorialText += "OH! I forgot to give you cards. Yikes.";
+					break;
+
+				case 4:
+					TutorialText += "Well! I am the developer after all, let me give you 1% of my power.";
+					break;
+
+				case 5:
+					TutorialText += "PRESS ALT + F4 to eliminate the horde!";
+					break;
+
+				case 6:
+					TutorialText += "Oh... you didn't fall for it, a SMART FELLA!!!";
+					break;
+
+				case 7:
+					TutorialText += "Alright enough messing around, PRESS '-' to eliminate the horde!";
+					break;
+
+				case 8:
+					TutorialText += "A perfectly balanced solution.";
+					break;
+
+				case 9:
+					TutorialText += "Victory cards will appear once you eliminate the horde.";
+					break;
+
+				case 10:
+					TutorialText += "Selecting the same cards increases its chance of appearing in your deck.";
+					break;
+
+				case 11:
+					TutorialText += "Choose wisely.";
+					break;
+
+				case 12:
+					TutorialText += "Select one of 3 cards to bring to your journey.";
+					break;
+
+				case 13:
+					TutorialText += "Now that you've selected them, two portals will appear.";
+					break;
+
+				case 14:
+					TutorialText += "Walk towards a portal and click on it.";
+					break;
+
+				case 15:
+					TutorialText += "Press SPACE to finish the tutorial.";
+					break;
+
+				default:
+					break;
+			}
+
+			TutorialText += "Press SPACE to continue, E to go back, Q to restart.";
 			break;
 
 		case TutorialStage::DONE:
 			std::cout << "[Tutorial Complete]\n";
-			TutorialText << "[Tutorial Complete]\n";
-			std::cout << "You have finished the tutorial.\n";
-			TutorialText += "You have finished the tutorial.\n";
+			TutorialText << "[Tutorial Complete]";
+			TutorialText += "Exit the game to play.";
+			TutorialText += "Press Q to restart, E to go back.";
 			break;
 	}
 
@@ -728,8 +890,8 @@ void Scene::print_tutorial_stage_text() const
 
 void Scene::setup_tutorial_basics()
 {
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	clear_player_cards_for_tutorial(playerID, UIptr);
 
 	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -966,6 +1128,78 @@ void Scene::setup_tutorial_event()
 	print_tutorial_stage_text();
 }
 
+void Scene::setup_tutorial_done()
+{
+	std::cout << "[Tutorial] Done stage init\n";
+
+	clear_tutorial_spawned_entities();
+	clear_player_cards_for_tutorial(playerID, UIptr);
+
+	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
+	if (storage)
+		storage->init();
+
+	// give player freedom to move
+	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
+	if (st)
+	{
+		st->max_movSpd = 100.f;
+		st->cur_movSpd = 100.f;
+	}
+
+	// reset tutorial state for the finale
+	tutorial_goal_x = -1;
+	tutorial_goal_y = -1;
+
+	// spawn joke enemies
+	s32 px, py;
+	if (BattleGrid.findEntityCell(playerID, px, py))
+	{
+		Entity e1 = beastiary.generate_enemy_from_beastiary(
+			"Melee",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Entity e2 = beastiary.generate_enemy_from_beastiary(
+			"Ranger",
+			{ 0.f, 0.f },
+			{ 192.f, 192.f },
+			Components::AnimationType::IDLE
+		);
+
+		Animation::init_animation_for_entity(ecs, e1);
+		Animation::init_animation_for_entity(ecs, e2);
+
+		add_entity_to_scene(e1);
+		add_entity_to_scene(e2);
+
+		tutorial_spawned_entities.push_back(e1);
+		tutorial_spawned_entities.push_back(e2);
+
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+			if (hordeTag)
+			{
+				hordeTag->goons.clear();
+				hordeTag->goons.push_back(e1);
+				hordeTag->goons.push_back(e2);
+			}
+		}
+
+		if (px + 2 < MAX_I && BattleGrid.get_pos()[px + 2][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e1, px + 2, py);
+
+		if (px + 3 < MAX_I && BattleGrid.get_pos()[px + 3][py] == Components::NULL_INDEX)
+			BattleGrid.placeEntity(e2, px + 3, py);
+	}
+
+	print_tutorial_stage_text();
+}
+
 void Scene::set_tutorial_stage(int stage)
 {
 	tutorial_stage = static_cast<TutorialStage>(stage);
@@ -1070,4 +1304,33 @@ Grid::GameBoard& Scene::getBattleGrid()
 CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 {
 	return cbs;
+}
+
+
+//tutorial getters
+int Scene::get_tutorial_stage() const
+{
+	return static_cast<int>(tutorial_stage);
+}
+
+int Scene::get_tutorial_substep() const
+{
+	return tutorial_substep;
+}
+
+void Scene::advance_tutorial_substep()
+{
+	++tutorial_substep;
+}
+
+void Scene::advance_tutorial_stage()
+{
+	tutorial_stage = static_cast<TutorialStage>(static_cast<int>(tutorial_stage) + 1);
+	tutorial_substep = 0;
+}
+
+void Scene::retreat_tutorial_stage()
+{
+	tutorial_stage = static_cast<TutorialStage>(static_cast<int>(tutorial_stage) - 1);
+	tutorial_substep = 0;
 }

@@ -8,6 +8,7 @@ enum class TutorialFlowStage
 	DEFENSE_CARD,
 	ITEM_CARD,
 	EVENT_CARD,
+	WIN_TRANSITION,
 	DONE
 };
 
