@@ -83,14 +83,17 @@ void LevelStateCombat_update()
 
 	if (!player_died && !pause)
 	{
-		UIM.getPauseMenu().free();
 		VS.update(ecs);
 		scene.update();
 		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
 		//RENDER
 		CS.update();
-		UIM.update(scene, dt);
 		AS.update(ecs, scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
+		UIM.update(scene, dt);
+	}
+	else
+	{
+		UIM.pause.update();
 	}
 	/*else if(!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{

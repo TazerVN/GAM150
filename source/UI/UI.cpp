@@ -17,9 +17,9 @@ namespace UI
 
 	void UIManager::combat_init(Scene& scene)
 	{
-		this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);
+		//this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);
 		this->pause.current_menu = PauseMenu::CURRENT::EMPTY;
-		this->pause.setStateOn(true);
+		this->pause.setStateOn(false);
 		this->pause.init();
 
 		//hand
@@ -27,21 +27,31 @@ namespace UI
 		s32 w_height = AEGfxGetWindowHeight();
 
 		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-										 , scene.getGBS(), info,scene.getCombatSystem());
+										 , scene.getGBS(), info, scene.getCombatSystem());
 
 
 		//========================================== buttons ======================================
 		//end turn button
 		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, this->z,
 			// the lambda function
-										 [&scene]
-										 {
-											 if (scene.getGBS().getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
-											 scene.getTBS().next();
-										 }
+											  [&scene]
+											  {
+												  if (!::pause){
+													  if (scene.getGBS().getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
+												  scene.getTBS().next();
+												  }
+											  }
 		);
 
-		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ this->pause.current_menu = PauseMenu::CURRENT::MAIN , this->pause.init();});
+		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]
+													 {
+														 if (!::pause)
+														 {
+															 this->pause.current_menu = PauseMenu::CURRENT::MAIN;
+															 this->pause.setStateCreate(true);
+															 this->pause.init();
+														 }
+													 });
 
 		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
 		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
@@ -52,7 +62,7 @@ namespace UI
 		turn = UIO::ui_text(0.55F * AEGfxGetWinMaxX(), 0.82F * AEGfxGetWinMaxY(), 0.55f, 80, 0, this->z + 1, "Round ");
 
 		Entity bin_button = UIO::ui_button_texture(TF.getTextureUI(0), 0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
-		Entity bin_text = UIO::ui_text( 0.80F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
+		Entity bin_text = UIO::ui_text(0.80F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
 		this->discard_pile = std::make_pair(bin_button, bin_text);
 
 		this->current_ui.push_back(end_b);
@@ -104,12 +114,12 @@ namespace UI
 
 	void UIManager::update(Scene& scene, f32 dt)
 	{
-		if(this->pause.isOn()) return;
-		if(this->info.isOn() && !this->info.isCreated())
+		if (this->pause.isOn()) return;
+		if (this->info.isOn() && !this->info.isCreated())
 		{
 			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, this->z);
 		}
-		else if(!this->info.isOn() && this->info.isCreated())
+		else if (!this->info.isOn() && this->info.isCreated())
 		{
 			info.free(ecs);
 		}
@@ -332,9 +342,9 @@ namespace UI
 
 
 		//shield implementation
-		if(sta_parent->shields > 0)
+		if (sta_parent->shields > 0)
 		{
-			if(player_effect == 0)
+			if (player_effect == 0)
 			{
 				auto transform = ecs.getComponent<Components::Transform>(playerID);
 
@@ -355,13 +365,13 @@ namespace UI
 		}
 		else
 		{
-			if (player_effect != 0) 
+			if (player_effect != 0)
 			{
 				ecs.destroyEntity(player_effect);
 				player_effect = 0;
 			}
 		}
-		
+
 
 	}
 
@@ -420,7 +430,7 @@ namespace UI
 
 		text->text = std::to_string(draw_pile->data_draw_pile.size()).c_str();
 	}
-	void UIManager::discardpile_update() 
+	void UIManager::discardpile_update()
 	{
 		auto discard_pile = ecs.getComponent<Components::Card_Storage>(playerID);
 		auto text = ecs.getComponent<Components::Text>(this->discard_pile.second);

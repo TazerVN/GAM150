@@ -326,6 +326,7 @@ namespace CardInteraction
 
 	void card_onClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id)
 	{
+		if(::pause) return;
 		Entity first = id.first;
 		Entity second = id.second;
 
@@ -373,6 +374,7 @@ namespace CardInteraction
 
 	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z)
 	{
+		if (::pause) return;
 		Entity first = id.first;
 		Entity second = id.second;
 
@@ -417,7 +419,7 @@ namespace CardInteraction
 	}
 	void card_onDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z)
 	{
-
+		if (::pause) return;
 		Entity first = id.first;
 		Entity second = id.second;
 
