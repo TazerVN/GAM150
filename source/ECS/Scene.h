@@ -45,6 +45,7 @@ private:
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
 	IntentionDisplaySystem intentDisplaySystem;
+
 	std::vector<Entity> tutorial_spawned_entities; // for tutorial enemies
 
 	HighlightSystem highlightSystem = HighlightSystem(eventPool, BattleGrid, cbs, TBSys);
@@ -68,9 +69,6 @@ private:
 	s32 tutorial_goal_x = 0;
 	s32 tutorial_goal_y = 0;
 
-
-	void update_tutorial();
-
 	void setup_tutorial_stage();
 	void setup_tutorial_basics();
 	void setup_tutorial_movement();
@@ -78,6 +76,7 @@ private:
 	void setup_tutorial_defense();
 	void setup_tutorial_item();
 	void setup_tutorial_event();
+	void setup_tutorial_done();
 
 	void clear_tutorial_spawned_entities();
 
@@ -91,6 +90,7 @@ public:
 	std::vector<Entity>& entities_store();
 	void scene_free();
 
+	void update_tutorial();
 	void set_tutorial_stage(int stage);
 	void set_tutorial_substep(int substep);
 	void reset_tutorial_player_state();
@@ -105,6 +105,11 @@ public:
 	TBS::TurnBasedSystem& getTBS();
 	Grid::GameBoard& getBattleGrid();
 	CombatNameSpace::CombatSystem& getCombatSystem();
-	bool win() const;
+
+	int get_tutorial_stage() const;
+	int get_tutorial_substep() const;
+	void advance_tutorial_substep();
+	void retreat_tutorial_stage();
+	void advance_tutorial_stage();
 
 };

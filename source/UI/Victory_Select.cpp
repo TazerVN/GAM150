@@ -9,6 +9,15 @@ void Victory_Select::update()
 		this->on = false;
 
 		this->dim = UIO::ScreenTransition(false, 0.f ,0.5f, 1.f);
+
+		this->dim.z = 1150;
+
+		auto* mesh = ecs.getComponent<Components::Mesh>(this->dim.dim);
+		if (mesh)
+		{
+			mesh->z = 1150;
+		}
+
 		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
 		ecs.addComponent(dim.dim, tag);

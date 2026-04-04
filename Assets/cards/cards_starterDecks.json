@@ -60,7 +60,9 @@
 			"name" : "Event Deck",
 			"cards" : 
 			[
-				"Gust of Wind",
+                                "PP up",
+                                "PP up",				
+                                "Gust of Wind",
 				"Mana Wall",
 				"Black Hole"
 			]

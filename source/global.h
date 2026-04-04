@@ -55,4 +55,6 @@ extern JSON_GAME_DATA gameData;
 extern Console console;
 extern EventPool<CommandTypes> ConsoleEvents;
 
+extern std::vector<Entity> old_card_buffer;
+
 extern std::string data_path_;

@@ -238,7 +238,6 @@ JSON_RET save_game_data()
 		doc.AddMember("player_current_cards", player_cards, alloc);
 	}
 
-
 	rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
 	doc.Accept(writer);
 
@@ -246,34 +245,6 @@ JSON_RET save_game_data()
 
 	return JSON_RET::OK;
 }
-
-
-JSON_RET parse_seed(unsigned int& seed, char const* file_loc)
-{
-	std::ifstream file(file_loc);
-	if (!file.is_open()) 
-		return JSON_RET::FILE_OPEN_ERROR;
-
-	std::string json
-	(
-		(std::istreambuf_iterator<char>(file)),
-		std::istreambuf_iterator<char>()
-	);
-
-	rapidjson::Document doc;
-	doc.Parse(json.c_str());
-	if (doc.HasParseError()) {
-		std::cerr << "Error parsing JSON: "
-			<< doc.GetParseError() << '\n';
-		return JSON_RET::PARSE_ERROR;
-	}
-	if (doc.HasMember("Seed"))
-		seed = doc["Seed"].GetUint();
-	else
-		return JSON_RET::PARSE_ERROR;
-	return JSON_RET::OK;
-}
-
 
 JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 {
@@ -298,7 +269,7 @@ JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 
 	rapidjson::Value& arr = doc.GetArray();
 
-	for (int i = 0; i < arr.Size(); ++i)
+	for (rapidjson::SizeType i = 0; i < arr.Size(); ++i)
 
 	{
 		JSON_CARD temp_card{};
@@ -376,7 +347,7 @@ JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str)
 
 	rapidjson::Value& arr = doc.GetArray();
 
-	for (int i = 0; i < arr.Size(); ++i)
+	for (rapidjson::SizeType i = 0; i < arr.Size(); ++i)
 
 	{
 		JSON_ENEMY temp_card{};

@@ -87,6 +87,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		gGameStateCurr = gGameStateNext;
 	}
 
+	if(LevelStateFree != nullptr ) LevelStateFree();
+	if (LevelStateUnload != nullptr)LevelStateUnload();
+
 	mf.MeshFree();
 	AF.free();
 	console.free();

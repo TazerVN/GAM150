@@ -55,12 +55,12 @@ namespace Particle
 		*/
  
 
-		void particleDataStream(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleDataStream();
 		/*
 		* Parallax Scrolling for Background
 		*/
 
-		void particleReverseStream(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleReverseStream();
 		/*
 		* Parallax Scrolling for Background
 		*/

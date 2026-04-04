@@ -174,7 +174,7 @@ namespace UI
 		this->drawpile_update();
 		this->health_update();
 		this->stamina_update();
-		this->mana_update(scene);
+		this->pp_update(scene);
 		this->turn_update(scene);
 
 		for (std::pair<Entity, Entity> p : this->mana_children_list)
@@ -343,9 +343,12 @@ namespace UI
 			{
 				auto transform_effect = ecs.getComponent<Components::Transform>(player_effect);
 				auto mesh_effect = ecs.getComponent<Components::Mesh>(player_effect);
-				transform_effect->pos = transform->pos_onscreen;
-				transform_effect->pos_onscreen = transform_effect->pos;
-				mesh_effect->z = mesh->z;
+				if (transform_effect != nullptr && mesh_effect != nullptr)
+				{
+					transform_effect->pos = transform->pos_onscreen;
+					transform_effect->pos_onscreen = transform_effect->pos;
+					mesh_effect->z = mesh->z;
+				}
 			}
 
 		}
@@ -361,7 +364,7 @@ namespace UI
 
 	}
 
-	void UIManager::mana_update(Scene& scene)
+	void UIManager::pp_update(Scene& scene)
 	{
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
@@ -383,20 +386,20 @@ namespace UI
 		{
 			while (this->mana_children_list.size() > empty_blocks_for_display)
 			{
-				ecs.destroyEntity(this->mana_children_list[(this->mana_children_list.size() - 1)].second);
+				ecs.destroyEntity(this->mana_children_list[(static_cast<int>(this->mana_children_list.size()) - 1)].second);
 				this->mana_children_list.pop_back();
 			}
 		}
-		while (this->mana_children_list.size() - empty_blocks_for_display < sta_parent->points)
+		while (static_cast<int>(this->mana_children_list.size()) - empty_blocks_for_display < sta_parent->points)
 		{
-			Entity mana = UIO::ui_blank_texture(TF.getTextureUI(5), i * 40 - 40.f, 20.f, 49, 55, 0, this->z);
+			Entity mana = UIO::ui_blank_texture(TF.getTextureUI(5), static_cast<f32>(i) * 40.f - 40.f, 20.f, 49.f, 55.f, 0.f, this->z);
 			std::pair<Entity, Entity> mana_p{ p.first , mana };
 			this->mana_children_list.push_back(mana_p);
 			i++;
 		}
-		while (this->mana_children_list.size() - empty_blocks_for_display > sta_parent->points)
+		while (static_cast<int>(this->mana_children_list.size()) - empty_blocks_for_display > sta_parent->points)
 		{
-			ecs.destroyEntity(this->mana_children_list[(this->mana_children_list.size() - 1)].second);
+			ecs.destroyEntity(this->mana_children_list[(static_cast<int>(this->mana_children_list.size()) - 1)].second);
 			this->mana_children_list.pop_back();
 		}
 	}

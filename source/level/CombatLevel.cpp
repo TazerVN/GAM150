@@ -5,7 +5,7 @@
 #include "../UI/UI.h"
 
 Scene scene;
-static UI::UIManager UIM;
+UI::UIManager UIM;
 //Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
@@ -29,7 +29,6 @@ void LevelStateCombat_load()
 		//JSON_DECK deck = card_system.start_decks[index];
 
 		//perfect deck (optimal deck)
-		int absStarter = (card_system.start_decks.size() - 1);
 		int perfection = (card_system.start_decks.size() - 2);
 		JSON_DECK deck = card_system.start_decks[perfection];
 
@@ -60,8 +59,8 @@ void LevelStateCombat_init()
 	scene.init(CS, UIM);
 	UIM.combat_init(scene);
 
-	PS.particleDataStream(ecs, mf);
-	PS.particleReverseStream(ecs, mf);
+	PS.particleDataStream();
+	PS.particleReverseStream();
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
 	//AF.bgm.play(0);

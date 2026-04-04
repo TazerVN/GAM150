@@ -29,5 +29,7 @@ JSON_GAME_DATA gameData;
 Console console;
 EventPool<CommandTypes> ConsoleEvents;
 
+std::vector<Entity> old_card_buffer;
+
 std::string data_path_{ "Data/data.json" };
 //=======================================================================================

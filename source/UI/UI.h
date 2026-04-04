@@ -65,7 +65,7 @@ namespace UI
 
 		void health_update();
 		void stamina_update();
-		void mana_update(Scene& scene);
+		void pp_update(Scene& scene);
 		void turn_update(Scene& scene);
 		void drawpile_update();
 		void discardpile_update();
