@@ -18,15 +18,6 @@
 		"png": "card_slash+.png"
 	},
 	{
-		"id": 1012,
-		"name": "Step Slash",
-		"cost": 1.0,
-		"value": 7.0,
-		"range": 3.0,
-		"description": "\n",
-		"png": "cardSample.png"
-	},
-	{
 		"id": 1210,
 		"name": "Turn bash",
 		"cost": 4.0,
@@ -34,15 +25,6 @@
 		"range": 1.0,
 		"description": "Deal more damage based \non turn counter\n",
 		"png": "card_Turn_Bash.png"
-	},
-	{
-		"id": 1310,
-		"name": "Disk Detonate",
-		"cost": 1.0,
-		"value": 7.0,
-		"range": 3.0,
-		"description": "Condition:\nDiscard a card\nDeal damage equal to the cost\nof the discarded card,\ndouble if is a attack card\n",
-		"png": "cardSample.png"
 	},
 	{
 		"id": 1320,
@@ -161,31 +143,6 @@
 		"description": "refresh movement;\nStamina +3\n",
 		"png": "card_Swift_foot.png"
 	},
-	{
-		"id": 3400,
-		"name": "Data Draw",
-		"cost": 1.0,
-		"value": 2.0,
-		"description": "Draw 2 cards.\n",
-		"png": "cardSample.png"
-	},
-	{
-		"id": 3401,
-		"name": "Salvage",
-		"cost": -1.0,
-		"value": -1.0,
-		"description": "Get card from discard pile\n",
-		"png": "cardSample.png"
-	},
-	{
-		"id": 3402,
-		"name": "Rand Generate",
-		"cost": 1.0,
-		"value": 1.0,
-		"description": "Randomly genrate attack/ defense card\n",
-		"png": "cardSample.png"
-	},
-
 	{
 		"id": 4120,
 		"name": "Gust of Wind",
