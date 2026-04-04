@@ -78,8 +78,8 @@ class SettingPause : public BasePauseMenu
 
 	UIO::TextureButton leave;
 	void init();
-	void free();
 	void update() override;
+	void free();
 };
 
 class PauseMenu

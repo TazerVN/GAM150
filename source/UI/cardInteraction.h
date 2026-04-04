@@ -32,6 +32,7 @@ namespace PhaseSystem { class GameBoardState; }
 namespace TBS { class TurnBasedSystem; }
 namespace Grid { class GameBoard; }
 namespace CombatNameSpace{class CombatSystem;}
+class HighlightSystem;
 
 namespace CardInteraction
 {
@@ -58,7 +59,7 @@ namespace CardInteraction
 		TextureFactory::TextureFactory* tfptr = nullptr;
 		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 		CardInformation::CardDisplay* cdptr = nullptr;
-
+		HighlightSystem* hlptr = nullptr;
 
 	public:
 		CardHand(f32 x, f32 y, f32 width, f32 height);
@@ -68,7 +69,8 @@ namespace CardInteraction
 			Grid::GameBoard& gb, 
 			PhaseSystem::GameBoardState& gbs, 
 			CardInformation::CardDisplay& cd,
-			CombatNameSpace::CombatSystem& cbs);
+			CombatNameSpace::CombatSystem& cbs,
+			HighlightSystem& hl);
 
 		CardHand();
 

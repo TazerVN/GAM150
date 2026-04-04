@@ -31,8 +31,9 @@ namespace Grid
 	class GameBoard
 	{
 	private:
-		size_t MAX_i = 0;
-		size_t MAX_j = 0;
+		s32 hx, hy;
+
+		bool mouse_on_board = false;
 
 		std::vector<Entity> cells_entity_id;
 
@@ -83,11 +84,10 @@ namespace Grid
 		void draw_movement_trail(s32 x, s32 y);
 		void func_aoe_hightlight_cells(s32 x, s32 y);
 
+		bool getGridCellFromMouse(s32& out_x, s32& out_y) const;
 
 		//getters
 		std::array<std::array<Entity, MAX_J>, MAX_I>& get_pos();
-		//std::array<std::array<highlight_tag, MAX_J>, MAX_I>& activate_highlight();
-		//std::array<std::array<int, MAX_J>, MAX_I>& activate_aoe_highlight();
 
 		bool selected_player() const;
 		void unselect_movement();

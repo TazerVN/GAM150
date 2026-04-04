@@ -27,7 +27,6 @@ void PauseMenu::init()
 			this->menu = new MainPause;
 			this->menu->init();
 			auto main = dynamic_cast<MainPause*>(this->menu);
-
 			auto button_c = ecs.getComponent<Components::Input>(main->continue_button.button);
 			button_c->onClick = [this]
 				{
@@ -45,7 +44,6 @@ void PauseMenu::init()
 				{
 					if (!this->transition)
 					{
-						this->on = false;
 						this->transition = true;
 						this->menu->to_setting();
 					}
@@ -56,7 +54,6 @@ void PauseMenu::init()
 				{
 					if (!this->transition)
 					{
-						this->on = false;
 						this->transition = true;
 						this->menu->to_confirm();
 
@@ -68,7 +65,6 @@ void PauseMenu::init()
 				{
 					if (!this->transition)
 					{
-						this->on = false;
 						this->transition = true;
 						this->menu->to_tutorial();
 
@@ -79,11 +75,12 @@ void PauseMenu::init()
 			button_l->onClick = [this]
 				{
 					this->on = false;
-					this->menu->to_exit();
 					this->transition = true;
+					this->menu->to_exit();
 				};
 			break;
 		}
+
 		case CURRENT::SETTING:
 		{
 			this->menu = new SettingPause;
@@ -93,8 +90,8 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(setting->leave.button);
 			button_l->onClick = [this]
 				{
-					this->menu->to_main();
 					this->transition = true;
+					this->menu->to_main();
 				};
 			break;
 		}
@@ -107,14 +104,15 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(confirm->no.button);
 			button_l->onClick = [this]
 				{
-					this->menu->to_main();
 					this->transition = true;
+					this->menu->to_main();
 				};
 			auto button_c = ecs.getComponent<Components::Input>(confirm->yes.button);
 			button_c->onClick = [this]
 				{
-					this->menu->to_gameover();
+					this->on = false;
 					this->transition = true;
+					this->menu->to_gameover();
 				};
 			break;
 		}
@@ -127,12 +125,13 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(tutorial->leave_button.button);
 			button_l->onClick = [this]
 				{
-					this->menu->to_main();
 					this->transition = true;
+					this->menu->to_main();
 				};
 			break;
 
 		};
+
 		case CURRENT::EMPTY:
 		{
 			this->menu = nullptr;
@@ -150,7 +149,6 @@ void PauseMenu::update()
 	else
 	{
 		this->menu->update();
-
 		switch (this->menu->dest)
 		{
 			case BasePauseMenu::DESTINATION::CONTINUE:
@@ -158,14 +156,12 @@ void PauseMenu::update()
 				pause = false;
 				this->current_menu = CURRENT::EMPTY;
 				this->free();
-				this->init();
 				this->transition = false;
 				break;
 			}
 			case BasePauseMenu::DESTINATION::MAIN:
 			{
 				this->current_menu = CURRENT::MAIN;
-				this->menu->free();
 				if (this->menu != nullptr)
 				{
 					this->menu->free();
@@ -179,7 +175,6 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::CONFIRM:
 			{
 				this->current_menu = CURRENT::CONFIRM;
-				this->menu->free();
 				if (this->menu != nullptr)
 				{
 					this->menu->free();
@@ -193,7 +188,6 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::SETTING:
 			{
 				this->current_menu = CURRENT::SETTING;
-				this->menu->free();
 				if (this->menu != nullptr)
 				{
 					this->menu->free();
@@ -207,7 +201,6 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::TUTORIAL:
 			{
 				this->current_menu = CURRENT::TUTORIAL;
-				this->menu->free();
 				if (this->menu != nullptr)
 				{
 					this->menu->free();
@@ -218,12 +211,12 @@ void PauseMenu::update()
 				this->transition = false;
 				break;
 			}
+
 			case BasePauseMenu::DESTINATION::EXIT:
 			{
 				pause = false;
 				this->current_menu = CURRENT::EMPTY;
 				this->free();
-				this->init();
 				this->transition = false;
 				gLevelStateNext = LevelStates::LS_QUIT;
 				this->dim = UIO::ScreenTransition(true, 1.f, 1.f, 0.5f);
@@ -234,13 +227,12 @@ void PauseMenu::update()
 				pause = false;
 				this->current_menu = CURRENT::EMPTY;
 				this->free();
-				this->init();
 				this->transition = false;
 				
 				player_died = true;
 				gLevelStateNext = LevelStates::LS_QUIT;
-				
 				this->dim = UIO::ScreenTransition(true, 1.f, 1.f, 0.5f);
+				
 				break;
 			}
 
@@ -374,7 +366,7 @@ void SettingPause::init()
 
 	this->sfx_text = UIO::TextShadow{ start_x, start_y - offset_y * 2 - s_h * text_size, text_size, z , "SFX" , 0xFFFFFFFF };
 	this->sfx_slider = UIO::Slider{ start_x + text_slider_gap ,  start_y - offset_y * 2, s_w, s_h, z, nullptr, AF.sfx.volume, 1.f };
-	this->leave = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, z, "GO BACK", nullptr, 0xFFFFFFFF };
+	this->leave = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, z + 1, "GO BACK", nullptr, 0xFFFFFFFF };
 
 }
 
@@ -423,6 +415,7 @@ void TutorialPause::init()
 
 	f32 image_w = 0.8f;
 	f32 image_h = 0.8f;
+
 	auto foward = [&]
 		{
 			this->page += 1;
@@ -434,7 +427,7 @@ void TutorialPause::init()
 		};
 
 	this->page = 0;
-	this->image = UIO::ui_blank_texture(TF.getTextureTutorial(0), 0, 0, AEGfxGetWindowWidth() * image_w, AEGfxGetWindowHeight() * image_h, 0, this->z);
+	this->image = UIO::ui_blank_texture(TF.getTextureTutorial(0), 0, 0, AEGfxGetWindowWidth() * image_w, AEGfxGetWindowHeight() * image_h, 0, this->z + 1);
 
 	this->leave_button = UIO::TextureButton{ TF.getTextureUI(11) , 0 , AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Leave", nullptr, 0xFFFFFFFF };
 	this->foward_button = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Continue", foward, 0xFFFFFFFF };
@@ -511,4 +504,6 @@ void ConfirmPause::init()
 	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z, "No", nullptr, 0xFFFFFFFF };
 	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z, "Yes", nullptr, 0xFFFFFFFF };
 }
+
+
 
