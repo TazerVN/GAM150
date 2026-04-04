@@ -77,7 +77,7 @@ class PauseMenu
 	private:
 	
 	s32 z{1300};
-	Entity dim{0};
+	UIO::ScreenTransition dim;
 	Entity timer{ 0 };
 	BasePauseMenu* menu;
 	bool on{false};

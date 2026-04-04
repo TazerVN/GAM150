@@ -18,9 +18,7 @@ void Victory_Select::update()
 			mesh->z = 1150;
 		}
 
-		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
-		ecs.addComponent(dim.dim, tag);
 		ecs.addComponent(dim.dim, in);
 
 		for(int i = 0; i < 3; i++)

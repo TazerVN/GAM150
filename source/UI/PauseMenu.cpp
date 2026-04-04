@@ -7,10 +7,15 @@
 
 void PauseMenu::init()
 {
+	if(this->on == false)
+	{
+		this->on = true;
+		this->dim = UIO::ScreenTransition(false, 0.f, 0.5f, 1.f);
+		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
+		ecs.addComponent(dim.dim, in);
+	}
 
-	this->free();
 	this->transition = false;
-
 	ecs.destroyEntity(this->timer);
 	this->timer = UIO::ui_timer(1.f);
 
@@ -129,16 +134,13 @@ void PauseMenu::free()
 		this->menu = nullptr;
 	} 
 	
-	if(this->dim != 0)
-	{
-		ecs.destroyEntity(this->dim);
-		this->dim= 0;
-	}
 	if(this->timer != 0)
 	{
 		ecs.destroyEntity(this->timer);
 		this->timer = 0;
 	}
+
+	this->dim.free();
 	this->created = false;
 	this->on = false;
 

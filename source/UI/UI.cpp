@@ -5,7 +5,7 @@
 
 namespace UI
 {
-	UIManager::UIManager() : hp_children_list{}, mana_children_list{}, current_ui{}, menu{}
+	UIManager::UIManager() : hp_children_list{}, mana_children_list{}, current_ui{}, menu{}, pause{}
 	{
 	}
 
@@ -40,7 +40,7 @@ namespace UI
 										 }
 		);
 
-		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ /*::pause = true;*/ this->pause.current_menu = PauseMenu::CURRENT::MAIN , this->pause.init();});
+		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ this->pause.current_menu = PauseMenu::CURRENT::MAIN , this->pause.init();});
 
 		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
 		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
