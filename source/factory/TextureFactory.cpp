@@ -30,6 +30,10 @@ namespace TextureFactory
 		{
 			AEGfxTextureUnload(pTex);
 		}
+		for (AEGfxTexture* pTex : this->tutorial)
+		{
+			AEGfxTextureUnload(pTex);
+		}
 	}
 
 	void TextureFactory::textureInit(){
@@ -99,7 +103,18 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Game_Over.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Enemy_loading_icon.png"));
 
-		//MIS
+		//Tutorial
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_1.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_2.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_3.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_4.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_5.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_6.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_7.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_8.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_9.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_10.png"));
+		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_11.png"));
 		//this->fontID = AEGfxCreateFont("Assets/font/cool.ttf", 64.F);
 		this->fontID = AEGfxCreateFont("Assets/font/TahomaBd.ttf", 64.F);
 	}
@@ -125,6 +140,10 @@ namespace TextureFactory
 	{
 		return this->others.at(id);
 	}
+	AEGfxTexture* TextureFactory::getTextureTutorial(s8 id)
+	{
+		return this->tutorial.at(id);
+	}
 
 
 	void TextureFactory::addTextureCard(AEGfxTexture* pTex)
@@ -146,6 +165,10 @@ namespace TextureFactory
 	void TextureFactory::addTextureOthers(AEGfxTexture* pTex)
 	{
 		this->others.push_back(pTex);
+	}
+	void TextureFactory::addTextureTutorial(AEGfxTexture* pTex)
+	{
+		this->tutorial.push_back(pTex);
 	}
 	AEGfxTexture* TextureFactory::getTextureFromCardMap(std::string key)
 	{

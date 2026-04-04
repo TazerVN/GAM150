@@ -21,6 +21,7 @@ namespace TextureFactory
 		std::vector<AEGfxTexture*> character;
 		std::vector<AEGfxTexture*> ui;
 		std::vector<AEGfxTexture*> others;
+		std::vector<AEGfxTexture*> tutorial;
 
 		std::unordered_map<std::string, AEGfxTexture*> card_texture_map;
 		std::unordered_map<std::string, AEGfxTexture*> enemy_texture_map;
@@ -36,12 +37,14 @@ namespace TextureFactory
 		AEGfxTexture* getTextureChar(s8 id);
 		AEGfxTexture* getTextureUI(s8 id);
 		AEGfxTexture* getTextureOthers(s8 id);
+		AEGfxTexture* getTextureTutorial(s8 id);
 		s8 getFontID();
 		void addTextureCard(AEGfxTexture* pTex);
 		void addTextureFloor(AEGfxTexture* pTex);
 		void addTextureChar(AEGfxTexture* pTex);
 		void addTextureUI(AEGfxTexture* pTex);
 		void addTextureOthers(AEGfxTexture* pTex);
+		void addTextureTutorial(AEGfxTexture* pTex);
 
 		AEGfxTexture* getTextureFromCardMap(std::string key);
 		AEGfxTexture* getTextureFromEnemyMap(std::string key);

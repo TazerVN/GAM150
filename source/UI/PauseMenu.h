@@ -7,7 +7,7 @@ class BasePauseMenu
 	public:
 	enum class DESTINATION
 	{
-		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT
+		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT, GAMEOVER
 	};
 	DESTINATION dest;
 	s32 z{ 1300 };
@@ -21,6 +21,7 @@ class BasePauseMenu
 	void to_tutorial();
 	void to_setting();
 	void to_exit();
+	void to_gameover();
 };
 
 
@@ -36,19 +37,33 @@ class MainPause : public BasePauseMenu
 	void free();
 };
 
-//class TutorialPause : public BasePauseMenu
-//{
-//	public:
-//	UIO::TextureButton leave_button;
-//	void free();
-//};
-//
-//class ConfirmPause : public BasePauseMenu
-//{
-//	public:
-//	UIO::TextureButton leave_button;
-//	void free();
-//};
+class TutorialPause : public BasePauseMenu
+{
+	public:
+	int page;
+	Entity image{0};
+	UIO::TextureButton foward_button;
+	UIO::TextureButton leave_button;
+	UIO::TextureButton backward_button;
+	void init() override;
+	void update() override;
+	void free();
+};
+
+class ConfirmPause : public BasePauseMenu
+{
+	public:
+	UIO::TextShadow warning;
+	UIO::TextShadow description;
+	//UIO::TextShadow description2;
+	UIO::TextShadow question;
+
+
+	UIO::TextureButton yes;
+	UIO::TextureButton no;
+	void init();
+	void free();
+};
 
 class SettingPause : public BasePauseMenu
 {
