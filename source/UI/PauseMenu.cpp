@@ -8,60 +8,64 @@
 void PauseMenu::init()
 {
 
-	if(!this->on && current_menu != CURRENT::EMPTY)
+	if (!this->on && this->created && current_menu != CURRENT::EMPTY)
 	{
 		this->on = true;
-		this->dim = UIO::ScreenTransition(true, 0.f, 0.5f, 1.f);
-		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
+		this->dim = UIO::ScreenTransition(true, 0.3f, 0.8f, 0.5f);
+		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, this->z };
 		ecs.addComponent(dim.dim, in);
 	}
 
-	this->transition = false;
 	ecs.destroyEntity(this->timer);
 	this->timer = UIO::ui_timer(1.f);
 
-	switch(this->current_menu)
+	switch (this->current_menu)
 	{
 		case CURRENT::MAIN:
 		{
-
+			pause = true;
 			this->menu = new MainPause;
 			this->menu->init();
 			auto main = dynamic_cast<MainPause*>(this->menu);
 			auto button_c = ecs.getComponent<Components::Input>(main->continue_button.button);
-			button_c->onClick = [this] { 
-				if(!this->transition)
+			button_c->onClick = [this]
 				{
-					this->on = false;
-					this->transition = true;
-					this->menu->to_continue();
-					ecs.destroyEntity(this->timer);
-					this->timer = UIO::ui_timer(1.f);
-				}
+					if (!this->transition)
+					{
+						this->on = false;
+						this->transition = true;
+						this->menu->to_continue();
+						
+					}
 				};
 
 			auto button_r = ecs.getComponent<Components::Input>(main->abandon_button.button);
-			button_r->onClick = [this] 
-			{
-				this->on = false;
-				player_died = true;
-			};
+			button_r->onClick = [this]
+				{
+					if (!this->transition)
+					{
+						this->on = false;
+						this->transition = true;
+						this->menu->to_confirm();
+					
+					}
+				};
 
 			auto button_l = ecs.getComponent<Components::Input>(main->leave_button.button);
 			button_l->onClick = [this]
-			{
-				this->on = false;
-				gLevelStateNext = LevelStates::LS_QUIT;
-			};
+				{
+					this->on = false;
+					this->menu->to_exit();
+					this->transition = true;
+				};
 			break;
 		}
 		case CURRENT::CONFIRM: break;
 		case CURRENT::SETTING: break;
 		case CURRENT::TUTORIAL: break;
-		case CURRENT::EMPTY: 
+		case CURRENT::EMPTY:
 		{
-			this->menu = new EmptyPause;
-			this->menu->init();
+			this->menu = nullptr;
 		}
 	}
 }
@@ -97,55 +101,77 @@ void PauseMenu::init()
 
 void PauseMenu::update()
 {
-	if(this->menu == nullptr) return;
-	switch(this->menu->dest)
+	if (this->menu == nullptr)
 	{
-		case BasePauseMenu::DESTINATION::CONTINUE:
+		this->dim.update();
+	}
+	else
+	{
+		switch (this->menu->dest)
 		{
-			pause = false;
-			this->current_menu = CURRENT::EMPTY;
-			this->menu->free();
-			this->init();
-			break;
-		} 
-		case BasePauseMenu::DESTINATION::MAIN:
-		{
-			this->current_menu = CURRENT::MAIN;
-			this->menu->free();
-			this->init();
-			break;
-		} 
-		case BasePauseMenu::DESTINATION::EXIT:{break;} 
-		case BasePauseMenu::DESTINATION::CONFIRM:{break;} 
-		case BasePauseMenu::DESTINATION::SETTING:{break;} 
-		case BasePauseMenu::DESTINATION::TUTORIAL:{break;} 
-		default:
-		{
-			this->menu->update();
-			break;
-		} 
+			case BasePauseMenu::DESTINATION::CONTINUE:
+			{
+				pause = false;
+				this->current_menu = CURRENT::EMPTY;
+				this->free();
+				this->init();
+				this->transition = false;
+				break;
+			}
+			case BasePauseMenu::DESTINATION::MAIN:
+			{
+				this->current_menu = CURRENT::MAIN;
+				this->menu->free();
+				this->dim.free();
+				this->init();
+				this->transition = false;
+				break;
+			}
+			case BasePauseMenu::DESTINATION::CONFIRM: 
+			{ 
+				pause = false;
+				this->current_menu = CURRENT::EMPTY;
+				this->free();
+				this->init();
+				this->transition = false;
+				break;
+			}
+			case BasePauseMenu::DESTINATION::SETTING: { break; }
+			case BasePauseMenu::DESTINATION::TUTORIAL: { break; }
+			case BasePauseMenu::DESTINATION::EXIT:
+			{ 
+				pause = false;
+				this->current_menu = CURRENT::EMPTY;
+				this->free();
+				this->init();
+				this->transition = false;
+				gLevelStateNext = LevelStates::LS_QUIT;
+				this->dim = UIO::ScreenTransition(true, 1.f, 1.f, 0.5f);
+				break;
+			}
+
+		}
 	}
 }
 
 void PauseMenu::free()
 {
-	if (this->menu != nullptr) 
+	if (this->menu != nullptr)
 	{
 		this->menu->free();
 		delete this->menu;
 		this->menu = nullptr;
-	} 
-	
-	if(this->timer != 0)
+	}
+
+	if (this->timer != 0)
 	{
 		ecs.destroyEntity(this->timer);
 		this->timer = 0;
 	}
 
 	this->dim.free();
-	this->created = false;
 	this->on = false;
-
+	this->created = false;
 }
 bool PauseMenu::isOn()
 {
@@ -170,7 +196,7 @@ void BasePauseMenu::to_continue()
 {
 	this->dest = DESTINATION::CONTINUE;
 }
-void BasePauseMenu::to_main() 
+void BasePauseMenu::to_main()
 {
 	this->dest = DESTINATION::MAIN;
 }

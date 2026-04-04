@@ -166,9 +166,14 @@ void LevelStateTutorial_update()
 		tutorialscene.update();
 		tutorialscene.getBattleGrid().update(ecs, CS.id());
 		CS.update();
-		tut_UIM.update(tutorialscene, dt);
 		AS.update(ecs, tutorialscene.getBattleGrid(), tutorialscene.getGBS(), tutorialscene.getCombatSystem());
+		tut_UIM.update(tutorialscene, dt);
 	}
+	else
+	{
+		tut_UIM.pause.update();
+	}
+
 
 	
 	/*else if (!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())

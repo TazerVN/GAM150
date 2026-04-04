@@ -25,7 +25,7 @@ void TimerSystem::update(EntityComponent::Registry& ecs)
 				}
 				else if(timer->start == true && timer->seconds < timer->max_seconds)
 				{
-					timer->seconds += dt;
+					if(!::pause) timer->seconds += dt;
 				}
 				else if(timer->seconds >= timer->max_seconds)
 				{

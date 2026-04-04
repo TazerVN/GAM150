@@ -245,7 +245,7 @@ namespace UIO
 		this->min = min;
 		this->max = max;
 		if(fadeIn){
-			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 1.f);
+			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, max);
 			Components::Timer timer{ duration, 0.f, true, false};
 			Components::TagClass tag{Components::Tag::UI};
 			ecs.addComponent(this->dim, timer);
@@ -253,7 +253,7 @@ namespace UIO
 		}
 		else
 		{
-			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 0.f);
+			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, min);
 			Components::Timer timer{ duration, 0.f, true, false };
 			Components::TagClass tag{ Components::Tag::UI };
 			ecs.addComponent(this->dim, timer);
