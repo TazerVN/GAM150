@@ -735,8 +735,8 @@ void ConfirmMenu::init()
 	this->description = UIO::TextShadow{ -description_w * win_w , start_y - offset_y * 2, text_size, 1200, description_text, {1.f, 1.f, 1.f, 1.f} };
 	this->question = UIO::TextShadow{ -question_w * win_w, start_y - offset_y * 4, text_size, 1200, question_text, {1.f, 0.f, 0.f, 1.f} };
 
-	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "Yes", nullptr, 0xFFFFFFFF };
-	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "No", nullptr, 0xFFFFFFFF };
+	this->no = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "No", nullptr, 0xFFFFFFFF };
+	this->yes = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, 1200, "Yes", nullptr, 0xFFFFFFFF };
 }
 void ConfirmMenu::free()
 {
