@@ -39,10 +39,17 @@ namespace Text
 	class InstructionText
 	{
 		public:
-		InstructionText() = default;
+		Components::RGBA rgba{1.f, 1.f, 1.f, 1.f};
 		s32 z{1100};
-		UIO::TextShadow text;
+		f32 y{400.f};
+		f32 size{0.7f};
+
+		std::vector<UIO::TextShadow*> text;
+
+		void set(f32 y, f32 size);
+		void set(Components::RGBA color);
 		friend InstructionText& operator<<(InstructionText&, const char* text);
+		InstructionText& operator+=(const char* text);
 		void free();
 	};
 

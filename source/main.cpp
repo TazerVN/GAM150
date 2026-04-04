@@ -106,7 +106,7 @@ void load_Sys_Comp()
 		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});
 	}
 
-
+	
 	card_system.init_cards();
 	beastiary.init_data();
 	AF = AudioFactory::AudioFactory();
@@ -128,4 +128,5 @@ void load_Sys_Comp()
 	Components::TagClass tg{Components::Tag::UI};
 	ecs.addComponent(t, tg);
 	//=============================
+	IT.set({0.3f, 0.7f, 1.f, 1.f});
 }

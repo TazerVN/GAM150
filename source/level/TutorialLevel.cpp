@@ -48,6 +48,7 @@ void LevelStateTutorial_load()
 
 void LevelStateTutorial_init()
 {
+	TutorialText.set(300.f, 0.4f);
 	auto* storage = ecs.getComponent<Components::Card_Storage>(playerID);
 	if (storage)
 	{
@@ -69,7 +70,6 @@ void LevelStateTutorial_init()
 	PS.particleReverseStream(ecs, mf);
 	AS.init(ecs);
 	PUT.init(&ecs, UIM.getCardHand().getID());
-
 	ecs.remove_empty_groups();
 }
 
@@ -151,6 +151,7 @@ void LevelStateTutorial_update()
 void LevelStateTutorial_free()
 {
 	IT.free();
+	TutorialText.free();
 	scene.set_tutorial_active(false);
 	//gLevelStateNext = LevelStates::LS_QUIT;
 	scene.scene_free();

@@ -183,12 +183,30 @@ namespace UIO
 		this->z = rhs.z;
 		return *this;
 	}
+	TextShadow& TextShadow::operator+=(const char* rhs)
+	{
+
+		auto text = ecs.getComponent<Components::Text>(this->text);
+		auto text_shadow = ecs.getComponent<Components::Text>(this->text_shadow);
+		text->text += rhs;
+		text_shadow->text += rhs;
+
+
+
+		return *this;
+	}
+
+	bool TextShadow::newline() const
+	{
+		auto text = ecs.getComponent<Components::Text>(this->text);
+		return *(text->text.end()--) == '\n';
+	}
 
 	TextShadow::TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba)
 	{
 		this->z = z;
 		this->text = ui_interactive_text(x, y, text_size, text_size, 0, z + 1, a, rgba);
-		this->text_shadow = ui_text(x + 5.f, y - 5.f, text_size, text_size, 0, z, a, { 0.f, 0.f, 0.f, 0.f });
+		this->text_shadow = ui_text(x + 5.f, y - 5.f, text_size, text_size, 0, z, a, { 0.f, 0.f, 0.f, 1.f });
 	}
 
 	void TextShadow::free()

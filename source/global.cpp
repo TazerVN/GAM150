@@ -21,6 +21,7 @@ Timer::TimerSystem TS;
 Animation::AnimationSystem AS;
 Text::PopUpText PUT;
 Text::InstructionText IT;
+Text::InstructionText TutorialText;
 Particle::ParticleSystem PS;
 AudioFactory::AudioFactory AF;
 JSON_GAME_DATA gameData;

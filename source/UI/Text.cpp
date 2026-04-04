@@ -6,16 +6,49 @@ namespace Text
 	InstructionText& operator<<(InstructionText& lhs, const char* text)
 	{
 		lhs.free();
-		f32 s = 0.7f;
 		f32 w,h;
-		AEGfxGetPrintSize(TF.getFontID(), text, s, &w, &h);
-		lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + 300.f, s, lhs.z, text, {1.f,1.f,1.f,1.f} };
+		AEGfxGetPrintSize(TF.getFontID(), text, lhs.size, &w, &h);
+
+		lhs.text.push_back( new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , lhs.y + h * AEGfxGetWinMinY(), lhs.size, lhs.z, text, lhs.rgba });
+
+		//lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + lhs.y, lhs.size, lhs.z, text, lhs.rgba};
 		return lhs;
 	}
 
+	void InstructionText::set(f32 y, f32 size)
+	{
+		this->y = y;
+		this->size = size;
+	}
+
+	void InstructionText::set(Components::RGBA color)
+	{
+		this->rgba = color;
+	}
+
+	InstructionText& InstructionText::operator+=(const char* text)
+	{
+		f32 gap = 50.f;
+		f32 w, h;
+		AEGfxGetPrintSize(TF.getFontID(), text , this->size, &w, &h);
+		this->text.push_back(new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , this->y + (h * AEGfxGetWinMinY()) - gap * (this->text.size()), this->size, this->z, text, this->rgba });
+
+		//lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + lhs.y, lhs.size, lhs.z, text, lhs.rgba};
+
+		return *this;
+	}
+
+
+
 	void InstructionText::free()
 	{
-		text.free();
+
+		for(UIO::TextShadow* pt : this->text)
+		{
+			pt->free();
+			delete pt;
+		}
+		text.clear();
 	}
 
 	void PopUpText::display(Entity pos, const char* text)
