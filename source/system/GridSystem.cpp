@@ -1,3 +1,6 @@
+﻿
+
+
 #include "pch.h"
 #include "GridSystem.h"
 #include <utility> // for std::move
@@ -298,7 +301,6 @@ namespace Grid
 
 				if (gbsptr->getPlayerPhase() == PhaseSystem::PlayerPhase::AOE_GRID_SELECT)
 				{
-
 					this->func_aoe_hightlight_cells(x, y);
 				}
 			},
@@ -476,6 +478,17 @@ namespace Grid
 
 	void GameBoard::update(EntityComponent::Registry& ecs, Entity camera)
 	{
+		//check if the mouse is on board
+		mouse_on_board = false;
+
+		if (getGridCellFromMouse(this->hx, this->hy))
+			mouse_on_board = true;
+
+		if (!mouse_on_board)
+		{
+			//hlptr->unhighlight_cells();
+		}
+
 		bool isGust = false;
 		bool isManaWall = false;
 
@@ -661,6 +674,44 @@ namespace Grid
 				}
 			}
 		}
+	}
+	bool GameBoard::getGridCellFromMouse(s32& out_x, s32& out_y) const
+	{
+		// 1. Get raw mouse position
+		s32 mx, my;
+		AEInputGetCursorPosition(&mx, &my);
+
+		// 2. Convert to centered screen space (same as camera system does)
+		float sx = float(mx) - float(AEGfxGetWindowWidth()) * 0.5f;
+		float sy = -float(my) + float(AEGfxGetWindowHeight()) * 0.5f;
+
+		// 3. Get camera transform
+		Components::Transform* camTrans = ecs.getComponent<Components::Transform>(CS.id());
+		float zoom = camTrans->size.x; // size.x == size.y == buffer_zoom
+
+		// 4. Unproject: screen → world
+		// AEngine renders world as:  screen = (world - camPos) * zoom
+		// So:                        world  =  screen / zoom + camPos
+		float wx = sx / zoom + camTrans->pos.x;
+		float wy = sy / zoom + camTrans->pos.y;
+
+		// 5. Inverse isometric transform (same math as before)
+		float rx = wx - offset.x;
+		float ry = wy - offset.y;
+
+		float sum = -4.0f * ry / CELL_HEIGHT;  // i + j
+		float diff = 2.0f * rx / CELL_WIDTH;   // i - j
+
+		int i = static_cast<int>(std::roundf((sum + diff) * 0.5f));
+		int j = static_cast<int>(std::roundf((sum - diff) * 0.5f));
+
+		// 6. Bounds check
+		if (i < 0 || i >= MAX_I || j < 0 || j >= MAX_J)
+			return false;
+
+		out_x = i;
+		out_y = j;
+		return true;
 	}
 
 	std::array<std::array<Entity, MAX_J>, MAX_I>& GameBoard::get_pos()
@@ -853,7 +904,7 @@ namespace Grid
 	}
 	void GameBoard::func_aoe_hightlight_cells(s32 x, s32 y)
 	{
-		Entity card_ID = cbsptr->draw_card(tbsptr->current(), tbsptr->get_selected_cardhand_index());
+		Entity card_ID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
 		f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
 		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 

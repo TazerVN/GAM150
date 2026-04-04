@@ -2,6 +2,7 @@
 #include "cardInteraction.h"
 #include "global.h"
 #include "cardInformation.h"
+#include "../system/HightlightSystem.h"
 
 namespace CardInteraction
 {
@@ -66,7 +67,7 @@ namespace CardInteraction
 	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height,
 					   TBS::TurnBasedSystem& tbs, Grid::GameBoard& gb, 
 						PhaseSystem::GameBoardState& gbs, CardInformation::CardDisplay& cd,
-						CombatNameSpace::CombatSystem& cbs)
+						CombatNameSpace::CombatSystem& cbs, HighlightSystem& hl)
 		: CardHand()
 	{
 		this->reset = true;
@@ -84,6 +85,7 @@ namespace CardInteraction
 		tfptr = &TF;
 		cdptr = &cd;
 		cbsptr = &cbs;
+		hlptr = &hl;
 	}
 
 	void CardHand::update_logic(f32 dt)
@@ -116,6 +118,9 @@ namespace CardInteraction
 			if (this->activate[i] == true)
 			{
 				this->activate[i] = false;
+
+				if(hlptr != nullptr)
+					hlptr->unhighlight_cells();
 
 				Entity cardID = cbsptr->draw_card(playerID, i);
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
@@ -308,6 +313,7 @@ namespace CardInteraction
 		gbptr = nullptr;
 		tfptr = nullptr;
 		cbsptr = nullptr;
+		hlptr = nullptr;
 
 		for (std::pair<Entity, Entity> i : curr_hand_display)
 		{

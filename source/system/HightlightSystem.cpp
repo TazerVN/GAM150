@@ -38,6 +38,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 {
 	//=========================Highlight_cells=================================
 	AEVec2 cur_part_pos = gbptr->Get_CurPart_gridPos();
+
 	switch (type)
 	{
 	case highlight_tag::UNHIGHLIGHTED:
@@ -157,16 +158,21 @@ void HighlightSystem::highlight_enemy_cells(Entity target)
 
 void HighlightSystem::unhighlight_cells()
 {
-	for (AEVec2 a : cbsptr->get_selected_cell())
+	if (!cbsptr->get_selected_cell().empty())
 	{
-		this->highlight_activate[int(a.x)][int(a.y)] = HIGHTLIGHT_UNHIGHLIGHT;
+		for (AEVec2 a : cbsptr->get_selected_cell())
+		{
+			this->highlight_activate[int(a.x)][int(a.y)] = HIGHTLIGHT_UNHIGHLIGHT;
+		}
 	}
 	cbsptr->get_selected_cell().clear();
 	if(!atk_highlighted_cells.empty())
 		this->atk_highlighted_cells.clear();
 	if (!mov_highlighted_cells.empty())
 		this->mov_highlighted_cells.clear();
-	clear_enemy_cells();
+	unhighlight_enemy_cells();
+
+	unhighlight_aoe_cells();
 }
 
 void HighlightSystem::clear_enemy_cells()
@@ -197,8 +203,21 @@ void HighlightSystem::clear_enemy_cells()
 	}
 }
 
+void HighlightSystem::unhighlight_aoe_cells()
+{
+	if (aoe_highlighted_cells.empty())
+		return;
+	for (Components::GridCell& a : aoe_highlighted_cells)
+	{
+		aoe_highlight_activate[int(a.x)][int(a.y)] =  false;
+	}
+	if (!aoe_highlighted_cells.empty()) aoe_highlighted_cells.clear();
+}
+
 void HighlightSystem::unhighlight_atk_cells()
 {
+	if (enemy_atk_highlighted_cells.empty())
+		return;
 	for (Components::GridCell& a : atk_highlighted_cells)
 	{
 		Components::RGBA& rgba = this->highlight_activate[int(a.x)][int(a.y)];
@@ -317,7 +336,7 @@ void HighlightSystem::update()
 			}
 			default :
 			{
-				unhighlight_cells();
+				//unhighlight_cells();
 				break;
 			}
 		}

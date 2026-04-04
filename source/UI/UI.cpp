@@ -27,7 +27,7 @@ namespace UI
 		s32 w_height = AEGfxGetWindowHeight();
 
 		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
-										 , scene.getGBS(), info,scene.getCombatSystem());
+										 , scene.getGBS(), info,scene.getCombatSystem(),scene.getHighlightSysten());
 
 
 		//========================================== buttons ======================================

@@ -1314,7 +1314,10 @@ CombatNameSpace::CombatSystem& Scene::getCombatSystem()
 {
 	return cbs;
 }
-
+HighlightSystem& Scene::getHighlightSysten()
+{
+	return highlightSystem;
+}
 
 //tutorial getters
 int Scene::get_tutorial_stage() const
