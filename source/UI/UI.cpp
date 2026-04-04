@@ -19,6 +19,7 @@ namespace UI
 	{
 		this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);
 		this->pause.current_menu = PauseMenu::CURRENT::EMPTY;
+		this->pause.setStateOn(true);
 		this->pause.init();
 
 		//hand
