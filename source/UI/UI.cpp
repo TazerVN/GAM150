@@ -17,7 +17,9 @@ namespace UI
 
 	void UIManager::combat_init(Scene& scene)
 	{
-		this->st = UIO::ScreenTransition(true, 0.f, 2.f);
+		this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);
+		this->pause.current_menu = PauseMenu::CURRENT::EMPTY;
+		this->pause.init();
 
 		//hand
 		s32 w_width = AEGfxGetWindowWidth();
@@ -38,7 +40,7 @@ namespace UI
 										 }
 		);
 
-		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ this->pause.setStateOn(true);});
+		Entity pause_button = UIO::ui_button_texture(TF.getTextureUI(9), 0.9F * AEGfxGetWinMaxX(), 0.85F * AEGfxGetWinMaxY(), 100, 90, 0, this->z, [this]{ /*::pause = true;*/ this->pause.current_menu = PauseMenu::CURRENT::MAIN , this->pause.init();});
 
 		Entity deck_button = UIO::ui_button_texture(TF.getTextureUI(1), -0.85F * AEGfxGetWinMaxX(), -0.85F * AEGfxGetWinMaxY(), 128, 128, 0, this->z, nullptr);
 		Entity deck_text = UIO::ui_text(-0.90F * AEGfxGetWinMaxX(), -0.95F * AEGfxGetWinMaxY(), 0.5f, 0.5f, 0, this->z, "0");
@@ -204,6 +206,7 @@ namespace UI
 		}
 
 		this->st.update();
+		this->pause.update();
 
 	}
 

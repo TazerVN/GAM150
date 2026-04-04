@@ -126,9 +126,9 @@ void LevelStateTutorial_update()
 		PS.particleClick(ecs, mf, worldX, worldY);
 	}
 
-	if (!player_died && !UIM.getPauseMenu().isOn())
+	if (!player_died && !pause)
 	{
-		UIM.getPauseMenu().free();
+		//UIM.getPauseMenu().free();
 		VS.update(ecs);
 		scene.update();
 		scene.getBattleGrid().update(ecs, CS.id());
@@ -136,11 +136,13 @@ void LevelStateTutorial_update()
 		UIM.update(scene, dt);
 		AS.update(ecs, scene.getBattleGrid(), scene.getGBS(), scene.getCombatSystem());
 	}
-	else if (!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
+
+	
+	/*else if (!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
 	{
 		PauseMenu& p = UIM.getPauseMenu();
 		p = PauseMenu(1300);
-	}
+	}*/
 
 	if (AEInputCheckTriggered(AEVK_F5))
 		gLevelStateNext = LevelStates::LS_TUTORIAL;

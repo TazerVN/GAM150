@@ -102,6 +102,14 @@ namespace UIO
 		this->on = false;
 	}
 
+	void TextureButton::setOpacity(f32 a)
+	{
+		auto button = ecs.getComponent<Components::Color>(this->button);
+		auto text = ecs.getComponent<Components::Color>(this->text);
+		button->d_color = a;
+		text->d_color = a;
+	}
+
 	TextureButton& TextureButton::operator=(const TextureButton& rhs)
 	{
 		this->button = rhs.button;
@@ -224,15 +232,17 @@ namespace UIO
 		this->fadeIn = rhs.fadeIn;
 		this->finished = rhs.finished;
 		this->max = rhs.max;
+		this->min = rhs.min;
 		this->z = rhs.z;
 		this->dim = rhs.dim;
 		return *this;
 	}
 
-	ScreenTransition::ScreenTransition(bool fadeIn, f32 max, f32 duration) : z{1300}
+	ScreenTransition::ScreenTransition(bool fadeIn, f32 min, f32 max, f32 duration) : z{1300}
 	{
 		this->fadeIn = fadeIn;
 		this->finished = false;
+		this->min = min;
 		this->max = max;
 		if(fadeIn){
 			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, 1.f);
@@ -266,11 +276,11 @@ namespace UIO
 
 			if(this->fadeIn)
 			{
-				color->d_color.a = AEClamp( 1.f - lerp, max, 1.f);
+				color->d_color.a = AEClamp( 1.f - lerp, min, max);
 			}
 			else
 			{
-				color->d_color.a = AEClamp(lerp, 0.f, max);
+				color->d_color.a = AEClamp(lerp, min, max);
 			}
 			return true;
 		}
@@ -349,6 +359,14 @@ namespace UIO
 		this->blank = 0;
 		this->fill = 0;
 		this->button = 0;
+	}
+
+	Entity ui_timer(f32 max, f32 min)
+	{
+		Entity id = ecs.createEntity();
+		Components::Timer timer{ max, min, true, true };
+		ecs.addComponent(id, timer);
+		return id;
 	}
 
 

@@ -8,7 +8,7 @@ void Victory_Select::update()
 	{
 		this->on = false;
 
-		this->dim = UIO::ScreenTransition(false, 0.5f);
+		this->dim = UIO::ScreenTransition(false, 0.f ,0.5f, 1.f);
 		Components::TagClass tag{ Components::Tag::UI };
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 40 };
 		ecs.addComponent(dim.dim, tag);

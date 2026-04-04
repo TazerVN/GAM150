@@ -106,6 +106,7 @@ void load_Sys_Comp()
 		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});
 	}
 
+	pause = false;
 	
 	card_system.init_cards();
 	beastiary.init_data();

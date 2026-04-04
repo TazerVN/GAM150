@@ -31,6 +31,7 @@
 
 extern size_t playerID;
 extern bool player_died;
+extern bool pause;
 
 extern EntityComponent::Registry ecs;
 extern TextureFactory::TextureFactory TF;
