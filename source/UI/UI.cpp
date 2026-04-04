@@ -22,6 +22,8 @@ namespace UI
 		this->pause.current_menu = PauseMenu::CURRENT::EMPTY;
 		this->pause.setStateOn(false);
 		this->pause.init();
+		this->pause.setStateCreate(false);
+		::pause = false;
 
 		//hand
 		s32 w_width = AEGfxGetWindowWidth();

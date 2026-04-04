@@ -468,8 +468,8 @@ void ConfirmPause::free()
 
 void ConfirmPause::init()
 {
-	f32 size_x = 1.3f;
-	f32 size_y = 1.5f;
+	f32 size_x = 1.4f;
+	f32 size_y = 1.8f;
 
 
 	f32 text_size = 0.5f;
