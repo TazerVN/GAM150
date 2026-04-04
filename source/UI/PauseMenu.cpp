@@ -52,7 +52,10 @@ void PauseMenu::init()
 			button_l->onClick = [this]
 				{
 					this->on = false;
-					gLevelStateNext = LevelStates::LS_QUIT;
+					this->menu->to_exit();
+					ecs.destroyEntity(this->timer);
+					this->timer = UIO::ui_timer(1.f);
+					this->transition = true;
 				};
 			break;
 		}
@@ -126,7 +129,16 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::CONFIRM: { break; }
 			case BasePauseMenu::DESTINATION::SETTING: { break; }
 			case BasePauseMenu::DESTINATION::TUTORIAL: { break; }
-			case BasePauseMenu::DESTINATION::EXIT: { break; }
+			case BasePauseMenu::DESTINATION::EXIT:
+			{ 
+				pause = false;
+				this->current_menu = CURRENT::EMPTY;
+				this->free();
+				this->init();
+				this->transition = false;
+				gLevelStateNext = LevelStates::LS_QUIT;
+				break;
+			}
 
 		}
 	}
