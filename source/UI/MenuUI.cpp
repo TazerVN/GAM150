@@ -275,7 +275,7 @@ void MenuUI::init()
 						if (!this->transition)
 						{
 							this->fade.free();
-							this->fade = UIO::ScreenTransition{ false, 1.f };
+							this->fade = UIO::ScreenTransition{ false, 0.0f, 1.f };
 							this->current_menu->to_game();
 							this->transition = true;
 						}
@@ -290,7 +290,7 @@ void MenuUI::init()
 						if (!this->transition)
 						{
 							this->fade.free();
-							this->fade = UIO::ScreenTransition{ false};
+							this->fade = UIO::ScreenTransition{ false, 0.0f, 1.f };
 							this->current_menu->to_confirm();
 							this->transition = true;
 						}
@@ -300,7 +300,7 @@ void MenuUI::init()
 						if (!this->transition)
 						{
 							this->fade.free();
-							this->fade = UIO::ScreenTransition{ false};
+							this->fade = UIO::ScreenTransition{ false, 0.0f, 1.f };
 							this->current_menu->to_game();
 							this->transition = true;
 						}
@@ -312,7 +312,7 @@ void MenuUI::init()
 					if (!this->transition)
 					{
 						this->fade.free();
-						this->fade = UIO::ScreenTransition{ false };
+						this->fade = UIO::ScreenTransition{ false, 0.0f, 1.f };
 						this->current_menu->to_tutorial();
 						this->transition = true;
 					}
@@ -323,7 +323,7 @@ void MenuUI::init()
 					if (!this->transition)
 					{
 						this->fade.free();
-						this->fade = UIO::ScreenTransition{ false };
+						this->fade = UIO::ScreenTransition{ false, 0.0f, 1.f };
 						this->current_menu->to_main();
 						this->transition = true;
 					}

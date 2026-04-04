@@ -11,7 +11,7 @@ void PauseMenu::init()
 	if (!this->on && this->created && current_menu != CURRENT::EMPTY)
 	{
 		this->on = true;
-		this->dim = UIO::ScreenTransition(true, 0.3f, 0.5f, 0.5f);
+		this->dim = UIO::ScreenTransition(true, 0.3f, 0.8f, 0.5f);
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, this->z };
 		ecs.addComponent(dim.dim, in);
 	}
@@ -32,20 +32,23 @@ void PauseMenu::init()
 				{
 					if (!this->transition)
 					{
-
 						this->on = false;
 						this->transition = true;
 						this->menu->to_continue();
-						ecs.destroyEntity(this->timer);
-						this->timer = UIO::ui_timer(1.f);
+						
 					}
 				};
 
 			auto button_r = ecs.getComponent<Components::Input>(main->abandon_button.button);
 			button_r->onClick = [this]
 				{
-					this->on = false;
-					player_died = true;
+					if (!this->transition)
+					{
+						this->on = false;
+						this->transition = true;
+						this->menu->to_confirm();
+					
+					}
 				};
 
 			auto button_l = ecs.getComponent<Components::Input>(main->leave_button.button);
@@ -53,8 +56,6 @@ void PauseMenu::init()
 				{
 					this->on = false;
 					this->menu->to_exit();
-					ecs.destroyEntity(this->timer);
-					this->timer = UIO::ui_timer(1.f);
 					this->transition = true;
 				};
 			break;
@@ -126,7 +127,15 @@ void PauseMenu::update()
 				this->transition = false;
 				break;
 			}
-			case BasePauseMenu::DESTINATION::CONFIRM: { break; }
+			case BasePauseMenu::DESTINATION::CONFIRM: 
+			{ 
+				pause = false;
+				this->current_menu = CURRENT::EMPTY;
+				this->free();
+				this->init();
+				this->transition = false;
+				break;
+			}
 			case BasePauseMenu::DESTINATION::SETTING: { break; }
 			case BasePauseMenu::DESTINATION::TUTORIAL: { break; }
 			case BasePauseMenu::DESTINATION::EXIT:
@@ -137,6 +146,7 @@ void PauseMenu::update()
 				this->init();
 				this->transition = false;
 				gLevelStateNext = LevelStates::LS_QUIT;
+				this->dim = UIO::ScreenTransition(true, 1.f, 1.f, 0.5f);
 				break;
 			}
 

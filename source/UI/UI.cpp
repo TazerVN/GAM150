@@ -17,8 +17,8 @@ namespace UI
 
 	void UIManager::combat_init(Scene& scene)
 	{
-	/*	this->st.free();
-		this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);*/
+		this->st.free();
+		this->st = UIO::ScreenTransition(true, 0.f, 1.f, 2.f);
 		this->pause.current_menu = PauseMenu::CURRENT::EMPTY;
 		this->pause.setStateOn(false);
 		this->pause.init();
