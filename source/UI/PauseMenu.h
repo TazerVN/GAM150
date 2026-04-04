@@ -23,10 +23,6 @@ class BasePauseMenu
 	void to_exit();
 };
 
-class EmptyPause : public BasePauseMenu
-{
-
-};
 
 class MainPause : public BasePauseMenu
 {

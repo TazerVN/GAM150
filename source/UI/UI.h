@@ -40,6 +40,7 @@ namespace UI
 		// ============ MENU ===============
 		public:
 		MenuUI menu;
+		PauseMenu pause;
 
 
 		// ============ COMBAT ===============
@@ -55,8 +56,6 @@ namespace UI
 		CardInteraction::CardHand hand;
 		Entity turn;
 		
-		//Pause
-		PauseMenu pause;
 		Victory_Select vicSelect;
 
 		//other

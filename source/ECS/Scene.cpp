@@ -72,6 +72,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 {
 	gameData.win = false;
 
+	//set seed
 	std::srand(gameData.seed);
 
 	cameraSys = &cam;
@@ -501,11 +502,14 @@ void Scene::update_tutorial()
 		{
 			tutorial_substep = 8;
 
+			gameData.win = true;
+			TBSys.active() = false;
+
 			Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 			if (st)
 			{
-				st->max_movSpd = st->ini_movSpd;
-				st->cur_movSpd = st->max_movSpd;
+				st->max_movSpd = 100.f;
+				st->cur_movSpd = 100.f;
 			}
 
 			if (UIptr)
