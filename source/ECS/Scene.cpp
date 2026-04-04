@@ -462,35 +462,7 @@ void Scene::setup_tutorial_stage()
 
 void Scene::update_tutorial()
 {
-	if (!tutorial_active)
-		return;
-
-	if (tutorial_stage != TutorialStage::WIN_TRANSITION)
-		return;
-
-	// Step 2: wait until horde is dead, then show victory cards
-	if (tutorial_substep == 7)
-	{
-		bool anyAlive = false;
-
-		if (TBSys.get_participant().size() > 1)
-		{
-			Entity horde = TBSys.get_participant()[1];
-			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
-
-			if (hordeTag)
-			{
-				for (Entity goon : hordeTag->goons)
-				{
-					s32 x, y;
-					if (BattleGrid.findEntityCell(goon, x, y))
-					{
-						anyAlive = true;
-						break;
-					}
-				}
-			}
-		}
+}
 
 		if (!anyAlive)
 		{
@@ -514,6 +486,7 @@ void Scene::update_tutorial()
 		return;
 	}
 
+	// Step 4: wait until player finishes victory card selection
 	if (tutorial_substep == 12)
 	{
 		if (UIptr && !UIptr->getVictoryMenu().on)
@@ -529,7 +502,7 @@ void Scene::update_tutorial()
 				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
-			BattleGrid.placeEntity(firstNode, 0, 0);
+			BattleGrid.placeEntity(firstNode,0, 0);
 			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
 		}
 
@@ -862,19 +835,15 @@ void Scene::print_tutorial_stage_text() const
 					break;
 
 				case 13:
-					TutorialText += "Now that you've selected them, two portals will appear. on the top and bottom";
+					TutorialText += "Now that you've selected them, two portals will appear.";
 					break;
 
 				case 14:
-					TutorialText += "You may walk to a portal and click on it OR finish the tutorial";
+					TutorialText += "Walk towards a portal and click on it.";
 					break;
 
 				case 15:
-					TutorialText += "So, be a brave and fight already or will you first catch some air?";
-					break;
-
-				case 16:
-					TutorialText += "Walk to a portal and click on it OR press SPACE to finish tutorial.";
+					TutorialText += "Press SPACE to finish the tutorial.";
 					break;
 
 				default:
@@ -887,7 +856,7 @@ void Scene::print_tutorial_stage_text() const
 		case TutorialStage::DONE:
 			std::cout << "[Tutorial Complete]\n";
 			TutorialText << "[Tutorial Complete]";
-			TutorialText += "Thank you for completing the tutorial. Exit the game to play.";
+			TutorialText += "Exit the game to play.";
 			TutorialText += "Press Q to restart, E to go back.";
 			break;
 	}
@@ -913,8 +882,8 @@ void Scene::setup_tutorial_basics()
 
 void Scene::setup_tutorial_movement()
 {
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	clear_player_cards_for_tutorial(playerID, UIptr);
 
 	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -938,8 +907,8 @@ void Scene::setup_tutorial_attack()
 {
 	std::cout << "[Tutorial] Attack stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Tutorial Attack Deck");
 
 	s32 px, py;
@@ -989,8 +958,8 @@ void Scene::setup_tutorial_defense()
 {
 	std::cout << "[Tutorial] Defense stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Tutorial Defense Deck");
 
 	// load tutorial defense script
@@ -1059,8 +1028,8 @@ void Scene::setup_tutorial_item()
 {
 	std::cout << "[Tutorial] Item stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Item Deck");
 
 	print_tutorial_stage_text();
@@ -1070,8 +1039,8 @@ void Scene::setup_tutorial_event()
 {
 	std::cout << "[Tutorial] Event stage init\n";
 
-	clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();
+	/*clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();*/
 	load_deck_for_tutorial("Event Deck");
 
 	s32 px, py;
