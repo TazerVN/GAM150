@@ -675,7 +675,7 @@ void CreditMenu::init()
 void CreditMenu::update()
 {
 	if(this->offset_y >= AEGfxGetWindowHeight() + 64.f * 2.f * this->list.size()) this->dest = DESTINATION::MAIN;
-	this->offset_y += AEFrameRateControllerGetFrameTime() * this->speed;
+	this->offset_y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * this->speed;
 	for(UIO::TextShadow* t : this->list)
 	{
 		auto transform = ecs.getComponent<Components::Transform>(t->text);

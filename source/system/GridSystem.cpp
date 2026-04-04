@@ -222,10 +222,13 @@ namespace Grid
 		if (character != -1)
 		{
 			Components::Color* cc = ecs.getComponent<Components::Color>(character);
-			cc->d_color.r = minimum + (1.f - minimum) * lerp;
-			cc->d_color.b = minimum + (1.f - minimum) * lerp;
-			cc->d_color.g = minimum + (1.f - minimum) * lerp;
-
+			
+			if (cc != nullptr)
+			{
+				cc->d_color.r = minimum + (1.f - minimum) * lerp;
+				cc->d_color.b = minimum + (1.f - minimum) * lerp;
+				cc->d_color.g = minimum + (1.f - minimum) * lerp;
+			}
 		}
 	}
 
@@ -242,9 +245,12 @@ namespace Grid
 		if (character != -1)
 		{
 			Components::Color* cc = ecs.getComponent<Components::Color>(character);
-			cc->d_color.r = cc->c_color.r;
-			cc->d_color.g = cc->c_color.g;
-			cc->d_color.b = cc->c_color.b;
+			if (cc != nullptr)
+			{
+				cc->d_color.r = cc->c_color.r;
+				cc->d_color.g = cc->c_color.g;
+				cc->d_color.b = cc->c_color.b;
+			}
 		}
 	}
 
@@ -395,7 +401,7 @@ namespace Grid
 				{
 
 					auto actor_pos = ecs.getComponent<Components::gridData>(e); // fresh fetch
-					auto actor_in = ecs.getComponent<Components::Input>(e);
+					//auto actor_in = ecs.getComponent<Components::Input>(e);
 
 					//if (actor_pos == nullptr) return;
 					this->updateCell(actor_pos->x, actor_pos->y);
@@ -752,13 +758,13 @@ namespace Grid
 				{
 					ecs.destroyEntity(pos[i][j]);
 				}
-				if (pos[i][j] == playerID)
+				/*if (pos[i][j] == playerID)
 				{
 					auto in = ecs.getComponent<Components::Input>(playerID);
 					in->onClick = nullptr;
 					in->onHover = nullptr;
 					in->offHover = nullptr;
-				}
+				}*/
 			}
 		}
 

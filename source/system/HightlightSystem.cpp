@@ -177,7 +177,8 @@ void HighlightSystem::clear_enemy_cells()
 		{
 			for (Components::GridCell& cell : itr.second)
 			{
-				enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
+				if(cell.x >= 0 && cell.y >= 0)
+					enemy_mov_highlight_activate[int(cell.x)][int(cell.y)] = false;
 			}
 		}
 		enemy_mov_highlighted_cells.clear();
@@ -188,7 +189,8 @@ void HighlightSystem::clear_enemy_cells()
 		{
 			for (Components::GridCell& cell : itr.second)
 			{
-				enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
+				if (cell.x >= 0 && cell.y >= 0)
+					enemy_atk_highlight_activate[int(cell.x)][int(cell.y)] = false;
 			}
 		}
 		enemy_atk_highlighted_cells.clear();

@@ -488,14 +488,14 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameB
 	// Shield absorbs damage first
 	if (stats && stats->shields > 0)
 	{
-		if (stats->shields >= damage)
+		if (stats->shields >= static_cast<int>(damage))
 		{
-			stats->shields -= damage;
+			stats->shields -= static_cast<int>(damage);
 			damage = 0.0f;
 		}
 		else
 		{
-			damage -= stats->shields;
+			damage -= static_cast<f32>(stats->shields);
 			stats->shields = 0.0f;
 		}
 	}
@@ -787,7 +787,7 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 	// Made it a guard for you Steven - Zejin
 	if (ret == PC_RETURN_TAG::VALID)
 	{
-		player_curMana -= card_cost;
+		player_curMana -= static_cast<int>(card_cost);
 		this->remove_card(ecs, player, index);
 	}
 

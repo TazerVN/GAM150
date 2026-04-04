@@ -33,7 +33,7 @@ public:
 
 	std::vector<Components::GridCell> atk_highlighted_cells;
 
-	std::array<std::array<bool, MAX_J>, MAX_I> aoe_highlight_activate;
+	std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
 	std::vector<Components::GridCell> aoe_highlighted_cells;
 
 	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate;

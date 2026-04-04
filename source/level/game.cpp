@@ -57,19 +57,17 @@ void GameState_game_update()
 		{
 			LevelStateFree();
 			init_triggered = true;
-			if (gLevelStateNext != LevelStates::LS_RESTART)
-			{
-				LevelStateUnload();
-			}
+
 			gLevelStatePrev = gLevelStateCurr;
 			gLevelStateCurr = gLevelStateNext;
 
 		}
 	}
 	//if LS_QUIT is set
-	else 
+	else	
 	{
 		LevelStateFree();
+		LevelStateUnload();
 		init_triggered = true;
 		gGameStateNext = GameStates::GS_MAINMENU;
 	}
@@ -77,10 +75,14 @@ void GameState_game_update()
 void GameState_game_free()
 {
 	init_triggered = true;
+
 	AEGfxDestroyFont(pFont);
 }
 
 void GameState_game_unload()
 {
 	PS.particle_system_free();
+	PUT.free();
+
+	ecs.remove_empty_groups();
 }

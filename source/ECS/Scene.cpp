@@ -9,7 +9,6 @@
 
 std::vector<std::string> hardcoded_levels;
 
-
 // Tutorial helper
 
 static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
@@ -71,11 +70,6 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
-	/*if (parse_seed(seed, "Assets/levels/cur_seed.json") != JSON_RET::OK)
-	{
-		seed = static_cast<unsigned int>(time(nullptr));
-	}*/
-
 	std::srand(gameData.seed);
 
 	cameraSys = &cam;
@@ -108,7 +102,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 	{
 		std::cout << "[Tutorial] Init\n";
 
-		clear_player_cards_for_tutorial(playerID, UIptr);
+		clear_player_cards_for_tutorial(playerID,UIptr);
 
 		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
 		if (storage)
@@ -268,10 +262,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 void Scene::update()
 {
-	if (tutorial_active)
-	{
-		update_tutorial();
-	}
 
 	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_KILL_ENEMIES)].triggered || AEInputCheckTriggered(AEVK_MINUS))
 	{
@@ -294,6 +284,18 @@ void Scene::update()
 	{
 		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_HIGHLIGHT_POSITION)].triggered = false;
 		BattleGrid.in_pos_debug = !BattleGrid.in_pos_debug;
+	}
+
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_PPUP)].triggered || AEInputCheckTriggered(AEVK_PERIOD))
+	{
+		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_PPUP)].triggered = false;
+		ecs.getComponent<Components::TurnBasedStats>(playerID)->points++;
+	}
+
+	if (ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_PPDOWN)].triggered || AEInputCheckTriggered(AEVK_COMMA))
+	{
+		ConsoleEvents.template_pool[static_cast<size_t>(CommandTypes::CT_PPDOWN)].triggered = false;
+		ecs.getComponent<Components::TurnBasedStats>(playerID)->points--;
 	}
 
 	if (AEInputCheckTriggered(AEVK_RCTRL)) // test particle
@@ -390,8 +392,6 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
-	tutorial_spawned_entities.clear();
-
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
@@ -449,10 +449,6 @@ void Scene::setup_tutorial_stage()
 		print_tutorial_stage_text();
 		break;
 	}
-}
-
-void Scene::update_tutorial()
-{
 }
 
 void Scene::set_tutorial_active(bool active)

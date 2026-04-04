@@ -32,7 +32,7 @@ namespace EntityFactory {
 		Components::AStarResult as{};
 		Components::Tag tag{ Components::Tag::ACTOR };
 		Components::gridData gd{};
-		Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1};
+		//Components::Input in{AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1};
 
 		ecs.addComponent(id, nm);
 		ecs.addComponent(id, HP);
@@ -46,7 +46,7 @@ namespace EntityFactory {
 		ecs.addComponent(id, as);
 		ecs.addComponent(id, tag);
 		ecs.addComponent(id, gd);
-		ecs.addComponent(id, in);
+		//ecs.addComponent(id, in);
 
 		return id;
 	}
