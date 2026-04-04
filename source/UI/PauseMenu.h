@@ -50,22 +50,23 @@ class MainPause : public BasePauseMenu
 //	void free();
 //};
 
-class SettingPause : public BasePauseMenu
-{
-	public:
-	UIO::TextShadow bgm_text;
-	UIO::TextShadow amb_text;
-	UIO::TextShadow sfx_text;
-
-	UIO::Slider bgm_slider;
-	UIO::Slider amb_slider;
-	UIO::Slider sfx_slider;
-
-	UIO::TextureButton leave;
-	void init();
-	void free();
-	void update() override;
-};
+//class SettingPause : public BasePauseMenu
+//{
+//	public:
+//	UIO::TextShadow bgm_text;
+//	UIO::TextShadow amb_text;
+//	UIO::TextShadow sfx_text;
+//
+//	UIO::Slider bgm_slider;
+//	UIO::Slider amb_slider;
+//	UIO::Slider sfx_slider;
+//
+//	UIO::TextureButton leave;
+//	void init();
+//	void free();
+//	void update() override;
+//	void free();
+//};
 
 class PauseMenu
 {
