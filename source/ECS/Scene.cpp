@@ -70,6 +70,8 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
+	gameData.win = false;
+
 	std::srand(gameData.seed);
 
 	cameraSys = &cam;
@@ -395,6 +397,9 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
+	tutorial_spawned_entities.clear();
+	gameData.win = false;
+
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
@@ -462,7 +467,35 @@ void Scene::setup_tutorial_stage()
 
 void Scene::update_tutorial()
 {
-}
+	if (!tutorial_active)
+		return;
+
+	if (tutorial_stage != TutorialStage::WIN_TRANSITION)
+		return;
+
+	// Step 2: wait until horde is dead, then show victory cards
+	if (tutorial_substep == 7)
+	{
+		bool anyAlive = false;
+
+		if (TBSys.get_participant().size() > 1)
+		{
+			Entity horde = TBSys.get_participant()[1];
+			Components::Horde_Tag* hordeTag = ecs.getComponent<Components::Horde_Tag>(horde);
+
+			if (hordeTag)
+			{
+				for (Entity goon : hordeTag->goons)
+				{
+					s32 x, y;
+					if (BattleGrid.findEntityCell(goon, x, y))
+					{
+						anyAlive = true;
+						break;
+					}
+				}
+			}
+		}
 
 		if (!anyAlive)
 		{
@@ -471,8 +504,8 @@ void Scene::update_tutorial()
 			Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 			if (st)
 			{
-				st->cur_movSpd = 100.f;
-				st->max_movSpd = 100.f;
+				st->max_movSpd = st->ini_movSpd;
+				st->cur_movSpd = st->max_movSpd;
 			}
 
 			if (UIptr)
@@ -502,7 +535,7 @@ void Scene::update_tutorial()
 				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
-			BattleGrid.placeEntity(firstNode,0, 0);
+			BattleGrid.placeEntity(firstNode, 0, 0);
 			BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);
 		}
 
@@ -1256,8 +1289,8 @@ void Scene::reset_tutorial_player_state()
 	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 	if (st)
 	{
-		st->max_movSpd = 5.f;
-		st->cur_movSpd = 5.f;
+		st->max_movSpd = st->ini_movSpd;
+		st->cur_movSpd = st->max_movSpd;
 	}
 }
 
