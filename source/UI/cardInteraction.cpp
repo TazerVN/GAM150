@@ -410,7 +410,7 @@ namespace CardInteraction
 		c1->d_color.b = minimum + (1.f - minimum) * lerp;
 		c1->d_color.g = minimum + (1.f - minimum) * lerp;
 
-		t1->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
+		//t1->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
 
 		t1->size.y = t1->size_og.y * 1.2f;
 		t1->size.x = t1->size_og.x * 4.f / 3.f * 1.2f;
@@ -419,7 +419,8 @@ namespace CardInteraction
 		c2->d_color.b = minimum + (1.f - minimum) * lerp;
 		c2->d_color.g = minimum + (1.f - minimum) * lerp;
 
-		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
+		t2->pos_onscreen.y = t2->pos.y + t1->size_og.y * 0.15f * t2->size_og.x;
+		t2->pos_onscreen.x = t2->pos.x - t1->size_og.x * 0.25f * t2->size_og.x;
 		t2->size.x = t2->size_og.x * 4.f / 3.f;
 
 	}
@@ -582,6 +583,7 @@ namespace CardInteraction
 		*/
 		t2->size.y = t2->size_og.y;
 		t2->size.x = t2->size_og.x;
+		t2->pos_onscreen = t2->pos;
 
 		timer->seconds = 0;
 	}
