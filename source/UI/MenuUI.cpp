@@ -595,7 +595,6 @@ void SettingMenu::free()
 }
 
 
-
 void CreditMenu::init()
 {
 	   
