@@ -57,9 +57,9 @@ namespace Grid
 		Entity cur, prev_cur;
 		bool selected_part = false;
 		AEVec2 offset;
-		std::array<std::array<Entity, MAX_J>, MAX_I> cells;		//cell data of a grid
+		std::array<std::array<Entity, MAX_J>, MAX_I> cells{};		//cell data of a grid
 		//=============Data for A* Star====================
-		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
+		std::array<std::array<Entity, MAX_J>, MAX_I> pos{};
 		
 
 		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z);
@@ -69,7 +69,10 @@ namespace Grid
 		bool in_pos_debug = false;
 		int placementDirection = 0;
 
-		s32 cur_x, cur_y, prev_x, prev_y;
+		s32 cur_x = -1;
+		s32 cur_y = -1;
+		s32 prev_x = -1;
+		s32 prev_y = -1;
 		uint8_t walkable[MAX_I * MAX_J]{};
 
 		void init(TBS::TurnBasedSystem* tbsys, EventPool<highlight_tag>& evs, PhaseSystem::GameBoardState& gb,

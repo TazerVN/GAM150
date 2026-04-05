@@ -233,7 +233,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 				++attempts;
 			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
 
-			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+			if (BattleGrid.get_pos()[x][y] != Entity(-1))
 			{
 				BattleGrid.placeEntity(entities[i], x, y);
 			}

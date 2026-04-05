@@ -50,6 +50,7 @@ void Particle::ParticleSystem::update(f32 dt)
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(ent);
 		Components::Particle* particle = ecs.getComponent<Components::Particle>(ent);
 
+		if (particle == nullptr) continue;
 		switch (particle->type)
 		{
 			case Components::ParticleType::Digitalize:

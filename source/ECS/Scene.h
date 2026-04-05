@@ -51,8 +51,8 @@ private:
 	CombatNameSpace::CombatSystem cbs;
 	//Text::NameTag nameTags;
 	EntityFactory::InteractableNode iNodes;
-	Camera::CameraSystem* cameraSys;
-	UI::UIManager* UIptr;
+	Camera::CameraSystem* cameraSys = nullptr;
+	UI::UIManager* UIptr = nullptr;
 
 	EnemyDirector enemyDirector; // For CPU instructions - Zejin
 	Entity playerBarrier = Components::NULL_INDEX; // shield display
