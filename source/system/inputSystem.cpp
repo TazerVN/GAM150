@@ -101,8 +101,11 @@ namespace InputSystem
                 {
                     if (!was_active && AEInputCheckTriggered(in->type))
                     {
+                        AF.sfx.play(10);
                         if (in->onClick != nullptr) in->onClick();
+                        AF.sfx.stopping = false;
                         continue;
+                        
                     }
                     else if (!was_active && cur_drag != 0 && AEInputCheckReleased(in->type))
                     {
