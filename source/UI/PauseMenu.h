@@ -16,9 +16,9 @@ class BasePauseMenu
 	public:
 	enum class DESTINATION
 	{
-		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT, GAMEOVER
+		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT, GAMEOVER, NONE
 	};
-	DESTINATION dest{DESTINATION::MAIN};
+	DESTINATION dest{DESTINATION::NONE};
 	s32 z{ 1300 };
 	virtual void init() {};
 	virtual void update() {};
