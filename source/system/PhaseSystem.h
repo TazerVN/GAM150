@@ -26,15 +26,15 @@ namespace PhaseSystem{
 	class GameBoardState
 	{
 		private:	
-		GBPhase gb_curr;
-		PlayerPhase player_curr;
-		EnemyPhase enemy_curr;
+		GBPhase gb_curr{GBPhase::START_PHASE};
+		PlayerPhase player_curr{PlayerPhase::PLAYER_EXPLORE};
+		EnemyPhase enemy_curr{ EnemyPhase::ENEMY_IDLE};
 
 		static std::array<bool, GBPhaseCount> GBPhaseTriggered;
 		static std::array<bool, GBPhaseCount> GBPhaseActive;
 
-		GBPhase prev_GBPhase;
-		PlayerPhase prev_PlayerPhase;
+		GBPhase prev_GBPhase{ GBPhase::START_PHASE };
+		PlayerPhase prev_PlayerPhase{ PlayerPhase::PLAYER_EXPLORE };
 
 		public:
 		GameBoardState();

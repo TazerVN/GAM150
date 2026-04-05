@@ -11,9 +11,6 @@
 #include <iomanip>
 #include "global.h"
 
-Console::Console()
-{
-}
 
 void Console::init()
 {

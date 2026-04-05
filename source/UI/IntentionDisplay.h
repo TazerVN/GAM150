@@ -17,7 +17,7 @@ namespace Grid { class GameBoard; }
 class IntentionDisplaySystem
 {
 private:
-	HighlightSystem* hlptr;
+	HighlightSystem* hlptr = nullptr;
 	
 	Grid::GameBoard* gbptr = nullptr;
 	EnemyDirector* ptr_enemyDirector = nullptr;

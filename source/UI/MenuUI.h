@@ -18,8 +18,8 @@ class BaseMenu
 	{
 		GAME, CONFIRM, PLAY, TUTORIAL ,SETTING, CREDIT, MAIN, NONE
 	};
-	DESTINATION dest;
-	s32 z;
+	DESTINATION dest{DESTINATION::NONE};
+	s32 z{0};
 	void to_main();
 	void to_play();
 	void to_confirm();
@@ -62,8 +62,8 @@ class PlayMenu : public BaseMenu
 class CreditMenu : public BaseMenu
 {
 	public:
-	int speed;
-	f32 offset_y;
+	int speed{100};
+	f32 offset_y{0};
 	std::vector<UIO::TextShadow*> list;
 	UIO::TextureButton exit;
 	void init();
@@ -110,7 +110,7 @@ class GameOverUI
 	};
 
 	bool transition{false};
-	NEXT dest;
+	NEXT dest{NEXT::NONE};
 	UIO::ScreenTransition fade;
 	Entity background{0};
 	UIO::TextButton new_game;
@@ -135,7 +135,7 @@ class MenuUI
 	UIO::ScreenTransition fade;
 	Entity background{0};
 
-	CURRENT_MENU cur;
+	CURRENT_MENU cur{CURRENT_MENU::MAIN};
 	bool transition;
 
 	BaseMenu* current_menu;

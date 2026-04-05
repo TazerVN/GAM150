@@ -32,11 +32,11 @@ namespace UIO
 	struct TextButton
 	{
 		public:
-		s32 z;
-		bool on;
-		Entity timer;
+		s32 z{0};
+		bool on{false};
+		Entity timer{ 0 };
 		Entity button{ 0 };
-		Entity text;
+		Entity text{ 0 };
 		TextButton() = default;
 		TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba);
 
@@ -63,9 +63,10 @@ namespace UIO
 		public:
 		s32 z{1300};
 		Entity dim{0};
-		bool fadeIn;
-		bool finished;
-		f32 min, max;
+		bool fadeIn{false};
+		bool finished{false};
+		f32 min{ 0.f };
+		f32 max{ 1.f };
 		ScreenTransition() = default;
 		ScreenTransition(bool fadeIn, f32 min = 0.f,  f32 max = 1.f, f32 duration = 0.5f);
 		ScreenTransition& operator=(ScreenTransition const&);
@@ -80,7 +81,7 @@ namespace UIO
 		Entity fill{};
 		Entity button{};
 		Slider() = default;
-		Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func, f32 current, f32 max);
+		Slider(f32 x, f32 y, f32 width, f32 height, s32 z, f32 current, f32 max);
 		void update();
 		void free();
 	};

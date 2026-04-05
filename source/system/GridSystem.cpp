@@ -745,7 +745,7 @@ namespace Grid
 	}
 
 	//returns the grid position of the current participant
-	AEVec2& GameBoard::Get_CurPart_gridPos()
+	AEVec2 GameBoard::Get_CurPart_gridPos()
 	{
 		Entity cur_part = tbsptr->current();
 		std::array<std::array<Entity, MAX_J>, MAX_I>& positions = get_pos();

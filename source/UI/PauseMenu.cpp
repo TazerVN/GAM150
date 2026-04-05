@@ -399,13 +399,13 @@ void SettingPause::init()
 
 
 	this->bgm_text = UIO::TextShadow{ start_x, start_y - s_h * text_size, text_size, z , "Music" , 0xFFFFFFFF };
-	this->bgm_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 0, s_w, s_h, z, nullptr, AF.bgm.volume, 1.f };
+	this->bgm_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 0, s_w, s_h, z, AF.bgm.volume, 1.f };
 
 	this->amb_text = UIO::TextShadow{ start_x,start_y - offset_y * 1 - s_h * text_size,  text_size, z , "Ambience" , 0xFFFFFFFF };
-	this->amb_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 1, s_w, s_h, z, nullptr, AF.amb.volume, 1.f };
+	this->amb_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 1, s_w, s_h, z, AF.amb.volume, 1.f };
 
 	this->sfx_text = UIO::TextShadow{ start_x, start_y - offset_y * 2 - s_h * text_size, text_size, z , "SFX" , 0xFFFFFFFF };
-	this->sfx_slider = UIO::Slider{ start_x + text_slider_gap ,  start_y - offset_y * 2, s_w, s_h, z, nullptr, AF.sfx.volume, 1.f };
+	this->sfx_slider = UIO::Slider{ start_x + text_slider_gap ,  start_y - offset_y * 2, s_w, s_h, z, AF.sfx.volume, 1.f };
 	this->leave = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, z + 1, "GO BACK", nullptr, 0xFFFFFFFF };
 
 }
@@ -521,7 +521,6 @@ void ConfirmPause::init()
 
 	f32 warning_w, warning_h;
 	f32 description_w, description_h;
-	f32 description2_w, description2_h;
 	f32 question_w, question_h;
 
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;
@@ -532,6 +531,7 @@ void ConfirmPause::init()
 	//AEGfxGetPrintSize(TF.getFontID(), description_text2, text_size, &description2_w, &description2_h );
 	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h);
 
+	UNREFERENCED_PARAMETER(question_h);
 	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1f;
 
 	this->warning = UIO::TextShadow{ -warning_w * win_w, start_y - offset_y, text_size_warning, this->z, warning_text, {1.f, 0.f, 0.f, 1.f} };
