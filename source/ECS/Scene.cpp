@@ -66,6 +66,14 @@ static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
+	TutorialText.z = 1100;
+	TutorialText.set(300.f, 0.5f);				//size
+	TutorialText.set({ 1.f, 1.f, 1.f, 1.f }); // white
+
+	int levelCount = gameData.scoringSystem.LevelCount();
+	std::string progressText = "NODES ESCAPED: " + std::to_string(levelCount);
+	TutorialText << progressText.c_str();
+
 	gameData.win = false;
 
 	//set seed
@@ -396,6 +404,8 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
+	TutorialText.free();
+	tutorial_spawned_entities.clear();
 	gameData.win = false;
 
 	TBSys.tbs_free();
@@ -409,9 +419,6 @@ void Scene::scene_free()
 	highlightSystem.free();
 	cbs.combatSystem_free();
 	entities.clear();
-
-	tutorial_spawned_entities.clear();
-	//enemyDirector.reset();
 }
 
 void Scene::set_tutorial_substep(int substep)
@@ -659,7 +666,7 @@ void Scene::print_tutorial_stage_text() const
 
 				case 3:
 					std::cout << "Try the cards given to you. Press End Turn TWICE to refresh cards.\n";
-					TutorialText += "Try the cards given to you. Press E to refresh.";
+					TutorialText += "Cards consume PP, their costs are on the card. Try the cards given to you.";
 					TutorialText += "Press End Turn TWICE to refresh cards.";
 					break;
 
@@ -888,6 +895,7 @@ void Scene::print_tutorial_stage_text() const
 
 				case 15:
 					TutorialText += "So will you be brave and start a new journey or take a breather?";
+					TutorialText += "THIS MAY OVERWRITE YOUR CURRENT SAVED DATA. PROCEED WITH CAUTION";
 					break;
 
 				case 16:

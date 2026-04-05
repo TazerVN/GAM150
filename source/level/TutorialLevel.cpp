@@ -1,3 +1,10 @@
+//=================================================================================
+//	AUTHOR:		Zejin Kendreich Dayap Chen 
+// 
+//	EMAIL:		chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=================================================================================
 #include "../UI/cardInteraction.h"
 #include "TutorialLevel.h"
 #include "../util/LevelManager.h"
@@ -58,6 +65,9 @@ void LevelStateTutorial_load()
 
 void LevelStateTutorial_init()
 {
+	AF.bgm.stop();
+	AF.bgm.play(0);
+
 	TutorialText.z = 1250;
 	TutorialText.set(300.f, 0.4f);
 	auto* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -92,7 +102,6 @@ void LevelStateTutorial_init()
 
 void LevelStateTutorial_update()
 {
-	// Always sync from Scene first so Scene is the real source of truth
 	gTutorialStage = static_cast<TutorialFlowStage>(tutorialscene.get_tutorial_stage());
 	gTutorialSubstep = tutorialscene.get_tutorial_substep();
 
@@ -176,15 +185,6 @@ void LevelStateTutorial_update()
 	{
 		tut_UIM.pause.update();
 	}
-
-
-	
-	/*else if (!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
-	else if (!player_died && !tut_UIM.getPauseMenu().isCreated() && tut_UIM.getPauseMenu().isOn())
-	{
-		PauseMenu& p = tut_UIM.getPauseMenu();
-		p = PauseMenu(1300);
-	}*/
 
 	if (AEInputCheckTriggered(AEVK_F5))
 		gLevelStateNext = LevelStates::LS_TUTORIAL;

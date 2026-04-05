@@ -336,7 +336,7 @@ namespace UI
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
-
+			if (sta_child == nullptr) continue;
 			sta_child->max_movSpd	= sta_parent->max_movSpd;
 			sta_child->cur_movSpd	= int((float)sta_parent->cur_movSpd / (float)sta_parent->max_movSpd * (float)sta_child->max_movSpd);
 			transform_child->size.x = (float)sta_child->cur_movSpd / (float)sta_child->max_movSpd * (float)transform_child->size_og.x;

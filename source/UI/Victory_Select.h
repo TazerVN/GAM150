@@ -17,7 +17,7 @@ class Victory_Select
 	public:
 	Entity create_Victory_card(std::string cardname, f32 x, f32 y);
 	Entity create_Victory_card(Entity cardID, f32 x, f32 y);
-
+	bool pending_free{false};
 	std::vector<VictoryCard>victory_cards;
 
 	UIO::TextureButton skip;

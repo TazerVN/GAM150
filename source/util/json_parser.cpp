@@ -212,8 +212,6 @@ JSON_RET parse_game_data()
 				gameData.rom_cards_in_hand.push_back(card_name);
 			}
 		}
-
-		
 	}
 	return JSON_RET::OK;
 }
