@@ -104,4 +104,6 @@ public:
     std::unordered_map<std::string, Entity>& get_map(); // "E0" -> entity
     void print_current_instruction() const;
     size_t index() const;
+    void reset();
+
 };

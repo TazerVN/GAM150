@@ -225,12 +225,9 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 				++attempts;
 			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
 
-			if (x < 15 && y < 15 && x >= 0 && y >= 0)
+			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
 			{
-				if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
-				{
-					BattleGrid.placeEntity(entities[i], x, y);
-				}
+				BattleGrid.placeEntity(entities[i], x, y);
 			}
 		}
 
@@ -399,20 +396,22 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
-	tutorial_spawned_entities.clear();
 	gameData.win = false;
 
 	TBSys.tbs_free();
 	BattleGrid.gameboard_free();
 	cameraSys = nullptr;
 	UIptr = nullptr;
-	entities.clear();
 	next_entity = 0;
 	intentDisplaySystem.intentionSystem_free();
 	gbs.gbs_free();
 	EntityFactory::free_Player();
 	highlightSystem.free();
 	cbs.combatSystem_free();
+	entities.clear();
+
+	tutorial_spawned_entities.clear();
+	//enemyDirector.reset();
 }
 
 void Scene::set_tutorial_substep(int substep)

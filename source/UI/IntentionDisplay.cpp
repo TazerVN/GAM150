@@ -294,10 +294,10 @@ void IntentionDisplaySystem::update(Scene& scene)
 			Components::Transform* child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* child_mesh = ecs.getComponent<Components::Mesh>(p.second);
 
+			if (parent_mesh == nullptr || child_mesh == nullptr) continue;
+
 			child->pos_onscreen.x = parent->pos_onscreen.x + child->pos.x;
 			child->pos_onscreen.y = parent->pos_onscreen.y + child->pos.y;
-
-			if (parent_mesh == nullptr || child_mesh == nullptr) continue;
 			child_mesh->z = parent_mesh->z + 1;
 		}
 	}

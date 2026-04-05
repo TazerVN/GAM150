@@ -827,7 +827,7 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 
 	if(!selected_cells.empty())selected_cells.clear();
 	if(!aoe_selected_cells.empty())aoe_selected_cells.clear();
-	if(!graveyard.empty())graveyard.clear();
+	if(!graveyard.empty()) graveyard.clear();
 }
 
 std::vector<std::pair<AEVec2, Entity>>& CombatNameSpace::CombatSystem::get_graveyard()

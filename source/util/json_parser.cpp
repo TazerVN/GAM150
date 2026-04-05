@@ -159,7 +159,11 @@ JSON_RET parse_game_data()
 			return JSON_RET::PARSE_ERROR;
 	}
 	else
-		return JSON_RET::PARSE_ERROR;
+	{
+		gameData.soundSettings.music = 0.5f;
+		gameData.soundSettings.sfx = 0.5f;
+		gameData.soundSettings.ambience = 0.5f;
+	}
 
 	if (doc.HasMember("Score") && doc["Score"].IsObject())
 	{
@@ -200,18 +204,16 @@ JSON_RET parse_game_data()
 
 	if (doc.HasMember("player_current_cards") && doc["player_current_cards"].IsArray())
 	{
-		Components::Card_Storage* cardStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		if (cardStorage == nullptr)
-			return JSON_RET::PARSE_ERROR;
-
 		for (auto const& card : doc["player_current_cards"].GetArray())
 		{
 			if (card.IsString())
 			{
 				std::string card_name = card.GetString();
-				EntityFactory::add_card_player_deck(playerID, card_system.generate_card_from_bible(card_name));
+				gameData.rom_cards_in_hand.push_back(card_name);
 			}
 		}
+
+		
 	}
 	return JSON_RET::OK;
 }

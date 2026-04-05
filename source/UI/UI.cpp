@@ -296,14 +296,13 @@ namespace UI
 			if (!ecs.getBitMask()[p.second].test(transID)) continue;
 
 			Components::HP* hp_parent = ecs.getComponent<Components::HP>(p.first);
-
 			Components::HP* hp_child = ecs.getComponent<Components::HP>(p.second);
 			Components::Transform* transform_child = ecs.getComponent<Components::Transform>(p.second);
 			Components::Mesh* mesh_parent = ecs.getComponent<Components::Mesh>(p.first);
 			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
-			//if (!hp_parent || !hp_child || !transform_child) continue;
-			//if (hp_parent->max_value <= 0.0f || hp_child->max_value <= 0.0f) continue;
+			if (!hp_parent || !hp_child || !transform_child) continue;
+			if (hp_parent->max_value <= 0.0f || hp_child->max_value <= 0.0f) continue;
 
 			float ratio = hp_parent->c_value / hp_parent->max_value;
 

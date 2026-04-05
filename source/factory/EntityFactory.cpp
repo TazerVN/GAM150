@@ -234,6 +234,7 @@ namespace EntityFactory
 
 		Components::Card_Storage card_storage;
 		ecs.addComponent(playerID, card_storage);
+
 		Components::TurnBasedStats tbstats
 		{ gameData.playerStats.maxPoints,	//max points
 			gameData.playerStats.points,	//cur_points
@@ -246,13 +247,18 @@ namespace EntityFactory
 		ecs.addComponent(playerID, tbstats);
 		ecs.getComponent<Components::HP>(playerID)->c_value = gameData.chp;
 		ecs.getComponent<Components::HP>(playerID)->max_value = gameData.mhp;
+
+		for (std::string const& rom_card : gameData.rom_cards_in_hand)
+		{
+			EntityFactory::add_card_player_deck(playerID, card_system.generate_card_from_bible(rom_card));
+		}
 	}
 
 	void free_Player()
 	{
 		if (playerID == -1) return;
 		ecs.getComponent<Components::Card_Storage>(playerID)->free();
-		ecs.getComponent<Components::TurnBasedStats>(playerID)->free();
+		//ecs.getComponent<Components::TurnBasedStats>(playerID)->free();
 		ecs.getComponent<Components::Transform>(playerID)->pos = { 100000.f,-100000.f };
 		ecs.getComponent<Components::Transform>(playerID)->pos_onscreen = { 100000.f,-100000.f };
 		auto anim = ecs.getComponent<Components::Animation_Actor>(playerID);

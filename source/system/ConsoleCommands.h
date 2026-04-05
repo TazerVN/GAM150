@@ -19,13 +19,13 @@ private:
 	const unsigned int _MAX_CHAR_COUNT = 25;
 
 	//=============Log=======================
-	Entity log_box_container{0};
+	Entity log_box_container{Entity(-1)};
 	AEVec2 lbc_pos_{ AEVec2{0,0} };
 	AEVec2 lbc_size{ AEVec2{0,0} };
 	Components::Color lbc_color{ 46.f / 255.f, 46.f / 255.f, 46.f / 255.f,1.f };
 
 	//===============Text box==============
-	Entity text_box_container{0};
+	Entity text_box_container{Entity(-1)};
 	AEVec2 tc_pos_{ AEVec2{0,0} };
 	AEVec2 tc_size{ AEVec2{0,0} };
 	Components::Color tc_color{ 77.f / 255.f, 77.f / 255.f, 77.f / 255.f,1.f };

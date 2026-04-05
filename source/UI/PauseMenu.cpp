@@ -521,10 +521,6 @@ void ConfirmPause::init()
 
 	f32 warning_w, warning_h;
 	f32 description_w, description_h;
-<<<<<<< HEAD
-	//f32 description2_w, description2_h;
-=======
->>>>>>> b82953e468890dceda186b6b2c31cc39ae6f7f25
 	f32 question_w, question_h;
 
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;

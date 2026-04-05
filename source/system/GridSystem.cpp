@@ -359,6 +359,7 @@ namespace Grid
 
 	void GameBoard::placeEntity(Entity e, s32 x, s32 y)
 	{
+		if (e == Entity(-1)) return;
 		if (x >= MAX_I || x < 0 || y >= MAX_J || y < 0) return;
 
 		this->pos[x][y] = e;
@@ -390,7 +391,8 @@ namespace Grid
 		EntityComponent::ComponentTypeID colorID = EntityComponent::getComponentTypeID<Components::Color>();
 		if (!ecs.getBitMask()[current_cell].test(colorID)) return;
 
-		Components::Color* color = ecs.getComponent<Components::Color>(current_cell);
+		Components::Color* color = ecs.getComponent<Components::Color>(current_cell); 
+			if (color == nullptr) return;
 		color->d_color.g = 0.5f;
 		color->d_color.r = 0.5f;
 
@@ -552,6 +554,7 @@ namespace Grid
 				Components::Transform* transform = ecs.getComponent<Components::Transform>(this->cells[i][j]);
 				Components::Color* color = ecs.getComponent<Components::Color>(this->cells[i][j]);
 
+				if (color == nullptr) continue;
 
 				if (hlptr->enemy_mov_highlight_activate[i][j])
 				{
@@ -634,15 +637,15 @@ namespace Grid
 				{
 					Entity e = this->pos[i][j];
 
-					if (!ecs.getBitMask()[e].test(transID)) return;
-					if (!ecs.getBitMask()[e].test(colorID)) return;
+					if (!ecs.getBitMask()[e].test(transID)) continue;
+					if (!ecs.getBitMask()[e].test(colorID)) continue;
 
 					transform = ecs.getComponent<Components::Transform>(e);
 					color = ecs.getComponent<Components::Color>(e);
 
 					Entity current_cell = this->cells[i][j];
 					colorID = EntityComponent::getComponentTypeID<Components::Color>();
-					if (!ecs.getBitMask()[current_cell].test(colorID)) return;
+					if (!ecs.getBitMask()[current_cell].test(colorID)) continue;
 
 					color = ecs.getComponent<Components::Color>(current_cell);
 					color->d_color.g = color->d_color.g - 0.4f;

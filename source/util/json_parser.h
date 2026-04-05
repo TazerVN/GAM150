@@ -86,6 +86,7 @@ struct JSON_GAME_DATA
 	SoundSettings soundSettings;
 	ScoringSystem scoringSystem;
 	Components::TurnBasedStats playerStats;
+	std::vector<std::string> rom_cards_in_hand;
 };
 
 JSON_RET create_game_data();

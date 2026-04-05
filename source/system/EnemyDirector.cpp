@@ -372,6 +372,17 @@ size_t EnemyDirector::index() const
 {
     return timelineIp_;
 }
+
+void EnemyDirector::reset()
+{
+    idToEntity_.clear();
+    entityToId_.clear();
+    timeline_.clear();
+    timelineIp_ = 0;
+    hordeTurnActive_ = false;
+    pendingAttack_ = PendingAttack{};
+}
+
 void EnemyDirector::execMOVE(Grid::GameBoard& board,
     Entity actor,
     const Tokens& t)
