@@ -54,7 +54,6 @@ void LevelStateTutorial_load()
 		playerHP->c_value = playerHP->max_value;
 	}
 
-	std::cout << "Tutorial load!\n";
 }
 
 void LevelStateTutorial_init()
@@ -71,8 +70,7 @@ void LevelStateTutorial_init()
 
 	tutorialscene.set_tutorial_active(true);
 	tutorialscene.set_tutorial_stage(static_cast<int>(gTutorialStage));
-	std::cout << "[TutorialLevel_init] set tutorial_active = "
-		<< tutorialscene.is_tutorial_active() << '\n';
+
 	tutorialscene.set_tutorial_substep(gTutorialSubstep);
 
 	tutorialscene.init(CS, tut_UIM);

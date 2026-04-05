@@ -77,7 +77,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	cameraSys = &cam;
 	UIptr = &_UI;
-	std::cout << "[Scene::init] tutorial_active = " << tutorial_active << '\n';
 
 	iNodes.init(BattleGrid,gbs);
 
@@ -102,7 +101,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	if (tutorial_active)
 	{
-		std::cout << "[Tutorial] Init\n";
 
 		clear_player_cards_for_tutorial(playerID,UIptr);
 

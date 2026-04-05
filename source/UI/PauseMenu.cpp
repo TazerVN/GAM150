@@ -30,6 +30,7 @@ void PauseMenu::init()
 			auto button_c = ecs.getComponent<Components::Input>(main->continue_button.button);
 			button_c->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->on = false;
@@ -37,46 +38,55 @@ void PauseMenu::init()
 						this->menu->to_continue();
 
 					}
+					AF.sfx.stopping = false;
 				};
 
 			auto button_s = ecs.getComponent<Components::Input>(main->setting_button.button);
 			button_s->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->transition = true;
 						this->menu->to_setting();
 					}
+					AF.sfx.stopping = false;
 				};
 
 			auto button_r = ecs.getComponent<Components::Input>(main->abandon_button.button);
 			button_r->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->transition = true;
 						this->menu->to_confirm();
 
 					}
+					AF.sfx.stopping = false;
 				};
 
 			auto button_t = ecs.getComponent<Components::Input>(main->tutorial_button.button);
 			button_t->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->transition = true;
 						this->menu->to_tutorial();
 
 					}
+					AF.sfx.stopping = false;
 				};
 
 			auto button_l = ecs.getComponent<Components::Input>(main->leave_button.button);
 			button_l->onClick = [this]
 				{
+					AF.sfx.play(1);
 					this->on = false;
 					this->transition = true;
 					this->menu->to_exit();
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -90,8 +100,10 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(setting->leave.button);
 			button_l->onClick = [this]
 				{
+					AF.sfx.play(1);
 					this->transition = true;
 					this->menu->to_main();
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -104,15 +116,19 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(confirm->no.button);
 			button_l->onClick = [this]
 				{
+					AF.sfx.play(1);
 					this->transition = true;
 					this->menu->to_main();
+					AF.sfx.stopping = false;
 				};
 			auto button_c = ecs.getComponent<Components::Input>(confirm->yes.button);
 			button_c->onClick = [this]
 				{
+					AF.sfx.play(1);
 					this->on = false;
 					this->transition = true;
 					this->menu->to_gameover();
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -125,8 +141,10 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(tutorial->leave_button.button);
 			button_l->onClick = [this]
 				{
+					AF.sfx.play(1);
 					this->transition = true;
 					this->menu->to_main();
+					AF.sfx.stopping = false;
 				};
 			break;
 
@@ -414,12 +432,16 @@ void TutorialPause::init()
 
 	auto foward = [&]
 		{
+			AF.sfx.play(1);
 			this->page += 1;
+			AF.sfx.stopping = false;
 		};
 	auto backward = [&]
 		{
+			AF.sfx.play(1);
 			this->page -= 1;
 			if (this->page < 0) this->page = 10;
+			AF.sfx.stopping = false;
 		};
 
 	this->page = 0;

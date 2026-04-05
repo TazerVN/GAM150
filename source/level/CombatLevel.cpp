@@ -43,7 +43,6 @@ void LevelStateCombat_load()
 		playerHP->max_value = PLAYER_MAX_HEALTH;
 		playerHP->c_value = playerHP->max_value;
 
-		std::cout << "New start! Reset Player" << '\n';
 	}
 	//AF.bgm.play(0);
 }

@@ -13,9 +13,9 @@ void load_Sys_Comp();
 
 // main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
+					  _In_opt_ HINSTANCE hPrevInstance,
+					  _In_ LPWSTR    lpCmdLine,
+					  _In_ int       nCmdShow)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
@@ -25,23 +25,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	// Initialization of your own variables go here
-	
+
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, false, NULL);
-	// Changing the window title
-	AESysSetWindowTitle("Yes!");
+
+	AESysSetWindowIcon("Assets/favicon.ico", 32, 32);
 	AESysSetWindowTitle("Beyond the Nexus! You should checkout Zombat");
 
-	#ifdef _DEBUG
-		AllocConsole();
-		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-		freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
-		std::cout.clear();
-	#endif
+#ifdef _DEBUG
+	AllocConsole();
+	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+	freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
+	std::cout.clear();
+#endif
+
+
+	std::streambuf* orig = std::cout.rdbuf(nullptr);
 
 	load_Sys_Comp();
 
-	GameStateMgrInit(GameStates::GS_MAINMENU);
+	GameStateMgrInit(GameStates::GS_LOGO);
 
 	while (gGameStateCurr != GameStates::GS_QUIT)
 	{
@@ -87,13 +90,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		gGameStateCurr = gGameStateNext;
 	}
 
-	if(LevelStateFree != nullptr ) LevelStateFree();
+	if (LevelStateFree != nullptr) LevelStateFree();
 	if (LevelStateUnload != nullptr)LevelStateUnload();
 
 	mf.MeshFree();
 	AF.free();
 	console.free();
 	save_game_data();
+
+	std::cout.rdbuf(orig);
 	AESysReset();
 	AESysExit();
 }
@@ -133,5 +138,5 @@ void load_Sys_Comp()
 	Components::TagClass tg{Components::Tag::UI};
 	ecs.addComponent(t, tg);
 	//=============================
-	IT.set({0.3f, 0.7f, 1.f, 1.f});
+	IT.set({ 0.3f, 0.7f, 1.f, 1.f });
 }

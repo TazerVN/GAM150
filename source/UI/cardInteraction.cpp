@@ -123,12 +123,9 @@ namespace CardInteraction
 				int& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
 				
-				std::cout << "Checking for card mana. card name : " << ecs.getComponent<Components::Name>(cardID)->value << '\n';
-				std::cout << "Card Mana : " << card_cost << '\n';
 
 				if (card_cost > player_curMana)
 				{
-					std::cout << "Not enough mana!!" << '\n';
 					PUT << 0 << "Not enough mana!!";
 					return;
 				}
@@ -153,7 +150,6 @@ namespace CardInteraction
 
 			this->generateCards();
 			this->reset = false;
-			std::cout << "Shuffle New Cards" << '\n';
 
 			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
 			in->onClick = [this] { this->reset_hand(); };*/
@@ -482,7 +478,6 @@ namespace CardInteraction
 		t2->pos_onscreen.y = t1->pos_onscreen.y + t1->size.y * 0.36f;
 
 	}
-
 	void card_offHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z)
 	{
 

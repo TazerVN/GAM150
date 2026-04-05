@@ -6,6 +6,7 @@ enum class GameStates
 	// list of all game states 
 	GS_Game =0 ,
 	GS_MAINMENU,
+	GS_LOGO,
 	// special game state IDs
 	GS_RESTART,
 	GS_GAMEOVER,

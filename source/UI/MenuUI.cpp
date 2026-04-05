@@ -78,10 +78,12 @@ void GameOverUI::init()
 		{
 			if (!this->transition)
 			{
+				AF.sfx.play(1);
 				this->fade.free();
 				this->fade = UIO::ScreenTransition{ false};
 				this->transition = true;
 				this->dest = NEXT::GAME;
+				AF.sfx.stopping = false;
 			}
 		};
 
@@ -89,10 +91,12 @@ void GameOverUI::init()
 		{
 			if (!this->transition)
 			{
+				AF.sfx.play(1);
 				this->fade.free();
 				this->fade = UIO::ScreenTransition{ false};
 				this->transition = true;
 				this->dest = NEXT::MENU;
+				AF.sfx.stopping = false;
 			}
 		};
 
@@ -208,6 +212,7 @@ void MenuUI::init()
 			auto play = ecs.getComponent<Components::Input>(main->play.button);
 			play->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -215,10 +220,12 @@ void MenuUI::init()
 						this->current_menu->to_play();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			auto setting = ecs.getComponent<Components::Input>(main->setting.button);
 			setting->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -226,10 +233,12 @@ void MenuUI::init()
 						this->current_menu->to_setting();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			auto credit = ecs.getComponent<Components::Input>(main->credit.button);
 			credit->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -237,14 +246,17 @@ void MenuUI::init()
 						this->current_menu->to_credit();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			auto exit = ecs.getComponent<Components::Input>(main->exit.button);
 			exit->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						gGameStateNext = GameStates::GS_QUIT;
 					}
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -270,6 +282,7 @@ void MenuUI::init()
 			{
 				continue_game->onClick = [this]
 					{
+						AF.sfx.play(1);
 						if (!this->transition)
 						{
 							this->fade.free();
@@ -277,12 +290,14 @@ void MenuUI::init()
 							this->current_menu->to_game();
 							this->transition = true;
 						}
+						AF.sfx.stopping = false;
 					};
 			}
 
 			auto new_game = ecs.getComponent<Components::Input>(playmenu->new_game.button);
 			new_game->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!gameData.new_Start)
 					{
 						if (!this->transition)
@@ -303,10 +318,12 @@ void MenuUI::init()
 							this->transition = true;
 						}
 					}
+					AF.sfx.stopping = false;
 				};
 			auto tutorial = ecs.getComponent<Components::Input>(playmenu->tutorial.button);
 			tutorial->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -314,10 +331,12 @@ void MenuUI::init()
 						this->current_menu->to_tutorial();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			auto exit = ecs.getComponent<Components::Input>(playmenu->exit.button);
 			exit->onClick = [this]
 				{
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -325,6 +344,7 @@ void MenuUI::init()
 						this->current_menu->to_main();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -340,7 +360,7 @@ void MenuUI::init()
 			auto exit = ecs.getComponent<Components::Input>(setting->exit.button);
 			exit->onClick = [this]()
 				{
-
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -348,6 +368,7 @@ void MenuUI::init()
 						this->current_menu->to_main();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -363,7 +384,7 @@ void MenuUI::init()
 			auto exit = ecs.getComponent<Components::Input>(credit->exit.button);
 			exit->onClick = [this]()
 				{
-
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -371,6 +392,7 @@ void MenuUI::init()
 						this->current_menu->to_main();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -386,7 +408,7 @@ void MenuUI::init()
 			auto yes = ecs.getComponent<Components::Input>(credit->yes.button);
 			yes->onClick = [this]()
 				{
-
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						gameData.new_Start = true;
@@ -395,11 +417,12 @@ void MenuUI::init()
 						this->current_menu->to_game();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			auto no = ecs.getComponent<Components::Input>(credit->no.button);
 			no->onClick = [this]()
 				{
-
+					AF.sfx.play(1);
 					if (!this->transition)
 					{
 						this->fade.free();
@@ -407,6 +430,7 @@ void MenuUI::init()
 						this->current_menu->to_main();
 						this->transition = true;
 					}
+					AF.sfx.stopping = false;
 				};
 			break;
 		}
@@ -500,7 +524,6 @@ void MenuUI::update()
 		{
 			if (!this->fade.update())
 			{
-				std::cout << "[MenuUI] Going to tutorial level\n";
 				this->cur = CURRENT_MENU::MAIN;
 				gLevelStateNext = LevelStates::LS_TUTORIAL;
 				gGameStateNext = GameStates::GS_Game;
@@ -598,7 +621,7 @@ void CreditMenu::init()
 
 		"Team Members:", //2
 		"Pham Minh Tuan",
-		"Wai Pyoo Ooo",
+		"Wai Phyoo Ooo",
 		"Zejin Kendreich Dayap Chen",
 		"Tio Chun Yi",
 
@@ -682,7 +705,6 @@ void CreditMenu::update()
 void CreditMenu::free()
 {
 
-	std::cout << "CreditMenu::free() called, list size: " << this->list.size() << '\n';
 	for(UIO::TextShadow* t : this->list)
 	{
 		t->free();
