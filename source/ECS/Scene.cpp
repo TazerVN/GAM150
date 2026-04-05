@@ -669,7 +669,7 @@ void Scene::print_tutorial_stage_text() const
 
 				case 3:
 					std::cout << "Try the cards given to you. Press End Turn TWICE to refresh cards.\n";
-					TutorialText += "Try the cards given to you.";
+					TutorialText += "Cards consume PP, their costs are on the card. Try the cards given to you.";
 					TutorialText += "Press End Turn TWICE to refresh cards.";
 					break;
 
