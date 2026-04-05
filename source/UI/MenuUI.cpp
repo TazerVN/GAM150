@@ -595,13 +595,13 @@ void SettingMenu::init()
 
 
 	this->bgm_text = UIO::TextShadow{ start_x, start_y - s_h * text_size, text_size, 1200 , "Music" , 0xFFFFFFFF };
-	this->bgm_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 0, s_w, s_h, 1200, nullptr, AF.bgm.volume, 1.f};
+	this->bgm_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 0, s_w, s_h, 1200, AF.bgm.volume, 1.f};
 
 	this->amb_text = UIO::TextShadow{ start_x,start_y - offset_y * 1 - s_h * text_size,  text_size, 1200 , "Ambience" , 0xFFFFFFFF };
-	this->amb_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 1, s_w, s_h, 1200, nullptr, AF.amb.volume, 1.f };
+	this->amb_slider = UIO::Slider{ start_x + text_slider_gap,  start_y - offset_y * 1, s_w, s_h, 1200, AF.amb.volume, 1.f };
 
 	this->sfx_text = UIO::TextShadow{ start_x, start_y - offset_y * 2 - s_h * text_size, text_size, 1200 , "SFX" , 0xFFFFFFFF };
-	this->sfx_slider = UIO::Slider{ start_x + text_slider_gap ,  start_y - offset_y * 2, s_w, s_h, 1200, nullptr, AF.sfx.volume, 1.f };
+	this->sfx_slider = UIO::Slider{ start_x + text_slider_gap ,  start_y - offset_y * 2, s_w, s_h, 1200, AF.sfx.volume, 1.f };
 	this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMaxX() - 250.f, AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, 0.5f ,0.f, 1200, "GO BACK", nullptr, 0xFFFFFFFF };
 
 

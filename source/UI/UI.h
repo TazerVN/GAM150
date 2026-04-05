@@ -58,7 +58,7 @@ namespace UI
 		//card
 		CardInformation::CardDisplay info;
 		CardInteraction::CardHand hand;
-		Entity turn;
+		Entity turn{0};
 		
 		Victory_Select vicSelect;
 

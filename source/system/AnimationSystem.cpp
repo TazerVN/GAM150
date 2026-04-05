@@ -279,9 +279,6 @@ namespace Animation
 		bool flag = false;
 		timer->start = true;
 
-		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		f32 minimum = 0.6f;
-
 
 		if (timer->seconds >= timer->max_seconds)
 		{

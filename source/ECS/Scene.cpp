@@ -225,9 +225,12 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 				++attempts;
 			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
 
-			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+			if (x < 15 && y < 15 && x >= 0 && y >= 0)
 			{
-				BattleGrid.placeEntity(entities[i], x, y);
+				if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+				{
+					BattleGrid.placeEntity(entities[i], x, y);
+				}
 			}
 		}
 
@@ -246,9 +249,12 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 				++attempts;
 			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
 
-			if (BattleGrid.get_pos()[x][y] == static_cast<Entity>(-1))
+			if (x < 20 && y < 20 && x >= 0 && y >= 0)
 			{
-				BattleGrid.placeEntity(rock, x, y);
+				if (BattleGrid.get_pos()[x][y] == static_cast<Entity>(-1))
+				{
+					BattleGrid.placeEntity(rock, x, y);
+				}
 			}
 		}
 	}

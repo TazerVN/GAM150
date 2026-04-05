@@ -97,6 +97,7 @@ namespace UIO
 	
 	TextButton::TextButton(f32 x, f32 y, f32 width, f32 height, f32 text_size, f32 rotation, s32 z, std::string a, std::function<void()> func, Components::RGBA rgba)
 	{
+		this->timer = 0;
 		this->z = z;
 		this->button = ui_button(x, y, width, height, 0, z, func, {1.f - rgba.r, 1.f - rgba.g, 1.f - rgba.b, 1 - rgba.a });
 		this->text = UIO::ui_text( x - 64.f * text_size, y - 64.f * text_size / 2.f, text_size, text_size,rotation, z + 1, a, {1.f, 1.f, 1.f, 1.f} );
@@ -327,7 +328,7 @@ namespace UIO
 		this->current = (pos_button->pos_onscreen.x - pos_container->pos.x)/ pos_container->size.x;
 	}
 
-	Slider::Slider(f32 x, f32 y, f32 width, f32 height, s32 z, std::function<void()> func, f32 current, f32 max)
+	Slider::Slider(f32 x, f32 y, f32 width, f32 height, s32 z, f32 current, f32 max)
 	{
 		this->current = current;
 		this->max = max;

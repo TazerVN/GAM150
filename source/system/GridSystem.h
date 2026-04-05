@@ -98,7 +98,7 @@ namespace Grid
 
 		bool selected_player() const;
 		void unselect_movement();
-		AEVec2& Get_CurPart_gridPos();
+		AEVec2 Get_CurPart_gridPos();
 		AEVec2 GetOffsetPos();
 
 		void debug_print();

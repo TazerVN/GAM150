@@ -50,8 +50,8 @@ namespace CardInteraction
 		std::vector<std::pair<Entity, Entity>> curr_hand_display{};
 		std::vector<Entity> curr_card_id{};
 		std::vector<bool> activate;
-		Entity id;
-		bool reset;
+		Entity id{0};
+		bool reset{false};
 		s32 z{ 1000 };
 
 		TBS::TurnBasedSystem* tbsptr = nullptr;

@@ -9,7 +9,7 @@
 namespace Camera
 {
 
-	CameraSystem::CameraSystem() : buffer_x{ 0 }, buffer_y{ 0 }, buffer_zoom{ 1.f }
+	CameraSystem::CameraSystem() : buffer_x{ 0 }, buffer_y{ 0 }, buffer_zoom{ 1.f }, mouse{AEVec2{0,0}}
 	{
 	}
 
