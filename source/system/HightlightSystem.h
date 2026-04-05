@@ -44,19 +44,19 @@ public:
 
 	std::vector<Components::GridCell> atk_highlighted_cells;
 
-	std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
+	std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate{};
 	std::vector<Components::GridCell> aoe_highlighted_cells;
 
-	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate;
-	std::vector<Components::GridCell> move_trail_highlighted_cells;
+	std::array<std::array<bool, MAX_J>, MAX_I> move_trail_highlight_activate{};
+	std::vector<Components::GridCell> move_trail_highlighted_cells{};
 
-	std::array<std::array<bool, MAX_J>, MAX_I> enemy_mov_highlight_activate;
-	std::unordered_map<Entity,std::vector<Components::GridCell>> enemy_mov_highlighted_cells;
+	std::array<std::array<bool, MAX_J>, MAX_I> enemy_mov_highlight_activate{};
+	std::unordered_map<Entity, std::vector<Components::GridCell>> enemy_mov_highlighted_cells;
 
-	std::array<std::array<bool, MAX_J>, MAX_I> enemy_atk_highlight_activate;
+	std::array<std::array<bool, MAX_J>, MAX_I> enemy_atk_highlight_activate{};
 	std::unordered_map<Entity, std::vector<Components::GridCell>> enemy_atk_highlighted_cells;
 
-	std::array<std::array<Components::RGBA, MAX_J>, MAX_I> highlight_activate;
+	std::array<std::array<Components::RGBA, MAX_J>, MAX_I> highlight_activate{};
 
 	HighlightSystem(EventPool<highlight_tag>& eventPool, 
 					Grid::GameBoard& gb,

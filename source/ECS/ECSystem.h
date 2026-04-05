@@ -118,6 +118,7 @@ namespace EntityComponent
 		void remove_from_group(Entity e)
 		{
 			//remove them from the group
+			if (e == Entity(-1)) return;
 			ComponentBitMask bitmask = entitySignatures[e];
 			auto it = entityGroups.find(bitmask);
 			if (it == entityGroups.end()) return;
@@ -166,7 +167,7 @@ namespace EntityComponent
 		void destroyEntity(Entity e)
 		{
 			// must remove first before removing component
-			if (e <= 0) return;
+			if (e == Entity(-1)) return;
 			remove_from_group(e);
 			//i represent ComponentTypeID
 			for (size_t i = 0; i < entitySignatures[e].size(); ++i)
