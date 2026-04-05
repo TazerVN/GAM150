@@ -84,18 +84,19 @@ void Victory_Select::update()
 		f32 size_y = 1.8f;
 		f32 text_size = 0.5f;
 
-		auto skp = [&](){ this->free();};
+		auto skp = [&](){ this->pending_free = true;};
 		this->skip = UIO::TextureButton{ TF.getTextureUI(11) , 0 , AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Skip", skp, 0xFFFFFFFF };
 	}
 	this->dim.update();
-	if (AEInputCheckTriggered(AEVK_ESCAPE))
+	if (this->pending_free)
 	{
+		this->pending_free = false;
 		this->free();
 	}
 }
 void Victory_Select::free()
 {
-	for (VictoryCard vc : victory_cards)
+	for (VictoryCard& vc : victory_cards)
 	{
 		vc.free();
 	}
@@ -120,7 +121,7 @@ Entity Victory_Select::create_Victory_card(std::string cardname, f32 x, f32 y)
 		{
 			Entity actual_card = card_system.generate_card_from_bible(cardname);
 			ecs.getComponent<Components::Card_Storage>(playerID)->add_card_to_deck(actual_card);
-			this->free();
+			this->pending_free = true;
 		};
 	Entity vc_id = UIO::ui_button_texture(pTex, x, y, 324 * 0.8f, 528 * 0.8f, 0, this->z + 1, click);
 
@@ -141,7 +142,7 @@ Entity Victory_Select::create_Victory_card(Entity cardID, f32 x, f32 y)
 		{
 			Entity actual_card = card_system.generate_card_from_bible(cardID);
 			ecs.getComponent<Components::Card_Storage>(playerID)->add_card_to_deck(actual_card);
-			this->free();
+			this->pending_free = true;
 		};
 
 	Entity vc_id = UIO::ui_button_texture(pTex, x, y, 324 * 0.8f, 528 * 0.8f, 0, this->z + 1, click);
