@@ -17,7 +17,7 @@ InputSystem::InputManager IM;
 Camera::CameraSystem CS;
 RenderSystem::RenderSystem RM;
 Velocity::VelocitySystem VS;
-TransformSystem::TransformSystem TrS;
+
 Timer::TimerSystem TS;
 Animation::AnimationSystem AS;
 Text::PopUpText PUT;

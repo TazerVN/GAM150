@@ -13,7 +13,6 @@
 
 #include "system/renderSystem.h"
 #include "system/inputSystem.h"
-#include "system/transformSystem.h"
 #include "system/TimerSystem.h"
 #include "system/CameraSystem.h"
 #include "system/velocitySystem.h"
@@ -44,7 +43,6 @@ extern InputSystem::InputManager IM;
 extern Camera::CameraSystem CS;
 extern RenderSystem::RenderSystem RM;
 extern Velocity::VelocitySystem VS;
-extern TransformSystem::TransformSystem TrS;
 extern Animation::AnimationSystem AS;
 extern Text::PopUpText PUT;
 extern Text::InstructionText IT;
