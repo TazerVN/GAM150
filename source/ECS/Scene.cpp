@@ -898,6 +898,7 @@ void Scene::print_tutorial_stage_text() const
 
 				case 15:
 					TutorialText += "So will you be brave and start a new journey or take a breather?";
+					TutorialText += "THIS MAY OVERWRITE YOUR CURRENT SAVED DATA. PROCEED WITH CAUTION";
 					break;
 
 				case 16:
