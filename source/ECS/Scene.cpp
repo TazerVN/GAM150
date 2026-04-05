@@ -117,6 +117,10 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 			enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
 			//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
 		}
+		else if (gameData.scoringSystem.LevelCount()%5 == 0)
+		{
+			enemyDirector.loadScriptFile("Assets/levels/BOSS.txt");//load enemy instrucitons
+		}
 		else
 		{
 			hardcoded_levels.reserve(sizeof(std::string) * 3);
