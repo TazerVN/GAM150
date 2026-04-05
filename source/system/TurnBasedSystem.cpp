@@ -26,7 +26,6 @@ namespace TBS
 	void TurnBasedSystem::round_end()
 	{
 		std::vector<Entity>& vec = ecsptr->getComponent<Components::Card_Storage>(playerID)->data_card_hand;
-		size_t sz = vec.size();
 		while (!vec.empty())
 		{
 			EntityFactory::remove_card_player(playerID, 0);	//this is to remove data from ecs
@@ -387,7 +386,7 @@ namespace TBS
 			}
 		}
 
-		int upper_bound = drawPile.size() - 1; int lower_bound = 0;
+		int upper_bound = (int)drawPile.size() - 1; int lower_bound = 0;
 		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
 		//int index = int(AERandFloat() * drawPile.size());	<- old rand code
 		Entity card = drawPile[index];
@@ -415,7 +414,7 @@ namespace TBS
 	}
 	void TurnBasedSystem::tbs_free()
 	{
-		cur_player = -1;
+		cur_player = Entity(-1);
 		is_active = false;
 		cur_round = 0;
 		player_died = false;

@@ -28,7 +28,6 @@ namespace RenderSystem
 	{
 
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
-		EntityComponent::ComponentTypeID textureID = EntityComponent::getComponentTypeID<Components::Texture>();
 		EntityComponent::ComponentTypeID textID = EntityComponent::getComponentTypeID<Components::Text>();
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
@@ -47,7 +46,8 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(ent);
-					std::pair<s32, Entity> a{mesh->z, ent};
+					if (mesh == nullptr) continue;
+					std::pair<s32, Entity> a = std::make_pair(mesh->z, ent);
 					buffer.push_back(a);
 				}
 			}
@@ -56,7 +56,7 @@ namespace RenderSystem
 				for (Entity ent : it->second)
 				{
 					Components::Text* text = ecs.getComponent<Components::Text>(ent);
-					std::pair<s32, Entity> a{ text->z, ent };
+					std::pair<s32, Entity> a = std::make_pair(text->z, ent);
 					buffer.push_back(a);
 				}
 			}

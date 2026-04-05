@@ -116,7 +116,7 @@ namespace UI
 
 	}
 
-	void UIManager::update(Scene& scene, f32 dt)
+	void UIManager::update(Scene& scene)
 	{
 		if (this->pause.isOn()) return;
 		if (this->info.isOn() && !this->info.isCreated())
@@ -132,7 +132,7 @@ namespace UI
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
-		hand.update_logic(dt);
+		hand.update_logic();
 		info.update();
 		vicSelect.update();
 

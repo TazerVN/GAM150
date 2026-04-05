@@ -17,7 +17,7 @@ namespace Components
 	constexpr size_t MAX_COMPONENT = 50;
 
 
-	constexpr size_t NULL_INDEX = -1;
+	constexpr size_t NULL_INDEX = static_cast<size_t>(-1);
 	constexpr size_t DRAW_COUNT = 6;
 	//========================= ENUM ==============================
 	enum class Tag
@@ -317,6 +317,8 @@ namespace Components
 		f32 damageTakenMultiplier{ 1.0f }; // 0 = invincible... MARK?!
 		int ini_movSpd;
 		int max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
+
+		void free();
 	};
 
 	// Fetch ID values

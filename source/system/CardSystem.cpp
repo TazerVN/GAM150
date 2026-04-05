@@ -174,7 +174,7 @@ Entity CardSystem::generate_card_from_bible(std::string key)
 {
 	//if the base key card doesnt exist return
 	if (cards_map.find(key) == cards_map.end())
-		return -1;
+		return (Entity)- 1;
 
 	Entity id = ecs.createEntity();
 
@@ -238,7 +238,7 @@ Entity CardSystem::get_bible_id(std::string key)
 {
 	//if the base key card doesnt exist return
 	if (cards_map.find(key) == cards_map.end())
-		return -1;
+		return (Entity)- 1;
 
 	return cards_map[key];
 }

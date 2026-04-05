@@ -38,7 +38,7 @@ namespace CardInteraction
 {
 
 	void card_onHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z);
-	void card_offHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z);
+	void card_offHover(std::pair<Entity, Entity> id, s32 z);
 	void card_onClick(std::pair<Entity, Entity> id);
 	void card_offClick(std::pair<Entity, Entity> id);
 
@@ -75,8 +75,8 @@ namespace CardInteraction
 		CardHand();
 
 		void generateCards();
-		void update_logic(f32 dt);
-		void update_pos(f32 dt);
+		void update_logic();
+		void update_pos();
 		void activate_card(Entity e);
 		void remove_card(int);
 		void reset_hand();

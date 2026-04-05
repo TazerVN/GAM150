@@ -364,7 +364,6 @@ void SettingPause::init()
 	f32 s_h = 50.f * size_y;
 	f32 s_w = 700.f * size_x;
 
-	f32 offset_x = 256.f * size_x;
 	f32 offset_y = 120.f * size_y;
 
 	f32 text_size = 0.7f;
@@ -417,15 +416,10 @@ void TutorialPause::init()
 	f32 size_x = 1.3f;
 	f32 size_y = 1.7f;
 
-	f32 s_h = 50.f * size_y;
-	f32 s_w = 700.f * size_x;
-
-	f32 offset_x = 256.f * size_x;
-	f32 offset_y = 120.f * size_y;
 
 	f32 text_size = 0.5f;
 
-	f32 text_slider_gap = 300.f;
+	//f32 text_slider_gap = 300.f;
 
 	f32 image_w = 0.8f;
 	f32 image_h = 0.8f;
@@ -456,10 +450,10 @@ void TutorialPause::init()
 void TutorialPause::update()
 {
 	this->page = this->page % 11;
-	auto image = ecs.getComponent<Components::Texture>(this->image);
-	if (image != nullptr)
+	auto _image = ecs.getComponent<Components::Texture>(this->image);
+	if (_image != nullptr)
 	{
-		image->texture = TF.getTextureTutorial(s8(this->page));
+		_image->texture = TF.getTextureTutorial(s8(this->page));
 	}
 }
 

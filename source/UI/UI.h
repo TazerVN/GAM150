@@ -74,7 +74,7 @@ namespace UI
 		public:
 
 		UIManager();
-		void update(Scene& scene, f32 dt);
+		void update(Scene& scene);
 		void combat_init(Scene& scene);
 		void menu_init();
 		void free();

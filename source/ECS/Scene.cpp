@@ -52,21 +52,6 @@ static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
 }
 
 
-
-// STEVEN HERE IS THE HELPER - Zejin
-Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
-	const std::string& actorId,
-	const char* name,
-	AEVec2 pos,
-	Entity fa,
-	Entity sa)
-{
-	Entity e = EntityFactory::create_actor_normal(pos, { 192.0f, 192.0f }, name, 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
-	enemyDirector.bindActor(actorId, e);
-	return e;
-}
-
-
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
@@ -246,7 +231,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 				++attempts;
 			} while (BattleGrid.get_pos()[x][y] != Components::NULL_INDEX && attempts < maxAttempts);
 
-			if (BattleGrid.get_pos()[x][y] == Components::NULL_INDEX)
+			if (BattleGrid.get_pos()[x][y] == static_cast<Entity>(-1))
 			{
 				BattleGrid.placeEntity(rock, x, y);
 			}
@@ -352,7 +337,7 @@ void Scene::update()
 				secondNode = iNodes.create_interactable_node({ 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
 					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
-				unsigned int seed = static_cast<unsigned int>(time(nullptr));
+				gameData.seed = static_cast<unsigned int>(time(nullptr));
 
 				BattleGrid.placeEntity(firstNode, 0, 0);
 				BattleGrid.placeEntity(secondNode, MAX_I - 1, MAX_J - 1);

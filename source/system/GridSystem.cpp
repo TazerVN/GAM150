@@ -261,7 +261,7 @@ namespace Grid
 	{
 		Entity id = ecs.createEntity();
 
-		Components::Transform trans{ _pos, _pos, size, {size.x / 2, size.y / 2}, 0.0f };
+		Components::Transform trans{ _pos, _pos, size, {size.x / 2, size.y / 2},rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
@@ -344,15 +344,11 @@ namespace Grid
 				f32 y = this->offset.y - (i + j) * CELL_HEIGHT / 4; /*+ offset*//*if offset is required*/
 
 				cells[i][j] = create_cells({ x,y }, { 128.f,128.f }, 0.f, pTex, i, j, 0);
-				this->pos[i][j] = -1;
+				this->pos[i][j] = Entity(-1);
 				//this->activate[i][j] = false;
 				walkable[j * MAX_I + i] = 1;
 			}
 		}
-		auto cell = ecs.getComponent<Components::Input>(this->cells[0][0]);
-
-		
-
 	}
 
 	void GameBoard::placeEntity(Entity e, s32 x, s32 y)
@@ -371,7 +367,7 @@ namespace Grid
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(e);
 		Components::Mesh* mesh = ecs.getComponent<Components::Mesh>(e);
 		Components::gridData* gd = ecs.getComponent<Components::gridData>(e);
-		Components::Input* input = ecs.getComponent<Components::Input>(e);
+		//Components::Input* input = ecs.getComponent<Components::Input>(e);
 
 		gd->prev_x = x;
 		gd->prev_y = y;
@@ -455,7 +451,7 @@ namespace Grid
 				Components::Animation_Actor* anim = ecs.getComponent<Components::Animation_Actor>(e);
 				anim->setType(Components::AnimationType::MOVING);
 
-				this->pos[start_i][start_j] = -1;
+				this->pos[start_i][start_j] = Entity(-1);
 				this->walkable[start_j * MAX_I + start_i] = 1;
 
 				this->pos[x][y] = e;
@@ -476,7 +472,7 @@ namespace Grid
 		gd->x = x; gd->y = y;
 	}
 
-	void GameBoard::update(Entity camera)
+	void GameBoard::update()
 	{
 		//check if the mouse is on board
 		mouse_on_board = false;
@@ -748,7 +744,7 @@ namespace Grid
 		Entity cur_part = tbsptr->current();
 		std::array<std::array<Entity, MAX_J>, MAX_I>& positions = get_pos();
 
-		AEVec2 temp_ = { -1.f,-1.f };
+		AEVec2 temp_temp_ = { -1.f,-1.f };
 
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -756,14 +752,14 @@ namespace Grid
 			{
 				if (positions[i][j] == cur_part)
 				{
-					AEVec2Set(&temp_, (f32)i, (f32)j);
+					AEVec2Set(&temp_temp_, (f32)i, (f32)j);
 					break;
 				}
 			}
-			if (temp_.x != -1.f && temp_.y != -1.f) break;
+			if (temp_temp_.x != -1.f && temp_temp_.y != -1.f) break;
 		}
 
-		return temp_;
+		return temp_temp_;
 	}
 
 	AEVec2 GameBoard::GetOffsetPos()
@@ -802,25 +798,25 @@ namespace Grid
 		}
 		cells_entity_id.clear();
 
-		for (int i = 0; i < MAX_I; ++i)
+		for (int i = 0; i < int(MAX_I); ++i)
 		{
-			for (int j = 0; j < MAX_J; ++j)
+			for (int j = 0; j < int(MAX_J); ++j)
 			{
 				if (pos[i][j] != -1 && pos[i][j] != playerID)
 				{
 					ecs.destroyEntity(pos[i][j]);
-					pos[i][j] = -1;
+					pos[i][j] = Entity(-1);
 				}
-				pos[i][j] = -1;          // reset ALL cells, not just non-player ones
-				cells[i][j] = -1;        // clear stale cell entity IDs
-				walkable[j * MAX_I + i] = 1; // reset walkability
+				pos[i][j] = Entity(-1);          // reset ALL cells, not just non-player ones
+				cells[i][j] = Entity(-1);        // clear stale cell entity IDs
+				walkable[j * int(MAX_I) + i] = uint8_t(-1); // reset walkability
 			}
 		}
 
 		// reset selection state
 		selected_part = false;
-		cur = -1;
-		prev_cur = -1;
+		cur = 0;
+		prev_cur = 0;
 		cur_x = cur_y = 0;
 		prev_x = prev_y = 0;
 		placementDirection = 0;
@@ -868,7 +864,7 @@ namespace Grid
 		int new_x = astar->path.back().x;
 		int new_y = astar->path.back().y;
 
-		pos[ex][ey] = -1;
+		pos[ex][ey] = Entity(-1);
 		walkable[ey * MAX_I + ex] = 1;
 
 		pos[new_x][new_y] = e;

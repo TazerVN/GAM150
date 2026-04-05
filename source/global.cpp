@@ -1,6 +1,6 @@
 #include "pch.h"
 
-size_t playerID = -1;
+size_t playerID;
 bool player_died = false;
 bool pause = false;
 

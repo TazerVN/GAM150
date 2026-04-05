@@ -12,7 +12,6 @@ void LevelStateCombat_load()
 {
 	if (gameData.new_Start)
 	{
-
 		gameData.new_Start = false;
 
 		gameData.scoringSystem.reset();
@@ -21,14 +20,14 @@ void LevelStateCombat_load()
 		gameData.seed = rand();
 		std::srand(gameData.seed);
 
-		int upper_bound = static_cast<int>(card_system.start_decks.size()) - 1;
-		int lower_bound = 0;
-		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
+		//int upper_bound = static_cast<int>(card_system.start_decks.size()) - 1;
+		//int lower_bound = 0;
+		//int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
 
 		//JSON_DECK deck = card_system.start_decks[index];
 
 		//perfect deck (optimal deck)
-		int perfection = (card_system.start_decks.size() - 2);
+		size_t perfection = (card_system.start_decks.size() - 2);
 		JSON_DECK deck = card_system.start_decks[perfection];
 
 		//for teesting decks
@@ -64,7 +63,7 @@ void LevelStateCombat_init()
 }
 void LevelStateCombat_update()
 {
-	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
+	//f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 
 		s32 mouseX, mouseY;
@@ -79,11 +78,11 @@ void LevelStateCombat_update()
 	{
 		VS.update();
 		scene.update();
-		scene.getBattleGrid().update(CS.id());	//gameboard update
+		scene.getBattleGrid().update();	//gameboard update
 		//RENDER
 		CS.update();
 		AS.update(scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
-		UIM.update(scene, dt);
+		UIM.update(scene);
 	}
 	else
 	{

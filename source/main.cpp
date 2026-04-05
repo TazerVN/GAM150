@@ -71,7 +71,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//========(Render)====================
 			console.update();
 
-			PS.update(0.2);
+			PS.update(0.2f);
 			TS.update();
 			RM.RM_render(CS.id());
 
@@ -118,6 +118,7 @@ void load_Sys_Comp()
 	}
 	TF.textureInit();
 	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
+
 	EntityFactory::create_player();
 
 	pause = false;

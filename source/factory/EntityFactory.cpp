@@ -224,7 +224,6 @@ namespace EntityFactory {
 
 	void create_player()
 	{
-		if (playerID != -1) return;
 		Entity temp;
 		//Add player
 		temp = EntityFactory::create_actor_spritesheet({ -10000.f,1000000.f }, { 192.0f,192.0f }, "Player", 100.f, TF.getTextureChar(0), Components::AnimationType::NONE);
@@ -238,6 +237,7 @@ namespace EntityFactory {
 	{
 		if (playerID == -1) return;
 		ecs.getComponent<Components::Card_Storage>(playerID)->free();
+		//ecs.getComponent<Components::TurnBasedStats>(playerID)->free();
 		ecs.getComponent<Components::Transform>(playerID)->pos = {100000.f,-100000.f};
 		ecs.getComponent<Components::Transform>(playerID)->pos_onscreen = { 100000.f,-100000.f };
 	}
