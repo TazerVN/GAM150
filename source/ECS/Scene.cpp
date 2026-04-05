@@ -693,7 +693,7 @@ void Scene::print_tutorial_stage_text() const
 					break;
 
 				case 2:
-					std::cout << "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Loading for IDLE.\n";
+					std::cout << "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Hourglass for IDLE.\n";
 					TutorialText += "Enemy intentions are displayed as icons above their heads:";
 					TutorialText += "Sword for ATTACK, Boots for MOVE, and Loading for IDLE.";
 					break;
