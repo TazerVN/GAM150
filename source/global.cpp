@@ -3,7 +3,6 @@
 size_t playerID = -1;
 bool player_died = false;
 bool pause = false;
-bool first_load = true;
 
 //=====================One time declaration of extern values============================= 
 

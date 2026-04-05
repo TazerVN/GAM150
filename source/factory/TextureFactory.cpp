@@ -34,6 +34,7 @@ namespace TextureFactory
 		{
 			AEGfxTextureUnload(pTex);
 		}
+		if(fontID != -1) AEGfxDestroyFont(this->fontID);
 	}
 
 	void TextureFactory::textureInit(){
