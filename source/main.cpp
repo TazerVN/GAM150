@@ -39,6 +39,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		std::cout.clear();
 	#endif
 
+	std::streambuf* orig = std::cout.rdbuf(nullptr);
+
 	load_Sys_Comp();
 
 	GameStateMgrInit(GameStates::GS_LOGO);
@@ -94,6 +96,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AF.free();
 	console.free();
 	save_game_data();
+
+	std::cout.rdbuf(orig);
 	AESysReset();
 	AESysExit();
 }

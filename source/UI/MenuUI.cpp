@@ -606,7 +606,7 @@ void CreditMenu::init()
 
 		"Team Members:", //2
 		"Pham Minh Tuan",
-		"Wai Pyoo Ooo",
+		"Wai Phyoo Ooo",
 		"Zejin Kendreich Dayap Chen",
 		"Tio Chun Yi",
 
