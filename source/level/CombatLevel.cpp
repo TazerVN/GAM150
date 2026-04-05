@@ -60,6 +60,14 @@ void LevelStateCombat_init()
 	PS.particleReverseStream();
 	AS.init();
 	PUT.init(&ecs, UIM.getCardHand().getID());
+
+	auto camera_position = ecs.getComponent<Components::Transform>(CS.id());
+	auto player_position = ecs.getComponent<Components::Transform>(playerID);
+	camera_position->pos = player_position->pos;
+
+	camera_position->pos.x = AEClamp(camera_position->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+	camera_position->pos.y = AEClamp(camera_position->pos.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+
 }
 void LevelStateCombat_update()
 {

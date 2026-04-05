@@ -41,8 +41,8 @@ namespace Camera
 			transform->pos.y = buffer_y - f32(mousey);
 
 
-			transform->pos.x = AEClamp(transform->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-			transform->pos.y = AEClamp(transform->pos.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+			transform->pos.x = AEClamp(transform->pos.x, AEGfxGetWinMinX() * 1.5f, AEGfxGetWinMaxX() * 1.5f);
+			transform->pos.y = AEClamp(transform->pos.y, AEGfxGetWinMinY() * 1.5f, AEGfxGetWinMaxY() * 1.5f);
 		}
 
 
@@ -107,7 +107,6 @@ namespace Camera
 		objMask.set(transID);
 		objMask.set(tagID);
 
-		//Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
 		setOrignalDragPos(*this);
 		this->updateCameraPos();
 

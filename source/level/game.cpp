@@ -81,4 +81,8 @@ void GameState_game_unload()
 	PUT.free();
 	AF.bgm.stop();
 	ecs.remove_empty_groups();
+
+
+	
+
 }
