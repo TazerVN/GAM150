@@ -41,22 +41,24 @@ namespace Grid
 {
 	class GameBoard
 	{
-	private:
-		s32 hx, hy;
+		private:
+		s32 hx{};
+		s32 hy{};
 
 		bool mouse_on_board = false;
 
 		std::vector<Entity> cells_entity_id;
 
-		TBS::TurnBasedSystem* tbsptr;
+		TBS::TurnBasedSystem* tbsptr = nullptr;
 		PhaseSystem::GameBoardState* gbsptr = nullptr;
 		EventPool<highlight_tag>* evsptr = nullptr;
 		CombatNameSpace::CombatSystem* cbsptr = nullptr;
 		HighlightSystem* hlptr = nullptr;
 
-		Entity cur, prev_cur;
+		Entity cur{0};
+		Entity prev_cur{0};
 		bool selected_part = false;
-		AEVec2 offset;
+		AEVec2 offset{ AEVec2{0,0} };
 		std::array<std::array<Entity, MAX_J>, MAX_I> cells{};		//cell data of a grid
 		//=============Data for A* Star====================
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos{};
