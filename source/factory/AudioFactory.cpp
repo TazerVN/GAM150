@@ -23,9 +23,9 @@ namespace AudioFactory
 		std::cout << "AUDIO INITIALIZE" << '\n';
 	}
 	AudioFactory::AudioFactory() : 
-		sfx{ 0.5f, 1.f, 0}, 
-		amb{ 0.5f, 1.f, static_cast<s32>(-1)}, 
-		bgm{ 0.5f, 1.f, static_cast<s32>(-1)}
+		sfx{ gameData.soundSettings.sfx, 1.f, 0}, 
+		amb{ gameData.soundSettings.ambience, 1.f, static_cast<s32>(-1)}, 
+		bgm{ gameData.soundSettings.music, 1.f, static_cast<s32>(-1)}
 	{
 	}
 
@@ -54,21 +54,21 @@ namespace AudioFactory
 	}
 
 
-	void AudioFactory::AudioObject::setVolume(f32 volume)
+	void AudioFactory::AudioObject::setVolume(f32 _volume)
 	{
-		if (0.f <= volume && volume <= 1.f)
+		if (0.f <= _volume && _volume <= 1.f)
 		{
-			this->volume = volume;
-			AEAudioSetGroupVolume(this->group, volume);
+			this->volume = _volume;
+			AEAudioSetGroupVolume(this->group, _volume);
 		}
 	}
 
-	void AudioFactory::AudioObject::setPitch(f32 pitch)
+	void AudioFactory::AudioObject::setPitch(f32 _pitch)
 	{
-		if (0.f <= pitch && pitch <= 1.f)
+		if (0.f <= _pitch && _pitch <= 1.f)
 		{
-			this->pitch = pitch;
-			AEAudioSetGroupVolume(this->group, pitch);
+			this->pitch = _pitch;
+			AEAudioSetGroupVolume(this->group, _pitch);
 		}
 	}
 	void AudioFactory::AudioObject::free()

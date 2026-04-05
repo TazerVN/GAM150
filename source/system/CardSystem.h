@@ -43,7 +43,7 @@ enum class CardScriptReturn
 	FunctionTargetDied
 };
 
-Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card);
+Entity create_ECS_card(JSON_CARD const& json_card);
 
 ////script manager for those cards that require extra steps
 //class CardScriptsManager

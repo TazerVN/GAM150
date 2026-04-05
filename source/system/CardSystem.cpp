@@ -121,7 +121,7 @@ static CardType decode_card_type(int id)
 //	return id;
 //}
 
-Entity create_ECS_card(EntityComponent::Registry& ecs, JSON_CARD const& json_card)
+Entity create_ECS_card(JSON_CARD const& json_card)
 {
 	Entity id = ecs.createEntity();
 	Components::Name nm{ json_card.name };
@@ -161,7 +161,7 @@ void CardSystem::init_cards()
 		std::cout << "AOE : " << card.aoe << '\n';
 		std::cout << "Description : " << card.description << '\n';
 		std::cout << "Card Image : " << card.card_image << '\n' << '\n';
-		Entity cardECSID = create_ECS_card(ecs, card);
+		Entity cardECSID = create_ECS_card(card);
 		cards_map[card.name] = cardECSID;
 		cards_vec.push_back(cardECSID);
 	}

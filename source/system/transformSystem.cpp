@@ -4,7 +4,7 @@
 namespace TransformSystem
 {
 
-	void TransformSystem::update(EntityComponent::Registry& ecs)
+	void TransformSystem::update()
 	{
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Particle>();

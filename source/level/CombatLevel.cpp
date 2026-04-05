@@ -16,6 +16,7 @@ void LevelStateCombat_load()
 		gameData.new_Start = false;
 
 		gameData.scoringSystem.reset();
+		ecs.getComponent<Components::Card_Storage>(playerID)->reset();
 
 		gameData.seed = rand();
 		std::srand(gameData.seed);
@@ -35,7 +36,7 @@ void LevelStateCombat_load()
 
 		for (std::string& card_name : deck.cards)
 		{
-			EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(card_name));
+			EntityFactory::add_card_player_deck(playerID, card_system.generate_card_from_bible(card_name));
 		}
 
 		Components::HP* playerHP = ecs.getComponent<Components::HP>(playerID);
@@ -59,12 +60,12 @@ void LevelStateCombat_init()
 
 	PS.particleDataStream();
 	PS.particleReverseStream();
-	AS.init(ecs);
+	AS.init();
 	PUT.init(&ecs, UIM.getCardHand().getID());
 }
 void LevelStateCombat_update()
 {
-	f32 dt = AEFrameRateControllerGetFrameTime();
+	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 
 		s32 mouseX, mouseY;
@@ -72,17 +73,17 @@ void LevelStateCombat_update()
 
 		f32 worldX = f32(mouseX) - (f32(AEGfxGetWindowWidth()) * 0.5f);
 		f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
-		PS.particleClick(ecs, mf, worldX, worldY);
+		PS.particleClick(worldX, worldY);
 	}
 
 	if (!player_died && !pause)
 	{
-		VS.update(ecs);
+		VS.update();
 		scene.update();
-		scene.getBattleGrid().update(ecs, CS.id());	//gameboard update
+		scene.getBattleGrid().update(CS.id());	//gameboard update
 		//RENDER
 		CS.update();
-		AS.update(ecs, scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
+		AS.update(scene.getBattleGrid(),scene.getGBS(), scene.getCombatSystem());
 		UIM.update(scene, dt);
 	}
 	else

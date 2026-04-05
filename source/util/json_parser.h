@@ -18,10 +18,10 @@ struct JSON_CARD
 {
 	int id = -1;
 	std::string name;
-	float cost{ 0.0f };
+	int cost{ 0 };
 	float value{ 0.0f };
-	float range{ 0.0f };
-	float aoe {0.0f};
+	int range{ 0 };
+	int aoe {0};
 	std::string description;
 	std::string card_image;
 };
@@ -31,7 +31,7 @@ struct JSON_ENEMY
 	std::string name;
 	float hp{ 0.0f };
 	float value{ 0.0f };
-	float range{ 0.0f };
+	int range{ 0 };
 	std::string png;
 };
 
@@ -63,9 +63,9 @@ struct JSON_GAME_DATA
 	struct SoundSettings
 	{
 		const int max_value = 100;
-		unsigned int music;
-		unsigned int ambience;
-		unsigned int sfx;
+		float music;
+		float ambience;
+		float sfx;
 	};
 
 	bool new_Start;

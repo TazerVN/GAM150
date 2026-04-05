@@ -105,9 +105,9 @@ namespace UIO
 	void TextureButton::setOpacity(f32 a)
 	{
 		auto button = ecs.getComponent<Components::Color>(this->button);
-		auto text = ecs.getComponent<Components::Color>(this->text);
-		button->d_color = a;
-		text->d_color = a;
+		auto txt = ecs.getComponent<Components::Color>(this->text);
+		button->d_color.a = a;
+		txt->d_color.a = a;
 	}
 
 	TextureButton& TextureButton::operator=(const TextureButton& rhs)
@@ -119,9 +119,9 @@ namespace UIO
 		this->on = rhs.on;
 
 
-		Components::Timer timer{ 1.f, 0.f, true, true };
-		ecs.addComponent(this->text, timer);
-		ecs.addComponent(this->button, timer);
+		Components::Timer timer_{ 1.f, 0.f, true, true };
+		ecs.addComponent(this->text, timer_);
+		ecs.addComponent(this->button, timer_);
 
 		auto in = ecs.getComponent<Components::Input>(this->button);
 
@@ -161,8 +161,8 @@ namespace UIO
 		this->text = UIO::ui_text( x + offset_x, y + offset_y, text_size, text_size ,0, z + 1, a, rgba);
 		//========= timer ==============
 		this->timer = ecs.createEntity(); 
-		Components::Timer timer{ 0.2f, 0.f, false, false };
-		ecs.addComponent(this->timer, timer);
+		Components::Timer timr{ 0.2f, 0.f, false, false };
+		ecs.addComponent(this->timer, timr);
 
 	}
 
@@ -194,10 +194,10 @@ namespace UIO
 	TextShadow& TextShadow::operator+=(const char* rhs)
 	{
 
-		auto text = ecs.getComponent<Components::Text>(this->text);
-		auto text_shadow = ecs.getComponent<Components::Text>(this->text_shadow);
-		text->text += rhs;
-		text_shadow->text += rhs;
+		auto txt = ecs.getComponent<Components::Text>(this->text);
+		auto textshadow = ecs.getComponent<Components::Text>(this->text_shadow);
+		txt->text += rhs;
+		textshadow->text += rhs;
 
 
 
@@ -206,8 +206,8 @@ namespace UIO
 
 	bool TextShadow::newline() const
 	{
-		auto text = ecs.getComponent<Components::Text>(this->text);
-		return *(text->text.end()--) == '\n';
+		auto txt = ecs.getComponent<Components::Text>(this->text);
+		return *(txt->text.end()--) == '\n';
 	}
 
 	TextShadow::TextShadow(f32 x, f32 y, f32 text_size, s32 z, std::string a, Components::RGBA rgba)
@@ -245,7 +245,7 @@ namespace UIO
 		this->min = min;
 		this->max = max;
 		if(fadeIn){
-			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, max);
+			this->dim = ui_blank_solid_center(0.f, 0.f, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0.f, this->z, 0.f, 0.f, 0.f, max);
 			Components::Timer timer{ duration, 0.f, true, false};
 			Components::TagClass tag{Components::Tag::UI};
 			ecs.addComponent(this->dim, timer);
@@ -253,7 +253,7 @@ namespace UIO
 		}
 		else
 		{
-			this->dim = ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, this->z, 0.f, 0.f, 0.f, min);
+			this->dim = ui_blank_solid_center(0.f, 0.f, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0.f, this->z, 0.f, 0.f, 0.f, min);
 			Components::Timer timer{ duration, 0.f, true, false };
 			Components::TagClass tag{ Components::Tag::UI };
 			ecs.addComponent(this->dim, timer);
@@ -300,18 +300,18 @@ namespace UIO
 
 		AEInputGetCursorPosition(&mousex, &mousey);
 
-		mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
-		mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+		mousex = s32((f32)mousex - f32(AEGfxGetWindowWidth()) * 0.5f);
+		mousey = s32(- (f32)mousey + f32(AEGfxGetWindowHeight()) * 0.5f);
 
-		mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-		mousey = AEClamp(mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+		mousex = s32(AEClamp((f32)mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX()));
+		mousey = s32(AEClamp((f32)mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY()));
 
 
 		auto pos_button = ecs.getComponent<Components::Transform>(button);
 		auto pos_container = ecs.getComponent<Components::Transform>(container);
 		auto pos_fill = ecs.getComponent<Components::Transform>(fill);
 
-		pos_button->pos.x = AEClamp(mousex, pos_container->pos.x,pos_container->pos.x + pos_container->size.x);
+		pos_button->pos.x = AEClamp((f32)mousex, pos_container->pos.x,pos_container->pos.x + pos_container->size.x);
 		pos_button->pos_onscreen.x = pos_button->pos.x;
 
 		pos_fill->size.x = (pos_button->pos.x - pos_container->pos.x)/pos_container->size.x * pos_container->size.x;

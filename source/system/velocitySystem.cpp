@@ -4,7 +4,7 @@
 
 namespace Velocity
 {
-	void VelocitySystem::update(EntityComponent::Registry& ecs)
+	void VelocitySystem::update()
 	{
 		f32 dt = f32(AEFrameRateControllerGetFrameTime());
 

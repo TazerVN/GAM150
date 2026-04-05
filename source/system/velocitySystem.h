@@ -9,7 +9,7 @@ namespace Velocity
 	class VelocitySystem
 	{
 	public:
-		void update(EntityComponent::Registry& ecs);
+		void update();
 		VelocitySystem() = default;
 	};
 

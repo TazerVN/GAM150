@@ -21,7 +21,7 @@ namespace EntityFactory {
 			0,	//atkbuff stacks left
 			1.f,	//ATK Multiplier
 			false,	//invincibility flag
-			7.f};	//movement spd
+			7};	//movement spd
 		//=====================Render==========================
 		Components::Texture texture{pTex, 0.0f, 0.0f};
 		Components::Transform trans{ pos,pos,size, size,0.f };
@@ -51,7 +51,7 @@ namespace EntityFactory {
 		return id;
 	}
 
-	Entity create_actor_normal(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
+	Entity create_actor_normal(AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
 		Entity id = ecs.createEntity();
 		//default player values
@@ -62,7 +62,7 @@ namespace EntityFactory {
 		{	5,	//max points
 			0,	//cur_points
 			0,	//shields
-			7.f };	//movement spd
+			7 };	//movement spd
 		//=====================Render==========================
 		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos,pos,size, size,0.f };
@@ -90,7 +90,7 @@ namespace EntityFactory {
 		return id;
 	}
 
-	Entity create_grid_object(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp, s32 z)
+	Entity create_grid_object(AEVec2 pos, AEVec2 size, const char* name, AEGfxTexture* pTex, f32 hp, s32 z)
 	{
 		Entity id = ecs.createEntity();
 
@@ -121,7 +121,7 @@ namespace EntityFactory {
 		gbsptr = &gbs;
 	}
 
-	Entity InteractableNode::create_interactable_node(EntityComponent::Registry& ecs, MeshFactory& mf, AEVec2 pos, AEVec2 size, AEGfxTexture* pTex
+	Entity InteractableNode::create_interactable_node(AEVec2 pos, AEVec2 size, AEGfxTexture* pTex
 		, Components::AnimationType at, Components::VictoryNodeTag vic)
 	{
 		Entity id = ecs.createEntity();
@@ -188,7 +188,7 @@ namespace EntityFactory {
 		}
 	}
 
-	void add_card_player_hand(EntityComponent::Registry& ecs, Entity user, Entity cardID)
+	void add_card_player_hand(Entity user, Entity cardID)
 	{
 		EntityComponent::ComponentTypeID card_storage_ID = EntityComponent::getComponentTypeID<Components::Card_Storage>();
 		//if user dont have card storage return
@@ -200,7 +200,7 @@ namespace EntityFactory {
 		user_cards->add_card_to_hand(cardID);
 	}
 
-	void add_card_player_deck(EntityComponent::Registry& ecs, Entity user, Entity cardID)
+	void add_card_player_deck(Entity user, Entity cardID)
 	{
 		EntityComponent::ComponentTypeID card_storage_ID = EntityComponent::getComponentTypeID<Components::Card_Storage>();
 		//if user dont have card storage return
@@ -211,7 +211,7 @@ namespace EntityFactory {
 		user_cards->add_card_to_deck(cardID);
 	}
 
-	void remove_card_player(EntityComponent::Registry& ecs, Entity user, int index)
+	void remove_card_player(Entity user, int index)
 	{
 		EntityComponent::ComponentTypeID card_storage_ID = EntityComponent::getComponentTypeID<Components::Card_Storage>();
 		//if user dont have card storage return

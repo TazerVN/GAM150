@@ -230,7 +230,7 @@ namespace Components
 	};*/
 	struct Card_Value
 	{
-		f32 value = 0.0f;
+		float value = 0;
 		CardType type;
 	};
 
@@ -244,14 +244,14 @@ namespace Components
 	struct Targetting_Component
 	{
 		Targetting targetting_type;
-		f32 range = 0.0f;
-		f32 aoe = 0.0f;
+		int range = 0;
+		int aoe = 0;
 	};
 
 
 	struct Card_Cost
 	{
-		f32 value;
+		int value;
 	};
 
 	struct Card_Description
@@ -315,8 +315,8 @@ namespace Components
 		int atkBuffStacks{ 0 };		// stacks left ofr atk buff MAX 3
 		f32 atkMultiplier{ 1.0f };	// multiplier
 		f32 damageTakenMultiplier{ 1.0f }; // 0 = invincible... MARK?!
-		f32 ini_movSpd;
-		f32 max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
+		int ini_movSpd;
+		int max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 	};
 
 	// Fetch ID values

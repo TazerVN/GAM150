@@ -61,7 +61,7 @@ Entity spawnEnemyAndBind(EnemyDirector& enemyDirector,
 	Entity fa,
 	Entity sa)
 {
-	Entity e = EntityFactory::create_actor_normal(ecs, mf, pos, { 192.0f, 192.0f }, name, 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
+	Entity e = EntityFactory::create_actor_normal(pos, { 192.0f, 192.0f }, name, 100.f, TF.getTextureChar(1), Components::AnimationType::IDLE);
 	enemyDirector.bindActor(actorId, e);
 	return e;
 }
@@ -81,7 +81,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	iNodes.init(BattleGrid,gbs);
 
-	s32 w_width = AEGfxGetWindowWidth();
 	s32 w_height = AEGfxGetWindowHeight();
 
 	//add player to the scene
@@ -145,7 +144,7 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 	cbs.init(gbs, BattleGrid, TBSys, _UI.getCardHand(), eventPool, highlightSystem, intentDisplaySystem, enemyDirector);
 	TBSys.init(eventPool, BattleGrid, gbs, cbs, card_system, _UI.getCardHand(), horde);
-	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem, TF.getTextureFloor(0), 0, w_height / 3);
+	BattleGrid.init(&TBSys, eventPool, gbs, cbs, highlightSystem, TF.getTextureFloor(0), 0.f, (f32)w_height / 3.f);
 	gbs.resetGPhase();
 	gbs.resetPlayerPhase();
 
@@ -179,8 +178,6 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 		for (int i = 0; i < enemyDirector.getMapObjectCount(); ++i)
 		{
 			Entity rock = EntityFactory::create_grid_object(
-				ecs,
-				mf,
 				{ 0.0f, 0.0f },
 				{ 298.0f, 258.0f },
 				"Rock",
@@ -303,7 +300,7 @@ void Scene::update()
 
 	if (AEInputCheckTriggered(AEVK_RCTRL)) // test particle
 	{
-		f32 x; f32 width = 40.f;
+		f32 x;
 		f32 y; f32 height = 40.f;
 		translate_To_Isometric(BattleGrid.GetOffsetPos(), height, x, y, BattleGrid.cur_x, BattleGrid.cur_y);
 		PS.particleShield(x,y + 50.f,0.2f,0.f,1.f,1.f,2.f,50);
@@ -316,7 +313,7 @@ void Scene::update()
 	}
 	if (AEInputCheckTriggered(AEVK_RSHIFT))
 	{
-		TBSys.debug_print(ecs);
+		TBSys.debug_print();
 	}
 	if (AEInputCheckTriggered(AEVK_EQUAL))
 	{
@@ -345,16 +342,16 @@ void Scene::update()
 				TBSys.active() = false;
 				gameData.win = true;
 
-				ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100.f;
-				ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100.f;
+				ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd = 100;
+				ecs.getComponent<Components::TurnBasedStats>(playerID)->max_movSpd = 100;
 				UIptr->getVictoryMenu().on = true;
 
 				Entity firstNode;
-				firstNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
+				firstNode = iNodes.create_interactable_node({ 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
 					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 				Entity secondNode;
-				secondNode = iNodes.create_interactable_node(ecs, mf, { 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
+				secondNode = iNodes.create_interactable_node({ 0.0f,0.f }, { 256.f,256.f }, TF.getTextureOthers(1),
 					Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 				unsigned int seed = static_cast<unsigned int>(time(nullptr));
@@ -506,8 +503,8 @@ void Scene::update_tutorial()
 			Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 			if (st)
 			{
-				st->max_movSpd = 100.f;
-				st->cur_movSpd = 100.f;
+				st->max_movSpd = 100;
+				st->cur_movSpd = 100;
 			}
 
 			if (UIptr)
@@ -530,11 +527,11 @@ void Scene::update_tutorial()
 			print_tutorial_stage_text();
 
 			Entity firstNode = iNodes.create_interactable_node(
-				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
+				{ 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			Entity secondNode = iNodes.create_interactable_node(
-				ecs, mf, { 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
+				{ 0.0f, 0.f }, { 256.f, 256.f }, TF.getTextureOthers(1),
 				Components::AnimationType::NONE, Components::VictoryNodeTag::COMBAT);
 
 			BattleGrid.placeEntity(firstNode, 0, 0);
@@ -928,8 +925,8 @@ void Scene::setup_tutorial_movement()
 	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 	if (st)
 	{
-		st->max_movSpd = 5.f;
-		st->cur_movSpd = 5.f;
+		st->max_movSpd = 5;
+		st->cur_movSpd = 5;
 	}
 
 	tutorial_goal_x = (MAX_I / 2) + 3;
@@ -963,8 +960,8 @@ void Scene::setup_tutorial_attack()
 			Components::AnimationType::IDLE
 		);
 
-		Animation::init_animation_for_entity(ecs, e1);
-		Animation::init_animation_for_entity(ecs, e2);
+		Animation::init_animation_for_entity(e1);
+		Animation::init_animation_for_entity(e2);
 
 		add_entity_to_scene(e1);
 		add_entity_to_scene(e2);
@@ -1027,7 +1024,7 @@ void Scene::setup_tutorial_defense()
 					Components::AnimationType::IDLE
 				);
 
-				Animation::init_animation_for_entity(ecs, temp);
+				Animation::init_animation_for_entity(temp);
 				add_entity_to_scene(temp);
 				tutorial_spawned_entities.push_back(temp);
 				hordeTag->goons.push_back(temp);
@@ -1102,9 +1099,9 @@ void Scene::setup_tutorial_event()
 			Components::AnimationType::IDLE
 		);
 
-		Animation::init_animation_for_entity(ecs, e1);
-		Animation::init_animation_for_entity(ecs, e2);
-		Animation::init_animation_for_entity(ecs, e3);
+		Animation::init_animation_for_entity(e1);
+		Animation::init_animation_for_entity(e2);
+		Animation::init_animation_for_entity(e3);
 
 		add_entity_to_scene(e1);
 		add_entity_to_scene(e2);
@@ -1154,8 +1151,8 @@ void Scene::setup_tutorial_done()
 	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 	if (st)
 	{
-		st->max_movSpd = 100.f;
-		st->cur_movSpd = 100.f;
+		st->max_movSpd = 100;
+		st->cur_movSpd = 100;
 	}
 
 	// reset tutorial state for the finale
@@ -1180,8 +1177,8 @@ void Scene::setup_tutorial_done()
 			Components::AnimationType::IDLE
 		);
 
-		Animation::init_animation_for_entity(ecs, e1);
-		Animation::init_animation_for_entity(ecs, e2);
+		Animation::init_animation_for_entity(e1);
+		Animation::init_animation_for_entity(e2);
 
 		add_entity_to_scene(e1);
 		add_entity_to_scene(e2);
@@ -1243,7 +1240,7 @@ void Scene::load_deck_for_tutorial(const std::string& deck_name)
 			for (const std::string& card_name : deck.cards)
 			{
 				Entity card = card_system.generate_card_from_bible(card_name);
-				EntityFactory::add_card_player_deck(ecs, playerID, card);
+				EntityFactory::add_card_player_deck(playerID, card);
 			}
 			break;
 		}
@@ -1262,7 +1259,7 @@ void Scene::load_deck_for_tutorial(const std::string& deck_name)
 
 	for (Entity card : cards_to_hand)
 	{
-		EntityFactory::add_card_player_hand(ecs, playerID, card);
+		EntityFactory::add_card_player_hand(playerID, card);
 	}
 
 	std::cout << "[Tutorial] Hand size after load: "

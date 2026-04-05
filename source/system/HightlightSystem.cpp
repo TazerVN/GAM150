@@ -52,26 +52,26 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					if (cur_part_pos.x + itr < MAX_I)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x + itr, cur_part_pos.y });
-						atk_highlighted_cells.push_back({ s32(cur_part_pos.x) + itr, s32(cur_part_pos.y) });
-						this->highlight_activate[cur_part_pos.x + itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+						atk_highlighted_cells.push_back({ int(cur_part_pos.x) + itr, int(cur_part_pos.y) });
+						this->highlight_activate[(int)cur_part_pos.x + itr][(int)cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.x - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x - itr, cur_part_pos.y });
-						atk_highlighted_cells.push_back({ s32(cur_part_pos.x) - itr, s32(cur_part_pos.y) });
-						this->highlight_activate[cur_part_pos.x - itr][cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+						atk_highlighted_cells.push_back({ int(cur_part_pos.x) - itr, int(cur_part_pos.y) });
+						this->highlight_activate[(int)cur_part_pos.x - itr][(int)cur_part_pos.y] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y + itr < MAX_J)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y + itr });
-						atk_highlighted_cells.push_back({ s32(cur_part_pos.x), s32(cur_part_pos.y) + itr });
-						this->highlight_activate[cur_part_pos.x][cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+						atk_highlighted_cells.push_back({ int(cur_part_pos.x), int(cur_part_pos.y) + itr });
+						this->highlight_activate[(int)cur_part_pos.x][(int)cur_part_pos.y + itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 					if (cur_part_pos.y - itr >= 0)
 					{
 						cbsptr->get_selected_cell().push_back({ cur_part_pos.x, cur_part_pos.y - itr });
-						atk_highlighted_cells.push_back({ s32(cur_part_pos.x), s32(cur_part_pos.y) - itr });
-						this->highlight_activate[cur_part_pos.x][cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
+						atk_highlighted_cells.push_back({ int(cur_part_pos.x), int(cur_part_pos.y) - itr });
+						this->highlight_activate[(int)cur_part_pos.x][(int)cur_part_pos.y - itr] = HIGHT_LIGHT_VALUES[static_cast<size_t>(type)];
 					}
 				}
 			}
@@ -92,7 +92,7 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 					int j_range = range - std::abs(i);
 					for (int j = -j_range; j <= j_range; ++j)
 					{
-						try_highlight(cur_part_pos.x + i, cur_part_pos.y + j);
+						try_highlight((int)cur_part_pos.x + i, (int)cur_part_pos.y + j);
 					}
 				}
 			}
@@ -105,8 +105,8 @@ void HighlightSystem::highlight_cells(Targetting targetting, int range, highligh
 				int j_range = range - std::abs(i);
 				for (int j = -j_range; j <= j_range; ++j)
 				{
-					int tx = cur_part_pos.x + i;
-					int ty = cur_part_pos.y + j;
+					int tx = (int)cur_part_pos.x + i;
+					int ty = (int)cur_part_pos.y + j;
 
 					if (tx < 0 || tx >= MAX_I || ty < 0 || ty >= MAX_J)
 						continue;
@@ -351,7 +351,7 @@ void HighlightSystem::update()
 		case highlight_tag::ATTACK_HIGHLIGHT:
 		{
 			Entity card_ID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
-			f32& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
+			int& card_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
 			Targetting targetting = ecs.getComponent<Components::Targetting_Component>(card_ID)->targetting_type;
 			highlight_cells(targetting, card_range, highlight_type);
@@ -360,7 +360,7 @@ void HighlightSystem::update()
 		}
 		case highlight_tag::MOVE_HIGHLIGHT:
 		{
-			f32& range = ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd;
+			int& range = ecs.getComponent<Components::TurnBasedStats>(playerID)->cur_movSpd;
 			highlight_cells(Targetting::SINGLE_TARGET, range, highlight_type);
 		}
 		break;

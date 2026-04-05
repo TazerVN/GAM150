@@ -74,14 +74,12 @@ private:
     // Move Entity
     void execMOVE(Grid::GameBoard& board,
         Entity actor,
-        Entity playerID,
         const Tokens& t);
 
     // Entity Attacks
     void execATTACK(Grid::GameBoard& board,
                     PhaseSystem::GameBoardState& gbs,
         Entity actor,
-        Entity playerID,
         const Tokens& t);
     // More to come!!!
     // Cast soon >>>>> 
@@ -89,7 +87,6 @@ private:
 public:
     bool planATTACK(Grid::GameBoard& board,
         Entity actor,
-        Entity playerID,
         const Tokens& t);
     bool isRangedActor(const std::string& actorId) const;
 

@@ -29,13 +29,13 @@ namespace UI
 		s32 w_width = AEGfxGetWindowWidth();
 		s32 w_height = AEGfxGetWindowHeight();
 
-		hand = CardInteraction::CardHand(-0.1f * w_width, -w_height / 2, w_width / 2, 264, scene.getTBS(), scene.getBattleGrid()
+		hand = CardInteraction::CardHand(-0.1f * (f32)w_width, -(f32)w_height / 2.f, (f32)w_width / 2.f, 264.f, scene.getTBS(), scene.getBattleGrid()
 										 , scene.getGBS(), info,scene.getCombatSystem(),scene.getHighlightSysten());
 
 
 		//========================================== buttons ======================================
 		//end turn button
-		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300, 0.5 * 200, 0, this->z,
+		Entity end_b = UIO::ui_button_texture(TF.getTextureUI(2), 0.7F * AEGfxGetWinMaxX(), -0.60F * AEGfxGetWinMaxY(), 300.f, 0.5f * 200.f, 0.f, this->z,
 			// the lambda function
 										
 											  [&scene]
@@ -81,8 +81,8 @@ namespace UI
 		//========================================== health/stamina bar ======================================
 		for (Entity e : scene.entities_store())
 		{
-			Entity health = UIO::ui_hp_bar(-50, 100, 100, 10, 0, 6);
-			Entity blank = UIO::ui_blank_solid_corner(-50, 100, 100, 10, 0, 6, 0.0f, 0.0f, 0.0f, 1.0f);
+			Entity health = UIO::ui_hp_bar(-50.f, 100.f, 100.f, 10.f, 0.f, 6);
+			Entity blank = UIO::ui_blank_solid_corner(-50.f, 100.f, 100.f, 10.f, 0.f, 6, 0.0f, 0.0f, 0.0f, 1.0f);
 			std::pair<Entity, Entity> hp{ e, health };
 			std::pair<Entity, Entity> hp_blank{ e, blank };
 			this->hp_children_list.push_back(hp_blank);
@@ -121,16 +121,15 @@ namespace UI
 		if (this->pause.isOn()) return;
 		if (this->info.isOn() && !this->info.isCreated())
 		{
-			info = CardInformation::CardDisplay(ecs, mf, -0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, this->z);
+			info = CardInformation::CardDisplay(-0.65F * AEGfxGetWinMaxX(), 0.35F * AEGfxGetWinMaxY(), 379 * 1.3f, 458 * 1.3f, this->z);
 		}
 		else if (!this->info.isOn() && this->info.isCreated())
 		{
-			info.free(ecs);
+			info.free();
 		}
 
 		EntityComponent::ComponentTypeID transID = EntityComponent::getComponentTypeID<Components::Transform>();
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
-		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
 		EntityComponent::ComponentTypeID hordeID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
 		hand.update_logic(dt);
@@ -144,10 +143,8 @@ namespace UI
 			for (; i < this->hp_children_list.size(); i++)
 			{
 				Entity parent_ui = this->hp_children_list[i].first;
-				bool exist = false;
 
 				Entity goon = scene.getTBS().get_participant()[1];
-				Entity player = playerID;
 
 				if (parent_ui == playerID) continue;
 
@@ -248,7 +245,7 @@ namespace UI
 		//menu.free();
 
 		hand.card_interaction_free();
-		info.free(ecs);
+		info.free();
 		pause.free();
 		st.free();
 		vicSelect.free();
@@ -334,9 +331,9 @@ namespace UI
 			Components::Mesh* mesh_child = ecs.getComponent<Components::Mesh>(p.second);
 
 
-			sta_child->max_movSpd = sta_parent->max_movSpd;
-			sta_child->cur_movSpd = sta_parent->cur_movSpd / sta_parent->max_movSpd * sta_child->max_movSpd;
-			transform_child->size.x = sta_child->cur_movSpd / sta_child->max_movSpd * transform_child->size_og.x;
+			sta_child->max_movSpd	= sta_parent->max_movSpd;
+			sta_child->cur_movSpd	= int((float)sta_parent->cur_movSpd / (float)sta_parent->max_movSpd * (float)sta_child->max_movSpd);
+			transform_child->size.x = (float)sta_child->cur_movSpd / (float)sta_child->max_movSpd * (float)transform_child->size_og.x;
 			mesh_child->z = mesh_parent->z + 11;
 		}
 
@@ -354,8 +351,6 @@ namespace UI
 		{
 			if (player_effect == 0)
 			{
-				auto transform = ecs.getComponent<Components::Transform>(playerID);
-
 				player_effect = UIO::ui_blank_texture_world(TF.getTextureOthers(6), transform->pos_onscreen.x, transform->pos_onscreen.y, 128.f * 1.1f, 128.f * 1.1f, 0, mesh->z);
 			}
 			else
@@ -445,16 +440,16 @@ namespace UI
 
 	void UIManager::drawpile_update()
 	{
-		auto draw_pile = ecs.getComponent<Components::Card_Storage>(playerID);
+		auto dp = ecs.getComponent<Components::Card_Storage>(playerID);
 		auto text = ecs.getComponent<Components::Text>(this->draw_pile.second);
 
-		text->text = std::to_string(draw_pile->data_draw_pile.size()).c_str();
+		text->text = std::to_string(dp->data_draw_pile.size()).c_str();
 	}
 	void UIManager::discardpile_update()
 	{
-		auto discard_pile = ecs.getComponent<Components::Card_Storage>(playerID);
+		auto dc = ecs.getComponent<Components::Card_Storage>(playerID);
 		auto text = ecs.getComponent<Components::Text>(this->discard_pile.second);
 
-		text->text = std::to_string(discard_pile->data_discard_pile.size()).c_str();
+		text->text = std::to_string(dc->data_discard_pile.size()).c_str();
 	}
 }

@@ -12,7 +12,7 @@
 namespace TBS
 {
 	// round start helper forcing it to start yadda yadda
-	void TurnBasedSystem::round_start(EntityComponent::Registry& ecs)
+	void TurnBasedSystem::round_start()
 	{
 		cur_player = 0;
 		gbsptr->resetGPhase();
@@ -29,8 +29,8 @@ namespace TBS
 		size_t sz = vec.size();
 		while (!vec.empty())
 		{
-			EntityFactory::remove_card_player(*ecsptr, playerID, 0);	//this is to remove data from ecs
-			cardHandptr->remove_card(*ecsptr, 0);		//this is for visual side
+			EntityFactory::remove_card_player(playerID, 0);	//this is to remove data from ecs
+			cardHandptr->remove_card(0);		//this is for visual side
 		}
 
 		//show discard pile
@@ -43,9 +43,9 @@ namespace TBS
 		std::cout<< '\n';
 		++cur_round;
 	}
-	void TurnBasedSystem::force_start_if_ready(EntityComponent::Registry& ecs)
+	void TurnBasedSystem::force_start_if_ready()
 	{
-		if (!is_active && participants.size() >= 2) start(ecs);
+		if (!is_active && participants.size() >= 2) start();
 	}
 
 	void TurnBasedSystem::init(EventPool<highlight_tag>& eventPool, Grid::GameBoard& gbp, PhaseSystem::GameBoardState& gbsp,
@@ -66,15 +66,15 @@ namespace TBS
 	
 		if (!is_active)
 		{
-			add_participant(ecs, playerID);
-			add_participant(ecs, horde);
-			force_start_if_ready(ecs);
+			add_participant(playerID);
+			add_participant(horde);
+			force_start_if_ready();
 		}
 
 		gbsptr->GBPTriggered()[static_cast<size_t>(PhaseSystem::GBPhase::START_PHASE)] = true;
 	}
 
-	void TurnBasedSystem::add_participant(EntityComponent::Registry& ecs, Entity parti)
+	void TurnBasedSystem::add_participant(Entity parti)
 	{
 		EntityComponent::ComponentTypeID tbs_id = EntityComponent::getComponentTypeID<Components::TurnBasedStats>();
 
@@ -90,26 +90,12 @@ namespace TBS
 		std::cout << "Added participant : "<< ecs.getComponent<Components::Name>(parti)->value << '\n';
 	}
 
-	void TurnBasedSystem::remove_participant(EntityComponent::Registry& ecs, Entity parti)
-	{
-		//for (int i = 0; i < participants.size(); ++i)
-		//{
-		//	if (participants[i] == parti)
-		//	{
-		//		participants.erase(participants.begin() + i);	//remove the target from turn system
-		//		participant_hand.erase(participant_hand.begin() + i);
-		//		selected_card.erase(selected_card.begin() + i);
-		//		ecs.destroyEntity(parti);
-		//	}
-		//}
-	}
-
 	std::vector<Entity>& TurnBasedSystem::get_participant()
 	{
 		return participants;
 	}
 
-	void TurnBasedSystem::start(EntityComponent::Registry& ecs)
+	void TurnBasedSystem::start()
 	{
 		//check for edge cases
 		if (participants.empty())
@@ -140,7 +126,7 @@ namespace TBS
 
 		cur_round = 1;
 
-		round_start(ecs);  // <-- THIS is the “print Round 1 immediatelyEfix
+		round_start();  // <-- THIS is the “print Round 1 immediatelyEfix
 	}
 
 	//id of active participant
@@ -181,7 +167,7 @@ namespace TBS
 		if (cur_player >= participants.size())
 		{
 			round_end();
-			round_start(ecs);
+			round_start();
 			return;
 		}
 
@@ -198,7 +184,7 @@ namespace TBS
 		
 		//gameBoardptr->unselect_card();
 		//gameBoardptr->unselect_movement();
-		debug_print(ecs);
+		debug_print();
 	}
 
 	void TurnBasedSystem::end()
@@ -237,7 +223,7 @@ namespace TBS
 		participant_hand[cur_player] = index;
 	}
 
-	void TurnBasedSystem::select_card(EntityComponent::Registry& ecs)
+	void TurnBasedSystem::select_card()
 	{
 		if (this->is_current_selected_card())
 			gameBoardptr->unselect_card();
@@ -278,113 +264,113 @@ namespace TBS
 			gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::GRID_SELECT);
 	}
 	//DEBUG PRINT
-	void TurnBasedSystem::debug_print(EntityComponent::Registry& ecs) const
+	void TurnBasedSystem::debug_print() const
 	{
 		//print out info every action
 		std::cout << "======================Turn based Stats======================" << '\n';
 		//show deck cards
 		std::cout << "Current Actor : " << ecs.getComponent<Components::Name>(current())->value << '\n';
-		show_deck(ecs);
-		show_hand(ecs);
-		show_discard(ecs);
-		show_stats(ecs);
-		show_HP(ecs);
+		//show_deck(ecs);
+		//show_hand(ecs);
+		//show_discard(ecs);
+		//show_stats(ecs);
+		//show_HP(ecs);
 		std::cout << "============================================================" << '\n';
 	}
 
-	void TurnBasedSystem::show_HP(EntityComponent::Registry& ecs) const
-	{
-		for (size_t i = 0; i < participants.size(); ++i)
-		{
-			/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-			char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
-			std::cout << name << "'s HP : " << HP << " | " << '\n';*/
-			EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
-			EntityComponent::ComponentTypeID hordeTagID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
+	//void TurnBasedSystem::show_HP(EntityComponent::Registry& ecs) const
+	//{
+	//	for (size_t i = 0; i < participants.size(); ++i)
+	//	{
+	//		/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
+	//		char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
+	//		std::cout << name << "'s HP : " << HP << " | " << '\n';*/
+	//		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
+	//		EntityComponent::ComponentTypeID hordeTagID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
 
-			std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
+	//		std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
 
-			if (ecs.getBitMask()[participants[i]].test(hpID))
-			{
-				f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-				std::cout << name << "'s HP : " << HP << " | " << '\n';
-			}
-			else
-			{
-				if (ecs.getBitMask()[participants[i]].test(hordeTagID))
-				{
-					std::vector<Entity> goons = ecs.getComponent<Components::Horde_Tag>(participants[i])->goons;
-					for (Entity goon : goons)
-					{
-						std::string gname = ecs.getComponent<Components::Name>(goon)->value;
-						f32 HP = ecs.getComponent<Components::HP>(goon)->c_value;
-						std::cout << gname << "'s HP : " << HP << " | " << '\n';
-					}
-				}
-				else
-				{
-					std::cout << name << " (no HP)" << '\n';
-				}
-			}
-		}
-	}
+	//		if (ecs.getBitMask()[participants[i]].test(hpID))
+	//		{
+	//			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
+	//			std::cout << name << "'s HP : " << HP << " | " << '\n';
+	//		}
+	//		else
+	//		{
+	//			if (ecs.getBitMask()[participants[i]].test(hordeTagID))
+	//			{
+	//				std::vector<Entity> goons = ecs.getComponent<Components::Horde_Tag>(participants[i])->goons;
+	//				for (Entity goon : goons)
+	//				{
+	//					std::string gname = ecs.getComponent<Components::Name>(goon)->value;
+	//					f32 HP = ecs.getComponent<Components::HP>(goon)->c_value;
+	//					std::cout << gname << "'s HP : " << HP << " | " << '\n';
+	//				}
+	//			}
+	//			else
+	//			{
+	//				std::cout << name << " (no HP)" << '\n';
+	//			}
+	//		}
+	//	}
+	//}
 
-	void TurnBasedSystem::show_deck(EntityComponent::Registry& ecs) const
-	{
-		std::cout << "---------Player's Deck---------" << '\n';
+	//void TurnBasedSystem::show_deck(EntityComponent::Registry& ecs) const
+	//{
+	//	std::cout << "---------Player's Deck---------" << '\n';
 
-		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		size_t sz = playerStorage->data_draw_pile.size();
-		for (size_t i = 0; i < sz; ++i)
-		{
-			Entity cardID = playerStorage->data_draw_pile[i];
-			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-		}
-		std::cout << "-------------------------------" << '\n';
-	}
+	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+	//	size_t sz = playerStorage->data_draw_pile.size();
+	//	for (size_t i = 0; i < sz; ++i)
+	//	{
+	//		Entity cardID = playerStorage->data_draw_pile[i];
+	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
+	//		std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
+	//	}
+	//	std::cout << "-------------------------------" << '\n';
+	//}
 
-	void TurnBasedSystem::show_hand(EntityComponent::Registry& ecs) const
-	{
-		//disolay player hands
-		std::cout << "---------Player's Hand---------" << '\n';
-		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		size_t sz = playerStorage->data_card_hand.size();
-		for (size_t i = 0; i < sz; ++i)
-		{
-			Entity cardID = playerStorage->data_card_hand[i];
-			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-			std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-		}
-		std::cout << "------------------------------" << '\n';
-	}
+	//void TurnBasedSystem::show_hand(EntityComponent::Registry& ecs) const
+	//{
+	//	//disolay player hands
+	//	std::cout << "---------Player's Hand---------" << '\n';
+	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+	//	size_t sz = playerStorage->data_card_hand.size();
+	//	for (size_t i = 0; i < sz; ++i)
+	//	{
+	//		Entity cardID = playerStorage->data_card_hand[i];
+	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
+	//		std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
+	//	}
+	//	std::cout << "------------------------------" << '\n';
+	//}
 
-	void TurnBasedSystem::show_discard(EntityComponent::Registry& ecs) const
-	{
-		//disolay player hands
-		std::cout << "---------Player's Discard Piler---------" << '\n';
-		Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-		size_t sz = playerStorage->data_discard_pile.size();
-		for (size_t i = 0; i < sz; ++i)
-		{
-			Entity cardID = playerStorage->data_discard_pile[i];
-			Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-			std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-		}
-		std::cout << "----------------------------------------" << '\n';
-	}
+	//void TurnBasedSystem::show_discard(EntityComponent::Registry& ecs) const
+	//{
+	//	//disolay player hands
+	//	std::cout << "---------Player's Discard Piler---------" << '\n';
+	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
+	//	size_t sz = playerStorage->data_discard_pile.size();
+	//	for (size_t i = 0; i < sz; ++i)
+	//	{
+	//		Entity cardID = playerStorage->data_discard_pile[i];
+	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
+	//		std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
+	//	}
+	//	std::cout << "----------------------------------------" << '\n';
+	//}
 
-	void TurnBasedSystem::show_stats(EntityComponent::Registry& ecs) const
-	{
-		std::cout << "---------Player's Stats---------" << '\n';
-		Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
-		std::cout << "Points : " << stats->points << '/' << stats->maxPoints << '\n';
-		std::cout << "SPD : " << stats->cur_movSpd << '\n';
-		std::cout << "Shields : " << stats->shields << '\n';
-		std::cout << "--------------------------------" << '\n';
-	}
+	//void TurnBasedSystem::show_stats(EntityComponent::Registry& ecs) const
+	//{
+	//	std::cout << "---------Player's Stats---------" << '\n';
+	//	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
+	//	std::cout << "Points : " << stats->points << '/' << stats->maxPoints << '\n';
+	//	std::cout << "SPD : " << stats->cur_movSpd << '\n';
+	//	std::cout << "Shields : " << stats->shields << '\n';
+	//	std::cout << "--------------------------------" << '\n';
+	//}
 
-	void TurnBasedSystem::DrawPhase_add_card(EntityComponent::Registry& ecs)
+	void TurnBasedSystem::DrawPhase_add_card()
 	{
 		//get random card from the player's deck
 		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -405,7 +391,7 @@ namespace TBS
 		int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
 		//int index = int(AERandFloat() * drawPile.size());	<- old rand code
 		Entity card = drawPile[index];
-		EntityFactory::add_card_player_hand(ecs, playerID, card);	//add a random card
+		EntityFactory::add_card_player_hand(playerID, card);	//add a random card
 		//remove the card afterwards
 		drawPile.erase(drawPile.begin() + index);
 	}

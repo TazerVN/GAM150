@@ -348,8 +348,6 @@ void SettingPause::init()
 
 	f32 offset_x = 256.f * size_x;
 	f32 offset_y = 120.f * size_y;
-	f32 title_s_x = 1.f;
-	f32 title_s_y = 1.f;
 
 	f32 text_size = 0.7f;
 
@@ -406,8 +404,6 @@ void TutorialPause::init()
 
 	f32 offset_x = 256.f * size_x;
 	f32 offset_y = 120.f * size_y;
-	f32 title_s_x = 1.f;
-	f32 title_s_y = 1.f;
 
 	f32 text_size = 0.5f;
 
@@ -441,7 +437,7 @@ void TutorialPause::update()
 	auto image = ecs.getComponent<Components::Texture>(this->image);
 	if (image != nullptr)
 	{
-		image->texture = TF.getTextureTutorial(this->page);
+		image->texture = TF.getTextureTutorial(s8(this->page));
 	}
 }
 
@@ -489,13 +485,13 @@ void ConfirmPause::init()
 
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;
 
-	f32 win_h = AEGfxGetWindowHeight();
+	f32 win_h = (f32)AEGfxGetWindowHeight();
 	AEGfxGetPrintSize(TF.getFontID(), warning_text, text_size_warning, &warning_w, &warning_h);
 	AEGfxGetPrintSize(TF.getFontID(), description_text, text_size, &description_w, &description_h);
 	//AEGfxGetPrintSize(TF.getFontID(), description_text2, text_size, &description2_w, &description2_h );
 	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h);
 
-	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1;
+	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1f;
 
 	this->warning = UIO::TextShadow{ -warning_w * win_w, start_y - offset_y, text_size_warning, this->z, warning_text, {1.f, 0.f, 0.f, 1.f} };
 	this->description = UIO::TextShadow{ -description_w * win_w , start_y - offset_y * 2, text_size, this->z, description_text, {1.f, 1.f, 1.f, 1.f} };

@@ -37,10 +37,10 @@ class HighlightSystem;
 namespace CardInteraction
 {
 
-	void card_onHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z);
-	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z);
-	void card_onClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
-	void card_offClick(EntityComponent::Registry& ecs, std::pair<Entity, Entity> id);
+	void card_onHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z);
+	void card_offHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z);
+	void card_onClick(std::pair<Entity, Entity> id);
+	void card_offClick(std::pair<Entity, Entity> id);
 
 	class CardHand
 	{
@@ -76,18 +76,17 @@ namespace CardInteraction
 
 		void generateCards();
 		void update_logic(f32 dt);
-		void update_pos(EntityComponent::Registry& ecs, f32 dt);
+		void update_pos(f32 dt);
 		void activate_card(Entity e);
-		void remove_card(EntityComponent::Registry&, int);
+		void remove_card(int);
 		void reset_hand();
 		Entity getID() const;
 
 		void card_interaction_free();
 	};
 
-	std::pair<Entity, Entity> selectableCard_create(Entity id, EntityComponent::Registry& ecs, MeshFactory& mf,
+	std::pair<Entity, Entity> selectableCard_create(Entity id,
 													f32 x, f32 y, f32 width, f32 height, 
 													f32 rotation, s32 z, AEGfxTexture* pTex, std::function<void()> fp, 
 													s32 cost, CardInformation::CardDisplay& cd, Entity card_data);
-	void selectableCard_delete(EntityComponent::Registry& ecs, std::pair<Entity, Entity> entity);
 }

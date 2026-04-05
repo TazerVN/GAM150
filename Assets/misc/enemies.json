@@ -3,21 +3,21 @@
     "name": "Melee",
     "hp":  30.0,
     "value":  20.0,
-    "range": 1.0,
+    "range": 1,
     "png" :  "enemy2.png"
   },
   {
     "name": "Ranger",
     "hp": 60.0,
     "value": 20.0,
-    "range": 1.0,
+    "range": 1,
     "png" : "enemy1.png"
   },
   {
   "name": "Boss",
   "hp": 200.0,
   "value": 40.0,
-  "range": 1.0,
+  "range": 1,
   "png": "Boss.png"
   }
 ]

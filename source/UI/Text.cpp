@@ -15,10 +15,10 @@ namespace Text
 		return lhs;
 	}
 
-	void InstructionText::set(f32 y, f32 size)
+	void InstructionText::set(f32 _y, f32 _size)
 	{
-		this->y = y;
-		this->size = size;
+		this->y = _y;
+		this->size = _size;
 	}
 
 	void InstructionText::set(Components::RGBA color)
@@ -26,12 +26,12 @@ namespace Text
 		this->rgba = color;
 	}
 
-	InstructionText& InstructionText::operator+=(const char* text)
+	InstructionText& InstructionText::operator+=(const char* _text)
 	{
 		f32 gap = 50.f;
 		f32 w, h;
-		AEGfxGetPrintSize(TF.getFontID(), text , this->size, &w, &h);
-		this->text.push_back(new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , this->y + (h * AEGfxGetWinMinY()) - gap * (this->text.size()), this->size, this->z, text, this->rgba });
+		AEGfxGetPrintSize(TF.getFontID(), _text , this->size, &w, &h);
+		this->text.push_back(new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , this->y + (h * AEGfxGetWinMinY()) - gap * (this->text.size()), this->size, this->z, _text, this->rgba });
 
 		//lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + lhs.y, lhs.size, lhs.z, text, lhs.rgba};
 
@@ -51,15 +51,15 @@ namespace Text
 		text.clear();
 	}
 
-	void PopUpText::display(Entity pos, const char* text)
+	void PopUpText::display(Entity _pos, const char* _text)
 	{
 		//*this << 0;
-		this->current.push_back(this->text_create_attached(pos, text, c_color.r, c_color.g, c_color.b, c_color.a));
+		this->current.push_back(this->text_create_attached(_pos, _text, c_color.r, c_color.g, c_color.b, c_color.a));
 	}
 
-	PopUpText& operator<<(PopUpText& out, const char* text)
+	PopUpText& operator<<(PopUpText& out, const char* _text)
 	{
-		Entity id = out.text_create(out.pos, text, out.c_color.r, out.c_color.g, out.c_color.b, out.c_color.a);
+		Entity id = out.text_create(out.pos, _text, out.c_color.r, out.c_color.g, out.c_color.b, out.c_color.a);
 
 		out.current.push_back(id);
 
@@ -85,9 +85,9 @@ namespace Text
 		return out;
 	}
 
-	void PopUpText::init(EntityComponent::Registry* ecs, Entity pos)
+	void PopUpText::init(EntityComponent::Registry* ecsptr, Entity pos)
 	{
-		this->ecs = ecs;
+		this->ecs = ecsptr;
 		this->pos = pos;
 	}
 
@@ -178,7 +178,7 @@ namespace Text
 
 
 			f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-			f32 minimum = 0.4f;
+			//f32 minimum = 0.4f;
 
 
 			c->d_color.a = lerp;

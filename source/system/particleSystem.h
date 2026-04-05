@@ -29,7 +29,7 @@ namespace Particle
 
 		void spawn_timed(bool isUI,f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY,f32 lifetime, Components::ParticleType type);
 
-		void particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleDigitize();
 		/*
 		* Use in this:
 		* - When enemy dies, spawn this particle
@@ -49,7 +49,7 @@ namespace Particle
 		* - player is using ranged attack
 		*/
 
-		void particleClick(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+		void particleClick(f32 x, f32 y);
 		/*
 		* Click effect
 		*/
@@ -70,11 +70,11 @@ namespace Particle
 
 		void particleShield(f32 x, f32 y, f32 r, f32 g, f32 b, f32 alpha, f32 orbitRadius, int count);
 
-		void particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y);
+		void particleDamage(f32 x, f32 y);
 
-		void particleDataFlow(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleDataFlow();
 
-		void particleDataBubble(EntityComponent::Registry& ecs, MeshFactory& mf);
+		void particleDataBubble();
 
 		void particle_system_free();
 

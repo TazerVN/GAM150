@@ -20,7 +20,7 @@ namespace CardInformation
 			Entity cost;
 			std::vector<Entity> description;
 			Info() = default;
-			Info(EntityComponent::Registry& ecs, Entity display, Entity CardData, s32 z);
+			Info(Entity display, Entity CardData, s32 z);
 			void free();
 		};
 		Info text;
@@ -32,7 +32,7 @@ namespace CardInformation
 		CardDisplay() = default;
 		CardDisplay(const CardDisplay& rhs);
 		CardDisplay& operator=(const CardDisplay& rhs);
-		CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, s32 z);
+		CardDisplay(f32 x, f32 y, f32 width, f32 height, s32 z);
 		void update();
 
 		bool isOn();
@@ -43,7 +43,7 @@ namespace CardInformation
 		void setCurrentCard(Entity card_data);
 
 
-		void free(EntityComponent::Registry& ecs);
+		void free();
 
 	};
 

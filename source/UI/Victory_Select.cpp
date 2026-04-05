@@ -75,8 +75,8 @@ void Victory_Select::update()
 		f32 size_y = 1.8f;
 		f32 text_size = 0.5f;
 
-		auto skip = [&](){ this->free();};
-		this->skip = UIO::TextureButton{ TF.getTextureUI(11) , 0 , AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Skip", skip, 0xFFFFFFFF };
+		auto skp = [&](){ this->free();};
+		this->skip = UIO::TextureButton{ TF.getTextureUI(11) , 0 , AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Skip", skp, 0xFFFFFFFF };
 	}
 	this->dim.update();
 	if (AEInputCheckTriggered(AEVK_ESCAPE))

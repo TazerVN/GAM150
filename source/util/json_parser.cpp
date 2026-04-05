@@ -134,17 +134,17 @@ JSON_RET parse_game_data()
 		const auto& sound = doc["SoundSetting"];
 
 		if (sound.HasMember("sfx"))
-			gameData.soundSettings.sfx = sound["sfx"].GetUint();
+			gameData.soundSettings.sfx = sound["sfx"].GetFloat();
 		else
 			return JSON_RET::PARSE_ERROR;
 
 		if (sound.HasMember("music"))
-			gameData.soundSettings.music = sound["music"].GetUint();
+			gameData.soundSettings.music = sound["music"].GetFloat();
 		else
 			return JSON_RET::PARSE_ERROR;
 
 		if (sound.HasMember("ambience"))
-			gameData.soundSettings.ambience = sound["ambience"].GetUint();
+			gameData.soundSettings.ambience = sound["ambience"].GetFloat();
 		else
 			return JSON_RET::PARSE_ERROR;
 	}
@@ -174,7 +174,7 @@ JSON_RET parse_game_data()
 			if (card.IsString())
 			{
 				std::string card_name = card.GetString();
-				EntityFactory::add_card_player_deck(ecs, playerID, card_system.generate_card_from_bible(card_name));
+				EntityFactory::add_card_player_deck(playerID, card_system.generate_card_from_bible(card_name));
 			}
 		}
 	}
@@ -276,10 +276,10 @@ JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 
 		temp_card.id = (arr[i].HasMember("id")) ? arr[i]["id"].GetInt() : -1;
 		temp_card.name = (arr[i].HasMember("name")) ? arr[i]["name"].GetString() : "NULL";
-		temp_card.cost = (arr[i].HasMember("cost")) ? arr[i]["cost"].GetFloat() : -1.0f;
+		temp_card.cost = (arr[i].HasMember("cost")) ? arr[i]["cost"].GetInt() : -1;
 		temp_card.value = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.0f;
-		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetFloat() : 0.0f;
-		temp_card.aoe = (arr[i].HasMember("aoe")) ? arr[i]["aoe"].GetFloat() : 0.0f;
+		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetInt() : 0;
+		temp_card.aoe = (arr[i].HasMember("aoe")) ? arr[i]["aoe"].GetInt() : 0;
 		temp_card.description = (arr[i].HasMember("description")) ? arr[i]["description"].GetString() : "No description Man?";
 		temp_card.card_image = (arr[i].HasMember("png")) ? arr[i]["png"].GetString() : "NULL";
 
@@ -355,7 +355,7 @@ JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str)
 		temp_card.name = (arr[i].HasMember("name")) ? arr[i]["name"].GetString() : "NULL";
 		temp_card.hp = (arr[i].HasMember("hp")) ? arr[i]["hp"].GetFloat() : -1.0f;
 		temp_card.value = (arr[i].HasMember("value")) ? arr[i]["value"].GetFloat() : -1.0f;
-		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetFloat() : -1.0f;
+		temp_card.range = (arr[i].HasMember("range")) ? arr[i]["range"].GetInt() : -1;
 		temp_card.png = (arr[i].HasMember("png")) ? arr[i]["png"].GetString() : "NULL";
 
 		vec.push_back(temp_card);

@@ -25,7 +25,7 @@ namespace InputSystem
 		int cur_in = -1;
 		s32 mousex, mousey;
 		InputManager();
-		void update(EntityComponent::Registry& ecs, Entity id);
+		void update(Entity id);
 	};
 
 

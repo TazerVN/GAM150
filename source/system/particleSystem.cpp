@@ -310,7 +310,7 @@ void Particle::ParticleSystem::spawn_timed(bool isUI, f32 x, f32 y, f32 width, f
 
 }
 
-void Particle::ParticleSystem::particleDigitize(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDigitize()
 {
 	int max_count = 100;
 	for (int i = 0; i < max_count; i++)
@@ -364,7 +364,7 @@ void Particle::ParticleSystem::particleBurst()
 	}
 }
 
-void Particle::ParticleSystem::particleClick(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+void Particle::ParticleSystem::particleClick(f32 x, f32 y)
 {
 	int   max_count = 6;
 	f32   speed = 40.0f;
@@ -523,12 +523,12 @@ void Particle::ParticleSystem::particleShield(f32 x, f32 y, f32 r, f32 g, f32 b,
 
 
 
-void Particle::ParticleSystem::particleDamage(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y)
+void Particle::ParticleSystem::particleDamage(f32 x, f32 y)
 {
 
 }
 
-void Particle::ParticleSystem::particleDataFlow(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDataFlow()
 {
 	f32 screenWidth = f32(AEGfxGetWindowWidth());
 	f32 screenHeight = f32(AEGfxGetWindowHeight());
@@ -552,11 +552,11 @@ void Particle::ParticleSystem::particleDataFlow(EntityComponent::Registry& ecs, 
 		f32 b = 0.8f + 0.2f * AERandFloat();
 		f32 a = 0.5f + 0.5f * AERandFloat();
 
-		spawn_one(true, x, y, 8.0f, 15.0f, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
+		spawn_one(true, x, y, 8.0f, 15.0f, 0.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Dataflow);
 	}
 }
 
-void Particle::ParticleSystem::particleDataBubble(EntityComponent::Registry& ecs, MeshFactory& mf)
+void Particle::ParticleSystem::particleDataBubble()
 {
 	f32 screenWidth = f32(AEGfxGetWindowWidth());
 	f32 halfWidth = screenWidth * 0.5f;
@@ -593,7 +593,7 @@ void Particle::ParticleSystem::particleDataBubble(EntityComponent::Registry& ecs
 			// Small squares — bubble feel
 			f32 size = 4.f + AERandFloat() * 8.f;
 
-			spawn_one(true, x, y, size, size, 0.0f, -10.f, r, g, b, a, velX, velY, Components::ParticleType::Databub);
+			spawn_one(true, x, y, size, size, 0.0f, -10, r, g, b, a, velX, velY, Components::ParticleType::Databub);
 
 			// Stagger start time — so not all bubbles rise together
 			Entity id = Particlebuffer.back();

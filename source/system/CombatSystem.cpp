@@ -163,7 +163,7 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 	{
 		for (AEVec2 pos : aoe_selected_cells)
 		{
-			Entity& ent = gbptr->get_pos()[pos.x][pos.y];
+			Entity& ent = gbptr->get_pos()[(size_t)pos.x][(size_t)pos.y];
 			if (ent != -1 && ent != tbsptr->current())
 			{
 				Components::Tag* tag = ecs.getComponent<Components::Tag>(ent);
@@ -345,7 +345,7 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 				continue;
 			}
 			
-			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[targetPos.x][targetPos.y] = -1;
+			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[(int)targetPos.x][(int)targetPos.y] = -1;
 			gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
 
 			if (goons->alive() && anim->prev_type != Components::AnimationType::DEATH && anim->anim_type != Components::AnimationType::DEATH)
@@ -381,7 +381,6 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 
 // non piercing long ranged atk
 bool CombatNameSpace::CombatSystem::resolve_line_attack_first_hit(
-	EntityComponent::Registry& ecs,
 	Entity caster,
 	const AEVec2& startPos,
 	const AEVec2& targetPos,
@@ -424,7 +423,6 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_first_hit(
 
 //piercing long ranged atk
 bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
-	EntityComponent::Registry& ecs,
 	Entity caster,
 	const AEVec2& startPos,
 	const AEVec2& targetPos,
@@ -496,7 +494,7 @@ COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameB
 		else
 		{
 			damage -= static_cast<f32>(stats->shields);
-			stats->shields = 0.0f;
+			stats->shields = 0;
 		}
 	}
 
@@ -626,7 +624,7 @@ void CombatNameSpace::CombatSystem::update_GBPhasetriggered()
 			gbsptr->GBPTriggered()[index] = false;
 
 			if(tbsptr->active())
-			tbsptr->debug_print(ecs);
+			tbsptr->debug_print();
 
 			gbsptr->GBPActive()[prev_index] = false;
 			gbsptr->GBPActive()[index] = true;
@@ -677,7 +675,7 @@ void CombatNameSpace::CombatSystem::update_GBPhaseUpdate()
 			//draw until max_hand
 			for (int i = 0; i < Components::DRAW_COUNT; ++i)
 			{
-				tbsptr->DrawPhase_add_card(ecs);
+				tbsptr->DrawPhase_add_card();
 			}
 			cardHandptr->reset_hand();
 
@@ -736,18 +734,18 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 
 	Components::Targetting_Component* targetting = ecs.getComponent<Components::Targetting_Component>(cardID);
 
-	f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(cardID)->aoe;
+	int& aoe_range = ecs.getComponent<Components::Targetting_Component>(cardID)->aoe;
 
 	if (!aoe_selected_cells.empty()) aoe_selected_cells.clear();
 	s32 x = gbptr->cur_x; s32 y = gbptr->cur_y;
 
 	std::set<std::pair<int, int>> selected;
 
-	for (int i = -aoe_range; i <= aoe_range; ++i)
+	for (int i = -(int)aoe_range; i <= (int)aoe_range; ++i)
 	{
-		for (int j = -aoe_range; j <= aoe_range; ++j)
+		for (int j = -(int)aoe_range; j <= (int)aoe_range; ++j)
 		{
-			if (std::abs(i) + std::abs(j) > aoe_range) continue;
+			if (std::abs(i) + std::abs(j) > (int)aoe_range) continue;
 
 			int cx = x + i;
 			int cy = y + j;
@@ -761,7 +759,7 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 		this->aoe_selected_cells.push_back({ f32(cx), f32(cy) });
 
 	//remove the card that just played inside tbs
-	f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
+	int& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 	int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(player)->points;
 
 	if (card_cost > player_curMana) // Added a not enough mana condition
@@ -771,13 +769,10 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 	}
 
 	ret = CardResolver::resolve(
-		ecs,
 		*this,
 		*gbptr,
 		*tbsptr,
 		*intentptr,
-		*mfptr,
-		*tfptr,
 		player,
 		cardID,
 		target,
@@ -788,16 +783,16 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 	if (ret == PC_RETURN_TAG::VALID)
 	{
 		player_curMana -= static_cast<int>(card_cost);
-		this->remove_card(ecs, player, index);
+		this->remove_card(player, index);
 	}
 
 	return ret;
 }
 
-void CombatNameSpace::CombatSystem::remove_card(EntityComponent::Registry& ecs, Entity user, int index)
+void CombatNameSpace::CombatSystem::remove_card(Entity user, int index)
 {
-	EntityFactory::remove_card_player(ecs, user, index);	//this is to remove data from ecs
-	cardHandptr->remove_card(ecs, index);		//this is for visual side
+	EntityFactory::remove_card_player(user, index);	//this is to remove data from ecs
+	cardHandptr->remove_card(index);		//this is for visual side
 }
 
 void CombatNameSpace::CombatSystem::end_player_resolution()

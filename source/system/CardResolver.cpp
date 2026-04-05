@@ -28,7 +28,7 @@ namespace
 namespace CardResolver
 {
 	PC_RETURN_TAG resolve(
-		EntityComponent::Registry& ecs,
+		bool normal_function,
 		CombatNameSpace::CombatSystem& combatSystem,
 		Grid::GameBoard& board,
 		TBS::TurnBasedSystem& tbs,
@@ -149,7 +149,7 @@ namespace CardResolver
 				if (!stats)
 					return PC_RETURN_TAG::INVALID;
 
-				stats->cur_movSpd += value->value;
+				stats->cur_movSpd += int(value->value);
 				return PC_RETURN_TAG::VALID;
 			}
 
@@ -195,7 +195,7 @@ namespace CardResolver
 				int count = static_cast<int>(value->value);
 				for (int i = 0; i < count; ++i)
 				{
-					tbs.DrawPhase_add_card(ecs);
+					tbs.DrawPhase_add_card();
 				}
 				return PC_RETURN_TAG::VALID;
 			}
@@ -489,13 +489,10 @@ namespace CardResolver
 
 	//overload for invoving placing entity (Mana wall)
 	PC_RETURN_TAG resolve(
-		EntityComponent::Registry& ecs,
 		CombatNameSpace::CombatSystem& combatSystem,
 		Grid::GameBoard& board,
 		TBS::TurnBasedSystem& tbs,
 		IntentionDisplaySystem& intent,
-		MeshFactory& mf,
-		TextureFactory::TextureFactory& TF,
 		Entity caster,
 		Entity cardID,
 		Entity target,
@@ -556,8 +553,6 @@ namespace CardResolver
 				int y = cy + offsets[i][1];
 
 				Entity wall = EntityFactory::create_grid_object(
-					ecs,
-					mf,
 					{ 0.0f, 0.0f },
 					{ 238.0f, 238.0f },
 					"ManaWall",
@@ -579,6 +574,6 @@ namespace CardResolver
 		}
 
 		// all normal cards use the old resolver
-		return resolve(ecs, combatSystem, board, tbs, intent , caster, cardID, target, targetPos);
+		return resolve(true, combatSystem, board, tbs, intent , caster, cardID, target, targetPos);
 	}
 }

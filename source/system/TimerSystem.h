@@ -10,7 +10,7 @@ namespace Timer
 	class TimerSystem
 	{
 		public:
-		void update(EntityComponent::Registry&);
+		void update();
 		TimerSystem() = default;
 	};
 

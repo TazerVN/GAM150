@@ -42,14 +42,13 @@ namespace TBS
 		//has the current participant selected a card
 		std::vector<bool> selected_card;
 
-		void round_start(EntityComponent::Registry& ecs);
+		void round_start();
 		void round_end();
 	public:
 		//===========Set Ups============================
 		void init(EventPool<highlight_tag>&, Grid::GameBoard&, PhaseSystem::GameBoardState&, CombatNameSpace::CombatSystem&
 			, CardSystem&, CardInteraction::CardHand& ,Entity);
-		void add_participant(EntityComponent::Registry& ecs,Entity parti);
-		void remove_participant(EntityComponent::Registry& ecs, Entity parti);
+		void add_participant(Entity parti);
 		std::vector<Entity>& get_participant();
 
 		//returns ID of the active participant in turn order
@@ -67,23 +66,23 @@ namespace TBS
 		std::vector<int>& hand();
 		size_t round();
 		//============Turn Control=============
-		void start(EntityComponent::Registry& ecs);
-		void force_start_if_ready(EntityComponent::Registry& ecs);  // starts automatically when participants >=2
-		void debug_print(EntityComponent::Registry& ecs) const;
+		void start();
+		void force_start_if_ready();  // starts automatically when participants >=2
+		void debug_print() const;
 
 		//==============Player Stats==============
-		void show_deck(EntityComponent::Registry& ecs) const;
+		/*void show_deck(EntityComponent::Registry& ecs) const;
 		void show_HP(EntityComponent::Registry& ecs) const;
 		void show_hand(EntityComponent::Registry& ecs) const;
 		void show_discard(EntityComponent::Registry& ecs) const;
-		void show_stats(EntityComponent::Registry& ecs) const;
+		void show_stats(EntityComponent::Registry& ecs) const;*/
 
 		//============Combat=======================
 	
-		void DrawPhase_add_card(EntityComponent::Registry& ecs);
+		void DrawPhase_add_card();
 		void select_hand_index(int index);
 		//by pressing U player select his card
-		void select_card(EntityComponent::Registry& ecs);
+		void select_card();
 
 		bool update();
 		void tbs_free();

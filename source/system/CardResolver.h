@@ -11,25 +11,10 @@
 namespace CardResolver
 {
     PC_RETURN_TAG resolve(
-        EntityComponent::Registry& ecs,
         CombatNameSpace::CombatSystem& combatSystem,
         Grid::GameBoard& board,
         TBS::TurnBasedSystem& tbs,
         IntentionDisplaySystem& intent,
-        Entity caster,
-        Entity cardID,
-        Entity target,
-        AEVec2 targetPos
-    );
-
-    PC_RETURN_TAG resolve(
-        EntityComponent::Registry& ecs,
-        CombatNameSpace::CombatSystem& combatSystem,
-        Grid::GameBoard& board,
-        TBS::TurnBasedSystem& tbs,
-        IntentionDisplaySystem& intent,
-        MeshFactory& mf,
-        TextureFactory::TextureFactory& TF,
         Entity caster,
         Entity cardID,
         Entity target,

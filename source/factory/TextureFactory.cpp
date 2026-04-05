@@ -115,8 +115,7 @@ namespace TextureFactory
 		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_9.png"));
 		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_10.png"));
 		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_11.png"));
-		//this->fontID = AEGfxCreateFont("Assets/font/cool.ttf", 64.F);
-		this->fontID = AEGfxCreateFont("Assets/font/TahomaBd.ttf", 64.F);
+		this->fontID = AEGfxCreateFont("Assets/font/TahomaBd.ttf", 64);
 	}
 
 

@@ -20,8 +20,8 @@ namespace RenderSystem
 		std::list<std::pair<s32, Entity>> buffer;
 		public:
 		RenderSystem();
-		void RenderSystem_init(EntityComponent::Registry& ecs);
-		void RM_render(EntityComponent::Registry& ecs, Entity camera);
+		void RenderSystem_init();
+		void RM_render(Entity camera);
 
 	};
 };

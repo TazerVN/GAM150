@@ -182,7 +182,7 @@ namespace Grid
 		this->moveEntity(this->cur, x, y);
 		unselect_movement();
 
-		tbsptr->show_stats(ecs);
+		//tbsptr->show_stats(ecs);
 		gbsptr->set_PlayerPhase(PhaseSystem::PlayerPhase::PLAYER_ANIMATION);
 	}
 
@@ -476,7 +476,7 @@ namespace Grid
 		gd->x = x; gd->y = y;
 	}
 
-	void GameBoard::update(EntityComponent::Registry& ecs, Entity camera)
+	void GameBoard::update(Entity camera)
 	{
 		//check if the mouse is on board
 		mouse_on_board = false;
@@ -748,7 +748,7 @@ namespace Grid
 		Entity cur_part = tbsptr->current();
 		std::array<std::array<Entity, MAX_J>, MAX_I>& positions = get_pos();
 
-		AEVec2 _temp = { -1.f,-1.f };
+		AEVec2 temp_ = { -1.f,-1.f };
 
 		for (int i = 0; i < MAX_I; ++i)
 		{
@@ -756,14 +756,14 @@ namespace Grid
 			{
 				if (positions[i][j] == cur_part)
 				{
-					AEVec2Set(&_temp, (f32)i, (f32)j);
+					AEVec2Set(&temp_, (f32)i, (f32)j);
 					break;
 				}
 			}
-			if (_temp.x != -1.f && _temp.y != -1.f) break;
+			if (temp_.x != -1.f && temp_.y != -1.f) break;
 		}
 
-		return _temp;
+		return temp_;
 	}
 
 	AEVec2 GameBoard::GetOffsetPos()
@@ -907,15 +907,15 @@ namespace Grid
 	void GameBoard::func_aoe_hightlight_cells(s32 x, s32 y)
 	{
 		Entity card_ID = cbsptr->draw_card(playerID, tbsptr->get_selected_cardhand_index());
-		f32& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
-		f32& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
+		int& aoe_range = ecs.getComponent<Components::Targetting_Component>(card_ID)->aoe;
+		int& range = ecs.getComponent<Components::Targetting_Component>(card_ID)->range;
 
 		int serialID = ecs.getComponent<Components::Card_ID>(card_ID)->value;
 		bool isManaWall = (serialID == 4220);
 		bool isGust = (serialID == 4120);
 
 		AEVec2 cur_part_pos = Get_CurPart_gridPos();
-		int rng = grid_dist_manhattan(x, y, cur_part_pos.x, cur_part_pos.y);
+		int rng = grid_dist_manhattan(x, y, (s32)cur_part_pos.x, (s32)cur_part_pos.y);
 
 		//std::cout << "Hovered card serialID = " << serialID << '\n';
 		//std::cout << "isManaWall = " << isManaWall << '\n';

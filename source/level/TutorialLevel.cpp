@@ -80,14 +80,14 @@ void LevelStateTutorial_init()
 
 	PS.particleDataStream();
 	PS.particleReverseStream();
-	AS.init(ecs);
+	AS.init();
 	PUT.init(&ecs, tut_UIM.getCardHand().getID());
 	ecs.remove_empty_groups();
 }
 
 void LevelStateTutorial_update()
 {
-	f32 dt = AEFrameRateControllerGetFrameTime();
+	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 
 	// Always sync from Scene first so Scene is the real source of truth
 	gTutorialStage = static_cast<TutorialFlowStage>(tutorialscene.get_tutorial_stage());
@@ -155,18 +155,18 @@ void LevelStateTutorial_update()
 
 		f32 worldX = f32(mouseX) - (f32(AEGfxGetWindowWidth()) * 0.5f);
 		f32 worldY = (f32(AEGfxGetWindowHeight()) * 0.5f) - f32(mouseY);
-		PS.particleClick(ecs, mf, worldX, worldY);
+		PS.particleClick(worldX, worldY);
 	}
 
 	if (!player_died && !pause)
 	{
 		//UIM.getPauseMenu().free();
 
-		VS.update(ecs);
+		VS.update();
 		tutorialscene.update();
-		tutorialscene.getBattleGrid().update(ecs, CS.id());
+		tutorialscene.getBattleGrid().update( CS.id());
 		CS.update();
-		AS.update(ecs, tutorialscene.getBattleGrid(), tutorialscene.getGBS(), tutorialscene.getCombatSystem());
+		AS.update(tutorialscene.getBattleGrid(), tutorialscene.getGBS(), tutorialscene.getCombatSystem());
 		tut_UIM.update(tutorialscene, dt);
 	}
 	else

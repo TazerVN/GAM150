@@ -78,7 +78,7 @@ namespace Grid
 		bool moveEntityAI(Entity e, s32 x, s32 y, int max_move = 5);
 		void setEnemyAnimationPhase();
 
-		void update(EntityComponent::Registry& ecs, Entity camera);
+		void update(Entity camera);
 		void updateCell(s32 x, s32 y);
 
 		void draw_movement_trail(s32 x, s32 y);

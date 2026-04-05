@@ -22,12 +22,12 @@ namespace CardInformation
 
 		if (this->current_card_id != 0)
 		{
-			this->text = Info(ecs, this->info_id, current_card_id, this->z + 1);
+			this->text = Info(this->info_id, current_card_id, this->z + 1);
 		}
 		return *this;
 	}
 
-	CardDisplay::CardDisplay(EntityComponent::Registry& ecs, MeshFactory& mf, f32 x, f32 y, f32 width, f32 height, s32 z) : text{}, current_card_id{}, previous_card_id{}
+	CardDisplay::CardDisplay(f32 x, f32 y, f32 width, f32 height, s32 z) : text{}, current_card_id{}, previous_card_id{}
 	{
 		Entity id = ecs.createEntity();
 		this->info_id = id;
@@ -74,7 +74,7 @@ namespace CardInformation
 	}
 
 
-	void CardDisplay::free(EntityComponent::Registry& ecs)
+	void CardDisplay::free()
 	{
 		created = false;
 		if (this->info_id != 0)
@@ -126,7 +126,7 @@ namespace CardInformation
 
 	}
 
-	CardDisplay::Info::Info(EntityComponent::Registry& ecs, Entity display, Entity CardData, s32 z)
+	CardDisplay::Info::Info(Entity display, Entity CardData, s32 z)
 	{
 
 		auto display_transform = ecs.getComponent<Components::Transform>(display);

@@ -3,7 +3,7 @@
 
 namespace Timer{
 
-void TimerSystem::update(EntityComponent::Registry& ecs)
+void TimerSystem::update()
 {
 	EntityComponent::ComponentTypeID timerID = EntityComponent::getComponentTypeID<Components::Timer>();
 

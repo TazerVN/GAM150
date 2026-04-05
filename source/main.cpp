@@ -63,14 +63,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		while (gGameStateCurr == gGameStateNext)
 		{
 			AESysFrameStart();
-			IM.update(ecs, CS.id());
+			IM.update(CS.id());
 			GameStateUpdate();
 			//========(Render)====================
 			console.update();
 
 			PS.update(0.2);
-			TS.update(ecs);
-			RM.RM_render(ecs, CS.id());
+			TS.update();
+			RM.RM_render(CS.id());
 
 			AESysFrameEnd();
 
@@ -101,34 +101,35 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 void load_Sys_Comp()
 {
+	card_system.init_cards();
+	beastiary.init_data();
 	//NULL ENTITY INDEX;
-	Entity null = ecs.createEntity();
+	Entity FIRST = ecs.createEntity();
+	if (FIRST != 0) FIRST = 0;
 
 	for (int itr = 0; itr < commandCount; ++itr)
 	{
 		ConsoleEvents.template_pool.push_back(EventTemplate<CommandTypes>{});
 	}
+	TF.textureInit();
+	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
+	EntityFactory::create_player();
 
 	pause = false;
 	
-	card_system.init_cards();
-	beastiary.init_data();
-	AF = AudioFactory::AudioFactory();
-	AF.init();
-	TF.textureInit();
-	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
-	//==========System=============
-	CS.init();
-	RM.RenderSystem_init(ecs);
-
-	EntityFactory::create_player();
-
 	if (parse_game_data() != JSON_RET::OK)
 	{
 		std::cout << "Parsing Game Data failed!!" << '\n';
 	}
+	AF = AudioFactory::AudioFactory();
+	AF.init();
+	//==========System=============
+	CS.init();
+	RM.RenderSystem_init();
 
-	Entity t = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 100, 0.0f, 0.0f, 0.3f, 0.15f);
+
+
+	Entity t = UIO::ui_blank_solid_center(0.f, 0.f, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0.f, 100, 0.0f, 0.0f, 0.3f, 0.15f);
 	Components::TagClass tg{Components::Tag::UI};
 	ecs.addComponent(t, tg);
 	//=============================

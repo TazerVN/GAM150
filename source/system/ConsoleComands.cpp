@@ -62,9 +62,9 @@ void Console::text_box_update()
 	}
 	if (!text->text.empty() && AEInputCheckTriggered(AEVK_BACK))
 	{
-		Components::Text* text = ecs.getComponent<Components::Text>(input_text);
-		text->text.pop_back();
-		std::cout << text->text << '\n';
+		Components::Text* txt = ecs.getComponent<Components::Text>(input_text);
+		txt->text.pop_back();
+		std::cout << txt->text << '\n';
 	}
 	
 	if (AEInputCheckTriggered(AEVK_SLASH))

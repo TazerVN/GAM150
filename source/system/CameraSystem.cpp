@@ -8,7 +8,7 @@ namespace Camera
 	{
 	}
 
-	void CameraSystem::updateCameraPos(EntityComponent::Registry& ecs)
+	void CameraSystem::updateCameraPos()
 	{
 
 		s32 scroll_buffer{ 1 };
@@ -28,14 +28,14 @@ namespace Camera
 
 			AEInputGetCursorPosition(&mousex, &mousey);
 
-			mousex = mousex - s32(f32(AEGfxGetWindowWidth()) * 0.5f);
-			mousey = -mousey + s32(f32(AEGfxGetWindowHeight()) * 0.5f);
+			mousex = mousex - s32((f32)AEGfxGetWindowWidth() * 0.5f);
+			mousey = -mousey + s32((f32)AEGfxGetWindowHeight() * 0.5f);
 
-			mousex = AEClamp(mousex, (s32)AEGfxGetWinMinX(), (s32)AEGfxGetWinMaxX());
-			mousey = AEClamp(mousey, (s32)AEGfxGetWinMinY(), (s32)AEGfxGetWinMaxY());
+			mousex = s32(AEClamp((f32)mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX()));
+			mousey = s32(AEClamp((f32)mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY()));
 
-			mouse.x = mousex;
-			mouse.y = mousey;
+			mouse.x = (f32)mousex;
+			mouse.y = (f32)mousey;
 
 			transform->pos.x = buffer_x - f32(mousex);
 			transform->pos.y = buffer_y - f32(mousey);
@@ -52,7 +52,7 @@ namespace Camera
 	}
 
 
-	void setOrignalDragPos(Camera::CameraSystem& cam, EntityComponent::Registry& ecs)
+	void setOrignalDragPos(Camera::CameraSystem& cam)
 	{
 		if (AEInputCheckTriggered(AEVK_MBUTTON))
 		{
@@ -64,8 +64,8 @@ namespace Camera
 			mousex =  mousex - s32(f32(AEGfxGetWindowWidth()) * 0.5f);
 			mousey = -mousey + s32(f32(AEGfxGetWindowHeight()) * 0.5f);
 
-			mousex = AEClamp((f32)mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-			mousey = AEClamp((f32)mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+			mousex = s32( AEClamp((f32)mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX()));
+			mousey = s32( AEClamp((f32)mousey, AEGfxGetWinMinY(), AEGfxGetWinMaxY()));
 
 			cam.buffer_x = f32(transform->pos.x) + mousex;
 			cam.buffer_y = f32(transform->pos.y) + mousey;
@@ -80,7 +80,7 @@ namespace Camera
 	void CameraSystem::init()
 	{
 		this->camera_id = ecs.createEntity();
-		Components::Transform trans{ {0,0}, {0,0} ,{1.f, 1.f}, {AEGfxGetWindowWidth(), AEGfxGetWindowHeight()},0.0f };
+		Components::Transform trans{ {0,0}, {0,0} ,{1.f, 1.f}, {(f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight()},0.0f };
 		Components::Input input(AEVK_MBUTTON, true, [this]
 								{
 /*	setOrignalDragPos(*this, ecs);
@@ -108,8 +108,8 @@ namespace Camera
 		objMask.set(tagID);
 
 		Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
-		setOrignalDragPos(*this, ecs);
-		this->updateCameraPos(ecs);
+		setOrignalDragPos(*this);
+		this->updateCameraPos();
 
 	}
 

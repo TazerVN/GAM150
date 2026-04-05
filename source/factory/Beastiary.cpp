@@ -1,6 +1,6 @@
 #include "pch.h"
 
-Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_enemy)
+Entity create_ECS_enemy(JSON_ENEMY const& json_enemy)
 {
 	Entity enemy_id = ecs.createEntity();
 	Components::Name nm{ json_enemy.name };
@@ -10,8 +10,8 @@ Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_e
 	{ 5,	//max points
 	  0,	//cur_points
 	  0,	//shields
-	  7.f };	//movement spd
-	Components::Targetting_Component targetting{ Targetting::SINGLE_TARGET,json_enemy.range,0.f };
+	  7 };	//movement spd
+	Components::Targetting_Component targetting{ Targetting::SINGLE_TARGET,json_enemy.range,0 };
 	Components::image_location eimg{ json_enemy.png };
 	Components::Animation_Actor aa{ Components::AnimationType::IDLE };
 	Components::AStarResult ar{};
@@ -32,7 +32,8 @@ Entity create_ECS_enemy(EntityComponent::Registry& ecs, JSON_ENEMY const& json_e
 void Beastiary::init_data()
 {
 	std::vector<JSON_ENEMY> vec;
-	JSON_RET ret = parse_enemy_data(vec, "Assets/misc/enemies.json");
+	if (parse_enemy_data(vec, "Assets/misc/enemies.json") != JSON_RET::OK)
+		return;
 
 	for (JSON_ENEMY enemy : vec)
 	{
@@ -40,7 +41,7 @@ void Beastiary::init_data()
 		std::cout << "HP : " << enemy.hp << '\n';
 		std::cout << "Value : " << enemy.value << '\n';
 		std::cout << "Enemy Image : " << enemy.png << '\n' << '\n';
-		Entity enemyECSID = create_ECS_enemy(ecs, enemy);
+		Entity enemyECSID = create_ECS_enemy(enemy);
 		enemies_map[enemy.name] = enemyECSID;
 		enemies_vec.push_back(enemyECSID);
 	}

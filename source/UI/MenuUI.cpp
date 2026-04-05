@@ -105,8 +105,6 @@ void GameOverUI::init()
 
 	f32 offset_x = 256.f * size_x * 2.f;
 	f32 offset_y = 0.f;
-	f32 title_s_x = 1.f;
-	f32 title_s_y = 1.f;
 
 	f32 text_size = 0.5f;
 
@@ -114,7 +112,7 @@ void GameOverUI::init()
 	this->fade = UIO::ScreenTransition(true);
 	this->dest = NEXT::NONE;
 
-	this->background = UIO::ui_blank_texture(TF.getTextureOthers(10), 0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 1100);
+	this->background = UIO::ui_blank_texture(TF.getTextureOthers(10), 0, 0, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0, 1100);
 
 	this->new_game = UIO::TextureButton{ TF.getTextureUI(11) ,AEGfxGetWinMinX() + start_x,  start_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "New Game", game, 0xFFFFFFFF };
 	this->exit = UIO::TextureButton{ TF.getTextureUI(11) , AEGfxGetWinMinX() + start_x + offset_x, start_y + offset_y, 256.f * size_x, 61.f * size_y, text_size, 0.f, 1200, "Go Back", menu, 0xFFFFFFFF };
@@ -194,7 +192,7 @@ void MenuUI::init()
 
 	if (background == 0)
 	{
-		background = UIO::ui_blank_texture(TF.getTextureOthers(8), 0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 1100);
+		background = UIO::ui_blank_texture(TF.getTextureOthers(8), 0, 0, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0, 1100);
 	}
 
 	switch (this->cur)
@@ -425,7 +423,6 @@ void MenuUI::update()
 
 		case(BaseMenu::DESTINATION::GAME):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->free();
@@ -440,7 +437,6 @@ void MenuUI::update()
 
 		case(BaseMenu::DESTINATION::MAIN):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::MAIN;
@@ -453,7 +449,6 @@ void MenuUI::update()
 
 		case(BaseMenu::DESTINATION::CONFIRM):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::CONFIRM;
@@ -467,7 +462,6 @@ void MenuUI::update()
 
 		case(BaseMenu::DESTINATION::SETTING):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::SETTING;
@@ -480,7 +474,6 @@ void MenuUI::update()
 		}
 		case(BaseMenu::DESTINATION::CREDIT):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::CREDIT;
@@ -493,7 +486,6 @@ void MenuUI::update()
 		}
 		case(BaseMenu::DESTINATION::PLAY):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				this->cur = CURRENT_MENU::PLAY;
@@ -506,7 +498,6 @@ void MenuUI::update()
 		}
 		case(BaseMenu::DESTINATION::TUTORIAL):
 		{
-			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
 				std::cout << "[MenuUI] Going to tutorial level\n";
@@ -539,8 +530,11 @@ void SettingMenu::update()
 	this->bgm_slider.update();
 
 	AF.bgm.setVolume(bgm_slider.current);
+	gameData.soundSettings.music = bgm_slider.current;
 	AF.sfx.setVolume(sfx_slider.current);
+	gameData.soundSettings.sfx = sfx_slider.current;
 	AF.amb.setVolume(amb_slider.current);
+	gameData.soundSettings.ambience = amb_slider.current;
 }
 
 void SettingMenu::init()
@@ -556,9 +550,6 @@ void SettingMenu::init()
 
 	f32 offset_x = 256.f * size_x;
 	f32 offset_y = 120.f * size_y;
-	f32 title_s_x = 1.f;
-	f32 title_s_y = 1.f;
-
 	f32 text_size = 0.7f;
 
 	f32 text_slider_gap = 300.f;
@@ -647,7 +638,7 @@ void CreditMenu::init()
 	};
 
 	this->offset_y = 0;
-	this->speed = 100.f;
+	this->speed = 100;
 
 	f32 start_y = AEGfxGetWinMinY();
 	f32 gap_y = 64.f * 2.f;
@@ -724,13 +715,13 @@ void ConfirmMenu::init()
 
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;
 
-	f32 win_h = AEGfxGetWindowHeight();
+	f32 win_h = (f32)AEGfxGetWindowHeight();
 	AEGfxGetPrintSize(TF.getFontID(), warning_text, text_size_warning, &warning_w, &warning_h);
 	AEGfxGetPrintSize(TF.getFontID(), description_text, text_size, &description_w, &description_h);
 	//AEGfxGetPrintSize(TF.getFontID(), description_text2, text_size, &description2_w, &description2_h );
 	AEGfxGetPrintSize(TF.getFontID(), question_text, text_size, &question_w, &question_h);
 
-	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1;
+	f32 start_y = AEGfxGetWinMaxY() - win_h * 0.1f;
 
 	this->warning = UIO::TextShadow{ -warning_w * win_w, start_y - offset_y, text_size_warning, 1200, warning_text, {1.f, 0.f, 0.f, 1.f} };
 	this->description = UIO::TextShadow{ -description_w * win_w , start_y - offset_y * 2, text_size, 1200, description_text, {1.f, 1.f, 1.f, 1.f} };

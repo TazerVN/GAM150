@@ -7,16 +7,16 @@ namespace InputSystem
 {
 	bool IM_CMP(std::pair<s32, Entity> const& rhs, std::pair<s32, Entity> const& lhs);
 
-    void InputManager::update(EntityComponent::Registry& ecs, Entity camera_id)
+    void InputManager::update(Entity camera_id)
     {
         Components::Transform* cam = ecs.getComponent<Components::Transform>(camera_id);
         AEInputGetCursorPosition(&this->mousex, &this->mousey);
 
-        this->mousex = this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
-        this->mousey = -this->mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
+        this->mousex = s32((f32)this->mousex - f32(AEGfxGetWindowWidth()) * 0.5f);
+        this->mousey = s32(-(f32)this->mousey + f32(AEGfxGetWindowHeight()) * 0.5f);
 
-        this->mousex = AEClamp(this->mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-        this->mousey = AEClamp(this->mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
+        this->mousex = s32(AEClamp((f32)this->mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX()));
+        this->mousey = s32(AEClamp((f32)this->mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY()));
 
         EntityComponent::ComponentTypeID iID = EntityComponent::getComponentTypeID<Components::Input>();
         EntityComponent::ComponentTypeID tagID = EntityComponent::getComponentTypeID<Components::TagClass>();

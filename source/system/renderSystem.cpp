@@ -24,7 +24,7 @@ namespace RenderSystem
 
 	RenderSystem::RenderSystem(){}
 
-	void RenderSystem::RenderSystem_init(EntityComponent::Registry& ecs)
+	void RenderSystem::RenderSystem_init()
 	{
 
 		EntityComponent::ComponentTypeID meshID = EntityComponent::getComponentTypeID<Components::Mesh>();
@@ -64,13 +64,13 @@ namespace RenderSystem
 
 	}
 
-	void RenderSystem::RM_render(EntityComponent::Registry& ecs, Entity camera)
+	void RenderSystem::RM_render(Entity camera)
 	{
 
 		AEGfxSetBackgroundColor(0.f, 0.f, 0.f);
 
 
-		RenderSystem_init(ecs);
+		RenderSystem_init();
 
 		buffer.sort(renderCMP);
 		Components::Transform* cam_t = ecs.getComponent<Components::Transform>(camera);

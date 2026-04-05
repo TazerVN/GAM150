@@ -301,11 +301,11 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
 
     if (cmd[1] == "MOVE")
     {
-        execMOVE(board, actor, playerID, cmd);
+        execMOVE(board, actor, cmd);
     }
     else if (cmd[1] == "ATTACK")
     {
-        execATTACK(board, gbs ,actor, playerID, cmd);
+        execATTACK(board, gbs ,actor, cmd);
     }
     else
     {
@@ -366,7 +366,6 @@ size_t EnemyDirector::index() const
 }
 void EnemyDirector::execMOVE(Grid::GameBoard& board,
     Entity actor,
-    Entity playerID,
     const Tokens& t)
 {
     // Supported CMDs:
@@ -435,7 +434,7 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
     auto pickAdjacentToPlayer = [&]() -> std::pair<int, int>
         {
             int bestX = -1, bestY = -1;
-            int bestD = 1e9;
+            int bestD = (int)1e9;
 
             for (auto& d : dirs)
             {
@@ -824,13 +823,12 @@ void EnemyDirector::execMOVE(Grid::GameBoard& board,
 void EnemyDirector::execATTACK(Grid::GameBoard& board,
     PhaseSystem::GameBoardState& gbs,
     Entity actor,
-    Entity playerID,
     const Tokens& t)
 {
     // Make up mind first if not already planned for this actor
     if (pendingAttack_.actor != actor)
     {
-        if (planATTACK(board, actor, playerID, t) == false){
+        if (planATTACK(board, actor, t) == false){
             PUT << 2;
             PUT.display(actor, "MISS");
 
@@ -873,7 +871,6 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
 
 bool EnemyDirector::planATTACK(Grid::GameBoard& board,
     Entity actor,
-    Entity playerID,
     const Tokens& t)
 {
     pendingAttack_ = PendingAttack{}; // reset
