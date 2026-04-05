@@ -1,9 +1,15 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #pragma once
 
 #include "../types.h"
 #include "../factory/MeshFactory.h"
 #include "../ECS/ECSystem.h"
-#include "../util/BST.h"
 #include <vector>
 #include <utility>
 

@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 #include "../pch.h"
 
@@ -64,9 +73,9 @@ struct JSON_GAME_DATA
 	struct SoundSettings
 	{
 		const int max_value = 100;
-		float music;
-		float ambience;
-		float sfx;
+		float music{0.5f};
+		float ambience{0.5f};
+		float sfx{ 0.5f };
 	};
 
 	bool new_Start;

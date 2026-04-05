@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #include "pch.h"
 #include "Text.h"
 
@@ -10,8 +17,6 @@ namespace Text
 		AEGfxGetPrintSize(TF.getFontID(), text, lhs.size, &w, &h);
 
 		lhs.text.push_back( new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , lhs.y + h * AEGfxGetWinMinY(), lhs.size, lhs.z, text, lhs.rgba });
-
-		//lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + lhs.y, lhs.size, lhs.z, text, lhs.rgba};
 		return lhs;
 	}
 
@@ -33,7 +38,6 @@ namespace Text
 		AEGfxGetPrintSize(TF.getFontID(), _text , this->size, &w, &h);
 		this->text.push_back(new UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , this->y + (h * AEGfxGetWinMinY()) - gap * (this->text.size()), this->size, this->z, _text, this->rgba });
 
-		//lhs.text = UIO::TextShadow{ w * AEGfxGetWinMinX() * 0.5f , h * AEGfxGetWinMinY() + lhs.y, lhs.size, lhs.z, text, lhs.rgba};
 
 		return *this;
 	}

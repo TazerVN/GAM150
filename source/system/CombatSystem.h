@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 
 #include "../types.h"
@@ -66,7 +73,6 @@ namespace CombatNameSpace
 		void set_play_card_triggered(bool flag);
 
 		//draw the card of the player
-		//Entity draw_card(Entity player, size_t chIndex);
 		PC_RETURN_TAG play_card(Entity player, Entity target, AEVec2 targetted_pos, int index);
 		void remove_card(Entity user, int index);
 

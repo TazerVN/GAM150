@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo
+// 
+//	EMAIL:		w.phyooo@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 enum class Targetting
 {
@@ -33,31 +40,3 @@ enum class CardType
 	FORCED_MOVEMENT,
 	COUNT
 };
-
-//enum class DamageType
-//{
-//	SLASHING,
-//	PIERCING,
-//	BLUDGEONING,
-//	FIRE
-//};
-//
-//enum class DefenseType
-//{
-//	SHIELDING,
-//	DAMAGE_REDUCTION,
-//};
-//
-//enum class ItemType
-//{
-//	HEALING,
-//	PP_BUFF,
-//	ATK_BUFF,
-//	MOV_BUFF,
-//	DRAWING_CARD
-//};
-//
-//enum class EventType
-//{
-//	FORCED_MOVEMENT
-//};

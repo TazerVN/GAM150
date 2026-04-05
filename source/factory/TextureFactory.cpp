@@ -1,3 +1,13 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
+
 #include "pch.h"
 #include "TextureFactory.h"
 namespace TextureFactory

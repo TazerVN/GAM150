@@ -1,3 +1,11 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
+
 #include "pch.h"
 #include "AudioFactory.h"
 #include <iostream>
@@ -23,6 +31,7 @@ namespace AudioFactory
 		this->sfx.add(true, "Assets/audio/sfx/sniper.mp3");  // 8
 		this->sfx.add(true, "Assets/audio/sfx/select.mp3");  // 9
 		this->sfx.add(true, "Assets/audio/sfx/click2.mp3");  // 10
+		this->sfx.add(true, "Assets/audio/sfx/miss.mp3");  // 11
 
 		std::cout << "AUDIO INITIALIZE" << '\n';
 	}

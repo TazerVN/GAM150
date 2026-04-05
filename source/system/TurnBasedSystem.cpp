@@ -1,3 +1,11 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+// 
+//	DATE:		5-4-2026
+//===============================================================
+
 #include "pch.h"
 #include "TurnBasedSystem.h"
 #include <iomanip>
@@ -277,97 +285,6 @@ namespace TBS
 		std::cout << "============================================================" << '\n';
 	}
 
-	//void TurnBasedSystem::show_HP(EntityComponent::Registry& ecs) const
-	//{
-	//	for (size_t i = 0; i < participants.size(); ++i)
-	//	{
-	//		/*f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-	//		char const* name = ecs.getComponent<Components::Name>(participants[i])->value;
-	//		std::cout << name << "'s HP : " << HP << " | " << '\n';*/
-	//		EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
-	//		EntityComponent::ComponentTypeID hordeTagID = EntityComponent::getComponentTypeID<Components::Horde_Tag>();
-
-	//		std::string name = ecs.getComponent<Components::Name>(participants[i])->value;
-
-	//		if (ecs.getBitMask()[participants[i]].test(hpID))
-	//		{
-	//			f32 HP = ecs.getComponent<Components::HP>(participants[i])->c_value;
-	//			std::cout << name << "'s HP : " << HP << " | " << '\n';
-	//		}
-	//		else
-	//		{
-	//			if (ecs.getBitMask()[participants[i]].test(hordeTagID))
-	//			{
-	//				std::vector<Entity> goons = ecs.getComponent<Components::Horde_Tag>(participants[i])->goons;
-	//				for (Entity goon : goons)
-	//				{
-	//					std::string gname = ecs.getComponent<Components::Name>(goon)->value;
-	//					f32 HP = ecs.getComponent<Components::HP>(goon)->c_value;
-	//					std::cout << gname << "'s HP : " << HP << " | " << '\n';
-	//				}
-	//			}
-	//			else
-	//			{
-	//				std::cout << name << " (no HP)" << '\n';
-	//			}
-	//		}
-	//	}
-	//}
-
-	//void TurnBasedSystem::show_deck(EntityComponent::Registry& ecs) const
-	//{
-	//	std::cout << "---------Player's Deck---------" << '\n';
-
-	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-	//	size_t sz = playerStorage->data_draw_pile.size();
-	//	for (size_t i = 0; i < sz; ++i)
-	//	{
-	//		Entity cardID = playerStorage->data_draw_pile[i];
-	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-	//		std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-	//	}
-	//	std::cout << "-------------------------------" << '\n';
-	//}
-
-	//void TurnBasedSystem::show_hand(EntityComponent::Registry& ecs) const
-	//{
-	//	//disolay player hands
-	//	std::cout << "---------Player's Hand---------" << '\n';
-	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-	//	size_t sz = playerStorage->data_card_hand.size();
-	//	for (size_t i = 0; i < sz; ++i)
-	//	{
-	//		Entity cardID = playerStorage->data_card_hand[i];
-	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-	//		std::cout << ((cardID == -1)? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-	//	}
-	//	std::cout << "------------------------------" << '\n';
-	//}
-
-	//void TurnBasedSystem::show_discard(EntityComponent::Registry& ecs) const
-	//{
-	//	//disolay player hands
-	//	std::cout << "---------Player's Discard Piler---------" << '\n';
-	//	Components::Card_Storage* playerStorage = ecs.getComponent<Components::Card_Storage>(playerID);
-	//	size_t sz = playerStorage->data_discard_pile.size();
-	//	for (size_t i = 0; i < sz; ++i)
-	//	{
-	//		Entity cardID = playerStorage->data_discard_pile[i];
-	//		Components::Name* name = ecs.getComponent<Components::Name>(cardID);
-	//		std::cout << ((cardID == -1) ? "NULL INDEX" : name->value) << ((i == sz - 1) ? "\n" : " | ");
-	//	}
-	//	std::cout << "----------------------------------------" << '\n';
-	//}
-
-	//void TurnBasedSystem::show_stats(EntityComponent::Registry& ecs) const
-	//{
-	//	std::cout << "---------Player's Stats---------" << '\n';
-	//	Components::TurnBasedStats* stats = ecs.getComponent<Components::TurnBasedStats>(this->current());
-	//	std::cout << "Points : " << stats->points << '/' << stats->maxPoints << '\n';
-	//	std::cout << "SPD : " << stats->cur_movSpd << '\n';
-	//	std::cout << "Shields : " << stats->shields << '\n';
-	//	std::cout << "--------------------------------" << '\n';
-	//}
 
 	void TurnBasedSystem::DrawPhase_add_card()
 	{

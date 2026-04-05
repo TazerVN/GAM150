@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #pragma once
 
 #include "AEEngine.h"
@@ -16,7 +23,6 @@
 
 #include "system/renderSystem.h"
 #include "system/inputSystem.h"
-#include "system/transformSystem.h"
 #include "system/TimerSystem.h"
 #include "system/CameraSystem.h"
 #include "system/velocitySystem.h"

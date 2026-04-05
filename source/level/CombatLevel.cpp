@@ -1,3 +1,17 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+//				Zejin Kendreich Dayap Chen
+//				Tio Chun Yi
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+//				chen.z@digipen.edu
+//				tio.c@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
+
 #include "pch.h"
 #include "../UI/cardInteraction.h"
 #include "CombatLevel.h"
@@ -6,7 +20,6 @@
 
 Scene scene;
 UI::UIManager UIM;
-//Particle::ParticleSystem PS;
 
 void LevelStateCombat_load()
 {
@@ -20,11 +33,6 @@ void LevelStateCombat_load()
 		gameData.seed = rand();
 		std::srand(gameData.seed);
 
-		//int upper_bound = static_cast<int>(card_system.start_decks.size()) - 1;
-		//int lower_bound = 0;
-		//int index = std::rand() % (upper_bound - lower_bound + 1) + lower_bound;
-
-		//JSON_DECK deck = card_system.start_decks[index];
 
 		//perfect deck (optimal deck)
 		size_t perfection = (card_system.start_decks.size() - 2);
@@ -43,7 +51,7 @@ void LevelStateCombat_load()
 		playerHP->c_value = playerHP->max_value;
 
 	}
-	AF.bgm.play(0);
+	
 }
 void LevelStateCombat_init()
 {
@@ -60,10 +68,17 @@ void LevelStateCombat_init()
 	PS.particleReverseStream();
 	AS.init();
 	PUT.init(&ecs, UIM.getCardHand().getID());
+
+	auto camera_position = ecs.getComponent<Components::Transform>(CS.id());
+	auto player_position = ecs.getComponent<Components::Transform>(playerID);
+	camera_position->pos = player_position->pos;
+
+	camera_position->pos.x = AEClamp(camera_position->pos.x, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
+	camera_position->pos.y = AEClamp(camera_position->pos.y, AEGfxGetWinMinY(), AEGfxGetWinMaxY());
+
 }
 void LevelStateCombat_update()
 {
-	//f32 dt = (f32)AEFrameRateControllerGetFrameTime();
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 
 		s32 mouseX, mouseY;
@@ -88,11 +103,7 @@ void LevelStateCombat_update()
 	{
 		UIM.pause.update();
 	}
-	/*else if(!player_died && !UIM.getPauseMenu().isCreated() && UIM.getPauseMenu().isOn())
-	{
-		PauseMenu& p = UIM.getPauseMenu();
-		p = PauseMenu(1300);
-	}*/
+
 
 	if (AEInputCheckTriggered(AEVK_F5)) gLevelStateNext = LevelStates::LS_RESTART;
 	PUT.update();
@@ -103,7 +114,6 @@ void LevelStateCombat_free()
 	UIM.free();
 	PS.particle_system_free();
 	PUT.free();
-	AF.bgm.stop();
 	IT.free();
 }
 void LevelStateCombat_unload()

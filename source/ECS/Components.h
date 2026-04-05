@@ -1,5 +1,13 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
-
 #include "../types.h"
 #include "AEEngine.h"
 #include "../system/CardConstants.h"
@@ -43,7 +51,7 @@ namespace Components
 
 	enum class AnimationType : char
 	{
-		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, ENEMY_ATTACK, ENEMY_MOVING, DEATH ,NONE, COUNT
+		ATTACK_MELEE, ATTACK_RANGE, MOVING, IDLE, TAKING_DAMAGE, ENEMY_ATTACK, ENEMY_MOVING, DEATH ,NONE, ACTION, COUNT
 	};
 
 	enum class IntentionType : char
@@ -52,15 +60,7 @@ namespace Components
 	};
 
 	//========================= COMMON ==============================
-	/*struct Transform
-	{
-		AEVec2 pos{ 0.f,0.f };
-		AEVec2 pos_onscreen{ 0.f,0.f };
-		AEVec2 size{ 0,0 };
-		AEVec2 size_og{ 0,0 };
-		AEMtx33 mtx{};
-		float rotation{ 0.f };
-	};*/
+
 	struct Transform
 	{
 		AEVec2 pos{ 0.f,0.f };
@@ -142,13 +142,7 @@ namespace Components
 	};
 
 
-	/*
-	* Z buffer:
-		0: true background
-		1: grid
-		2 - 15: on grid stuff
-		20 - 30: UI
-	*/
+
 	struct Mesh
 	{
 		bool on;
@@ -223,11 +217,6 @@ namespace Components
 	//===========================CARDS=========================================
 
 
-	/*struct Card_Value
-	{
-		f32 value = 0.0f;
-		CardType type;
-	};*/
 	struct Card_Value
 	{
 		float value = 0;
@@ -235,12 +224,6 @@ namespace Components
 	};
 
 
-	/*struct Targetting_Component
-	{
-		Targetting targetting_type;
-		f32 range = 0.0f;
-		f32 aoe = 0.0f;
-	};*/
 	struct Targetting_Component
 	{
 		Targetting targetting_type;
@@ -300,12 +283,6 @@ namespace Components
 		std::vector<size_t> data_discard_pile;
 	};
 
-	//struct TurnBasedStats
-	//	int maxPoints;			// per-round cap (set when entity created)
-	//	int points {0};			// current round points (reset at round start)
-	//	int shields{0};
-	//	f32 ini_movSpd;
-	//	f32 max_movSpd{ini_movSpd}, cur_movSpd{ max_movSpd };
 	struct TurnBasedStats
 	{
 		int maxPoints;			// per-round cap (set when entity created)

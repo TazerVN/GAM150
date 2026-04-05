@@ -1,3 +1,12 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
+
+
 #include "pch.h"
 #include "PauseMenu.h"
 #include "../UI/UIObject.h"
@@ -15,7 +24,7 @@ void PauseMenu::init()
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, this->z - 1 };
 		ecs.addComponent(dim.dim, in);
 	}
-
+	this->transition = false;
 	ecs.destroyEntity(this->timer);
 	this->timer = UIO::ui_timer(1.f);
 
@@ -83,9 +92,12 @@ void PauseMenu::init()
 			button_l->onClick = [this]
 				{
 					AF.sfx.play(1);
-					this->on = false;
-					this->transition = true;
-					this->menu->to_exit();
+					if (!this->transition)
+					{
+						this->transition = true;
+						this->on = false;
+						this->menu->to_exit();
+					}
 					AF.sfx.stopping = false;
 				};
 			break;
@@ -100,10 +112,13 @@ void PauseMenu::init()
 			auto button_l = ecs.getComponent<Components::Input>(setting->leave.button);
 			button_l->onClick = [this]
 				{
-					AF.sfx.play(1);
-					this->transition = true;
-					this->menu->to_main();
-					AF.sfx.stopping = false;
+					if (!this->transition)
+					{
+						AF.sfx.play(1);
+						this->transition = true;
+						this->menu->to_main();
+						AF.sfx.stopping = false;
+					}
 				};
 			break;
 		}
@@ -117,17 +132,23 @@ void PauseMenu::init()
 			button_l->onClick = [this]
 				{
 					AF.sfx.play(1);
-					this->transition = true;
-					this->menu->to_main();
+					if (!this->transition)
+					{
+						this->transition = true;
+						this->menu->to_main();
+					}
 					AF.sfx.stopping = false;
 				};
 			auto button_c = ecs.getComponent<Components::Input>(confirm->yes.button);
 			button_c->onClick = [this]
 				{
 					AF.sfx.play(1);
-					this->on = false;
-					this->transition = true;
-					this->menu->to_gameover();
+					if (!this->transition)
+					{
+						this->on = false;
+						this->transition = true;
+						this->menu->to_gameover();
+					}
 					AF.sfx.stopping = false;
 				};
 			break;
@@ -142,8 +163,11 @@ void PauseMenu::init()
 			button_l->onClick = [this]
 				{
 					AF.sfx.play(1);
-					this->transition = true;
-					this->menu->to_main();
+					if (!this->transition)
+					{
+						this->transition = true;
+						this->menu->to_main();
+					}
 					AF.sfx.stopping = false;
 				};
 			break;

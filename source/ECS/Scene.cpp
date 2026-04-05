@@ -1,3 +1,14 @@
+//=================================================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu, 
+//				chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=================================================================================
 #include "pch.h"
 #include "Scene.h"
 #include <ctime> // for randomiser -Zejin (FOR NOW...)
@@ -5,7 +16,6 @@
 #include "../util/LevelManager.h"
 #include "factory/EntityFactory.h"
 #include "../UI/UI.h"
-//#include "util/util.h"
 
 std::vector<std::string> hardcoded_levels;
 

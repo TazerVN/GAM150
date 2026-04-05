@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #include "pch.h"
 #include "cardInteraction.h"
 #include "global.h"
@@ -10,16 +17,12 @@ namespace CardInteraction
 	void selectableCard_delete(std::pair<Entity, Entity> entity);
 	void hand_onHover()
 	{
-		//Components::Transform* t = ecs.getComponent<Components::Transform>(id);
-		//t->pos_onscreen.y = t->pos.y + 40;
-		//t->size_col.x = t->size.x + 40;
+
 	}
 
 	void hand_offHover(CardInformation::CardDisplay& cd)
 	{
-		/*Components::Transform* t = ecs.getComponent<Components::Transform>(id);
-		t->pos_onscreen = t->pos;
-		t->size_col.x = t->size.x;*/
+
 		cd.setStateOn(false);
 	}
 
@@ -495,18 +498,12 @@ namespace CardInteraction
 		m2->z = z + 1; // mana text stays above card
 		i->z = 30;
 
-		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		//f32 minimum = 0.6f;
 		t1->size.y = t1->size_og.y;
 		t1->size.x = t1->size_og.x * 4.f/3.f;
 
 		c1->d_color = c1->c_color;
 		c2->d_color = c2->c_color;
-	/*	
-		t1->pos_onscreen.y = t1->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
 
-		t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size.y / 4;
-		*/
 		t2->size.y = t2->size_og.y;
 		t2->size.x = t2->size_og.x;
 		t2->pos_onscreen = t2->pos;
@@ -554,9 +551,6 @@ namespace CardInteraction
 		f32 x = pos_x - width * 0.40f;
 		f32 y = pos_y + height* 0.36f;
 
-		/*card_t_m->pos.x = target_x - card_t_c->size.x * 0.40f;
-		card_t_m->pos.y = target_y + card_t_c->size.y * 0.36f;*/
-		//card_t_m->pos_onscreen = card_t_m->pos;
 	
 		Entity id = ecs.createEntity();
 	

@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #include "pch.h"
 
 size_t playerID;
@@ -17,7 +26,7 @@ InputSystem::InputManager IM;
 Camera::CameraSystem CS;
 RenderSystem::RenderSystem RM;
 Velocity::VelocitySystem VS;
-TransformSystem::TransformSystem TrS;
+
 Timer::TimerSystem TS;
 Animation::AnimationSystem AS;
 Text::PopUpText PUT;

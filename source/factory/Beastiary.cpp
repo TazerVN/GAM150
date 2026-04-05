@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		Wai Phyoo Ooo	
+// 
+//	EMAIL:		w.phyooo@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #include "pch.h"
 
 Entity create_ECS_enemy(JSON_ENEMY const& json_enemy)

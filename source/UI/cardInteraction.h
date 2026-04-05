@@ -1,18 +1,20 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 
-//#include "../ECS/gameObject.h"
-//#include "../ECS/ECSystem.h"
-//#include "../system/transformSystem.h"
-
 #include "../types.h"
-
-//#include "../system/transformSystem.h"
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
 #include "../System/TurnBasedSystem.h"
 #include "../system/GridSystem.h"
 #include "../system/PhaseSystem.h"
-//#include "../UI/UI.h"
 #include "../UI/cardInformation.h"
 
 

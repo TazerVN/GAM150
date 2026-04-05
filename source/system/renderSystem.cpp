@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #include "pch.h"
 
 #include "renderSystem.h"
@@ -5,7 +12,6 @@
 #include <utility>
 #include "../ECS/ECSystem.h"
 #include "../ECS/Components.h"
-#include "../system/transformSystem.h"
 
 #include "GridSystem.h"
 #include <algorithm>

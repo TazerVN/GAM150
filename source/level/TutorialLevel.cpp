@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR		Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #include "pch.h"
 #include "../UI/cardInteraction.h"
 #include "TutorialLevel.h"
@@ -81,6 +88,13 @@ void LevelStateTutorial_init()
 	AS.init();
 	PUT.init(&ecs, tut_UIM.getCardHand().getID());
 	ecs.remove_empty_groups();
+
+	auto camera_position = ecs.getComponent<Components::Transform>(CS.id());
+	auto player_position = ecs.getComponent<Components::Transform>(playerID);
+	camera_position->pos = player_position->pos;
+
+	camera_position->pos.x = AEClamp(camera_position->pos.x, AEGfxGetWinMinX() * 1.5f, AEGfxGetWinMaxX() * 1.5f);
+	camera_position->pos.y = AEClamp(camera_position->pos.y, AEGfxGetWinMinY() * 1.5f, AEGfxGetWinMaxY()) * 1.5f;
 }
 
 void LevelStateTutorial_update()

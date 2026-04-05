@@ -1,3 +1,11 @@
+//=========================================
+//	AUTHOR:		Wai Phyoo Ooo	
+// 
+//	EMAIL:		w.phyooo@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
+
 #include "pch.h"
 #include "EntityFactory.h"
 #include "../util/util.h"
@@ -243,5 +251,9 @@ namespace EntityFactory {
 		ecs.getComponent<Components::TurnBasedStats>(playerID)->free();
 		ecs.getComponent<Components::Transform>(playerID)->pos = {100000.f,-100000.f};
 		ecs.getComponent<Components::Transform>(playerID)->pos_onscreen = { 100000.f,-100000.f };
+		auto anim = ecs.getComponent<Components::Animation_Actor>(playerID);
+		auto texture = ecs.getComponent<Components::Texture>(playerID);
+		anim->anim_type = anim->default_type;
+		texture->offset_x = 0;
 	}
 }

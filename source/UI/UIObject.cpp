@@ -1,3 +1,11 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
+
 #include "pch.h"
 #include "UIObject.h"
 #include <string>
@@ -20,8 +28,6 @@ namespace UIO
 		c->d_color.r = minimum + (1.f - minimum) * lerp;
 		c->d_color.b = minimum + (1.f - minimum) * lerp;
 		c->d_color.g = minimum + (1.f - minimum) * lerp;
-		//t->size.x = t->size_og.x * 1.1f;
-		//t->size.y = t->size_og.y * 1.1f;
 
 	}
 
@@ -32,9 +38,6 @@ namespace UIO
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
 		timer->start = true;
-
-		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		//f32 minimum = 0.6f;
 
 		c->d_color = c->c_color;
 		timer->seconds = 0.5f;

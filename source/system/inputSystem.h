@@ -1,3 +1,10 @@
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #pragma once
 
 #include "../types.h"
@@ -13,8 +20,6 @@ namespace PhaseSystem { class GameBoardState; }
 
 namespace InputSystem
 {
-
-
 	class InputManager
 	{
 		private:
@@ -27,8 +32,4 @@ namespace InputSystem
 		InputManager();
 		void update(Entity id);
 	};
-
-
-
-
 }

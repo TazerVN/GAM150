@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 #include "../types.h"
 #include "AEEngine.h"
@@ -50,8 +59,6 @@ namespace Grid
 		//=============Data for A* Star====================
 		std::array<std::array<Entity, MAX_J>, MAX_I> pos;
 		
-		/*std::array<std::array<int, MAX_J>, MAX_I> aoe_highlight_activate;
-		std::vector<AEVec2> aoe_highlighted_cells;*/
 
 		Entity create_cells(AEVec2 pos, AEVec2 size, f32 rotation, AEGfxTexture* pTex, s32 x, s32 y, s32 z);
 

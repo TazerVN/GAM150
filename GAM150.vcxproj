@@ -19,7 +19,6 @@
     <ClCompile Include="source\factory\AudioFactory.cpp" />
     <ClCompile Include="source\level\Gameover.cpp" />
     <ClCompile Include="source\system\HightlightSystem.cpp" />
-    <ClCompile Include="source\system\ScoringSystem.cpp" />
     <ClCompile Include="source\UI\IntentionDisplay.cpp" />
     <ClCompile Include="source\UI\PauseMenu.cpp" />
     <ClCompile Include="source\level\EncounterLevel.cpp" />
@@ -40,7 +39,6 @@
     <ClCompile Include="source\system\EnemyDirector.cpp" />
     <ClCompile Include="source\system\particleSystem.cpp" />
     <ClCompile Include="source\system\velocitySystem.cpp" />
-    <ClCompile Include="source\util\BST.cpp" />
     <ClCompile Include="source\UI\cardInformation.cpp" />
     <ClCompile Include="source\system\PhaseSystem.cpp" />
     <ClCompile Include="source\UI\cardInteraction.cpp" />
@@ -60,7 +58,6 @@
     <ClCompile Include="source\system\renderSystem.cpp" />
     <ClCompile Include="source\factory\EntityFactory.cpp" />
     <ClCompile Include="source\UI\Text.cpp" />
-    <ClCompile Include="source\system\transformSystem.cpp" />
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="source\util\util.cpp" />
     <ClCompile Include="source\ECS\Scene.cpp" />
@@ -77,7 +74,6 @@
     <ClInclude Include="source\factory\AudioFactory.h" />
     <ClInclude Include="source\level\Gameover.h" />
     <ClInclude Include="source\system\HightlightSystem.h" />
-    <ClInclude Include="source\system\ScoringSystem.h" />
     <ClInclude Include="source\UI\IntentionDisplay.h" />
     <ClInclude Include="source\UI\PauseMenu.h" />
     <ClInclude Include="source\level\EncounterLevel.h" />
@@ -96,7 +92,6 @@
     <ClInclude Include="source\system\EnemyDirector.h" />
     <ClInclude Include="source\system\particleSystem.h" />
     <ClInclude Include="source\system\velocitySystem.h" />
-    <ClInclude Include="source\util\BST.h" />
     <ClInclude Include="source\UI\cardInformation.h" />
     <ClInclude Include="source\system\PhaseSystem.h" />
     <ClInclude Include="source\ECS\card.h" />
@@ -117,7 +112,6 @@
     <ClInclude Include="source\system\renderSystem.h" />
     <ClInclude Include="source\factory\EntityFactory.h" />
     <ClInclude Include="source\UI\Text.h" />
-    <ClInclude Include="source\system\transformSystem.h" />
     <ClInclude Include="source\UI\UI.h" />
     <ClInclude Include="source\util\util.h" />
     <ClInclude Include="source\ECS\Scene.h" />

@@ -1,4 +1,10 @@
-
+//=========================================
+//	AUTHOR:		PHAM MINH TUAN
+// 
+//	EMAIL:		minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=========================================
 #pragma once
 
 #include "../types.h"
@@ -15,6 +21,7 @@ namespace Animation
 		AnimationSystem();
 		void init();
 		void update(Grid::GameBoard& gb, PhaseSystem::GameBoardState& gbs,CombatNameSpace::CombatSystem& cs);
+		void free();
 	};
 
 	void init_animation_for_entity(Entity ent);
