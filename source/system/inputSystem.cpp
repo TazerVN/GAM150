@@ -107,6 +107,7 @@ namespace InputSystem
                     else if (!was_active && cur_drag != 0 && AEInputCheckReleased(in->type))
                     {
                         if (in->onClick != nullptr) in->onClick();
+                        if (in->offDrag != nullptr) in->offDrag();
                         cur_drag = 0;
                         continue;
                     }
@@ -131,6 +132,7 @@ namespace InputSystem
                     }
                     else if (AEInputCheckReleased(in->type) && cur_drag == e)
                     {
+                        if (in->offDrag != nullptr) in->offDrag();
                         cur_drag = 0;
                     }
                     else if (!was_active && AEInputCheckReleased(in->type) && cur_drag != e)

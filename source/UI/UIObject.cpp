@@ -7,6 +7,7 @@ namespace UIO
 
 	void button_onHover(Entity id)
 	{
+
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
 		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 
@@ -347,7 +348,12 @@ namespace UIO
 		Entity fill = this->fill;
 
 		auto button_in = ecs.getComponent<Components::Input>(this->button);
-		button_in->onDrag = [button, container, fill]() { slider_onDrag(button, container, fill); };
+		button_in->onDrag = [button, container, fill]() { 
+			AF.sfx.play(1);
+			slider_onDrag(button, container, fill);
+			};
+
+		button_in->offDrag = []{ AF.sfx.stopping = false;};
 		button_in->drag = true;
 	}
 
