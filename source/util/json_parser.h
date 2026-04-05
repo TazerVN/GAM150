@@ -63,9 +63,9 @@ struct JSON_GAME_DATA
 	struct SoundSettings
 	{
 		const int max_value = 100;
-		float music;
-		float ambience;
-		float sfx;
+		float music{0.5f};
+		float ambience{0.5f};
+		float sfx{ 0.5f };
 	};
 
 	bool new_Start;

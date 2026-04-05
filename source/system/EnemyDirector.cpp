@@ -309,6 +309,8 @@ void EnemyDirector::update(PhaseSystem::GameBoardState& gbs,
     }
     else
     {
+         auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
+            aa->setType(Components::AnimationType::ACTION);
         std::cout << "[ED] unknown verb: " << cmd[1] << "\n";
     }
 
@@ -833,7 +835,7 @@ void EnemyDirector::execATTACK(Grid::GameBoard& board,
             PUT.display(actor, "MISS");
 
             auto aa = ecs.getComponent<Components::Animation_Actor>(actor);
-            aa->setType(Components::AnimationType::TAKING_DAMAGE);
+            aa->setType(Components::AnimationType::ACTION);
             //gbs.set_EnemyPhase(PhaseSystem::EnemyPhase::ENEMY_ANIMATION);
 
         }

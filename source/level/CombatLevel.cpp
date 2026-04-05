@@ -44,7 +44,7 @@ void LevelStateCombat_load()
 		playerHP->c_value = playerHP->max_value;
 
 	}
-	AF.bgm.play(0);
+	
 }
 void LevelStateCombat_init()
 {
@@ -104,7 +104,6 @@ void LevelStateCombat_free()
 	UIM.free();
 	PS.particle_system_free();
 	PUT.free();
-	AF.bgm.stop();
 	IT.free();
 }
 void LevelStateCombat_unload()

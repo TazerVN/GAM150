@@ -263,6 +263,38 @@ namespace Animation
 
 		return flag;
 	}
+	bool action_animation(Entity id, Entity timer_id)
+	{
+		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
+		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
+		Components::Color* color = ecs.getComponent<Components::Color>(id);
+
+		AF.sfx.play(11);
+		bool flag = false;
+		timer->start = true;
+
+		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		f32 minimum = 0.6f;
+
+
+		if (timer->seconds >= timer->max_seconds)
+		{
+			flag = true;
+			timer->start = false;
+			color->d_color = color->c_color;
+
+			transform->pos_onscreen.x = transform->pos.x;
+		}
+		else
+		{
+			transform->pos_onscreen.x = transform->pos.x + AERandFloat() * 10;
+			color->d_color.r = 1.f + AERandFloat();
+			color->d_color.b = 1.f + AERandFloat();
+			color->d_color.g = 1.f + AERandFloat();
+		}
+
+		return flag;
+	}
 
 	bool death_animation(Entity id, Entity timer_id)
 	{
@@ -461,6 +493,13 @@ namespace Animation
 								anim->setType(anim->default_type);
 							}
 							break;
+						case Components::AnimationType::ACTION:
+							if (action_animation(ent, anim->timer_array[static_cast<size_t>(Components::AnimationType::ACTION)]))
+							{
+								AF.sfx.resetAudio();
+								anim->setType(anim->default_type);
+							}
+							break;
 					}
 				}
 			}
@@ -482,5 +521,6 @@ namespace Animation
 		anim->timer_array[static_cast<size_t>(Components::AnimationType::ENEMY_MOVING)] = animationTimer(0.1f, 0.f, false, true);
 		anim->timer_array[static_cast<size_t>(Components::AnimationType::DEATH)] = animationTimer(0.5f, 0.f, false, true);
 		anim->timer_array[static_cast<size_t>(Components::AnimationType::NONE)] = animationTimer( 1.f, 0.f, false, true);
+		anim->timer_array[static_cast<size_t>(Components::AnimationType::ACTION)] = animationTimer(0.5f, 0.f, false, true);
 	}
 }

@@ -69,9 +69,9 @@ JSON_RET create_game_data()
 
 	rapidjson::Value soundSettings(rapidjson::kObjectType);
 
-	soundSettings.AddMember("sfx", 50, alloc);
-	soundSettings.AddMember("music", 50, alloc);
-	soundSettings.AddMember("ambience", 50, alloc);
+	soundSettings.AddMember("sfx", 0.5f, alloc);
+	soundSettings.AddMember("music", 0.5f, alloc);
+	soundSettings.AddMember("ambience", 0.5f, alloc);
 	doc.AddMember("SoundSetting", soundSettings, alloc);
 
 

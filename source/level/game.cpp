@@ -14,6 +14,7 @@
 
 void GameState_game_load()
 {
+	AF.bgm.play(0);
 }
 
 void GameState_game_init()
@@ -78,6 +79,6 @@ void GameState_game_unload()
 {
 	PS.particle_system_free();
 	PUT.free();
-
+	AF.bgm.stop();
 	ecs.remove_empty_groups();
 }

@@ -23,6 +23,7 @@ namespace AudioFactory
 		this->sfx.add(true, "Assets/audio/sfx/sniper.mp3");  // 8
 		this->sfx.add(true, "Assets/audio/sfx/select.mp3");  // 9
 		this->sfx.add(true, "Assets/audio/sfx/click2.mp3");  // 10
+		this->sfx.add(true, "Assets/audio/sfx/miss.mp3");  // 11
 
 		std::cout << "AUDIO INITIALIZE" << '\n';
 	}
