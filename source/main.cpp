@@ -41,7 +41,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	load_Sys_Comp();
 
-	GameStateMgrInit(GameStates::GS_MAINMENU);
+	GameStateMgrInit(GameStates::GS_LOGO);
 
 	while (gGameStateCurr != GameStates::GS_QUIT)
 	{
@@ -123,10 +123,6 @@ void load_Sys_Comp()
 
 	EntityFactory::create_player();
 
-	if (parse_game_data() != JSON_RET::OK)
-	{
-		std::cout << "Parsing Game Data failed!!" << '\n';
-	}
 
 	Entity t = UIO::ui_blank_solid_center(0, 0, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0, 100, 0.0f, 0.0f, 0.3f, 0.15f);
 	Components::TagClass tg{Components::Tag::UI};

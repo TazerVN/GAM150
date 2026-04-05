@@ -3,6 +3,7 @@
 #include "../level/game.h"
 #include "../level/menu.h"
 #include "../level/Gameover.h"
+#include "../level/logo.h"
 #include <iostream>
 
 GameStates gGameStateInit;
@@ -62,7 +63,16 @@ void GameStateMgrUpdate()
 		GameStateUnload = GameState_GameOver_unload;
 		break;
 	}
+	case GameStates::GS_LOGO:
+	{
+		GameStateLoad  = GameStateLogo_load;
+		GameStateInit = GameStateLogo_init;
+		GameStateUpdate = GameStateLogo_update;
+		GameStateFree = GameStateLogo_free;
+		GameStateUnload = GameStateLogo_unload;
+		break;
+	}
 	default:
-		std::cout << "invalid state!!" << '\n';;
+		break;
 	}
 }

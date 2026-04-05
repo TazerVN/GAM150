@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\level\logo.cpp" />
     <ClCompile Include="source\level\TutorialLevel.cpp" />
     <ClCompile Include="source\system\ConsoleComands.cpp" />
     <ClCompile Include="source\UI\MenuUI.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="source\UI\UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\level\logo.h" />
     <ClInclude Include="source\level\TutorialLevel.h" />
     <ClInclude Include="source\system\ConsoleCommands.h" />
     <ClInclude Include="source\system\ConsoleConstants.h" />

@@ -66,6 +66,7 @@
     <ClCompile Include="source\UI\MenuUI.cpp" />
     <ClCompile Include="source\system\ConsoleComands.cpp" />
     <ClCompile Include="source\level\TutorialLevel.cpp" />
+    <ClCompile Include="source\level\logo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\util\GameStateManager.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="source\system\ConsoleConstants.h" />
     <ClInclude Include="source\system\ConsoleCommands.h" />
     <ClInclude Include="source\level\TutorialLevel.h" />
+    <ClInclude Include="source\level\logo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />

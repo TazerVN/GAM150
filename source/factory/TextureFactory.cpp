@@ -102,6 +102,7 @@ namespace TextureFactory
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Beyond_the_NeXus_title.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Game_Over.png"));
 		this->addTextureOthers(AEGfxTextureLoad("Assets/others/Enemy_loading_icon.png"));
+		this->addTextureOthers(AEGfxTextureLoad("Assets/others/logo.png"));
 
 		//Tutorial
 		this->addTextureTutorial(AEGfxTextureLoad("Assets/Tutorial/Page_1.png"));

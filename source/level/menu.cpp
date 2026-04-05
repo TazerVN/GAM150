@@ -15,12 +15,10 @@ static UI::UIManager UIM;
 
 void GameStateMainMenu_load()
 {
-	std::cout << "Main menu loaded" << '\n';
 
 }
 void GameStateMainMenu_init()
 {
-	std::cout << "Main menu init" << '\n';
 
     // Load font (second param is font size)
     menuFont = AEGfxCreateFont("Assets/font/cool.ttf", 72);
@@ -49,12 +47,10 @@ void GameStateMainMenu_update()
 }
 void GameStateMainMenu_free()
 {
-	std::cout << "Main menu free" << '\n';
     UIM.menu.free();
 }
 void GameStateMainMenu_unload()
 {
-    std::cout << "Main menu unloaded" << '\n';
     AEGfxDestroyFont(menuFont);
     AEGfxTextureUnload(bgTexture);
 }

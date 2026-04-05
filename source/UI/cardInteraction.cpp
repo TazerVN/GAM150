@@ -126,12 +126,9 @@ namespace CardInteraction
 				f32& card_cost = ecs.getComponent<Components::Card_Cost>(cardID)->value;
 				int& player_curMana = ecs.getComponent<Components::TurnBasedStats>(playerID)->points;
 				
-				std::cout << "Checking for card mana. card name : " << ecs.getComponent<Components::Name>(cardID)->value << '\n';
-				std::cout << "Card Mana : " << card_cost << '\n';
 
 				if (card_cost > player_curMana)
 				{
-					std::cout << "Not enough mana!!" << '\n';
 					PUT << 0 << "Not enough mana!!";
 					return;
 				}
@@ -156,7 +153,6 @@ namespace CardInteraction
 
 			this->generateCards();
 			this->reset = false;
-			std::cout << "Shuffle New Cards" << '\n';
 
 			/*Components::Input* in = ecs.getComponent<Components::Input>(this->id);
 			in->onClick = [this] { this->reset_hand(); };*/
@@ -485,66 +481,7 @@ namespace CardInteraction
 		t2->pos_onscreen.y = t1->pos_onscreen.y + t1->size.y * 0.36f;
 
 	}
-	//void card_offDrag(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data)
-	//{
-	//	Entity first = id.first;
-	//	Entity second = id.second;
-
-	//	cd.setStateOn(false);
-	//	cd.setCurrentCard(card_data);
-
-	//	Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
-	//	Components::Input* i = ecs.getComponent<Components::Input>(first);
-
-	//	Components::Transform* t1 = ecs.getComponent<Components::Transform>(first);
-	//	Components::Color* c1 = ecs.getComponent<Components::Color>(first);
-	//	Components::Mesh* m1 = ecs.getComponent<Components::Mesh>(first);
-
-	//	Components::Transform* t2 = ecs.getComponent<Components::Transform>(second);
-	//	Components::Color* c2 = ecs.getComponent<Components::Color>(second);
-	//	Components::Text* m2 = ecs.getComponent<Components::Text>(second);
-
-
-	//	f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-	//	f32 minimum = 0.6f;
-
-	//	m1->z = 31;
-	//	m2->z = 31;
-	//	i->z = 31;
-
-	//	c1->d_color.r = minimum + (1.f - minimum) * lerp;
-	//	c1->d_color.b = minimum + (1.f - minimum) * lerp;
-	//	c1->d_color.g = minimum + (1.f - minimum) * lerp;
-
-
-	//	t1->size.y = t1->size_og.y * 1.2f;
-	//	t1->size.x = t1->size_og.x * 4.f / 3.f * 1.2f;
-
-	//	c2->d_color.r = minimum + (1.f - minimum) * lerp;
-	//	c2->d_color.b = minimum + (1.f - minimum) * lerp;
-	//	c2->d_color.g = minimum + (1.f - minimum) * lerp;
-
-	//	t2->pos_onscreen.y = t2->pos.y + minimum + (1.f - minimum) * lerp * t1->size_og.y / 4;
-	//	t2->size.x = t2->size_og.x * 4.f / 3.f;
-
-	//	s32 mousex, mousey;
-
-	//	AEInputGetCursorPosition(&mousex, &mousey);
-
-	//	mousex = mousex - f32(AEGfxGetWindowWidth()) * 0.5f;
-	//	mousey = -mousey + f32(AEGfxGetWindowHeight()) * 0.5f;
-
-	//	mousex = AEClamp(mousex, AEGfxGetWinMinX(), AEGfxGetWinMaxX());
-	//	mousey = AEClamp(mousey, AEGfxGetWinMinX(), AEGfxGetWinMaxY());
-
-	//	t1->pos_onscreen.x = f32(mousex);
-	//	t1->pos_onscreen.y = f32(mousey);
-	//	t2->pos_onscreen.x = f32(mousex);
-	//	t2->pos_onscreen.y = f32(mousey);
-
-	//	std::cout << "drag";
-	//}
-
+	
 
 
 	void card_offHover(EntityComponent::Registry& ecs, CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z)

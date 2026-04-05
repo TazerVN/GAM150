@@ -509,7 +509,6 @@ void MenuUI::update()
 			auto timer = ecs.getComponent<Components::Timer>(this->fade.dim);
 			if (!this->fade.update())
 			{
-				std::cout << "[MenuUI] Going to tutorial level\n";
 				this->cur = CURRENT_MENU::MAIN;
 				gLevelStateNext = LevelStates::LS_TUTORIAL;
 				gGameStateNext = GameStates::GS_Game;
@@ -691,7 +690,6 @@ void CreditMenu::update()
 void CreditMenu::free()
 {
 
-	std::cout << "CreditMenu::free() called, list size: " << this->list.size() << '\n';
 	for(UIO::TextShadow* t : this->list)
 	{
 		t->free();
