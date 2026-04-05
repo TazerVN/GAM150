@@ -258,7 +258,7 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::EXIT:
 			{
 				pause = false;
-				this->current_menu = CURRENT::EMPTY;
+				this->current_menu = CURRENT::MAIN;
 				this->free();
 				this->transition = false;
 				gLevelStateNext = LevelStates::LS_QUIT;
@@ -268,7 +268,7 @@ void PauseMenu::update()
 			case BasePauseMenu::DESTINATION::GAMEOVER:
 			{
 				pause = false;
-				this->current_menu = CURRENT::EMPTY;
+				this->current_menu = CURRENT::MAIN;
 				this->free();
 				this->transition = false;
 				
