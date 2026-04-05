@@ -11,6 +11,7 @@ f32 size = 0.7f;
 
 void GameStateLogo_load()
 {
+	
 }
 void GameStateLogo_init()
 {

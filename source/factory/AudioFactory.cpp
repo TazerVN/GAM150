@@ -8,18 +8,21 @@ namespace AudioFactory
 
 	void AudioFactory::init()
 	{
-		this->bgm.add(false, "Assets/audio/battle.mp3");
+		this->bgm.add(false, "Assets/audio/music/battle.mp3");
+		this->bgm.add(false, "Assets/audio/music/menu.mp3");
+		this->bgm.add(false, "Assets/audio/music/gameover.mp3");
 
 		this->sfx.add(true, "Assets/audio/sfx/card.mp3");
-		this->sfx.add(true, "Assets/audio/sfx/click.wav");
-		this->sfx.add(true, "Assets/audio/sfx/attack.wav");
-		this->sfx.add(true, "Assets/audio/sfx/attack2.wav");
-		this->sfx.add(true, "Assets/audio/sfx/shoot.wav");
-		this->sfx.add(true, "Assets/audio/sfx/damage.wav");
-		this->sfx.add(true, "Assets/audio/sfx/damage2.wav");
-		this->sfx.add(true, "Assets/audio/sfx/laser.wav");   // 7
-		this->sfx.add(true, "Assets/audio/sfx/sniper.wav");  // 8
+		this->sfx.add(true, "Assets/audio/sfx/click.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/attack.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/attack2.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/shoot.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/damage.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/damage2.mp3");
+		this->sfx.add(true, "Assets/audio/sfx/laser.mp3");   // 7
+		this->sfx.add(true, "Assets/audio/sfx/sniper.mp3");  // 8
 		this->sfx.add(true, "Assets/audio/sfx/select.mp3");  // 9
+		this->sfx.add(true, "Assets/audio/sfx/click2.mp3");  // 10
 
 		std::cout << "AUDIO INITIALIZE" << '\n';
 	}
@@ -34,7 +37,8 @@ namespace AudioFactory
 		volume{}, 
 		pitch{}, 
 		loop{}, 
-		data{}
+		data{},
+		og_volume{}
 	{
 		this->group = AEAudioCreateGroup();
 		std::cout << "Is Group valid?: " << AEAudioIsValidGroup(this->group) << '\n';
@@ -45,6 +49,7 @@ namespace AudioFactory
 	{
 		this->group = AEAudioCreateGroup();
 
+		this->og_volume = volume;
 		this->volume = volume;
 		this->pitch = pitch;
 		this->loop = loop;
@@ -60,6 +65,7 @@ namespace AudioFactory
 		if (0.f <= _volume && _volume <= 1.f)
 		{
 			this->volume = _volume;
+			this->og_volume = _volume;
 			AEAudioSetGroupVolume(this->group, _volume);
 		}
 	}

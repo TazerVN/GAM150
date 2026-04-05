@@ -102,6 +102,10 @@ void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 			enemyDirector.loadScriptFile("Assets/levels/BEGINNER_COMBAT.txt");//load enemy instrucitons
 			//enemyDirector.loadScriptFile("Assets/levels/FistFight.txt");//load enemy instrucitons
 		}
+		else if (gameData.scoringSystem.LevelCount()%5 == 0)
+		{
+			enemyDirector.loadScriptFile("Assets/levels/BOSS.txt");//load enemy instrucitons
+		}
 		else
 		{
 			hardcoded_levels.reserve(sizeof(std::string) * 3);
@@ -593,8 +597,8 @@ void Scene::print_tutorial_stage_text() const
 			switch (tutorial_substep)
 			{
 				case 0:
-					std::cout << "Click the player, then click any tile to move.\n";
-					TutorialText += "Click the player, then click any tile to move.";
+					std::cout << "Click the player, then click any tile to move. RIGHT-CLICK to deselect\n";
+					TutorialText += "Click the player, then click any tile to move. RIGHT-CLICK to deselect";
 					break;
 
 				case 1:
@@ -632,13 +636,15 @@ void Scene::print_tutorial_stage_text() const
 					break;
 
 				case 2:
-					std::cout << "Drag and drop an attack card onto the enemy. You must be within range.\n";
-					TutorialText += "Drag and drop an attack card onto the enemy. You must be within range.";
+					std::cout << "Drag and drop an attack card onto the enemy TILE. You must be within range.\n";
+					TutorialText += "Drag and drop an attack card onto the enemy TILE. You must be within range.";
+					TutorialText += "RIGHT-CLICK to deselect";
 					break;
 
 				case 3:
-					std::cout << "Try the cards given to you. Press E to refresh.\n";
+					std::cout << "Try the cards given to you. Press End Turn TWICE to refresh cards.\n";
 					TutorialText += "Try the cards given to you. Press E to refresh.";
+					TutorialText += "Press End Turn TWICE to refresh cards.";
 					break;
 
 				case 4:
@@ -662,7 +668,8 @@ void Scene::print_tutorial_stage_text() const
 			{
 				case 0:
 					std::cout << "Defense cards are blue and are self-cast only. Drag and drop the card onto the player to cast.\n";
-					TutorialText += "Defense cards are blue and are self-cast only. Drag and drop the card onto the player to cast.";
+					TutorialText += "Defense cards are blue and are self-cast only.";
+					TutorialText += "Drag and drop the card onto the player TILE to cast. RIGHT-CLICK to deselect";
 					break;
 
 				case 1:
@@ -671,13 +678,15 @@ void Scene::print_tutorial_stage_text() const
 					break;
 
 				case 2:
-					std::cout << "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Loading for IDLE.\n";
-					TutorialText += "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Loading for IDLE.";
+					std::cout << "Enemy intentions are displayed as icons above their heads: Sword for ATTACK, Boots for MOVE, and Hourglass for IDLE.\n";
+					TutorialText += "Enemy intentions are displayed as icons above their heads:";
+					TutorialText += "Sword for ATTACK, Boots for MOVE, and Loading for IDLE.";
 					break;
 
 				case 3:
 					std::cout << "You may also hover over enemies to see their plan: Red for ATTACK, Green for MOVE, and Yellow for BOTH.\n";
-					TutorialText += "You may also hover over enemies to see their plan: Red for ATTACK, Green for MOVE, and Yellow for BOTH.";
+					TutorialText += "You may also hover over enemies to see their plan:";
+					TutorialText += "Red for ATTACK, Green for MOVE, and Yellow for BOTH.";
 					break;
 
 				case 4:
@@ -715,8 +724,9 @@ void Scene::print_tutorial_stage_text() const
 			switch (tutorial_substep)
 			{
 				case 0:
-					std::cout << "Item cards are green and are self-cast only. Drag and drop the card onto the player to cast.\n";
-					TutorialText += "Item cards are green and are self-cast only. Drag and drop the card onto the player to cast.";
+					std::cout << "Item cards are green and are self-cast only. Drag and drop the card onto the player TILE to cast.\n";
+					TutorialText += "Item cards are green and are self-cast only.";
+					TutorialText += "Drag and drop the card onto the player TILE to cast. RIGHT-CLICK to deselect";
 					break;
 
 				case 1:
@@ -755,7 +765,8 @@ void Scene::print_tutorial_stage_text() const
 			{
 				case 0:
 					std::cout << "Event cards are purple and use a special world interaction cast. Drag and drop these cards onto the board.\n";
-					TutorialText += "Event cards are purple and use a special world interaction cast. Drag and drop these cards onto the board.";
+					TutorialText += "Event cards are purple and use a special world interaction cast.";
+					TutorialText += "Drag and drop these cards onto any tile on the board. RIGHT - CLICK to deselect";
 					break;
 
 				case 1:
@@ -770,7 +781,8 @@ void Scene::print_tutorial_stage_text() const
 
 				case 3:
 					std::cout << "Some cards require a change of orientation. Press R to rotate. This applies to Mana Wall and Gust of Wind.\n";
-					TutorialText += "Some cards require a change of orientation. Press R to rotate. This applies to Mana Wall and Gust of Wind.";
+					TutorialText += "Some cards require a change of orientation. Press R to rotate.";
+					TutorialText += "This applies to Mana Wall and Gust of Wind.";
 					break;
 
 				case 4:
@@ -850,14 +862,19 @@ void Scene::print_tutorial_stage_text() const
 					break;
 
 				case 13:
-					TutorialText += "Now that you've selected them, two portals will appear.";
+					TutorialText += "Now that you've selected them, two portals will appear on the TOP and BOTTOM.";
 					break;
 
 				case 14:
-					TutorialText += "Walk towards a portal and click on it.";
+					TutorialText += "You may walk into a portal and click on it to start a new game.";
+					TutorialText += "I WILL WARN YOU! The portals are acting up... you miiiight end up with 1 card.";
 					break;
 
 				case 15:
+					TutorialText += "So will you be brave and start a new journey or take a breather?";
+					break;
+
+				case 16:
 					TutorialText += "Press SPACE to finish the tutorial.";
 					break;
 
@@ -871,7 +888,7 @@ void Scene::print_tutorial_stage_text() const
 		case TutorialStage::DONE:
 			std::cout << "[Tutorial Complete]\n";
 			TutorialText << "[Tutorial Complete]";
-			TutorialText += "Exit the game to play.";
+			TutorialText += "Thank you for completing the tutorial. Exit the game to play.";
 			TutorialText += "Press Q to restart, E to go back.";
 			break;
 	}
@@ -897,8 +914,8 @@ void Scene::setup_tutorial_basics()
 
 void Scene::setup_tutorial_movement()
 {
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	clear_player_cards_for_tutorial(playerID, UIptr);
 
 	Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -922,8 +939,8 @@ void Scene::setup_tutorial_attack()
 {
 	std::cout << "[Tutorial] Attack stage init\n";
 
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	load_deck_for_tutorial("Tutorial Attack Deck");
 
 	s32 px, py;
@@ -973,8 +990,8 @@ void Scene::setup_tutorial_defense()
 {
 	std::cout << "[Tutorial] Defense stage init\n";
 
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	load_deck_for_tutorial("Tutorial Defense Deck");
 
 	// load tutorial defense script
@@ -1043,8 +1060,8 @@ void Scene::setup_tutorial_item()
 {
 	std::cout << "[Tutorial] Item stage init\n";
 
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	load_deck_for_tutorial("Item Deck");
 
 	print_tutorial_stage_text();
@@ -1054,8 +1071,8 @@ void Scene::setup_tutorial_event()
 {
 	std::cout << "[Tutorial] Event stage init\n";
 
-	/*clear_tutorial_spawned_entities();
-	reset_tutorial_player_state();*/
+	clear_tutorial_spawned_entities();
+	reset_tutorial_player_state();
 	load_deck_for_tutorial("Event Deck");
 
 	s32 px, py;
@@ -1267,6 +1284,12 @@ void Scene::reset_tutorial_player_state()
 
 	// only place if grid is already initialized enough to handle it
 	BattleGrid.placeEntity(playerID, centerX, centerY);
+
+	// reset HP
+	if (auto* hp = ecs.getComponent<Components::HP>(playerID))
+	{
+		hp->c_value = hp->max_value;
+	}
 
 	Components::TurnBasedStats* st = ecs.getComponent<Components::TurnBasedStats>(playerID);
 	if (st)
