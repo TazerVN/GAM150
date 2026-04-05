@@ -1,3 +1,14 @@
+//=================================================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu, 
+//				chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//=================================================================================
 #pragma once
 #include "../types.h"
 #include "../system/EnemyDirector.h"

@@ -66,10 +66,13 @@ static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
+	TutorialText.z = 1100;
+	TutorialText.set(300.f, 0.5f);				//size
+	TutorialText.set({ 1.f, 1.f, 1.f, 1.f }); // white
+
 	int levelCount = gameData.scoringSystem.LevelCount();
 	std::string progressText = "NODES ESCAPED: " + std::to_string(levelCount);
-	TutorialText << "";
-	TutorialText += progressText.c_str();
+	TutorialText << progressText.c_str();
 
 	gameData.win = false;
 
