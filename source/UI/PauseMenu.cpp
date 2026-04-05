@@ -25,7 +25,6 @@ void PauseMenu::init()
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, this->z - 1 };
 		ecs.addComponent(dim.dim, in);
 	}
-	this->transition = false;
 	ecs.destroyEntity(this->timer);
 	this->timer = UIO::ui_timer(1.f);
 
@@ -281,6 +280,7 @@ void PauseMenu::update()
 
 		}
 	}
+	this->transition = false;
 }
 
 void PauseMenu::free()
@@ -449,13 +449,13 @@ void TutorialPause::init()
 	f32 image_w = 0.8f;
 	f32 image_h = 0.8f;
 
-	auto foward = [&]
+	auto foward = [=]
 		{
 			AF.sfx.play(1);
 			this->page += 1;
 			AF.sfx.stopping = false;
 		};
-	auto backward = [&]
+	auto backward = [=]
 		{
 			AF.sfx.play(1);
 			this->page -= 1;
