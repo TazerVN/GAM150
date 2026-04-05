@@ -69,9 +69,9 @@ JSON_RET create_game_data()
 
 	rapidjson::Value soundSettings(rapidjson::kObjectType);
 
-	soundSettings.AddMember("sfx", 50, alloc);
-	soundSettings.AddMember("music", 50, alloc);
-	soundSettings.AddMember("ambience", 50, alloc);
+	soundSettings.AddMember("sfx", 0.5f, alloc);
+	soundSettings.AddMember("music", 0.5f, alloc);
+	soundSettings.AddMember("ambience", 0.5f, alloc);
 	doc.AddMember("SoundSetting", soundSettings, alloc);
 
 
@@ -155,14 +155,39 @@ JSON_RET parse_game_data()
 	{
 		const auto& score = doc["Score"];
 
-		if (score.HasMember("levelcount"))
-			gameData.scoringSystem.LevelCount() = score["levelcount"].GetUint();
-		else
-			return JSON_RET::PARSE_ERROR;
+		gameData.scoringSystem.LevelCount() = score.HasMember("levelcount")? score["levelcount"].GetUint() : 0;
 	}
 	else
 		return JSON_RET::PARSE_ERROR;
 
+	if (doc.HasMember("player_stats") && doc["player_stats"].IsObject())
+	{
+		const auto& player_stats = doc["player_stats"];
+
+		gameData.chp = (player_stats.HasMember("CHP")) ? player_stats["CHP"].GetFloat() : 0.f;
+		gameData.mhp = (player_stats.HasMember("MHP")) ? player_stats["MHP"].GetFloat() : 100.f;
+
+		gameData.playerStats.maxPoints = (player_stats.HasMember("maxPoints")) ? player_stats["maxPoints"].GetInt() : 5;
+		gameData.playerStats.points = (player_stats.HasMember("points")) ? player_stats["points"].GetInt() : 0;
+		gameData.playerStats.shields = (player_stats.HasMember("shield")) ? player_stats["shield"].GetInt() : 0;
+		gameData.playerStats.atkBuffHitsLeft = (player_stats.HasMember("atkBuffHitLeft")) ? player_stats["atkBuffHitLeft"].GetInt() : 0;
+		gameData.playerStats.atkBuffStacks = (player_stats.HasMember("atkBuffStacks")) ? player_stats["atkBuffStacks"].GetInt() : 0;
+		gameData.playerStats.atkMultiplier = (player_stats.HasMember("atkMultiplier")) ? player_stats["atkMultiplier"].GetFloat() : 1.f;
+		gameData.playerStats.damageTakenMultiplier = (player_stats.HasMember("damageTakenMultiplier")) ? player_stats["damageTakenMultiplier"].GetFloat() : 1.f;
+		gameData.playerStats.max_movSpd = (player_stats.HasMember("max_movSpd")) ? player_stats["max_movSpd"].GetInt() : 7;
+	}
+	else
+	{
+		gameData.playerStats.maxPoints = 5;
+		gameData.playerStats.points = 0;
+		gameData.playerStats.shields = 0;
+		gameData.playerStats.atkBuffHitsLeft = 0;
+		gameData.playerStats.atkBuffStacks = 0;
+		gameData.playerStats.atkMultiplier = 1.f;
+		gameData.playerStats.damageTakenMultiplier = 1.f;
+		gameData.playerStats.max_movSpd = 7;
+	}
+	
 	if (doc.HasMember("player_current_cards") && doc["player_current_cards"].IsArray())
 	{
 		Components::Card_Storage* cardStorage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -178,8 +203,6 @@ JSON_RET parse_game_data()
 			}
 		}
 	}
-	
-
 	return JSON_RET::OK;
 }
 
@@ -220,10 +243,29 @@ JSON_RET save_game_data()
 	scoringSystem.AddMember("levelcount", gameData.scoringSystem.LevelCount(), alloc);
 	doc.AddMember("Score", scoringSystem, alloc);
 
+
+	rapidjson::Value json_stats(rapidjson::kObjectType);
+	Components::TurnBasedStats* playerS = ecs.getComponent<Components::TurnBasedStats>(playerID);
+	Components::HP* player_HP = ecs.getComponent<Components::HP>(playerID);
+	if (playerS != nullptr)
+	{
+		json_stats.AddMember("CHP", player_HP->c_value, alloc);
+		json_stats.AddMember("MHP", player_HP->max_value, alloc);
+		json_stats.AddMember("maxPoints", playerS->maxPoints, alloc);
+		json_stats.AddMember("points", playerS->points, alloc);
+		json_stats.AddMember("shield", playerS->shields, alloc);
+		json_stats.AddMember("atkBuffHitLeft", playerS->atkBuffHitsLeft, alloc);
+		json_stats.AddMember("atkBuffStacks", playerS->atkBuffStacks, alloc);
+		json_stats.AddMember("atkMultiplier", playerS->atkMultiplier, alloc);
+		json_stats.AddMember("damageTakenMultiplier", playerS->damageTakenMultiplier, alloc);
+		json_stats.AddMember("max_movSpd", playerS->max_movSpd, alloc);
+	}
+	doc.AddMember("player_stats", json_stats, alloc);
+
+
 	if (!gameData.new_Start)
 	{
 		rapidjson::Value player_cards(rapidjson::kArrayType);
-
 		Components::Card_Storage* storage = ecs.getComponent<Components::Card_Storage>(playerID);
 		if (storage != nullptr)
 		{

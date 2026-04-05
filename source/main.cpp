@@ -119,7 +119,6 @@ void load_Sys_Comp()
 	TF.textureInit();
 	mf.MeshFactoryInit();   // builds all meshes including MESH_RECTANGLE_CENTER
 
-	EntityFactory::create_player();
 
 	pause = false;
 	
@@ -127,6 +126,7 @@ void load_Sys_Comp()
 	{
 		std::cout << "Parsing Game Data failed!!" << '\n';
 	}
+	EntityFactory::create_player();
 	AF = AudioFactory::AudioFactory();
 	AF.init();
 	//==========System=============

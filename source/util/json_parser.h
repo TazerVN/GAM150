@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "../system/CardConstants.h"
+#include "ECS/Components.h"
 
 class ScoringSystem;
 
@@ -71,8 +72,11 @@ struct JSON_GAME_DATA
 	bool new_Start;
 	bool win;
 	unsigned int seed;
+	f32 chp;
+	f32 mhp;
 	SoundSettings soundSettings;
 	ScoringSystem scoringSystem;
+	Components::TurnBasedStats playerStats;
 };
 
 JSON_RET create_game_data();
