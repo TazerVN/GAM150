@@ -27,7 +27,8 @@ void GameState_GameOver_load()
 }
 void GameState_GameOver_init()
 {
-
+	AF.bgm.stopping = false;
+	AF.bgm.play(2);
 }
 void GameState_GameOver_update()
 {
@@ -37,6 +38,7 @@ void GameState_GameOver_free()
 {
 	//ecs.destroyEntity(quit);
 	//ecs.destroyEntity(quit_text);
+	AF.bgm.stop();
 	GOU.free();
 }
 void GameState_GameOver_unload()

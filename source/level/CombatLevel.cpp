@@ -44,7 +44,7 @@ void LevelStateCombat_load()
 		playerHP->c_value = playerHP->max_value;
 
 	}
-	//AF.bgm.play(0);
+	AF.bgm.play(0);
 }
 void LevelStateCombat_init()
 {

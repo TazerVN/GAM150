@@ -17,6 +17,8 @@ namespace AudioFactory
 			f32 volume;
 			f32 pitch;
 			s32 loop;
+
+			f32 og_volume;
 			void setVolume(f32 volume);
 			void setPitch(f32 volume);
 			void pause();
