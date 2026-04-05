@@ -16,9 +16,9 @@ class BasePauseMenu
 	public:
 	enum class DESTINATION
 	{
-		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT, GAMEOVER
+		MAIN, CONTINUE, CONFIRM, TUTORIAL, SETTING, EXIT, GAMEOVER, NONE
 	};
-	DESTINATION dest;
+	DESTINATION dest{DESTINATION::NONE};
 	s32 z{ 1300 };
 	virtual void init() {};
 	virtual void update() {};
@@ -49,7 +49,7 @@ class MainPause : public BasePauseMenu
 class TutorialPause : public BasePauseMenu
 {
 	public:
-	int page;
+	int page{0};
 	Entity image{0};
 	UIO::TextureButton foward_button;
 	UIO::TextureButton leave_button;
@@ -98,7 +98,7 @@ class PauseMenu
 	s32 z{1300};
 	UIO::ScreenTransition dim;
 	Entity timer{ 0 };
-	BasePauseMenu* menu;
+	BasePauseMenu* menu{nullptr};
 	bool on{false};
 	bool created{false};
 	bool transition{false};

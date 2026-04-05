@@ -285,14 +285,14 @@ namespace Components
 
 	struct TurnBasedStats
 	{
-		int maxPoints;			// per-round cap (set when entity created)
+		int maxPoints{ 0 };			// per-round cap (set when entity created)
 		int points{ 0 };			// current round points (reset at round start)
 		int shields{ 0 };
 		int atkBuffHitsLeft{ 0 };	// hits left for atk buff
 		int atkBuffStacks{ 0 };		// stacks left ofr atk buff MAX 3
 		f32 atkMultiplier{ 1.0f };	// multiplier
 		f32 damageTakenMultiplier{ 1.0f }; // 0 = invincible... MARK?!
-		int ini_movSpd;
+		int ini_movSpd{ 0 };
 		int max_movSpd{ ini_movSpd }, cur_movSpd{ max_movSpd };
 
 		void free();

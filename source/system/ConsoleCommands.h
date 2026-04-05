@@ -19,26 +19,26 @@ private:
 	const unsigned int _MAX_CHAR_COUNT = 25;
 
 	//=============Log=======================
-	Entity log_box_container;
-	AEVec2 lbc_pos_;
-	AEVec2 lbc_size;
+	Entity log_box_container{0};
+	AEVec2 lbc_pos_{ AEVec2{0,0} };
+	AEVec2 lbc_size{ AEVec2{0,0} };
 	Components::Color lbc_color{ 46.f / 255.f, 46.f / 255.f, 46.f / 255.f,1.f };
 
 	//===============Text box==============
-	Entity text_box_container;
-	AEVec2 tc_pos_;
-	AEVec2 tc_size;
+	Entity text_box_container{0};
+	AEVec2 tc_pos_{ AEVec2{0,0} };
+	AEVec2 tc_size{ AEVec2{0,0} };
 	Components::Color tc_color{ 77.f / 255.f, 77.f / 255.f, 77.f / 255.f,1.f };
 
-	Entity input_text;
-	AEVec2 pos_;
-	AEVec2 text_size_;
+	Entity input_text{0};
+	AEVec2 pos_{ AEVec2{0,0} };
+	AEVec2 text_size_{ AEVec2{0,0} };
 
 	std::vector<std::string> console_logs;
 	void text_box_update();
 	
 public:
-	Console();
+	Console() = default;
 	void init();
 	void update();
 	void free();

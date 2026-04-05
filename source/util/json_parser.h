@@ -78,11 +78,11 @@ struct JSON_GAME_DATA
 		float sfx{ 0.5f };
 	};
 
-	bool new_Start;
-	bool win;
-	unsigned int seed;
-	f32 chp;
-	f32 mhp;
+	bool new_Start{ false };
+	bool win{ false };
+	unsigned int seed { 0 };
+	f32 chp{ 0.f } ;
+	f32 mhp{ 0.f };
 	SoundSettings soundSettings;
 	ScoringSystem scoringSystem;
 	Components::TurnBasedStats playerStats;
@@ -92,7 +92,7 @@ JSON_RET create_game_data();
 JSON_RET parse_game_data();
 JSON_RET save_game_data();
 
-JSON_RET parse_seed(unsigned int& seed, char const* file_loc);
+//JSON_RET parse_seed(unsigned int& seed, char const* file_loc);
 JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str);
 JSON_RET parse_starter_decks(std::vector<JSON_DECK>& decks, char const* str);
 JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str);
