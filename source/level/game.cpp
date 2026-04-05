@@ -7,9 +7,9 @@
 #include "../UI/cardInteraction.h"
 #include "game.h"
 
-s8 pFont; char pText[40];
-AEGfxTexture* floortext;
-AEGfxTexture* cardtext;
+//s8 pFont; char pText[40];
+//AEGfxTexture* floortext;
+//AEGfxTexture* cardtext;
 
 
 void GameState_game_load()
@@ -71,7 +71,7 @@ void GameState_game_free()
 {
 	init_triggered = true;
 
-	AEGfxDestroyFont(pFont);
+	//AEGfxDestroyFont(pFont);
 }
 
 void GameState_game_unload()

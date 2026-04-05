@@ -138,9 +138,13 @@
     <ClInclude Include="source\system\ConsoleCommands.h" />
     <ClInclude Include="source\level\TutorialLevel.h" />
     <ClInclude Include="source\level\logo.h" />
+    <ClInclude Include="source\util\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\misc\enemies.json" />
     <ClInclude Include="source\factory\AudioFactory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="source\util\Resource.rc" />
   </ItemGroup>
 </Project>
