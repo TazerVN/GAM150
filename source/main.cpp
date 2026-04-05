@@ -7,11 +7,11 @@
 //===============================================================
 // ---------------------------------------------------------------------------
 
-#include "pch.h"
 #include <crtdbg.h> // To check for memory leaks
 #include "AEEngine.h"
 #include "global.h"
 #include "util/GameStateManager.h"
+#include "util/LevelManager.h"
 #include "UI/UIObject.h"
 // ---------------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ void load_Sys_Comp()
 
 
 	pause = false;
-	
+
 	if (parse_game_data() != JSON_RET::OK)
 	{
 		std::cout << "Parsing Game Data failed!!" << '\n';
@@ -142,7 +142,7 @@ void load_Sys_Comp()
 
 
 	Entity t = UIO::ui_blank_solid_center(0.f, 0.f, (f32)AEGfxGetWindowWidth(), (f32)AEGfxGetWindowHeight(), 0.f, 100, 0.0f, 0.0f, 0.3f, 0.15f);
-	Components::TagClass tg{Components::Tag::UI};
+	Components::TagClass tg{ Components::Tag::UI };
 	ecs.addComponent(t, tg);
 	//=============================
 	IT.set({ 0.3f, 0.7f, 1.f, 1.f });

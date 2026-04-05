@@ -8,7 +8,6 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
 #include "document.h"
 #include <fstream>
 #include <filesystem>
@@ -75,7 +74,7 @@ JSON_RET create_game_data()
 
 	doc.AddMember("newStart", true, alloc);
 
-	doc.AddMember("Seed", std::rand() , alloc);
+	doc.AddMember("Seed", std::rand(), alloc);
 
 	rapidjson::Value soundSettings(rapidjson::kObjectType);
 
@@ -124,7 +123,8 @@ JSON_RET parse_game_data()
 
 	rapidjson::Document doc;
 	doc.Parse(json.c_str());
-	if (doc.HasParseError()) {
+	if (doc.HasParseError())
+	{
 		std::cerr << "Error parsing JSON: "
 			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
@@ -165,7 +165,7 @@ JSON_RET parse_game_data()
 	{
 		const auto& score = doc["Score"];
 
-		gameData.scoringSystem.LevelCount() = score.HasMember("levelcount")? score["levelcount"].GetUint() : 0;
+		gameData.scoringSystem.LevelCount() = score.HasMember("levelcount") ? score["levelcount"].GetUint() : 0;
 	}
 	else
 		return JSON_RET::PARSE_ERROR;
@@ -197,7 +197,7 @@ JSON_RET parse_game_data()
 		gameData.playerStats.damageTakenMultiplier = 1.f;
 		gameData.playerStats.max_movSpd = 7;
 	}
-	
+
 	if (doc.HasMember("player_current_cards") && doc["player_current_cards"].IsArray())
 	{
 		Components::Card_Storage* cardStorage = ecs.getComponent<Components::Card_Storage>(playerID);
@@ -231,14 +231,14 @@ JSON_RET save_game_data()
 	std::ofstream file(data_path_);
 	if (!file.is_open()) return JSON_RET::FILE_OPEN_ERROR;
 
-		
+
 	rapidjson::OStreamWrapper osw(file);
 
 	rapidjson::Document doc;
 	doc.SetObject();
 	auto& alloc = doc.GetAllocator();
 
-	doc.AddMember("newStart", gameData.new_Start , alloc);
+	doc.AddMember("newStart", gameData.new_Start, alloc);
 	doc.AddMember("Seed", gameData.seed, alloc);
 
 	rapidjson::Value soundSettings(rapidjson::kObjectType);
@@ -311,7 +311,8 @@ JSON_RET parse_bible_card_data(std::vector<JSON_CARD>& vec, char const* str)
 
 	rapidjson::Document doc;
 	doc.Parse(json.c_str());
-	if (doc.HasParseError()) {
+	if (doc.HasParseError())
+	{
 		std::cerr << "Error parsing JSON: "
 			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
@@ -354,7 +355,8 @@ JSON_RET parse_starter_decks(std::vector<JSON_DECK>& decks, char const* str)
 
 	rapidjson::Document doc;
 	doc.Parse(json.c_str());
-	if (doc.HasParseError()) {
+	if (doc.HasParseError())
+	{
 		std::cerr << "Error parsing JSON: "
 			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;
@@ -389,7 +391,8 @@ JSON_RET parse_enemy_data(std::vector<JSON_ENEMY>& vec, char const* str)
 
 	rapidjson::Document doc;
 	doc.Parse(json.c_str());
-	if (doc.HasParseError()) {
+	if (doc.HasParseError())
+	{
 		std::cerr << "Error parsing JSON: "
 			<< doc.GetParseError() << '\n';
 		return JSON_RET::PARSE_ERROR;

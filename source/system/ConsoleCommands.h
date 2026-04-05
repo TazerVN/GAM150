@@ -6,7 +6,11 @@
 //	DATE:		5-4-2026
 //===============================================================
 #pragma once
-#include "global.h"
+
+#include "../ECS/Components.h"
+#include <vector>
+#include "AEEngine.h"
+#include "types.h"
 
 class Console
 {

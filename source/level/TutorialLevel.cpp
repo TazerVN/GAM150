@@ -1,15 +1,8 @@
-//===============================================================
-//	AUTHOR		Zejin Kendreich Dayap Chen
-// 
-//	EMAIL:		chen.z@digipen.edu
-// 
-//	DATE:		5-4-2026
-//===============================================================
-#include "pch.h"
 #include "../UI/cardInteraction.h"
 #include "TutorialLevel.h"
 #include "../util/LevelManager.h"
 #include "../UI/UI.h"
+#include "global.h"
 
 Scene tutorialscene;
 UI::UIManager tut_UIM;

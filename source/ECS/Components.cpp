@@ -7,8 +7,7 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
-
+#include "global.h"
 #include "Components.h"
 #include <utility>
 #include <iostream>

@@ -1,10 +1,3 @@
-//===============================================================
-//	AUTHOR:		Zejin Kendreich Dayap Chen
-// 
-//	EMAIL		chen.z@digipen
-// 
-//	DATE:		5-4-2026
-//===============================================================
 #pragma once
 
 enum class TutorialFlowStage

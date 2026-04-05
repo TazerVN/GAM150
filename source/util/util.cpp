@@ -5,8 +5,8 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 #include "util.h"
+#include "../system/GridSystem.h"
 
 int math_absolute(int val)
 {

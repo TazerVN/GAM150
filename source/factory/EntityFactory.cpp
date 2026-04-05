@@ -5,30 +5,34 @@
 // 
 //	DATE:		5-4-2026
 //=========================================
-
-#include "pch.h"
 #include "EntityFactory.h"
+#include "global.h"
+
 #include "../util/util.h"
+#include "../util/LevelManager.h"
+#include "../system/GridSystem.h"
+#include "../system/PhaseSystem.h"
 #include <functional>
 
-namespace EntityFactory {
-	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name , f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
+namespace EntityFactory
+{
+	Entity create_actor_spritesheet(AEVec2 pos, AEVec2 size, const char* name, f32 hp, AEGfxTexture* pTex, Components::AnimationType at)
 	{
 
 		Entity id = ecs.createEntity();
 		//default player values
 		//=====================Stats==========================
 		Components::Name nm{ name };
-		
+
 		Components::HP HP{ hp };
-		
+
 		//=====================Render==========================
-		Components::Texture texture{pTex, 0.0f, 0.0f};
+		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_SPRITE), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Timer timer{ 1.f, 0.5f, true, true };
-		Components::Animation_Actor aa{ at, 0, 6};
+		Components::Animation_Actor aa{ at, 0, 6 };
 		Components::AStarResult as{};
 		Components::Tag tag{ Components::Tag::ACTOR };
 		Components::gridData gd{};
@@ -58,7 +62,7 @@ namespace EntityFactory {
 		Components::Name nm{ name };
 		Components::HP HP{ hp };
 		Components::TurnBasedStats tbstats
-		{	0,	//max points
+		{ 0,	//max points
 			0,	//cur_points
 			0,	//shields
 			7 };	//movement spd
@@ -67,8 +71,8 @@ namespace EntityFactory {
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Timer timer{1.f, 0.5f, true, true};
-		Components::Animation_Actor aa{at};
+		Components::Timer timer{ 1.f, 0.5f, true, true };
+		Components::Animation_Actor aa{ at };
 		Components::Tag tag{ Components::Tag::ACTOR };
 		Components::gridData gd{};
 		Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
@@ -121,14 +125,14 @@ namespace EntityFactory {
 	}
 
 	Entity InteractableNode::create_interactable_node(AEVec2 pos, AEVec2 size, AEGfxTexture* pTex
-		, Components::AnimationType at, Components::VictoryNodeTag vic)
+													  , Components::AnimationType at, Components::VictoryNodeTag vic)
 	{
 		Entity id = ecs.createEntity();
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, 1 };
 		Components::Texture texture{ pTex, 0.0f, 0.0f };
 		Components::Transform trans{ pos,pos,size, size,0.f };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
-		Components::Tag tag {Components::Tag::OTHERS};
+		Components::Tag tag{ Components::Tag::OTHERS };
 		Components::gridData gd{};
 		//Components::Input in{ AEVK_LBUTTON, true, nullptr, nullptr, nullptr, 1 };
 
@@ -165,24 +169,24 @@ namespace EntityFactory {
 					Components::VictoryNodeTag no = *(ecs.getComponent<Components::VictoryNodeTag>(node));
 					switch (no)
 					{
-					case Components::VictoryNodeTag::COMBAT:
-					{
-						if (gLevelStateCurr == LevelStates::LS_COMBAT)
-							gLevelStateNext = LevelStates::LS_RESTART;
-						else 
-							gLevelStateNext = LevelStates::LS_COMBAT;
-						break;
-					}
-					case Components::VictoryNodeTag::ENCOUNTER:
-					{
-						gLevelStateNext = LevelStates::LS_ENCOUNTER;
-						break;
-					}
-					default:
-						break;
+						case Components::VictoryNodeTag::COMBAT:
+						{
+							if (gLevelStateCurr == LevelStates::LS_COMBAT)
+								gLevelStateNext = LevelStates::LS_RESTART;
+							else
+								gLevelStateNext = LevelStates::LS_COMBAT;
+							break;
+						}
+						case Components::VictoryNodeTag::ENCOUNTER:
+						{
+							gLevelStateNext = LevelStates::LS_ENCOUNTER;
+							break;
+						}
+						default:
+							break;
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -249,7 +253,7 @@ namespace EntityFactory {
 		if (playerID == -1) return;
 		ecs.getComponent<Components::Card_Storage>(playerID)->free();
 		ecs.getComponent<Components::TurnBasedStats>(playerID)->free();
-		ecs.getComponent<Components::Transform>(playerID)->pos = {100000.f,-100000.f};
+		ecs.getComponent<Components::Transform>(playerID)->pos = { 100000.f,-100000.f };
 		ecs.getComponent<Components::Transform>(playerID)->pos_onscreen = { 100000.f,-100000.f };
 		auto anim = ecs.getComponent<Components::Animation_Actor>(playerID);
 		auto texture = ecs.getComponent<Components::Texture>(playerID);

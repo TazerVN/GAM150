@@ -6,7 +6,6 @@
 //	DATE:		5-4-2026
 //===============================================================
 #pragma once
-#include "pch.h"
 
 class HighlightSystem;
 

@@ -8,8 +8,6 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-
-#include "pch.h"
 #include "GridSystem.h"
 #include <utility> // for std::move
 #include "../util/util.h"

@@ -1,14 +1,13 @@
 //=========================================
 //	AUTHOR:		PHAM MINH TUAN
-// 
 //	EMAIL:		minhtuan.pham@digipen.edu
-// 
 //	DATE:		5-4-2026
 //=========================================
-#include "pch.h"
 
 #include "AnimationSystem.h"
 #include "../system/GridSystem.h"
+#include "system/PhaseSystem.h"
+#include "global.h"
 namespace Animation
 {
 
@@ -89,6 +88,10 @@ namespace Animation
 				anim->current_frame = ++anim->current_frame % anim->max_frame;
 
 			texture->offset_x = frame / 18.f;
+			/*Components::Transform* camera = ecs.getComponent<Components::Transform>(CS.id());
+			int magnitude = 10;
+			camera->pos.x = camera->pos_onscreen.x + magnitude / 2 - AERandFloat() * magnitude;
+			camera->pos.y = camera->pos_onscreen.y + magnitude / 2 - AERandFloat() * magnitude;*/
 		}
 
 		return flag;
@@ -217,6 +220,8 @@ namespace Animation
 		bool flag = false;
 		timer->start = true;
 
+		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		//f32 minimum = 0.6f;
 
 
 		if (timer->seconds >= timer->max_seconds)

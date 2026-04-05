@@ -5,10 +5,10 @@
 // 
 //	DATE:		5-4-2026
 //=========================================
-#include "pch.h"
 #include "inputSystem.h"
 #include "../system/PhaseSystem.h"
 #include <algorithm>
+#include "global.h"
 
 namespace InputSystem
 {

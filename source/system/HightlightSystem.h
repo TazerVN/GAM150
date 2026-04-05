@@ -8,6 +8,7 @@
 #pragma once
 
 #include "util/Event.h"
+#include "GridSystem.h"
 #include "types.h"
 namespace Grid {class GameBoard;}
 namespace CombatNameSpace { class CombatSystem; }

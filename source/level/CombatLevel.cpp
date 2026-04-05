@@ -12,11 +12,13 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
 #include "../UI/cardInteraction.h"
 #include "CombatLevel.h"
 #include "../util/LevelManager.h"
 #include "../UI/UI.h"
+#include "../ECS/Components.h"
+#include "../ECS/ECSystem.h"
+#include "global.h"
 
 Scene scene;
 UI::UIManager UIM;

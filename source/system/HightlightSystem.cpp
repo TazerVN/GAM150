@@ -6,9 +6,8 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
 #include "HightlightSystem.h"
-
+#include "global.h"
 #include "GridSystem.h"
 #include "TurnBasedSystem.h"
 #include "../util/Pathfinding.h"

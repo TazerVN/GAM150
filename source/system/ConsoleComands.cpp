@@ -5,12 +5,11 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 #include "ConsoleCommands.h"
 #include "ConsoleConstants.h"
-#include "global.h"
 #include <iostream>
 #include <iomanip>
+#include "global.h"
 
 Console::Console()
 {

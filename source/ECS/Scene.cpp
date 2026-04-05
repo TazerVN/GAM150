@@ -9,13 +9,14 @@
 // 
 //	DATE:		5-4-2026
 //=================================================================================
-#include "pch.h"
 #include "Scene.h"
 #include <ctime> // for randomiser -Zejin (FOR NOW...)
 #include <cstdlib> // randomiser part 2
 #include "../util/LevelManager.h"
 #include "factory/EntityFactory.h"
 #include "../UI/UI.h"
+#include "global.h"
+#include <string>
 
 std::vector<std::string> hardcoded_levels;
 

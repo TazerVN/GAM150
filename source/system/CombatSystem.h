@@ -9,6 +9,8 @@
 
 #include "../types.h"
 #include "../ECS/ECSystem.h"
+#include "../factory/MeshFactory.h"
+#include "../factory/TextureFactory.h"
 #include "../util/Event.h"
 #include <utility>
 

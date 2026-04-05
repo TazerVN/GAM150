@@ -5,10 +5,10 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 
 #include "particleSystem.h"
 #include "../ECS/Components.h"
+#include "global.h"
 
 
 void Particle::ParticleSystem::remove(size_t index)

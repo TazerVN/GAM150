@@ -10,7 +10,6 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
 #include "menu.h"
 #include "../global.h"
 #include <iostream>

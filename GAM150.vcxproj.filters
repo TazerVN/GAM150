@@ -59,6 +59,7 @@
     <ClCompile Include="source\factory\AudioFactory.cpp" />
     <ClCompile Include="source\UI\IntentionDisplay.cpp" />
     <ClCompile Include="source\level\Gameover.cpp" />
+    <ClCompile Include="source\system\ScoringSystem.cpp" />
     <ClCompile Include="source\system\HightlightSystem.cpp" />
     <ClCompile Include="source\UI\MenuUI.cpp" />
     <ClCompile Include="source\system\ConsoleComands.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="source\factory\Beastiary.h" />
     <ClInclude Include="source\UI\IntentionDisplay.h" />
     <ClInclude Include="source\level\Gameover.h" />
+    <ClInclude Include="source\system\ScoringSystem.h" />
     <ClInclude Include="source\system\HightlightSystem.h" />
     <ClInclude Include="source\UI\MenuUI.h" />
     <ClInclude Include="source\system\ConsoleConstants.h" />

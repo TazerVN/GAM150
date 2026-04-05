@@ -8,8 +8,8 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
 #include "TextureFactory.h"
+#include "global.h"
 namespace TextureFactory
 {
 	TextureFactory::TextureFactory()

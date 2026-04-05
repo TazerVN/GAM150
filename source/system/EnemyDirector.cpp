@@ -5,11 +5,10 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 #include "EnemyDirector.h"
 #include "../system/CombatSystem.h" // for attack
 #include "../util/Pathfinding.h"    // for A*
-
+#include "global.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>

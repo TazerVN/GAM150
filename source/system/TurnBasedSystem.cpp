@@ -6,7 +6,7 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
+#include "global.h"
 #include "TurnBasedSystem.h"
 #include <iomanip>
 #include "../system/CardResolver.h"

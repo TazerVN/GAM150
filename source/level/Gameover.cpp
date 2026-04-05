@@ -7,12 +7,12 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 #include "level/Gameover.h"
 #include "../util/GameStateManager.h"
 #include "../util/LevelManager.h"
 #include "../UI/UIObject.h"
 #include "../UI/MenuUI.h"
+#include "global.h"
 
 void onClick_Quit()
 {

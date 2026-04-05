@@ -5,8 +5,6 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
-
 #include "../global.h"
 #include "../util/LevelManager.h"
 #include "../ECS/Scene.h"

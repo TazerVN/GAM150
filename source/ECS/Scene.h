@@ -8,6 +8,7 @@
 #include "../system/HightlightSystem.h"
 #include "../factory/MeshFactory.h"
 #include "../factory/TextureFactory.h"
+#include "../factory/EntityFactory.h"
 #include "../UI/IntentionDisplay.h"
 #include "AEEngine.h"
 

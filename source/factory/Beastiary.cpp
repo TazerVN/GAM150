@@ -5,7 +5,7 @@
 // 
 //	DATE:		5-4-2026
 //=========================================
-#include "pch.h"
+#include "global.h"
 
 Entity create_ECS_enemy(JSON_ENEMY const& json_enemy)
 {

@@ -6,7 +6,7 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
+#include "global.h"
 
 #include "IntentionDisplay.h"
 #include "../system/EnemyDirector.h"

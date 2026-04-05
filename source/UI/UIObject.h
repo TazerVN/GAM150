@@ -6,6 +6,10 @@
 //	DATE:		5-4-2026
 //=========================================
 #pragma once
+#include "types.h"
+#include "AEEngine.h"
+#include "ECS/Components.h"
+#include <functional>
 
 namespace UIO
 {

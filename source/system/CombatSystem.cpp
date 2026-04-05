@@ -5,8 +5,6 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
-
 #include "CombatSystem.h"
 #include "TurnBasedSystem.h"
 #include "../ECS/ECSystem.h"

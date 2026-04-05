@@ -12,7 +12,9 @@
 #include "../types.h"
 
 #include "AEEngine.h"
-#include "vector"
+#include <vector>
+#include <unordered_map>
+#include <string>
 
 
 namespace TextureFactory

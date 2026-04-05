@@ -13,9 +13,11 @@
 #include "ECS/Components.h"
 #include "ECS/ECSystem.h"
 
+
 #include "factory/MeshFactory.h"
 #include "factory/TextureFactory.h"
 #include "factory/EntityFactory.h"
+#include "factory/AudioFactory.h"
 #include "factory/Beastiary.h"
 
 #include "util/GameStateManager.h"

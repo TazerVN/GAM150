@@ -6,8 +6,10 @@
 //	DATE:		5-4-2026
 //===============================================================
 
-#include "pch.h"
+#include <AEEngine.h>
 #include "level/EncounterLevel.h"
+#include "../util/LevelManager.h"
+#include <iostream>
 
 void LevelStateEncounter_load()
 {

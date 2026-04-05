@@ -5,7 +5,7 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
+#include "global.h"
 #include "velocitySystem.h"
 #include "../ECS/Components.h"
 

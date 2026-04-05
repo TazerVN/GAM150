@@ -8,9 +8,6 @@
 #pragma once
 
 #include "../types.h"
-//#include "../UI/cardInteraction.h"
-//#include "../ECS/Scene.h"
-//#include "../UI/UI.h"
 #include "../UI/Text.h"
 #include "../system/particleSystem.h"
 

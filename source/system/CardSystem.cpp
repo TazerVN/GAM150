@@ -7,12 +7,12 @@
 // 
 //	DATE:		5-4-2026
 //===============================================================
-#include "pch.h"
 
 #include "CardSystem.h"
 #include "../util/json_parser.h"
 #include "../ECS/Components.h"
 #include "../global.h"
+#include <vector>
 
 // Helpers
 static int get_category_from_id(int id) { return id / 1000; }
