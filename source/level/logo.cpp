@@ -35,7 +35,7 @@ void GameStateLogo_update()
 		else if(fade.fadeIn == false && !fade.update()) 
 		{
 			if (logo != 0) ecs.destroyEntity(logo);
-			logo = UIO::ui_blank_texture_world(TF.getTextureOthers(13), 0, 0, 1525 * size, 445 * size, 0, 1200);
+			logo = UIO::ui_blank_texture_world(TF.getTextureOthers(13), 0.f, 100.f, 1600.f * size, 900.f * size, 0.f, 1200);
 			stay = false;
 			team = true;
 			fade = UIO::ScreenTransition{ true, 0.f, 1.f, 1.f };
