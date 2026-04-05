@@ -1,4 +1,11 @@
-﻿#include "pch.h"
+﻿//===============================================================
+//	AUTHOR		Tio Chun Yi
+// 
+//	EMAIL:		tio.c@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
+#include "pch.h"
 
 #include "particleSystem.h"
 #include "../ECS/Components.h"
@@ -29,10 +36,6 @@ void Particle::ParticleSystem::update(f32 dt)
 	EntityComponent::ComponentBitMask objMask;
 	objMask.set(particleID);
 
-	/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
-	{
-		if ((it->first & objMask) == objMask)
-		{*/
 
 	for (int i = 0; i < this->Particlebuffer.size(); )
 	{
@@ -607,17 +610,6 @@ void Particle::ParticleSystem::particle_system_free()
 	EntityComponent::ComponentBitMask objMask;
 	objMask.set(particleID);
 
-	/*for (auto it = ecs.groups().begin(); it != ecs.groups().end(); ++it)
-	{
-		if ((it->first & objMask) == objMask)
-		{
-			for (Entity ent : it->second)
-			{
-				if (!ecs.getBitMask()[ent].test(particleID)) continue;
-				ecs.destroyEntity(ent);
-			}
-		}
-	}*/
 
 	for(Entity p : Particlebuffer)
 	{	

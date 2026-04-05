@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 
 #include "../types.h"
@@ -6,8 +13,6 @@
 #include "../system/CardSystem.h"
 #include "../ECS/Components.h"
 #include "../util/Event.h"
-//#include "../system/PhaseSystem.h"
-//#include "../UI/cardInteraction.h"
 #include <vector>
 #include <iostream>
 #include "AEEngine.h"
@@ -69,13 +74,6 @@ namespace TBS
 		void start();
 		void force_start_if_ready();  // starts automatically when participants >=2
 		void debug_print() const;
-
-		//==============Player Stats==============
-		/*void show_deck(EntityComponent::Registry& ecs) const;
-		void show_HP(EntityComponent::Registry& ecs) const;
-		void show_hand(EntityComponent::Registry& ecs) const;
-		void show_discard(EntityComponent::Registry& ecs) const;
-		void show_stats(EntityComponent::Registry& ecs) const;*/
 
 		//============Combat=======================
 	

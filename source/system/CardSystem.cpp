@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #include "pch.h"
 
 #include "CardSystem.h"
@@ -81,45 +90,6 @@ static CardType decode_card_type(int id)
 
 	return CardType::SLASHING;
 }
-//Entity create_st_atk_card(ECS::Registry& ecs, const char* name, f32 atk, CardType dtype, f32 range, f32 cost)
-//{
-//	Targetting targetting_type =Targetting::SINGLE_TARGET;
-//	Entity id = ecs.createEntity();
-//	//default player values
-//	CardTag cardTag =CardTag::ATTACK;
-//	Components::Name nm{ name };
-//
-//	Components::Card_Value card_val{ atk,dtype };
-//	Components::Targetting_Component targetting{ targetting_type,range,0.f };
-//	Components::Card_Cost card_cost{ cost };
-//
-//	ecs.addComponent(id, cardTag);
-//	ecs.addComponent(id, nm);
-//	ecs.addComponent(id, card_val);
-//	ecs.addComponent(id, targetting);
-//	ecs.addComponent(id, card_cost);
-//	return id;
-//}
-//
-//Entity create_aoe_atk_card(ECS::Registry& ecs, const char* name, f32 atk, CardType dtype, f32 range, f32 aoe, f32 cost)
-//{
-//	Targetting targetting_type =Targetting::AOE;
-//	Entity id = ecs.createEntity();
-//	//default player values
-//	CardTag cardTag = CardTag::ATTACK;
-//	Components::Name nm{ name };
-//
-//	Components::Card_Value card_val{ atk,dtype };
-//	Components::Targetting_Component targetting{ targetting_type,range,aoe };
-//	Components::Card_Cost card_cost{ cost };
-//
-//	ecs.addComponent(id, cardTag);
-//	ecs.addComponent(id, nm);
-//	ecs.addComponent(id, card_val);
-//	ecs.addComponent(id, targetting);
-//	ecs.addComponent(id, card_cost);
-//	return id;
-//}
 
 Entity create_ECS_card(JSON_CARD const& json_card)
 {

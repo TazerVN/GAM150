@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #include "pch.h"
 
 #include "../global.h"
@@ -6,11 +13,6 @@
 #include "../UI/UI.h"
 #include "../UI/cardInteraction.h"
 #include "game.h"
-
-//s8 pFont; char pText[40];
-//AEGfxTexture* floortext;
-//AEGfxTexture* cardtext;
-
 
 void GameState_game_load()
 {
@@ -72,7 +74,6 @@ void GameState_game_free()
 {
 	init_triggered = true;
 
-	//AEGfxDestroyFont(pFont);
 }
 
 void GameState_game_unload()

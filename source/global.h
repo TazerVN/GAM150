@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Pham Minh Tuan
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				minhtuan.pham@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 
 #include "types.h"
@@ -19,7 +28,6 @@
 #include "system/AnimationSystem.h"
 #include "system/particleSystem.h"
 #include "system/CardSystem.h"
-#include "system/ScoringSystem.h"
 #include "system/ConsoleCommands.h"
 #include "system/ConsoleConstants.h"
 #include "UI/Text.h"

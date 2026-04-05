@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				chen.z@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 #include "../pch.h"
 

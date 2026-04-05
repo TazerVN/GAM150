@@ -1,3 +1,11 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+// 
+//	DATE:		5-4-2026
+//===============================================================
+
 #include "pch.h"
 #include "HightlightSystem.h"
 
@@ -6,12 +14,6 @@
 #include "../util/Pathfinding.h"
 
 
-//enum class highlight_tag
-//{
-//	UNHIGHLIGHTED = 0,
-//	ATTACK_HIGHLIGHT = 1,
-//	MOVE_HIGHLIGHT = 2
-//};
 
 Components::RGBA HIGHLIGHT_PLAYER_ATTACK{ +0.5f,-0.3f,-0.3f,0.f };
 Components::RGBA HIGHLIGHT_MOV{ -0.2f,-0.2f,+0.4f,0.f };

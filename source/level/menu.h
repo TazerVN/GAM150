@@ -1,3 +1,12 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Tio Chun Yi
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				tio.c@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 #include "AEEngine.h"
 #include "../system/particleSystem.h"

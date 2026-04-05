@@ -1,3 +1,10 @@
+//===============================================================
+//	AUTHOR:		Tio Chun Yi
+// 
+//	EMAIL:		tio.c@digipen.edu
+// 
+//	DATE:		5-4-2026
+//===============================================================
 #include "pch.h"
 #include "velocitySystem.h"
 #include "../ECS/Components.h"

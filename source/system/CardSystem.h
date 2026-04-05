@@ -1,3 +1,11 @@
+//===============================================================
+//	AUTHOR:		Wai Phyoo Ooo, 
+//				Zejin Kendreich Dayap Chen
+// 
+//	EMAIL:		w.phyooo@digipen.edu, 
+//				chen.z@digipen.edu
+//	DATE:		5-4-2026
+//===============================================================
 #pragma once
 
 #include "../types.h"
@@ -15,26 +23,6 @@
 //forward declarations
 struct JSON_CARD;
 
-//enum class CardSystemNames
-//{
-//	SLASH,SLASH_PLUS,
-//	SHOOT,SHOOT_PLUS,
-//	FIREBOLT,
-//	STEP_SLASH,
-//	DISK_DETONATE,
-//	SNIPE,
-//	BARRIER,BARRIER_PLUS,
-//	DMG_CUT,AURA_FARM,
-//	RECOVERY,RECOVERY_PLUS,RECOVERY_PLUS1,
-//	PP_UP,
-//	STR_DISK,
-//	SWIFT_FOOT,
-//	DATA_DRAW,
-//	RAND_GENERATE,
-//	GUST_OF_WIND,
-//	BLACK_HOLE
-//};
-
 enum class CardScriptReturn
 {
 	FunctionInitError,
@@ -45,16 +33,6 @@ enum class CardScriptReturn
 
 Entity create_ECS_card(JSON_CARD const& json_card);
 
-////script manager for those cards that require extra steps
-//class CardScriptsManager
-//{
-//	private:
-//	std::unordered_map<std::string, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)>> functions;
-//	//std::map<CardSystemNames, std::function<void(Entity)>> functions;
-//	public:
-//	void add_Function(std::string name, Entity cardID, std::function<COMBAT_SYSTEM_RETURN_TAG(Entity)> function);
-//	CardScriptReturn runCardFunction(std::string card_name, Entity target);
-//};
 
 class CardSystem
 {
@@ -74,8 +52,4 @@ class CardSystem
 	size_t size() const;
 };
 
-//attack cards 
-
-//defense cards
-//world interaction cards
 
