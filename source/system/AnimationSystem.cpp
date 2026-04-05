@@ -209,13 +209,13 @@ namespace Animation
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
 		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
-		Components::Color* color = ecs.getComponent<Components::Color>(id);
+		//Components::Color* color = ecs.getComponent<Components::Color>(id);
 
 		bool flag = false;
 		timer->start = true;
 
-		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		f32 minimum = 0.6f;
+		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		//f32 minimum = 0.6f;
 
 
 		if (timer->seconds >= timer->max_seconds)
@@ -240,8 +240,8 @@ namespace Animation
 		bool flag = false;
 		timer->start = true;
 
-		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		f32 minimum = 0.6f;
+		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		//f32 minimum = 0.6f;
 
 		AF.sfx.play(5);
 
@@ -299,7 +299,7 @@ namespace Animation
 	bool death_animation(Entity id, Entity timer_id)
 	{
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(timer_id);
-		Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
+		//Components::Transform* transform = ecs.getComponent<Components::Transform>(id);
 		Components::Color* color = ecs.getComponent<Components::Color>(id);
 
 		bool flag = false;
@@ -309,7 +309,7 @@ namespace Animation
 		AF.sfx.play(6);
 
 		f32 lerp = timer->seconds / timer->max_seconds;
-		f32 minimum = 0.6f;
+		//f32 minimum = 0.6f;
 
 
 		if (timer->seconds >= timer->max_seconds)

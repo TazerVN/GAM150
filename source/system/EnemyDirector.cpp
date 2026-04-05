@@ -12,7 +12,7 @@
 
 //ranger helper
 
-auto blocksRangedShot = [&](Entity occupant) -> bool
+auto blocksRangedShot = [](Entity occupant) -> bool
     {
         if (occupant == Components::NULL_INDEX)
             return false;

@@ -19,6 +19,7 @@ void Particle::ParticleSystem::remove(size_t index)
 
 void Particle::ParticleSystem::init(size_t poolSize)
 {
+	Particlebuffer.reserve(poolSize);
 }
 void Particle::ParticleSystem::update(f32 dt)
 {
@@ -212,10 +213,8 @@ void Particle::ParticleSystem::update(f32 dt)
 				// Reset to bottom when timer ends — loops forever
 				if (timer->start == false)
 				{
-					f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
+					//f32 halfWidth = f32(AEGfxGetWindowWidth()) * 0.5f;
 					f32 halfHeight = f32(AEGfxGetWindowHeight()) * 0.5f;
-					f32 screenWidth = halfWidth * 2.f;
-					f32 spacing = screenWidth / 15.f;
 
 					// Reset near original column x, random y at bottom
 					f32 newX = transform->pos.x;   // stay in same column
@@ -275,9 +274,9 @@ void Particle::ParticleSystem::spawn_one(bool isUI, f32 x, f32 y, f32 width, f32
 
 }
 
-void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
-{
-}
+//void Particle::ParticleSystem::spawn_default(f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, Components::ParticleType type)
+//{
+//}
 
 void Particle::ParticleSystem::spawn_timed(bool isUI, f32 x, f32 y, f32 width, f32 height, f32 rotation, s32 z, f32 r, f32 g, f32 b, f32 alpha, f32 velX, f32 velY, f32 lifetime, Components::ParticleType type)
 {
@@ -317,8 +316,6 @@ void Particle::ParticleSystem::particleDigitize()
 	{
 		//f32 x = -250.0f * AERandFloat(), y = 250.0f * AERandFloat(); // spread position
 		f32 x = -100.0f * AERandFloat(), y = 100.0f * AERandFloat();
-
-		f32 r = 0.4f - 0.4f * AERandFloat();
 
 		f32 g1 = 1.0f;
 		f32 g2 = 0.7f + 0.3f * AERandFloat();
@@ -523,17 +520,17 @@ void Particle::ParticleSystem::particleShield(f32 x, f32 y, f32 r, f32 g, f32 b,
 
 
 
-void Particle::ParticleSystem::particleDamage(f32 x, f32 y)
-{
-
-}
+//void Particle::ParticleSystem::particleDamage(f32 x, f32 y)
+//{
+//
+//}
 
 void Particle::ParticleSystem::particleDataFlow()
 {
 	f32 screenWidth = f32(AEGfxGetWindowWidth());
-	f32 screenHeight = f32(AEGfxGetWindowHeight());
+	//f32 screenHeight = f32(AEGfxGetWindowHeight());
 	f32 halfWidth = screenWidth * 0.5f;
-	f32 halfHeight = screenHeight * 0.5f;
+	//f32 halfHeight = screenHeight * 0.5f;
 
 	for (int i = 0; i < 50; i++)
 	{

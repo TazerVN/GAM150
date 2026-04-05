@@ -28,7 +28,7 @@ namespace CombatNameSpace
 		IntentionDisplaySystem* intentptr = nullptr;
 		EnemyDirector* edptr = nullptr;
 
-		Entity targetted_entity = -1;
+		Entity targetted_entity = 0;
 		int targetted_x{ -1 }, targetted_y{ -1 };
 		bool play_card_triggered{ false };
 

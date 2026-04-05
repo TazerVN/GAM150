@@ -107,7 +107,7 @@ namespace Camera
 		objMask.set(transID);
 		objMask.set(tagID);
 
-		Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
+		//Components::Transform* camera = ecs.getComponent<Components::Transform>(this->camera_id);
 		setOrignalDragPos(*this);
 		this->updateCameraPos();
 

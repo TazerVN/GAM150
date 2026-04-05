@@ -31,6 +31,7 @@ namespace InputSystem
                 for (Entity ent : it->second)
                 {
                     Components::Input* input = ecs.getComponent<Components::Input>(ent);
+                    if (input == nullptr) continue;
                     this->buffer.push_back({ input->z, ent });
                 }
             }

@@ -13,7 +13,6 @@ Entity intenton_icon(AEGfxTexture* pTex, f32 x, f32 y, f32 width, f32 height, f3
 	Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), TEXTURE , MESH_RECTANGLE_CORNER, z };
 	Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 	Components::Texture texture{ pTex };
-	Components::Tag tag{ Components::Tag::UI };
 
 	ecs.addComponent(id, trans);
 	ecs.addComponent(id, mesh);
@@ -48,7 +47,7 @@ void IntentionDisplaySystem::update(Scene& scene)
 	for (; i < this->intentionDisplay_list.size(); i++)
 	{
 		Entity enemy = this->intentionDisplay_list[i].first;
-		bool exist = false;
+		//bool exist = false;
 
 		Entity hordeEnt = scene.getTBS().get_participant()[1];
 		
@@ -82,7 +81,7 @@ void IntentionDisplaySystem::update(Scene& scene)
 		size_t index = this->ptr_enemyDirector->index();
 		const std::vector<EnemyDirector::Tokens>& timeline_ = this->ptr_enemyDirector->get_timeline();
 
-		for (size_t i = 0; i < timeline_.size(); i++)
+		for (size_t itr = 0; itr < timeline_.size(); itr++)
 		{
 			if (index >= timeline_.size()) index = 0;
 
@@ -93,9 +92,9 @@ void IntentionDisplaySystem::update(Scene& scene)
             {
                 ent = map[key];
             }
-            else ent = -1;
+            else ent = static_cast<Entity>(-1);
 
-            if (ent == -1)
+            if (ent == static_cast<Entity>(-1))
             {
                 index++;
                 continue;
@@ -116,7 +115,6 @@ void IntentionDisplaySystem::update(Scene& scene)
                         bool isRanger = ecs.getComponent<Components::Name>(ent)->value == "Ranger";
                         Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
                         int atkRange = (isRanger) ? rangedRange : meleeRange;
-                        int movRange = (enemyRange.find(ent) != enemyRange.end()) ? enemyRange[ent] : 0;
 
 
                         auto isOutermost = [&](int x, int y, int originX, int originY, int range) -> bool
@@ -145,27 +143,27 @@ void IntentionDisplaySystem::update(Scene& scene)
                         {
                             if (isRanger)
                             {
-                                for (int itr = 0; itr <= atkRange; ++itr)
+                                for (int _itr = 0; _itr <= atkRange; ++_itr)
                                 {
-                                    if (cell.x + itr < MAX_I)
+                                    if (cell.x + _itr < MAX_I)
                                     {
                                         //hlptr->enemy_atk_highlight_activate[cell.x + itr][cell.y] = true;
-                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x + itr,cell.y });
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x + _itr,cell.y });
                                     }
-                                    if (cell.x - itr >= 0)
+                                    if (cell.x - _itr >= 0)
                                     {
                                         //hlptr->enemy_atk_highlight_activate[cell.x - itr][cell.y] = true;
-                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x - itr,cell.y });
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x - _itr,cell.y });
                                     }
-                                    if (cell.y + itr < MAX_J)
+                                    if (cell.y + _itr < MAX_J)
                                     {
                                         //hlptr->enemy_atk_highlight_activate[cell.x][cell.y + itr] = true;
-                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y + itr });
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y + _itr });
                                     }
-                                    if (cell.y - itr >= 0)
+                                    if (cell.y - _itr >= 0)
                                     {
                                         //hlptr->enemy_atk_highlight_activate[cell.x][cell.y - itr] = true;
-                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y - itr });
+                                        hlptr->enemy_atk_highlighted_cells[ent].push_back({ cell.x,cell.y - _itr });
                                     }
                                 }
                             }
@@ -179,12 +177,12 @@ void IntentionDisplaySystem::update(Scene& scene)
                                         hlptr->enemy_atk_highlighted_cells[ent].push_back({ x, y });
                                     };
 
-                                for (int i = -atkRange; i <= atkRange; ++i)
+                                for (int i_ = -atkRange; i_ <= atkRange; ++i_)
                                 {
-                                    int j_range = atkRange - std::abs(i);
+                                    int j_range = atkRange - std::abs(i_);
                                     for (int j = -j_range; j <= j_range; ++j)
                                     {
-                                        try_highlight(cell.x + i, cell.y + j);
+                                        try_highlight(cell.x + i_, cell.y + j);
                                     }
                                 }
                             }
@@ -240,12 +238,12 @@ void IntentionDisplaySystem::update(Scene& scene)
                         Components::gridData* gd = ecs.getComponent<Components::gridData>(ent);
                         Components::GridCell pos = Components::GridCell{ gd->x,gd->y };
 
-                        for (int i = -range; i <= range; ++i)
+                        for (int irange = -range; irange <= range; ++irange)
                         {
-                            int j_range = range - std::abs(i);
+                            int j_range = range - std::abs(irange);
                             for (int j = -j_range; j <= j_range; ++j)
                             {
-                                int tx = pos.x + i;
+                                int tx = pos.x + irange;
                                 int ty = pos.y + j;
 
                                 if (tx < 0 || tx >= MAX_I || ty < 0 || ty >= MAX_J)

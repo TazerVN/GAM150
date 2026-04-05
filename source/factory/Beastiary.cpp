@@ -49,7 +49,7 @@ void Beastiary::init_data()
 Entity Beastiary::generate_enemy_from_beastiary(std::string key, AEVec2 spawnpos, AEVec2 size, Components::AnimationType at)
 {
 	if (enemies_map.find(key) == enemies_map.end())
-		return -1;
+		return static_cast<Entity>(-1);
 
 	Entity id = ecs.createEntity();
 
@@ -137,7 +137,7 @@ Entity Beastiary::get_beastiary_id(std::string key)
 {
 
 	if (enemies_map.find(key) == enemies_map.end())
-		return -1;
+		return static_cast<Entity>(-1);
 
 	return enemies_map[key];
 

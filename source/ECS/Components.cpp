@@ -4,6 +4,19 @@
 #include <utility>
 #include <iostream>
 
+
+void Components::TurnBasedStats:: free()
+{
+	this->points = maxPoints;
+	this->shields = 0;
+	this->atkBuffHitsLeft = 0;
+	this->atkBuffStacks = 0;
+	this->atkMultiplier = 1.f;
+	this->damageTakenMultiplier = 1.f;
+	this->max_movSpd = this->ini_movSpd;
+	this->cur_movSpd = this->max_movSpd;
+}
+
 void Components::Card_Storage::add_card_to_deck(Entity cardID)
 {
 	original_draw_pile.push_back(cardID);

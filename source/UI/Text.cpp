@@ -85,22 +85,22 @@ namespace Text
 		return out;
 	}
 
-	void PopUpText::init(EntityComponent::Registry* ecsptr, Entity pos)
+	void PopUpText::init(EntityComponent::Registry* ecsptr, Entity loc)
 	{
 		this->ecs = ecsptr;
-		this->pos = pos;
+		this->pos = loc;
 	}
 
 	Entity PopUpText::text_create(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a)
 	{
 		Entity id = this->ecs->createEntity();
 
-		Components::Transform* pos = ecs->getComponent<Components::Transform>(e);
+		Components::Transform* poos = ecs->getComponent<Components::Transform>(e);
 
 		/*f32 x = pos->pos_onscreen.x - 64.f;
 		f32 y = pos->pos_onscreen.y + 32.f;*/
-		f32 x = pos->pos_onscreen.x - 100.f;
-		f32 y = pos->pos_onscreen.y + 150.f;
+		f32 x = poos->pos_onscreen.x - 100.f;
+		f32 y = poos->pos_onscreen.y + 150.f;
 
 		
 
@@ -124,14 +124,14 @@ namespace Text
 	{
 		Entity id = this->ecs->createEntity();
 
-		Components::Transform* pos = ecs->getComponent<Components::Transform>(e);
+		Components::Transform* ppos = ecs->getComponent<Components::Transform>(e);
 
 		f32 x{}, y{};
 
-		if (pos != nullptr)
+		if (ppos != nullptr)
 		{
-			x = pos->pos_onscreen.x;
-			y = pos->pos_onscreen.y + 100.f;
+			x = ppos->pos_onscreen.x;
+			y = ppos->pos_onscreen.y + 100.f;
 		}
 
 		Components::Transform trans{ {x, y}, {x,y} ,{0.5f, 0.5f} , {0.5f, 0.5f} ,0.0f };

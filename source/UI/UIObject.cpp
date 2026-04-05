@@ -9,7 +9,6 @@ namespace UIO
 	{
 
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
 
@@ -30,13 +29,12 @@ namespace UIO
 	void button_offHover(Entity id)
 	{
 		Components::Color* c = ecs.getComponent<Components::Color>(id);
-		Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(id);
 		timer->start = true;
 
-		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		f32 minimum = 0.6f;
+		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		//f32 minimum = 0.6f;
 
 		c->d_color = c->c_color;
 		timer->seconds = 0.5f;
@@ -61,7 +59,6 @@ namespace UIO
 
 		f32 text_width, text_height;
 		AEGfxGetPrintSize(TF.getFontID(), text->text.c_str(), tt->size_og.x, &text_width, &text_height);
-		f32 offset_x = -text_width * tb->size.x;
 		tt->size.x = tt->size_og.x + tt->size_og.x * scale_factor * lerp;
 
 		button_onHover(button->button);
@@ -99,15 +96,15 @@ namespace UIO
 	{
 		this->z = z;
 		this->button = ui_button(x, y, width, height, 0, z, func, {1.f - rgba.r, 1.f - rgba.g, 1.f - rgba.b, 1 - rgba.a });
-		this->text = UIO::ui_text( x - 64.f * text_size, y - 64.f * text_size / 2.f, text_size, text_size,0, z + 1, a, {1.f, 1.f, 1.f, 1.f} );
+		this->text = UIO::ui_text( x - 64.f * text_size, y - 64.f * text_size / 2.f, text_size, text_size,rotation, z + 1, a, {1.f, 1.f, 1.f, 1.f} );
 		this->on = false;
 	}
 
 	void TextureButton::setOpacity(f32 a)
 	{
-		auto button = ecs.getComponent<Components::Color>(this->button);
+		auto but = ecs.getComponent<Components::Color>(this->button);
 		auto txt = ecs.getComponent<Components::Color>(this->text);
-		button->d_color.a = a;
+		but->d_color.a = a;
 		txt->d_color.a = a;
 	}
 
@@ -138,9 +135,9 @@ namespace UIO
 		this->timer = rhs.timer;
 		this->on = rhs.on;
 
-		Components::Timer timer{ 1.f, 0.f, true, true };
-		ecs.addComponent(this->text, timer);
-		ecs.addComponent(this->button, timer);
+		Components::Timer ctimer{ 1.f, 0.f, true, true };
+		ecs.addComponent(this->text, ctimer);
+		ecs.addComponent(this->button, ctimer);
 
 		auto in = ecs.getComponent<Components::Input>(this->button);
 
@@ -158,7 +155,7 @@ namespace UIO
 
 		this->on = false;
 		this->z = z;
-		this->button = ui_button_texture(texture, x, y, width, height, 0, z, func);
+		this->button = ui_button_texture(texture, x, y, width, height,rotation, z, func);
 		this->text = UIO::ui_text( x + offset_x, y + offset_y, text_size, text_size ,0, z + 1, a, rgba);
 		//========= timer ==============
 		this->timer = ecs.createEntity(); 
@@ -343,14 +340,14 @@ namespace UIO
 		ecs.addComponent(this->fill, tag);
 		ecs.addComponent(this->button, tag);
 
-		Entity button = this->button;
+		Entity butt = this->button;
 		Entity container = this->blank;
-		Entity fill = this->fill;
+		Entity fill_ = this->fill;
 
 		auto button_in = ecs.getComponent<Components::Input>(this->button);
-		button_in->onDrag = [button, container, fill]() { 
+		button_in->onDrag = [butt, container, fill_]() { 
 			AF.sfx.play(1);
-			slider_onDrag(button, container, fill);
+			slider_onDrag(butt, container, fill_);
 			};
 
 		button_in->offDrag = []{ AF.sfx.stopping = false;};
@@ -382,7 +379,7 @@ namespace UIO
 
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CORNER), COLOR, MESH_RECTANGLE_CORNER, z };
 		Components::Color color{ 0.5f, 1.0f, 0.5f ,1.0f };
 		Components::HP hp{ 100 };
@@ -416,7 +413,7 @@ namespace UIO
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), COLOR, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ rgba.r, rgba.g, rgba.b, rgba.a };
 		Components::Input in(AEVK_LBUTTON, true, func, [id] {button_onHover(id); }, [id] { button_offHover(id); }, z);	//add input system for grid
@@ -437,7 +434,7 @@ namespace UIO
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Texture tex{ texture };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
@@ -460,7 +457,7 @@ namespace UIO
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},rotation };
 		Components::Text text{ a, TF.getFontID(), z };
 		Components::Color color{ rgba.r, rgba.g, rgba.b, rgba.a };
 		Components::TagClass tag{ Components::Tag::UI };	
@@ -478,7 +475,7 @@ namespace UIO
 	{
 		Entity id = ecs.createEntity();
 		//default player values
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height} , {width, height},rotation };
 		Components::Text text{ a, TF.getFontID(), z };
 		Components::Color color{ rgba.r, rgba.g, rgba.b, rgba.a };
 		Components::TagClass tag{ Components::Tag::UI };	//add input system for grid

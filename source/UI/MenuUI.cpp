@@ -576,7 +576,6 @@ void SettingMenu::init()
 	f32 s_h = 50.f * size_y;
 	f32 s_w = 700.f * size_x;
 
-	f32 offset_x = 256.f * size_x;
 	f32 offset_y = 120.f * size_y;
 	f32 text_size = 0.7f;
 
@@ -737,7 +736,7 @@ void ConfirmMenu::init()
 
 	f32 warning_w, warning_h;
 	f32 description_w, description_h;
-	f32 description2_w, description2_h;
+	//f32 description2_w, description2_h;
 	f32 question_w, question_h;
 
 	f32 win_w = AEGfxGetWindowWidth() * 0.25f;

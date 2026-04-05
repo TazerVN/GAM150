@@ -161,9 +161,9 @@ void CombatNameSpace::CombatSystem::play_attack_card(Entity caster, Entity cardI
 	}
 	case Targetting::AOE:
 	{
-		for (AEVec2 pos : aoe_selected_cells)
+		for (AEVec2 cpos : aoe_selected_cells)
 		{
-			Entity& ent = gbptr->get_pos()[(size_t)pos.x][(size_t)pos.y];
+			Entity& ent = gbptr->get_pos()[(size_t)cpos.x][(size_t)cpos.y];
 			if (ent != -1 && ent != tbsptr->current())
 			{
 				Components::Tag* tag = ecs.getComponent<Components::Tag>(ent);
@@ -345,7 +345,7 @@ void CombatNameSpace::CombatSystem::handle_graveyard()
 				continue;
 			}
 			
-			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[(int)targetPos.x][(int)targetPos.y] = -1;
+			if (targetPos.x != -1 && targetPos.y != -1) gbptr->get_pos()[(int)targetPos.x][(int)targetPos.y] = static_cast<Entity>(-1);
 			gbptr->walkable[int(targetPos.y) * MAX_I + int(targetPos.x)] = 1;
 
 			if (goons->alive() && anim->prev_type != Components::AnimationType::DEATH && anim->anim_type != Components::AnimationType::DEATH)
@@ -467,8 +467,6 @@ bool CombatNameSpace::CombatSystem::resolve_line_attack_pierce(
 
 COMBAT_SYSTEM_RETURN_TAG Call_AttackSystem(Entity target, f32 damage,Grid::GameBoard& gb)
 {
-	EntityComponent::ComponentTypeID hpID = EntityComponent::getComponentTypeID<Components::HP>();
-
 	// Check in enity have hp
 	Components::HP* hp = ecs.getComponent<Components::HP>(target);
 	if (!hp)
@@ -732,8 +730,6 @@ PC_RETURN_TAG CombatNameSpace::CombatSystem::play_card(Entity player, Entity tar
 	if (cardID == Components::NULL_INDEX) // Added a guard 
 		return PC_RETURN_TAG::INVALID;
 
-	Components::Targetting_Component* targetting = ecs.getComponent<Components::Targetting_Component>(cardID);
-
 	int& aoe_range = ecs.getComponent<Components::Targetting_Component>(cardID)->aoe;
 
 	if (!aoe_selected_cells.empty()) aoe_selected_cells.clear();
@@ -810,7 +806,7 @@ void CombatNameSpace::CombatSystem::end_player_resolution()
 
 void CombatNameSpace::CombatSystem::combatSystem_free()
 {
-	horde = -1;
+	horde = 0;
 	gbsptr = nullptr;
 	gbptr = nullptr;
 	tbsptr = nullptr;
@@ -820,7 +816,7 @@ void CombatNameSpace::CombatSystem::combatSystem_free()
 	intentptr = nullptr;
 	edptr = nullptr;
 
-	targetted_entity = -1;
+	targetted_entity = 0;
 	targetted_x = -1; targetted_y= -1;
 	play_card_triggered = false;
 
@@ -838,6 +834,6 @@ std::vector<std::pair<AEVec2, Entity>>& CombatNameSpace::CombatSystem::get_grave
 Entity CombatNameSpace::CombatSystem::draw_card(Entity player, size_t chIndex)
 {
 	Components::Card_Storage* player_storage = ecs.getComponent<Components::Card_Storage>(player);
-	if (player_storage->data_card_hand.empty()) return -1;
+	if (player_storage->data_card_hand.empty()) return Entity(-1);
 	return player_storage->data_card_hand[chIndex];
 }

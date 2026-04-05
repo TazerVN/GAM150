@@ -38,6 +38,8 @@ namespace CardResolver
 		Entity target,
 		AEVec2 targetPos)
 	{
+		if (!normal_function) return PC_RETURN_TAG::INVALID;
+
 		(void)board;
 		(void)targetPos;
 
@@ -74,6 +76,7 @@ namespace CardResolver
 		{
 			combatSystem.play_attack_card(caster, cardID, target, targetPos);
 			return PC_RETURN_TAG::VALID;
+			[[fallthrough]];
 		}
 
 		//-----------------------------------
@@ -114,6 +117,7 @@ namespace CardResolver
 			default:
 				return PC_RETURN_TAG::INVALID;
 			}
+			[[fallthrough]];
 		}
 
 		//-----------------------------------
@@ -203,6 +207,7 @@ namespace CardResolver
 			default:
 				return PC_RETURN_TAG::INVALID;
 			}
+			[[fallthrough]];
 		}
 
 		//-----------------------------------
@@ -344,6 +349,8 @@ namespace CardResolver
 				intent.trigger();
 
 				return PC_RETURN_TAG::VALID;
+
+				[[fallthrough]];
 			}
 			case 1: // Push
 			{
@@ -469,6 +476,8 @@ namespace CardResolver
 				}
 				intent.trigger();
 				return PC_RETURN_TAG::VALID;
+
+				[[fallthrough]];
 			}
 
 			case 2: // Mana Wall
@@ -476,10 +485,13 @@ namespace CardResolver
 				std::cout << "[CardResolver] Mana Wall triggered\n";
 				// spawn wall here
 				return PC_RETURN_TAG::VALID;
+				[[fallthrough]];
 			}
 			default:
 				return PC_RETURN_TAG::INVALID;
+				break;
 			}
+			[[fallthrough]];
 		}
 
 		default:

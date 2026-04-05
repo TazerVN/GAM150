@@ -85,8 +85,6 @@ void LevelStateTutorial_init()
 
 void LevelStateTutorial_update()
 {
-	f32 dt = (f32)AEFrameRateControllerGetFrameTime();
-
 	// Always sync from Scene first so Scene is the real source of truth
 	gTutorialStage = static_cast<TutorialFlowStage>(tutorialscene.get_tutorial_stage());
 	gTutorialSubstep = tutorialscene.get_tutorial_substep();
@@ -162,10 +160,10 @@ void LevelStateTutorial_update()
 
 		VS.update();
 		tutorialscene.update();
-		tutorialscene.getBattleGrid().update( CS.id());
+		tutorialscene.getBattleGrid().update();
 		CS.update();
 		AS.update(tutorialscene.getBattleGrid(), tutorialscene.getGBS(), tutorialscene.getCombatSystem());
-		tut_UIM.update(tutorialscene, dt);
+		tut_UIM.update(tutorialscene);
 	}
 	else
 	{

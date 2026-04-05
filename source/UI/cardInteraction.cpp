@@ -8,14 +8,14 @@ namespace CardInteraction
 {
 	Entity selectableCard_mana(f32 pos_x, f32 pos_y, f32 width, f32 height, s32 cost, s32 z);
 	void selectableCard_delete(std::pair<Entity, Entity> entity);
-	void hand_onHover(Entity id)
+	void hand_onHover()
 	{
 		//Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		//t->pos_onscreen.y = t->pos.y + 40;
 		//t->size_col.x = t->size.x + 40;
 	}
 
-	void hand_offHover(CardInformation::CardDisplay& cd, Entity id)
+	void hand_offHover(CardInformation::CardDisplay& cd)
 	{
 		/*Components::Transform* t = ecs.getComponent<Components::Transform>(id);
 		t->pos_onscreen = t->pos;
@@ -37,7 +37,6 @@ namespace CardInteraction
 
 	CardHand::CardHand(f32 x, f32 y, f32 width, f32 height) : CardHand()
 	{
-		Entity id;
 		this->reset = true;
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
@@ -70,7 +69,7 @@ namespace CardInteraction
 		this->reset = true;
 		this->id = ecs.createEntity();
 		Components::Transform trans{ {x,y},{x,y},{width, height}, {width, height},0.0f };
-		Components::Input input(AEVK_SPACE, true, nullptr, [id = this->id] { hand_onHover(id); }, [id = this->id, &cd] { hand_offHover(cd, id); });
+		Components::Input input(AEVK_SPACE, true, nullptr, [] { hand_onHover(); }, [&cd] { hand_offHover(cd); });
 		Components::TagClass tag{ Components::Tag::CARDS };
 		ecs.addComponent(this->id, input);
 		ecs.addComponent(this->id, trans);
@@ -85,10 +84,10 @@ namespace CardInteraction
 		hlptr = &hl;
 	}
 
-	void CardHand::update_logic(f32 dt)
+	void CardHand::update_logic()
 	{
 		//guard against gbsptr being null
-		this->update_pos(dt);
+		this->update_pos();
 		if (gbsptr == nullptr) return;
 		//if not within main phase return
 		if (gbsptr->getGBPhase() != PhaseSystem::GBPhase::MAIN_PHASE) return;
@@ -157,7 +156,7 @@ namespace CardInteraction
 
 	}
 
-	void CardHand::update_pos(f32 dt)
+	void CardHand::update_pos()
 	{
 
 		Components::Transform* cardhand_t = ecs.getComponent<Components::Transform>(this->id);
@@ -221,7 +220,6 @@ namespace CardInteraction
 			EntityComponent::ComponentTypeID aID = EntityComponent::getComponentTypeID<Components::Name>();
 			if (ecs.getBitMask()[i].test(aID)) {};
 
-			Components::Name* name = ecs.getComponent<Components::Name>(cardID_);
 			Components::Card_Cost* c = ecs.getComponent<Components::Card_Cost>(cardID_);
 			Components::image_location* cimg = ecs.getComponent<Components::image_location>(cardID_);
 			std::string val_ = cimg->location;
@@ -331,10 +329,8 @@ namespace CardInteraction
 
 		Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
 
-		Components::Transform* t1 = ecs.getComponent<Components::Transform>(first);
 		Components::Color* c1 = ecs.getComponent<Components::Color>(first);
 
-		Components::Transform* t2 = ecs.getComponent<Components::Transform>(second);
 		Components::Color* c2 = ecs.getComponent<Components::Color>(second);
 
 		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
@@ -353,9 +349,8 @@ namespace CardInteraction
 	void card_offClick(std::pair<Entity, Entity> id)
 	{
 		Entity first = id.first;
-		Entity second = id.second;
 
-		Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
+		//Components::Timer* timer = ecs.getComponent<Components::Timer>(first);
 
 		Components::Transform* t1 = ecs.getComponent<Components::Transform>(first);
 		Components::Color* c1 = ecs.getComponent<Components::Color>(first);
@@ -417,7 +412,7 @@ namespace CardInteraction
 		t2->size.x = t2->size_og.x * 4.f / 3.f;
 
 	}
-	void card_onDrag(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, Entity card_data, s32 z)
+	void card_onDrag(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z)
 	{
 		if (::pause) return;
 		Entity first = id.first;
@@ -478,7 +473,7 @@ namespace CardInteraction
 		t2->pos_onscreen.y = t1->pos_onscreen.y + t1->size.y * 0.36f;
 
 	}
-	void card_offHover(CardInformation::CardDisplay& cd, std::pair<Entity, Entity> id, s32 z)
+	void card_offHover(std::pair<Entity, Entity> id, s32 z)
 	{
 
 		Entity first = id.first;
@@ -500,8 +495,8 @@ namespace CardInteraction
 		m2->z = z + 1; // mana text stays above card
 		i->z = 30;
 
-		f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
-		f32 minimum = 0.6f;
+		//f32 lerp = timer->seconds / (timer->max_seconds / 2.f) >= 1.f ? timer->max_seconds - timer->seconds : timer->seconds;
+		//f32 minimum = 0.6f;
 		t1->size.y = t1->size_og.y;
 		t1->size.x = t1->size_og.x * 4.f/3.f;
 
@@ -526,15 +521,15 @@ namespace CardInteraction
 		Entity mana = selectableCard_mana(x,y, width, height, cost, z);
 		std::pair<Entity, Entity> result{id, mana};
 
-		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3 * width / 4, height},0.0f };
+		Components::Transform trans{ {x,y}, {x,y} ,{width, height}, {3 * width / 4, height},rotation };
 		Components::Mesh mesh{ true, mf.MeshGet(MESH_RECTANGLE_CENTER), TEXTURE, MESH_RECTANGLE_CENTER, z };
 		Components::Color color{ 1.0f, 1.0f, 1.0f ,1.0f };
 		Components::Texture texture{ pTex };
 		Components::Input input(AEVK_LBUTTON, true, fp, 
 								[result,&cd, card_data, z] { card_onHover(cd, result, card_data, z); }, 
-								[result,&cd, z] { card_offHover(cd, result, z); },
+								[result,&cd, z] { card_offHover(result, z); },
 								30, true, true,
-								[result,&cd, card_data, z] { card_onDrag(cd, result, card_data, z ); }
+								[result,&cd, card_data, z] { card_onDrag(cd, result, z ); }
 								);
 		Components::Switch s{ true };
 		Components::TagClass tag{ Components::Tag::CARDS };
