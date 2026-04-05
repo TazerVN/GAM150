@@ -66,6 +66,11 @@ static void clear_player_cards_for_tutorial(Entity owner, UI::UIManager* UIptr)
 void Scene::init(Camera::CameraSystem& cam, UI::UIManager& _UI)
 
 {
+	int levelCount = gameData.scoringSystem.LevelCount();
+	std::string progressText = "NODES ESCAPED: " + std::to_string(levelCount);
+	TutorialText << "";
+	TutorialText += progressText.c_str();
+
 	gameData.win = false;
 
 	//set seed
@@ -393,6 +398,7 @@ std::vector<Entity>& Scene::entities_store()
 
 void Scene::scene_free()
 {
+	TutorialText.free();
 	tutorial_spawned_entities.clear();
 	gameData.win = false;
 
