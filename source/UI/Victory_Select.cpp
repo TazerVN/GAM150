@@ -87,12 +87,16 @@ void Victory_Select::update()
 		auto skp = [&](){ this->pending_free = true;};
 		this->skip = UIO::TextureButton{ TF.getTextureUI(11) , 0 , AEGfxGetWinMinY() + 100.f,256.f * size_x, 61.f * size_y, text_size ,0.f, this->z + 1, "Skip", skp, 0xFFFFFFFF };
 	}
-	this->dim.update();
+	if (!victory_cards.empty())  // only run while active
+	{
+		this->dim.update();
+	}
 	if (this->pending_free)
 	{
 		this->pending_free = false;
 		this->free();
 	}
+	
 }
 void Victory_Select::free()
 {

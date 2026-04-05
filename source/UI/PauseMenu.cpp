@@ -301,6 +301,7 @@ void PauseMenu::free()
 	this->dim.free();
 	this->on = false;
 	this->created = false;
+	this->current_menu = CURRENT::EMPTY;
 }
 bool PauseMenu::isOn()
 {
