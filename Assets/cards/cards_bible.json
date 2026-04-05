@@ -21,9 +21,9 @@
 		"id": 1210,
 		"name": "Turn bash",
 		"cost": 4,
-		"value": 1.0,
+		"value": 10.0,
 		"range": 1,
-		"description": "Deal more damage based \non turn counter\n",
+		"description": "Deal more damage based \non turn counter\nBASE: 10\n",
 		"png": "card_Turn_Bash.png"
 	},
 	{
@@ -40,8 +40,8 @@
 		"id": 1130,
 		"name": "Shoot",
 		"cost": 1,
-		"value": 10.0,
-		"range": 20,
+		"value": 20.0,
+		"range": 6,
 		"description": "Shoot a laser;\nDeal 20 DMG within a straight line;\nIgnores blockables\n",
 		"png": "card_shoot.png"
 	},
@@ -50,7 +50,7 @@
 		"name": "Shoot+",
 		"cost": 2,
 		"value": 40.0,
-		"range": 10,
+		"range": 8,
 		"description": "Shoot stronger laser;\nDeal 40 DMG within a straight line;\nIgnores blockables\n",
 		"png": "card_shoot+.png"
 	},
@@ -68,7 +68,7 @@
 		"name": "Barrier",
 		"cost": 3,
 		"value": 10.0,
-		"description": "Put up a temporary barrier\n",
+		"description": "Put up a barrier\n",
 		"png": "card_barrier.png"
 	},
 	{
