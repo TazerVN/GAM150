@@ -210,6 +210,7 @@ namespace CardInformation
 
 		for (Entity ent : this->description)
 		{
+
 			ecs.destroyEntity(ent);
 		}
 		this->description.clear();

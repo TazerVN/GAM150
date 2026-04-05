@@ -17,14 +17,14 @@ namespace CardInformation
 	class CardDisplay
 	{
 		private:
-		Entity current_card_id{(Entity) - 1};
-		Entity previous_card_id{(Entity) - 1};
+		Entity current_card_id{ 0 };
+		Entity previous_card_id{ 0 };
 		Entity info_id{0};
 		struct Info
 		{
 			s32 z{ 1000 };
-			Entity name{(Entity)-1 };
-			Entity cost{ (Entity)-1 };
+			Entity name{ 0 };
+			Entity cost{ 0 };
 			std::vector<Entity> description;
 			Info() = default;
 			Info(Entity display, Entity CardData, s32 z);

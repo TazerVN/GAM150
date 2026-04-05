@@ -229,7 +229,8 @@ namespace EntityComponent
 		template<typename T>
 		void removeComponent(Entity e)
 		{
-			if (e == Entity(-1)) return;
+			if (e == Entity(
+			)) return;
 			const ComponentTypeID typeID = getComponentTypeID<T>();
 
 			auto it = componentStorage.find(typeID);

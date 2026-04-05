@@ -30,7 +30,7 @@ private:
 	AEVec2 tc_size{ AEVec2{0,0} };
 	Components::Color tc_color{ 77.f / 255.f, 77.f / 255.f, 77.f / 255.f,1.f };
 
-	Entity input_text{0};
+	Entity input_text{ Entity(-1) };
 	AEVec2 pos_{ AEVec2{0,0} };
 	AEVec2 text_size_{ AEVec2{0,0} };
 

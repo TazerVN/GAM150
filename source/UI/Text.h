@@ -23,7 +23,7 @@ namespace Text
 		private:
 		Components::RGBA c_color{1.f, 1.f, 1.f, 1.f};
 
-		Entity pos{ static_cast<Entity>(-1)};
+		Entity pos{ 0 };
 		EntityComponent::Registry* ecs{nullptr};
 		std::vector<Entity> current;
 		Entity text_create(Entity e, const char* t, f32 r, f32 g, f32 b, f32 a);
